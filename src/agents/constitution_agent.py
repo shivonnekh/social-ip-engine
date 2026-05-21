@@ -213,12 +213,18 @@ class ConstitutionAgent:
 
         # ── PHASE 4: all MCQs answered → declare (FREE-FIRST) ───────
         if len(mcq_answers) >= MAX_MCQ:
-            constitution = _score_constitution(findings or {}, mcq_answers)
+            ranked, confidence = _rank_constitutions(findings or {}, mcq_answers)
+            # Primary constitution = highest-ranked. We always pick one,
+            # but the payload also carries the top-3 with percentages so
+            # the Writer can phrase it as a probability rather than a
+            # definitive label when confidence is low.
+            top_value = ranked[0]["constitution"]
+            try:
+                constitution = Constitution(top_value)
+            except ValueError:
+                constitution = Constitution.PINGHE
             cards_used.append("tcm_constitution_assessment")
 
-            # Primary: free KB recipes matching constitution. Paid pitch
-            # waits for an explicit interest signal on a future turn —
-            # Planner routes to Sales then.
             free_recipes = self._search_free_recipes(constitution)
             for hit in free_recipes:
                 src = hit.get("source_card", "")
@@ -234,9 +240,20 @@ class ConstitutionAgent:
                     },
                 }
             )
+            tools_called.append(
+                {
+                    "name": "ConstitutionAgent.rank",
+                    "args": {"mcq_count": len(mcq_answers)},
+                    "result": {"ranked": ranked, "confidence": confidence},
+                }
+            )
 
             payload = _build_payload_declare(
-                constitution, findings or {}, free_recipes=free_recipes
+                constitution,
+                findings or {},
+                free_recipes=free_recipes,
+                ranked=ranked,
+                confidence=confidence,
             )
 
             suggested_diff["constitution"] = constitution.value
@@ -364,9 +381,10 @@ def _build_vision_content(url_or_path: str) -> dict[str, Any] | None:
 # ──────────────────────────────────────────────────────────────────
 
 
-def _score_constitution(
+def _score_constitution_raw(
     findings: dict[str, Any], answers: list[dict[str, Any]]
-) -> Constitution:
+) -> dict[Constitution, int]:
+    """Return raw integer scores for every constitution. Higher = more likely."""
     scores: dict[Constitution, int] = {c: 0 for c in Constitution if c != Constitution.UNKNOWN}
 
     # Tongue-derived priors (small but directional)
@@ -411,9 +429,58 @@ def _score_constitution(
                 continue
             scores[cz] = scores.get(cz, 0) + int(pts)
 
-    # Pick the max; tie → prefer PINGHE (least intervention).
+    return scores
+
+
+def _score_constitution(
+    findings: dict[str, Any], answers: list[dict[str, Any]]
+) -> Constitution:
+    """Single-best legacy entry. Prefer `_rank_constitutions` for nuance."""
+    scores = _score_constitution_raw(findings, answers)
     best = max(scores.items(), key=lambda kv: (kv[1], kv[0] == Constitution.PINGHE))
     return best[0] if best[1] > 0 else Constitution.PINGHE
+
+
+def _rank_constitutions(
+    findings: dict[str, Any], answers: list[dict[str, Any]]
+) -> tuple[list[dict[str, Any]], float]:
+    """Return (top-3 with percentages, confidence).
+
+    confidence ∈ [0, 1]:
+      - low (<0.4) when raw signal is weak or two top candidates are
+        almost tied
+      - high (>0.6) when one constitution clearly dominates
+    """
+    scores = _score_constitution_raw(findings, answers)
+    items = sorted(
+        scores.items(),
+        key=lambda kv: (-kv[1], 0 if kv[0] == Constitution.PINGHE else 1),
+    )
+    # Take top entries with positive score (+1 fallback so dict isn't empty)
+    positive = [(c, s) for c, s in items if s > 0]
+    if not positive:
+        return (
+            [{"constitution": Constitution.PINGHE.value, "percent": 100, "raw": 0}],
+            0.2,  # near-zero data → low confidence even though defaulting
+        )
+
+    total = sum(s for _, s in positive) or 1
+    top3 = positive[:3]
+    ranked = [
+        {
+            "constitution": c.value,
+            "percent": round(s * 100 / total),
+            "raw": s,
+        }
+        for c, s in top3
+    ]
+    # Confidence heuristic
+    top_score = top3[0][1]
+    second = top3[1][1] if len(top3) > 1 else 0
+    margin = (top_score - second) / max(top_score, 1)
+    answer_signal = min(len(answers) / 4, 1.0)  # 0 → 1.0 across MCQs
+    conf = round(0.35 * answer_signal + 0.4 * margin + 0.25 * min(top_score / 8, 1), 2)
+    return ranked, max(0.05, min(conf, 0.95))
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -552,23 +619,45 @@ def _build_payload_declare(
     findings: dict[str, Any],
     *,
     free_recipes: list[dict[str, Any]] | None = None,
+    ranked: list[dict[str, Any]] | None = None,
+    confidence: float = 0.6,
 ) -> dict[str, Any]:
     recipes = free_recipes or []
     recipe_titles = [r.get("title", "")[:30] for r in recipes]
+    ranked = ranked or [{"constitution": constitution.value, "percent": 100, "raw": 0}]
+
+    # Confidence-aware writer hint
+    low_conf = confidence < 0.45
+    breakdown = " + ".join(
+        f"{r['percent']}% {r['constitution']}" for r in ranked[:2] if r["percent"] >= 15
+    ) or f"100% {constitution.value}"
+
+    if low_conf:
+        opener = (
+            f"信心唔太足 (confidence={confidence:.2f})。用估計嘅口吻，"
+            f"例如「睇起來可能偏 {breakdown}」，並提議多答幾條問題或者影脷相確認。"
+            f"千祈唔好用「你係 X 質」嘅斷言句。"
+        )
+    else:
+        opener = (
+            f"宣告體質：top-1 = 「{constitution.value}」，分布: {breakdown}。"
+            f"如果有 2 個 constitution > 25%，講「主要偏 X，亦帶少少 Y」。"
+            f"用 1-2 句講特徵。"
+        )
+
     return {
         "phase": "declaring",
         "constitution": constitution.value,
+        "ranked_constitutions": ranked,
+        "confidence": confidence,
         "tongue_findings": findings,
         "free_recipes": recipes,
-        # NO paid soup_recommendations here. We do FREE-first, paid is
-        # a follow-up only if user shows interest. Soft hook only.
         "writer_hint": (
-            f"宣告體質「{constitution.value}」 (1-2 句講特徵)。"
-            f"然後推介呢幾款免費家用食譜：{recipe_titles or '(KB hit 唔到 — 留空 free_recipes 唔好作)'}。"
-            "風格：教育、非銷售；列 2-3 款湯水名 + 一句總體飲法 / 注意事項。"
-            "最後一個 bubble 可以好輕咁提一句:「如果想試方便啲嘅，我哋都有預製"
-            "湯水送上門」— 但唔好 push、唔好講價錢、唔好叫佢買。等用戶有興趣"
-            "再問先 pitch。"
+            opener +
+            f"\n然後推介呢幾款免費家用食譜：{recipe_titles or '(空)'}。"
+            "每款 1 bubble，附 image_url 落 media_to_send。"
+            "最尾一個 bubble 可以好輕咁提一句:「如果想試方便啲嘅，我哋都有預製"
+            "湯水送上門」— 但唔好 push、唔好講價錢。"
         ),
     }
 
