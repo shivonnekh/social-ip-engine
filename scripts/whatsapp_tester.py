@@ -126,23 +126,16 @@ async def send(page, text: str) -> None:
 async def send_image(page, image_path: str) -> None:
     """Send an image file in the current WhatsApp chat."""
     print(f"🖼️  Sending image: {Path(image_path).name}")
-    # WhatsApp Web has a hidden file input — set the file directly
-    # First click the attach button to reveal the input
-    attach_btn = page.locator('span[data-icon="plus"]').first
-    if not await attach_btn.count():
-        attach_btn = page.locator('div[title="Attach"]')
-    await attach_btn.click()
-    await asyncio.sleep(0.8)
 
-    # Set file on the image/video file input
-    file_input = page.locator('input[accept*="image/"]').first
+    # Set file directly on the hidden file input (no need to click attach first)
+    file_input = page.locator('input[type="file"][accept="image/*"]').first
     await file_input.set_input_files(image_path)
     await asyncio.sleep(1.5)
 
-    # Press Enter to send
+    # Press Enter to confirm send
     await page.keyboard.press("Enter")
     await asyncio.sleep(1)
-    print("   Image sent.")
+    print("   ✅ Image sent.")
 
 
 async def get_last_incoming_id(page) -> str:

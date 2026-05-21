@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from typing import Any
 
 from src.llm import LLMClient
@@ -102,6 +103,17 @@ class SalesAgent:
         self, inp: SpecialistInput
     ) -> tuple[SpecialistOutput, dict[str, Any]]:
         user = inp.user
+
+        # Detect "where to buy / 邊度買" intent. When user explicitly asks
+        # about how/where to purchase, we should RE-SHOW the products they
+        # were already pitched + provide the order channel, NOT say
+        # "no new products" because of the one-pitch-per-session rule.
+        wants_where = _wants_where_to_buy(inp.user_message)
+        if wants_where and user.products_pitched:
+            return (
+                self._where_to_buy_output(user, inp.user_message),
+                _no_llm_usage(),
+            )
 
         candidates = self._catalog.match_products(
             constitution=user.constitution.value if user.constitution else None,
@@ -265,6 +277,22 @@ class SalesAgent:
             "active_offers": [],
             "stage": _default_stage(user),
             "no_match_reason": reason,
+            # Hard fact — always available even when nothing new to pitch.
+            "order_channel": {
+                "whatsapp": os.environ.get("ORDER_WHATSAPP", "+852 5241 7448"),
+                "url": f"https://wa.me/{os.environ.get('ORDER_WHATSAPP', '+852 5241 7448').lstrip('+').replace(' ', '')}",
+            },
+            "writer_must_not_say": [
+                "我哋冇新產品",
+                "我哋唔賣",
+                "市售產品",
+                "唔係我哋自己做",
+            ],
+            "catalog_facts": {
+                "total_paid_soups": 10,
+                "total_ointments": 3,
+                "made_by": "Care Plus 心宜中醫",
+            },
         }
         return SpecialistOutput(
             specialist=SpecialistName.SALES,
@@ -273,10 +301,109 @@ class SalesAgent:
             tools_called=tools_log,
         )
 
+    def _where_to_buy_output(
+        self, user: Any, user_message: str
+    ) -> SpecialistOutput:
+        """User asked HOW / WHERE to buy. Re-show what they were
+        previously pitched + the order channel. This BYPASSES the
+        one-pitch-per-session rule because the user is now asking the
+        purchase question explicitly."""
+        # Re-fetch products by id from the catalog (preserve pitch order).
+        previously: list[dict[str, Any]] = []
+        all_products = {p.product_id: p for p in self._catalog.all_products()}
+        for pid in user.products_pitched[-3:]:  # at most last 3 pitched
+            prod = all_products.get(pid)
+            if prod is None:
+                continue
+            previously.append(_product_dict_simple(prod))
+
+        whatsapp = os.environ.get("ORDER_WHATSAPP", "+852 5241 7448")
+        clean = whatsapp.lstrip("+").replace(" ", "")
+        payload = {
+            "intent": "where_to_buy",
+            "products_to_pitch": previously,
+            "active_offers": [
+                _promo_dict(p)
+                for p in self._promotions.for_stage(
+                    "sales_close", applies_to="product_pitch"
+                )
+            ],
+            "stage": "where_to_buy",
+            "order_channel": {
+                "whatsapp": whatsapp,
+                "url": f"https://wa.me/{clean}",
+            },
+            "catalog_facts": {
+                "total_paid_soups": 10,
+                "total_ointments": 3,
+                "made_by": "Care Plus 心宜中醫",
+            },
+            "writer_hint": (
+                "用戶問點買 / 邊度買。直接俾佢 order WhatsApp 號碼 + 連結，"
+                "重複講之前 pitched 嘅產品名 + 價錢。"
+                "絕對唔好講「市售產品 / 唔係我哋做嘅 / 冇新產品」 — "
+                "Care Plus 自己出 10 款湯水 + 3 款藥膏。"
+            ),
+            "writer_must_not_say": [
+                "我哋冇新產品",
+                "市售產品",
+                "唔係我哋自己做",
+            ],
+        }
+        return SpecialistOutput(
+            specialist=SpecialistName.SALES,
+            payload=payload,
+            cards_used=[],
+            tools_called=[
+                {
+                    "name": "Sales.where_to_buy_lookup",
+                    "args": {"products_pitched_count": len(user.products_pitched)},
+                    "result": {"reshown": [p["product_id"] for p in previously]},
+                }
+            ],
+        )
+
 
 # ---------------------------------------------------------------------
 # Pure helpers
 # ---------------------------------------------------------------------
+
+
+# Phrases that signal "tell me HOW / WHERE to buy these" — distinct
+# from general buying intent. When the user is past the diagnose phase
+# and already saw a pitch, this triggers a re-show with order info
+# instead of fabricating a "no_match".
+_WHERE_TO_BUY_KEYWORDS = (
+    "邊度買", "邊度可以買", "點買", "點訂", "點訂購", "邊度有得買",
+    "落單", "預訂", "預定", "where", "buy", "order",
+    "點樣買", "點樣訂", "WhatsApp", "whatsapp", "連結", "link",
+    "係咪你哋", "你哋自己", "你哋出", "你哋整",  # "Is it your own product?"
+)
+
+
+def _wants_where_to_buy(text: str) -> bool:
+    if not text:
+        return False
+    return any(kw in text for kw in _WHERE_TO_BUY_KEYWORDS)
+
+
+def _product_dict_simple(prod: Any) -> dict[str, Any]:
+    """Minimal product dict for re-shows (no pitch_angle_hint needed)."""
+    base = os.environ.get(
+        "PUBLIC_BASE_URL", "https://tcm-jessica.onrender.com"
+    ).rstrip("/")
+    image_url = prod.image_url or ""
+    if image_url and not image_url.startswith(("http://", "https://")):
+        # Convert relative path like 'data/media/products/soups/...'
+        rel = image_url[len("data/"):] if image_url.startswith("data/") else image_url
+        image_url = f"{base}/{rel}" if not rel.startswith("/") else f"{base}{rel}"
+    return {
+        "product_id": prod.product_id,
+        "name": prod.name,
+        "price_hkd": prod.price_hkd,
+        "image_url": image_url,
+        "purchase_url": prod.purchase_url,
+    }
 
 
 def _no_llm_usage() -> dict[str, Any]:
