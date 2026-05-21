@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     products_purchased TEXT NOT NULL DEFAULT '[]',
     notes           TEXT NOT NULL DEFAULT '',
     tags            TEXT NOT NULL DEFAULT '[]',
+    temp_state      TEXT NOT NULL DEFAULT '{}',  -- JSON object for cross-turn flow state
     created_at      TEXT NOT NULL,
     updated_at      TEXT NOT NULL
 );

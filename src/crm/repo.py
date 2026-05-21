@@ -75,9 +75,9 @@ class CRMRepo:
             INSERT INTO users (
                 phone, name, status, age, location, district, constitution,
                 pain_points, products_pitched, products_purchased,
-                notes, tags, created_at, updated_at
+                notes, tags, temp_state, created_at, updated_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(phone) DO UPDATE SET
                 name = excluded.name,
                 status = excluded.status,
@@ -90,6 +90,7 @@ class CRMRepo:
                 products_purchased = excluded.products_purchased,
                 notes = excluded.notes,
                 tags = excluded.tags,
+                temp_state = excluded.temp_state,
                 updated_at = excluded.updated_at
             """,
             (
@@ -105,6 +106,7 @@ class CRMRepo:
                 json.dumps(user.products_purchased, ensure_ascii=False),
                 user.notes,
                 json.dumps(user.tags, ensure_ascii=False),
+                json.dumps(user.temp_state, ensure_ascii=False),
                 user.created_at.isoformat(),
                 user.updated_at.isoformat(),
             ),
@@ -218,6 +220,13 @@ def _row_to_user(
     history: list[ConversationMessage],
     appointments: list[AppointmentRecord],
 ) -> User:
+    # Forward-compatible read: temp_state column may be missing in older
+    # databases that haven't run the schema migration. Default to {}.
+    try:
+        temp_state = json.loads(row["temp_state"] or "{}")
+    except (IndexError, KeyError):
+        temp_state = {}
+
     return User(
         phone=row["phone"],
         name=row["name"],
@@ -231,6 +240,7 @@ def _row_to_user(
         products_purchased=json.loads(row["products_purchased"] or "[]"),
         notes=row["notes"] or "",
         tags=json.loads(row["tags"] or "[]"),
+        temp_state=temp_state,
         conversation_history=history,
         appointments=appointments,
         created_at=datetime.fromisoformat(row["created_at"]),

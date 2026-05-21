@@ -109,6 +109,13 @@ class User(BaseModel):
     tags: list[str] = Field(default_factory=list)
     conversation_history: list[ConversationMessage] = Field(default_factory=list)
 
+    # Cross-turn flow state — owned by specialists. Examples:
+    #   {"constitution_q_index": 2, "constitution_mcq_answers": [...],
+    #    "tongue_findings": {"colour": "pale", "coating": "thin_white"}}
+    # NOT for final answers (use the typed fields above) — only for
+    # transient multi-turn state. Each specialist namespaces its own keys.
+    temp_state: dict[str, Any] = Field(default_factory=dict)
+
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
