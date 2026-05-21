@@ -41,6 +41,7 @@ from src.agents.base import (
     SpecialistOutput,
 )
 from src.crm.models import Constitution, UserStatus
+from src.tools.product_catalog import ProductCatalog
 
 logger = logging.getLogger("agents.constitution")
 
@@ -134,10 +135,12 @@ class ConstitutionAgent:
         self,
         *,
         client: LLMClient | None = None,
+        catalog: ProductCatalog | None = None,
         vision_model: str = DEFAULT_MODEL,
         max_vision_tokens: int = 400,
     ) -> None:
         self._client = client
+        self._catalog = catalog or ProductCatalog()
         self._vision_model = vision_model
         self._max_vision_tokens = max_vision_tokens
 
@@ -201,10 +204,52 @@ class ConstitutionAgent:
         if len(mcq_answers) >= MAX_MCQ:
             constitution = _score_constitution(findings or {}, mcq_answers)
             cards_used.append("tcm_constitution_assessment")
-            payload = _build_payload_declare(constitution, findings or {})
+
+            # Same-turn product recommendation — fetch top 2 soups
+            # matching the just-declared constitution so the Writer can
+            # diagnose + recommend in one breath. (Sales Agent still
+            # owns deeper pitches in follow-up turns.)
+            soup_recs = self._catalog.match_products(
+                constitution=constitution.value,
+                pain_points=list(inp.user.pain_points),
+                already_pitched=list(inp.user.products_pitched),
+                user_tags=list(inp.user.tags),
+                user_notes=inp.user.notes,
+                max_results=2,
+            )
+            recs_payload = [
+                {
+                    "product_id": pm.product.product_id,
+                    "name": pm.product.name,
+                    "price_hkd": pm.product.price_hkd,
+                    "image_url": pm.product.image_url,
+                    "purchase_url": pm.product.purchase_url,
+                    "match_reasons": list(pm.match_reasons),
+                }
+                for pm in soup_recs
+            ]
+            tools_called.append(
+                {
+                    "name": "ProductCatalog.match_products",
+                    "args": {"constitution": constitution.value, "max_results": 2},
+                    "result": {
+                        "count": len(recs_payload),
+                        "ids": [r["product_id"] for r in recs_payload],
+                    },
+                }
+            )
+
+            payload = _build_payload_declare(
+                constitution, findings or {}, soup_recommendations=recs_payload
+            )
 
             suggested_diff["constitution"] = constitution.value
             suggested_diff["status"] = UserStatus.CONSTITUTION_DONE.value
+            # Mark recommended IDs as pitched so Sales doesn't re-pitch them next turn.
+            if recs_payload:
+                suggested_diff["products_pitched_append"] = [
+                    r["product_id"] for r in recs_payload
+                ]
             # Clear MCQ tracking but keep tongue findings for audit.
             ts[_TS_MCQ_IDX] = MAX_MCQ
             suggested_diff["temp_state"] = ts
@@ -442,14 +487,24 @@ def _build_payload_ask_mcq(q_idx: int) -> dict[str, Any]:
 
 
 def _build_payload_declare(
-    constitution: Constitution, findings: dict[str, Any]
+    constitution: Constitution,
+    findings: dict[str, Any],
+    *,
+    soup_recommendations: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
+    recs = soup_recommendations or []
+    rec_summary = (
+        " + ".join(f"{r['name']} (${r['price_hkd']})" for r in recs) if recs else "(無)"
+    )
     return {
         "phase": "declaring",
         "constitution": constitution.value,
         "tongue_findings": findings,
+        "soup_recommendations": recs,
         "writer_hint": (
-            f"宣告體質「{constitution.value}」。用 2-3 句講特徵 + 1 句邀請睇湯水推介。"
+            f"宣告體質「{constitution.value}」(2-3 句講特徵)，"
+            f"然後同 turn 直接推介 {len(recs)} 款啱嘅湯水：{rec_summary}。"
+            f"每款用 1 個 bubble，講價錢 + 1 句點解啱佢。"
         ),
     }
 

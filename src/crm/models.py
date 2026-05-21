@@ -120,11 +120,17 @@ class User(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     def with_updates(self, **changes: Any) -> "User":
-        """Return a new User with the given fields replaced."""
-        return self.model_copy(
-            update={**changes, "updated_at": datetime.utcnow()},
-            deep=False,
-        )
+        """Return a new User with the given fields replaced.
+
+        Re-validates the merged dict so string values from specialist
+        diffs (e.g. {"constitution": "陽虛質"}) get coerced back to
+        the proper Enum type — otherwise downstream code that calls
+        ``user.constitution.value`` crashes with AttributeError.
+        """
+        merged = self.model_dump()
+        merged.update(changes)
+        merged["updated_at"] = datetime.utcnow()
+        return User.model_validate(merged)
 
     def append_message(self, msg: ConversationMessage, window: int = 20) -> "User":
         """Append a message to the rolling history window."""
