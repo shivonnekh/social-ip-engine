@@ -3,7 +3,7 @@
 **Source:** Extracted from `dr-baba-agent` on 2026-05-21.
 **Order channel:** WhatsApp **+852 5241 7448** (`wa.me/85252417448`)
 **Currency:** HKD
-**Image note:** Soup images are still placeholders pending real Care Plus product photos (see `../../docs/心宜中醫-產品照-請求.md`). Ointment images are official Care Plus photos.
+**Image note:** All 10 soup photos + 3 ointment photos received from Care Plus 心宜中醫. Stored at `../media/products/soups/` and `../media/products/`.
 
 ---
 
@@ -13,16 +13,16 @@ Pre-cooked therapeutic soups by Care Plus 心宜中醫. Pitched after constituti
 
 | # | Name (中文) | Pinyin / Product ID | Price | One-liner | Image |
 |---|---|---|---|---|---|
-| 1 | 彭魚鰓解毒湯 | `soup_pengyu_jiedu` (Pengyu Jiedu) | HK$120 | 清熱解毒、皮膚問題首選 — 痘疹、暗瘡、濕疹、手足口、生蛇調理 | *(missing — placeholder)* |
-| 2 | 清心潤肺湯 | `soup_qingxin_runfei` (Qingxin Runfei) | HK$48 | 降心火、安神潤燥 — 捱夜失眠、心火盛、流鼻血、乾咳 | *(missing — placeholder)* |
-| 3 | 清肝明目湯 | `soup_qinggan_mingmu` (Qinggan Mingmu) | HK$68 | 明目、舒緩眼疲勞 — 眼乾澀、流眼水、滋補肝腎 | *(missing — placeholder)* |
-| 4 | 抗病毒湯 | `soup_kang_bingdu` (Kang Bingdu) | HK$88 | 增免疫、健脾胃、病後恢復 — 抗病毒、抗疲勞、化痰止咳 | *(missing — placeholder)* |
-| 5 | 花膠響螺片湯 | `soup_huajiao_xiangluo` (Huajiao Xiangluo) | HK$48 | 滋陰養顏、調節荷爾蒙 — 健脾補腎、提高免疫力 | *(missing — placeholder)* |
-| 6 | 川芎白芷天麻湯 | `soup_chuanxiong_tianma` (Chuanxiong Tianma) | HK$48 | 驅風活血止頭痛 — 頭痛頭暈、行氣止痛、健脾醒腦 ⚠️ 孕婦忌 | *(missing — placeholder)* |
-| 7 | 海星止咳湯 | `soup_haixing_zhike` (Haixing Zhike) | HK$58 | 潤肺化痰、止聲沙 — 扁桃腺發炎、喉嚨痛、痰火核 | *(missing — placeholder)* |
-| 8 | 感冒止咳湯 | `soup_ganmao_zhike` (Ganmao Zhike) | HK$58 | 急性感冒首選 — 傷風、喉嚨痛、止咳化痰、預防流感 | *(missing — placeholder)* |
-| 9 | 止咳潤肺湯 | `soup_zhike_runfei` (Zhike Runfei) | HK$98 | 強力潤肺、平喘 — 新咳久咳、氣管敏感、痰結氣喘 | *(missing — placeholder)* |
-| 10 | 花旗蔘湯 | `soup_huaqi_shen` (Huaqi Shen) | HK$48 | 清補唔上火、捱夜首選 — 口乾口苦、心火盛、失眠、腸胃濕熱 | *(missing — placeholder)* |
+| 1 | 彭魚鰓解毒湯 | `soup_pengyu_jiedu` (Pengyu Jiedu) | HK$120 | 清熱解毒、皮膚問題首選 — 痘疹、暗瘡、濕疹、手足口、生蛇調理 | `../media/products/soups/soup_pengyu_jiedu.png` |
+| 2 | 清心潤肺湯 | `soup_qingxin_runfei` (Qingxin Runfei) | HK$48 | 降心火、安神潤燥 — 捱夜失眠、心火盛、流鼻血、乾咳 | `../media/products/soups/soup_qingxin_runfei.png` |
+| 3 | 清肝明目湯 | `soup_qinggan_mingmu` (Qinggan Mingmu) | HK$68 | 明目、舒緩眼疲勞 — 眼乾澀、流眼水、滋補肝腎 | `../media/products/soups/soup_qinggan_mingmu.png` |
+| 4 | 抗病毒湯 | `soup_kang_bingdu` (Kang Bingdu) | HK$88 | 增免疫、健脾胃、病後恢復 — 抗病毒、抗疲勞、化痰止咳 | `../media/products/soups/soup_kang_bingdu.png` |
+| 5 | 花膠響螺片湯 | `soup_huajiao_xiangluo` (Huajiao Xiangluo) | HK$48 | 滋陰養顏、調節荷爾蒙 — 健脾補腎、提高免疫力 | `../media/products/soups/soup_huajiao_xiangluo.png` |
+| 6 | 川芎白芷天麻湯 | `soup_chuanxiong_tianma` (Chuanxiong Tianma) | HK$48 | 驅風活血止頭痛 — 頭痛頭暈、行氣止痛、健脾醒腦 ⚠️ 孕婦忌 | `../media/products/soups/soup_chuanxiong_tianma.png` |
+| 7 | 海星止咳湯 | `soup_haixing_zhike` (Haixing Zhike) | HK$58 | 潤肺化痰、止聲沙 — 扁桃腺發炎、喉嚨痛、痰火核 | `../media/products/soups/soup_haixing_zhike.png` |
+| 8 | 感冒止咳湯 | `soup_ganmao_zhike` (Ganmao Zhike) | HK$58 | 急性感冒首選 — 傷風、喉嚨痛、止咳化痰、預防流感 | `../media/products/soups/soup_ganmao_zhike.png` |
+| 9 | 止咳潤肺湯 | `soup_zhike_runfei` (Zhike Runfei) | HK$98 | 強力潤肺、平喘 — 新咳久咳、氣管敏感、痰結氣喘 | `../media/products/soups/soup_zhike_runfei.png` |
+| 10 | 花旗蔘湯 | `soup_huaqi_shen` (Huaqi Shen) | HK$48 | 清補唔上火、捱夜首選 — 口乾口苦、心火盛、失眠、腸胃濕熱 | `../media/products/soups/soup_huaqi_shen.png` |
 
 ---
 

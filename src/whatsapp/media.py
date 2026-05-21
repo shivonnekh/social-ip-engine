@@ -322,83 +322,17 @@ async def download_media(
     return None
 
 
-async def process_attachment(
-    attachment: dict,
-    *,
-    caption: str = "",
-    account_id: str = "",
-    chat_id: str = "",
-    message_id: str = "",
-    api_token: str = "",
-) -> str:
-    """Download and process a ChatDaddy media attachment.
+def detect_media_type(attachment: dict) -> str:
+    """Public alias for :func:`_detect_media_type`. Used by the orchestrator
+    to decide which specialist (if any) should receive the media."""
+    return _detect_media_type(attachment)
 
-    Returns extracted text to prepend to the user message.
-    """
-    media_type = _detect_media_type(attachment)
-    if media_type == "unknown":
-        return caption or "[Unsupported media type]"
 
-    media_bytes = await download_media(
-        attachment,
-        account_id=account_id,
-        chat_id=chat_id,
-        message_id=message_id,
-        api_token=api_token,
-        media_kind=media_type,
-    )
-    if not media_bytes:
-        return caption or f"[{media_type} — could not download]"
+# NOTE: The Dr. Baba layer also has a `process_attachment` function that
+# transcribes audio / describes images / extracts PDF text via `src.media`
+# (Whisper + GPT-4o-vision + pypdf). Jessica handles media differently —
+# tongue photos go to the Constitution Agent's `analyze_tongue` tool with
+# the raw URL or downloaded bytes — so we do NOT port that wrapper. If
+# Jessica ever needs general-purpose audio transcription, build a Jessica-
+# side media module and import it from the orchestrator, not from here.
 
-    # Route through existing media.py processors (sync functions)
-    import asyncio
-
-    try:
-        if media_type == "audio":
-            from src.media import transcribe_audio
-            mime = (attachment.get("mimetype") or "").lower()
-            ext = _EXT_MAP.get(mime, ".ogg")
-            text = await asyncio.get_event_loop().run_in_executor(
-                None, lambda: transcribe_audio(media_bytes, f"voice{ext}")
-            )
-            return text or "[Voice message — transcription empty]"
-
-        elif media_type == "image":
-            from src.media import describe_image
-            mime = (attachment.get("mimetype") or "").lower()
-            ext = _EXT_MAP.get(mime, ".png")
-            text = await asyncio.get_event_loop().run_in_executor(
-                None, lambda: describe_image(media_bytes, f"image{ext}")
-            )
-            result = text or "[Image — could not describe]"
-            if caption:
-                result = f"{caption}\n\n[Image description: {result}]"
-            return result
-
-        elif media_type == "pdf":
-            from src.media import extract_pdf_text
-            text = await asyncio.get_event_loop().run_in_executor(
-                None, lambda: extract_pdf_text(media_bytes)
-            )
-            result = text or "[PDF — no text extracted]"
-            if caption:
-                result = f"{caption}\n\n{result}"
-            return result
-
-        elif media_type == "video":
-            from src.media_video import process_video
-            mime = (attachment.get("mimetype") or "").lower()
-            ext = _EXT_MAP.get(mime, ".mp4")
-            text = await asyncio.get_event_loop().run_in_executor(
-                None, lambda: process_video(media_bytes, f"video{ext}")
-            )
-            result = text or "[Video — could not process]"
-            if caption:
-                result = f"{caption}\n\n{result}"
-            return result
-
-    except Exception:
-        logger.exception("Failed to process %s media", media_type)
-        return caption or f"[{media_type} — processing failed]"
-
-    return caption or f"[{media_type} message]"

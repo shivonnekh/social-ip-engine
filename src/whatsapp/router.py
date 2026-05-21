@@ -1,0 +1,580 @@
+"""WhatsApp webhook router for Jessica via ChatDaddy.
+
+Receives incoming messages, buffers rapid-fire fragments, dispatches a
+merged turn through ``JessicaPipeline.run_turn``, then sends the bubble
+list back via ChatDaddy.
+
+Adapted from ``dr-baba-agent/src/whatsapp/router.py`` (3,676 lines →
+~450 lines). The Dr. Baba version handled 50-disease tenant routing,
+disease-menu deep-linking, sales-flow state machines, opt-out keywords,
+proactive scheduling, and CRM mirroring — none of which Jessica needs.
+
+What was preserved:
+  * Buffer / merge logic (single-owner flusher per phone). Bursts of
+    rapid-fire messages collapse into one pipeline call.
+  * Dedup (shared ``_seen_ids`` set with the poller).
+  * Echo suppression (``fromMe == True``).
+  * Diagnostic capture of every raw webhook.
+  * Group gate (drops all group messages — Jessica is 1-on-1 only).
+  * Blocklist (per-phone opt-out, file-backed).
+  * Bubble-aware send via ChatDaddy client (typing pauses between bubbles).
+
+What was removed:
+  * Per-phone disease routing / interactive disease menu.
+  * RESTART keyword + multi-CRM wipe.
+  * Proactive opt-in/opt-out keyword detection.
+  * Sales-flow state-machine short-circuit.
+  * LLM-based completeness check (replaced with a short-fragment
+    heuristic — same effect, no extra LLM call).
+"""
+
+from __future__ import annotations
+
+import asyncio
+import logging
+import os
+import sys
+import time
+from collections import OrderedDict
+from dataclasses import dataclass, field as dc_field
+from typing import Any
+
+from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
+
+from src.orchestrator.pipeline import JessicaPipeline, PipelineResult
+from src.whatsapp import blocklist, client, diagnostic_capture, group_gate
+from src.whatsapp.models import ChatDaddyMessage, parse_webhook
+
+# Force stdout line-buffering — on Render (no TTY) Python defaults to
+# full buffering which makes print() debug output invisible.
+if not sys.stdout.line_buffering:
+    sys.stdout.reconfigure(line_buffering=True)
+
+logger = logging.getLogger("whatsapp.router")
+
+router = APIRouter(tags=["whatsapp"])
+
+
+# ---------------------------------------------------------------------------
+# Config (env-tunable)
+# ---------------------------------------------------------------------------
+
+WEBHOOK_SECRET = os.environ.get("CHATDADDY_WEBHOOK_SECRET", "")
+DEFAULT_ACCOUNT_ID = os.environ.get("CHATDADDY_ACCOUNT_ID", "")
+
+# Merge windows — tuned for HK Chinese WhatsApp users (IME delay + burst
+# typing). Override via env vars if needed.
+WA_MERGE_COMPLETE = float(os.environ.get("WA_MERGE_COMPLETE", "5.0"))
+WA_MERGE_INCOMPLETE = float(os.environ.get("WA_MERGE_INCOMPLETE", "8.0"))
+WA_MERGE_FORCE = float(os.environ.get("WA_MERGE_FORCE", "15.0"))
+
+# Burst-mode heuristic: if accumulated fragments are all short, the user
+# is clearly mid-burst, so use the longer window regardless of how the
+# first fragment looks.
+WA_BURST_AVG_CHARS = int(os.environ.get("WA_BURST_AVG_CHARS", "10"))
+WA_BURST_MAX_FRAGMENTS = int(os.environ.get("WA_BURST_MAX_FRAGMENTS", "3"))
+
+WA_USE_MERGE_BUFFER = os.environ.get("WA_USE_MERGE_BUFFER", "true").lower() == "true"
+
+
+# ---------------------------------------------------------------------------
+# Dedup: LRU of recent message IDs
+# ---------------------------------------------------------------------------
+
+_DEDUP_MAX = 2000
+_seen_ids: OrderedDict[str, float] = OrderedDict()
+
+
+def _is_duplicate(message_id: str) -> bool:
+    """Pure check: True iff we've recorded this message ID. Does NOT insert."""
+    if not message_id:
+        return False
+    return message_id in _seen_ids
+
+
+def _record_seen_message_id(message_id: str) -> None:
+    """Mark a message id as processed. Bounded by ``_DEDUP_MAX`` (FIFO evict)."""
+    if not message_id:
+        return
+    _seen_ids[message_id] = time.time()
+    while len(_seen_ids) > _DEDUP_MAX:
+        _seen_ids.popitem(last=False)
+
+
+# ---------------------------------------------------------------------------
+# Merge buffer — collect rapid-fire messages before one pipeline call
+# ---------------------------------------------------------------------------
+#
+# Design: ONE owner coroutine per phone buffer.
+#
+# Prior Dr. Baba designs used two timer tasks (window + force deadline) that
+# raced each other, got cancelled and replaced on every inbound, and left
+# orphaned asyncio tasks under FastAPI BackgroundTasks. That pattern lost
+# messages in production. This design:
+#   1. ``_enqueue_for_merge`` appends to the buffer (pure mutation, no tasks)
+#   2. First inbound on an empty buffer spawns ONE flusher coroutine
+#   3. The flusher owns the buffer lifetime: sleeps → checks activity → loops
+#      or flushes. No cross-task cancellation, no timer replacement.
+#   4. Hard deadline enforced by capping sleep time inside the flusher.
+#   5. On crash, flusher pops the buffer so the next inbound starts fresh.
+
+
+@dataclass
+class _PendingBuffer:
+    """Buffered messages waiting to be merged and processed."""
+
+    texts: list[str] = dc_field(default_factory=list)
+    attachments: list[dict] = dc_field(default_factory=list)
+    fragment_ids: list[str] = dc_field(default_factory=list)
+    chat_id: str = ""
+    account_id: str = ""
+    sender_name: str = ""
+    first_arrival: float = 0.0  # monotonic — enforces hard deadline
+    last_activity: float = 0.0  # monotonic — updated on each enqueue
+    flusher_running: bool = False
+    message_id: str = ""  # latest fragment id (for media download URL)
+
+
+_merge_buffers: dict[str, _PendingBuffer] = {}
+
+# Strong refs for fire-and-forget asyncio tasks so they don't get GC'd
+# before they run.
+_bg_task_refs: set[asyncio.Task] = set()
+
+
+def _spawn_bg(coro) -> asyncio.Task:
+    """Schedule a coroutine as a retained asyncio task (GC-safe)."""
+    task = asyncio.create_task(coro)
+    _bg_task_refs.add(task)
+    task.add_done_callback(_bg_task_refs.discard)
+    return task
+
+
+def _looks_complete(text: str) -> bool:
+    """Heuristic: is this fragment a complete thought?
+
+    Returns False for very short fragments (likely mid-burst) — caller
+    will use the longer merge window. True otherwise, falling through to
+    the burst-mode override which catches the all-short-fragments case.
+
+    Dr. Baba uses an LLM call for this (``src.queue.check_message_completeness``);
+    we deliberately skip the extra LLM round-trip and rely on length +
+    burst-mode override, which together cover the same observed cases.
+    """
+    stripped = (text or "").strip()
+    if len(stripped) < 8:
+        return False
+    # Trailing punctuation — '。', '!', '?', '。', etc. — signals end of thought
+    if stripped[-1] in "。！？!?":
+        return True
+    return True
+
+
+async def _enqueue_for_merge(
+    *,
+    phone: str,
+    text: str,
+    chat_id: str,
+    account_id: str,
+    sender_name: str = "",
+    attachments: list[dict] | None = None,
+    message_id: str = "",
+) -> None:
+    """Append a message to the per-phone buffer; spawn flusher if first in."""
+    print(f"[WA-ENQUEUE] phone={phone} text={text[:40]}")
+    try:
+        now = time.monotonic()
+        buf = _merge_buffers.get(phone)
+        new_buffer = buf is None
+        if new_buffer:
+            buf = _PendingBuffer(
+                chat_id=chat_id,
+                account_id=account_id,
+                sender_name=sender_name,
+                first_arrival=now,
+                message_id=message_id or "",
+            )
+            _merge_buffers[phone] = buf
+
+        if text and text.strip():
+            buf.texts.append(text.strip())
+        if attachments:
+            buf.attachments.extend(attachments)
+        if message_id:
+            buf.message_id = message_id
+            buf.fragment_ids.append(message_id)
+        buf.last_activity = now
+
+        if new_buffer and not buf.flusher_running:
+            buf.flusher_running = True
+            _spawn_bg(_wait_and_flush(phone))
+            print(f"[WA-ENQUEUE] Flusher spawned for phone={phone}")
+        else:
+            print(
+                f"[WA-ENQUEUE] Appended to existing buffer: "
+                f"phone={phone} msgs={len(buf.texts)}"
+            )
+    except Exception as exc:
+        logger.exception("[WA-ENQUEUE] crashed for %s: %s", phone, exc)
+        # Fallback: skip merge buffer, process immediately
+        try:
+            await _process_turn(
+                phone=phone,
+                merged_text=text,
+                chat_id=chat_id,
+                account_id=account_id,
+                sender_name=sender_name,
+                attachments=attachments or [],
+                fragment_ids=[message_id] if message_id else [],
+                primary_message_id=message_id,
+            )
+        except Exception:
+            logger.exception("[WA-ENQUEUE] direct processing also failed for %s", phone)
+
+
+async def _wait_and_flush(phone: str) -> None:
+    """Owner coroutine — waits for buffer to settle, then flushes once."""
+    try:
+        while True:
+            buf = _merge_buffers.get(phone)
+            if buf is None:
+                return
+
+            age = time.monotonic() - buf.first_arrival
+            if age >= WA_MERGE_FORCE:
+                break
+
+            combined = "\n".join(buf.texts)
+            is_complete = _looks_complete(combined)
+
+            # Burst-mode override — short fragments get the longer window.
+            if is_complete and buf.texts:
+                avg_len = sum(len(t) for t in buf.texts) / len(buf.texts)
+                if (
+                    avg_len < WA_BURST_AVG_CHARS
+                    and len(buf.texts) <= WA_BURST_MAX_FRAGMENTS
+                ):
+                    is_complete = False
+
+            window = WA_MERGE_COMPLETE if is_complete else WA_MERGE_INCOMPLETE
+            remaining_to_force = max(0.1, WA_MERGE_FORCE - age)
+            sleep_for = min(window, remaining_to_force)
+
+            activity_before_sleep = buf.last_activity
+            print(
+                f"[WA-FLUSH] phone={phone} complete={is_complete} "
+                f"window={window}s sleep={sleep_for:.2f}s msgs={len(buf.texts)}"
+            )
+            await asyncio.sleep(sleep_for)
+
+            buf = _merge_buffers.get(phone)
+            if buf is None:
+                return
+            if buf.last_activity > activity_before_sleep:
+                continue
+            break
+
+        buf = _merge_buffers.pop(phone, None)
+        if buf is None or (not buf.texts and not buf.attachments):
+            return
+
+        merged_text = "\n".join(buf.texts)
+        print(
+            f"[WA-FLUSH] FLUSH phone={phone} msgs={len(buf.texts)} "
+            f"text={merged_text[:60]}"
+        )
+
+        await _process_turn(
+            phone=phone,
+            merged_text=merged_text,
+            chat_id=buf.chat_id,
+            account_id=buf.account_id,
+            sender_name=buf.sender_name,
+            attachments=buf.attachments,
+            fragment_ids=buf.fragment_ids,
+            primary_message_id=buf.message_id,
+        )
+    except asyncio.CancelledError:
+        _merge_buffers.pop(phone, None)
+        raise
+    except Exception as exc:
+        logger.exception("[WA-FLUSH] flusher crashed for %s: %s", phone, exc)
+        _merge_buffers.pop(phone, None)
+
+
+# ---------------------------------------------------------------------------
+# Per-phone lock — serialise pipeline runs for the same customer
+# ---------------------------------------------------------------------------
+
+_phone_locks: dict[str, asyncio.Lock] = {}
+
+
+def _lock_for(phone: str) -> asyncio.Lock:
+    lock = _phone_locks.get(phone)
+    if lock is None:
+        lock = asyncio.Lock()
+        _phone_locks[phone] = lock
+    return lock
+
+
+# ---------------------------------------------------------------------------
+# Pipeline dispatch
+# ---------------------------------------------------------------------------
+
+
+async def _process_turn(
+    *,
+    phone: str,
+    merged_text: str,
+    chat_id: str,
+    account_id: str,
+    sender_name: str = "",
+    attachments: list[dict] | None = None,
+    fragment_ids: list[str] | None = None,
+    primary_message_id: str = "",
+) -> None:
+    """Run one merged turn through the pipeline + send bubbles.
+
+    Pure orchestration — assumes upstream has done dedup, group-gate,
+    blocklist, and echo suppression.
+    """
+    fragment_ids = fragment_ids or []
+    attachments = attachments or []
+
+    # ---- Blocklist (last gate before pipeline) -----------------------
+    decision = blocklist.decide(phone)
+    if decision.blocked:
+        if decision.should_send_reply:
+            try:
+                await client.send_message(account_id, chat_id, decision.canned_reply)
+                logger.info("[blocklist] sent canned reply to %s", phone)
+            except Exception:
+                logger.exception("[blocklist] canned-reply send failed for %s", phone)
+        else:
+            logger.info("[blocklist] dropped inbound from %s (silent)", phone)
+        return
+
+    pipeline = _get_pipeline()
+    if pipeline is None:
+        logger.error(
+            "[WA] pipeline not initialised — dropping turn for %s (state.pipeline missing)",
+            phone,
+        )
+        return
+
+    media_urls = _extract_media_urls(attachments)
+
+    async with _lock_for(phone):
+        try:
+            result: PipelineResult = await pipeline.run_turn(
+                phone=phone,
+                user_message=merged_text,
+                media_urls=media_urls,
+                merged_from_fragments=fragment_ids,
+                wa_message_id=primary_message_id or None,
+            )
+        except Exception:
+            logger.exception("[WA] pipeline.run_turn failed for %s", phone)
+            return
+
+        bubbles = list(result.writer_output.bubbles or [])
+        logger.info(
+            "[WA] turn=%s phone=%s bubbles=%d",
+            result.turn_id, phone, len(bubbles),
+        )
+
+        await _send_bubbles(account_id=account_id, chat_id=chat_id, bubbles=bubbles)
+
+
+def _extract_media_urls(attachments: list[dict]) -> list[str]:
+    """Pull direct URLs off the ChatDaddy attachment dicts."""
+    urls: list[str] = []
+    for att in attachments:
+        url = att.get("url") or att.get("directPath") or ""
+        if url:
+            urls.append(url)
+    return urls
+
+
+async def _send_bubbles(
+    *,
+    account_id: str,
+    chat_id: str,
+    bubbles: list[str],
+) -> None:
+    """Send the Writer's bubble list with the client's typing-delay model."""
+    if not bubbles:
+        return
+    for i, bubble in enumerate(bubbles):
+        text = (bubble or "").strip()
+        if not text:
+            continue
+        if i > 0:
+            delay = client._typing_delay(text)  # noqa: SLF001 — intentional reuse
+            await asyncio.sleep(delay)
+        try:
+            await client.send_long_message(account_id, chat_id, text)
+        except client.SendProbablyDeliveredError:
+            logger.warning(
+                "[WA] send timed out but probably delivered (chat=%s, bubble=%d/%d)",
+                chat_id, i + 1, len(bubbles),
+            )
+        except Exception:
+            logger.exception(
+                "[WA] send failed (chat=%s, bubble=%d/%d) — abandoning rest of bubbles",
+                chat_id, i + 1, len(bubbles),
+            )
+            return
+
+
+# ---------------------------------------------------------------------------
+# Pipeline reference (lazy — populated by web.py during lifespan startup)
+# ---------------------------------------------------------------------------
+
+_pipeline_ref: JessicaPipeline | None = None
+
+
+def set_pipeline(pipeline: JessicaPipeline) -> None:
+    """Register the active pipeline. Called from ``web.lifespan`` at startup."""
+    global _pipeline_ref
+    _pipeline_ref = pipeline
+
+
+def _get_pipeline() -> JessicaPipeline | None:
+    return _pipeline_ref
+
+
+# ---------------------------------------------------------------------------
+# Webhook endpoint
+# ---------------------------------------------------------------------------
+
+
+@router.post("/webhook/chatdaddy")
+async def chatdaddy_webhook(request: Request) -> JSONResponse:
+    """Receive ChatDaddy webhook, return 200 immediately, process in background."""
+
+    # 1. Validate webhook secret (skipped if WEBHOOK_SECRET unset — dev mode)
+    if WEBHOOK_SECRET:
+        incoming = request.headers.get("X-Webhook-Secret", "")
+        if incoming != WEBHOOK_SECRET:
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+
+    # 2. Parse payload
+    try:
+        payload = await request.json()
+    except Exception:
+        return JSONResponse({"error": "invalid json"}, status_code=400)
+
+    # 2a. Diagnostic capture — bounded in-memory buffer, never raises.
+    try:
+        diagnostic_capture.capture(payload)
+    except Exception:
+        pass
+
+    # 2b. Smoke-test shape — accept the dev-mode {"phone","text"} body so
+    # `curl /webhook/chatdaddy -d '{"phone":...}'` keeps working. ChatDaddy
+    # webhooks have an "event" + "data" shape; everything else falls
+    # through to the smoke-test branch.
+    msg = parse_webhook(payload)
+    if msg is None:
+        return await _handle_smoke_test_payload(payload)
+
+    # 3. Skip bot's own messages
+    if msg.from_me:
+        return JSONResponse({"status": "echo_suppressed"})
+
+    # 4. Dedup
+    if _is_duplicate(msg.message_id):
+        logger.debug("Duplicate message %s — skipping", msg.message_id)
+        return JSONResponse({"status": "duplicate"})
+
+    # 5. Must have text or attachments
+    has_text = bool(msg.text.strip())
+    has_media = len(msg.attachments) > 0
+    if not has_text and not has_media:
+        logger.info("Empty message from %s — skipping", msg.phone)
+        return JSONResponse({"status": "empty"})
+
+    # 6. Group gate — Jessica is 1-on-1 only.
+    gate_decision = group_gate.decide(msg)
+    if gate_decision.dropped:
+        logger.info(
+            "[group_gate] dropped %s — %s (chat=%s)",
+            msg.message_id, gate_decision.reason, msg.chat_id,
+        )
+        return JSONResponse({
+            "status": "group_untagged",
+            "reason": gate_decision.reason,
+        })
+
+    # 7. Record for dedup + dispatch
+    _record_seen_message_id(msg.message_id)
+    account_id = msg.account_id or DEFAULT_ACCOUNT_ID
+
+    if WA_USE_MERGE_BUFFER:
+        _spawn_bg(_enqueue_for_merge(
+            phone=msg.phone,
+            text=msg.text,
+            chat_id=msg.chat_id,
+            account_id=account_id,
+            sender_name=msg.sender_name,
+            attachments=list(msg.attachments),
+            message_id=msg.message_id,
+        ))
+    else:
+        _spawn_bg(_process_turn(
+            phone=msg.phone,
+            merged_text=msg.text,
+            chat_id=msg.chat_id,
+            account_id=account_id,
+            sender_name=msg.sender_name,
+            attachments=list(msg.attachments),
+            fragment_ids=[msg.message_id] if msg.message_id else [],
+            primary_message_id=msg.message_id,
+        ))
+
+    return JSONResponse({"status": "queued"})
+
+
+# ---------------------------------------------------------------------------
+# Smoke-test path (dev-only POST {"phone","text"})
+# ---------------------------------------------------------------------------
+
+
+async def _handle_smoke_test_payload(payload: dict[str, Any]) -> JSONResponse:
+    """Dev-mode webhook body: ``{"phone": "...", "text": "...", ...}``.
+
+    Runs the pipeline inline (no merge buffer, no ChatDaddy send) and
+    returns the bubbles in the JSON response. Useful for ``curl`` and
+    integration tests where we don't have a real ChatDaddy webhook.
+    """
+    phone = payload.get("phone") or payload.get("from")
+    text = payload.get("text") or payload.get("message") or ""
+    media_urls = payload.get("media_urls") or []
+
+    if not phone or not text:
+        return JSONResponse(
+            {"error": "missing phone or text"},
+            status_code=400,
+        )
+
+    pipeline = _get_pipeline()
+    if pipeline is None:
+        return JSONResponse({"error": "pipeline not initialised"}, status_code=503)
+
+    try:
+        result = await pipeline.run_turn(
+            phone=str(phone),
+            user_message=str(text),
+            media_urls=list(media_urls),
+        )
+    except Exception as exc:
+        logger.exception("[smoke-test] pipeline failed: %s", exc)
+        return JSONResponse({"error": str(exc)}, status_code=500)
+
+    return JSONResponse({
+        "turn_id": result.turn_id,
+        "bubbles": list(result.writer_output.bubbles or []),
+        "trace_url": f"/trace/{result.turn_id}",
+    })
