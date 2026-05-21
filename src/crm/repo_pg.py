@@ -126,15 +126,23 @@ class CRMRepoPG:
     # ---------------------------------------------------------------
 
     async def append_message(self, phone: str, msg: ConversationMessage) -> None:
+        # Manual dedup: Postgres ON CONFLICT needs an exact index match,
+        # but our unique index on wa_message_id is PARTIAL (WHERE NOT
+        # NULL). Cleanest path is to check existence first when a
+        # wa_message_id is provided.
         async with self._pool.acquire() as conn:
-            # ON CONFLICT on the partial unique index `idx_messages_wa_id`
-            # so duplicate wa_message_id is ignored.
+            if msg.wa_message_id:
+                exists = await conn.fetchval(
+                    "SELECT 1 FROM messages WHERE wa_message_id = $1 LIMIT 1",
+                    msg.wa_message_id,
+                )
+                if exists:
+                    return
             await conn.execute(
                 """
                 INSERT INTO messages
                     (phone, role, content, media_urls, wa_message_id, turn_id, at)
                 VALUES ($1, $2, $3, $4, $5, $6, $7)
-                ON CONFLICT (wa_message_id) DO NOTHING
                 """,
                 phone,
                 msg.role,
