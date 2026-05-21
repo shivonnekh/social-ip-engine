@@ -313,15 +313,13 @@ class SalesAgent:
             p for p in self._catalog.all_products if p.product_type == "ointment"
         ]
         products = [_product_dict_simple(p) for p in ointments]
+        offers = _collect_offers(
+            self._promotions, ["ointment_pitch", "sales_pitch"]
+        )
         payload = {
             "intent": "pitch_products",
             "products_to_pitch": products,
-            "active_offers": [
-                _promo_dict(p)
-                for p in self._promotions.for_stage(
-                    "sales_close", applies_to="product_pitch"
-                )
-            ],
+            "active_offers": offers,
             "stage": "ointment_pitch",
             "writer_hint": (
                 "用戶問藥膏。**必須**列晒呢 3 款 (名 + 價錢 + 1 句用途)，"
@@ -386,15 +384,13 @@ class SalesAgent:
                 for pm in candidates[:4]:
                     chosen.append(_product_dict_simple(pm.product))
 
+        offers = _collect_offers(
+            self._promotions, ["sales_pitch", "sales_close"]
+        )
         payload = {
             "intent": "where_to_buy",
             "products_to_pitch": chosen,
-            "active_offers": [
-                _promo_dict(p)
-                for p in self._promotions.for_stage(
-                    "sales_close", applies_to="product_pitch"
-                )
-            ],
+            "active_offers": offers,
             "stage": "where_to_buy",
             "catalog_facts": {
                 "total_paid_soups": 10,
@@ -473,6 +469,21 @@ def _wants_ointment_local(text: str) -> bool:
     if not text:
         return False
     return any(kw in text for kw in _OINTMENT_KEYWORDS_LOCAL)
+
+
+def _collect_offers(
+    promos: PromotionsLoader, stages: list[str]
+) -> list[dict[str, Any]]:
+    """Pull offers matching any of the given stages, deduped by id."""
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for stage in stages:
+        for p in promos.for_stage(stage):
+            if p.id in seen:
+                continue
+            seen.add(p.id)
+            out.append(_promo_dict(p))
+    return out
 
 
 def _product_dict_simple(prod: Any) -> dict[str, Any]:

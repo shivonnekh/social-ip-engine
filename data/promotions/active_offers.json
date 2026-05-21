@@ -1,12 +1,17 @@
 {
   "_meta": {
-    "description": "Declarative active offers — Sales/Appointment Agents read this and surface offers at the right stage. To add/remove an offer: edit this file, no code change required.",
+    "description": "Declarative active offers. Each offer has trigger_stages (list) — Sales/Appointment/Constitution agents query these and surface the offers at multiple touchpoints, not just at 'close' time.",
     "last_updated": "2026-05-21",
-    "notes": [
-      "applies_to: which Specialist contexts can surface this offer. Values: 'appointment' | 'online_consultation' | 'product_pitch' | 'package_pitch'",
-      "trigger_stage: which conversational moment the offer is most relevant — agents use this as a hint, not a hard rule.",
-      "Expiry is enforced at read time by the loader. Expired offers are not surfaced."
-    ]
+    "stages": {
+      "sales_pitch": "Sales is actively pitching any product (soup or ointment)",
+      "ointment_pitch": "Sales is specifically pitching ointments",
+      "soup_pitch": "Sales is pitching soups",
+      "sales_close": "Sales wrapping up — user about to order",
+      "constitution_close": "Constitution Agent just declared a 體質",
+      "appointment_offer": "Appointment Agent mentioning booking options",
+      "appointment_mode_choice": "User picking in-person vs online",
+      "appointment_close": "Appointment about to confirm slot"
+    }
   },
   "offers": [
     {
@@ -14,7 +19,10 @@
       "title_zh": "診所睇症免診金",
       "description_zh": "首次來診所睇症免診金（HK$200 減免）。視診同到診都可以用。",
       "applies_to": ["appointment", "online_consultation"],
-      "trigger_stage": "appointment_close",
+      "trigger_stages": [
+        "appointment_offer", "appointment_close",
+        "constitution_close", "sales_pitch", "ointment_pitch"
+      ],
       "free_item": "consultation_fee",
       "discount_pct": null,
       "expires_at": null,
@@ -23,14 +31,17 @@
         "min_age": null,
         "requires_constitution_done": false
       },
-      "copy_for_writer": "幫你 unlock 咗免診金嘅福利，第一次嚟唔使付診金。"
+      "copy_for_writer": "首次嚟診所或者視診可以免診金（省 HK$200）"
     },
     {
       "id": "online_consult_free_shipping_v1",
       "title_zh": "網上視診（包郵）",
       "description_zh": "唔方便嚟診所？可以揀網上視診，藥同湯水會直送上門，免運費。",
-      "applies_to": ["online_consultation"],
-      "trigger_stage": "appointment_mode_choice",
+      "applies_to": ["online_consultation", "product_pitch"],
+      "trigger_stages": [
+        "appointment_offer", "appointment_mode_choice",
+        "constitution_close", "sales_pitch"
+      ],
       "free_item": "shipping",
       "discount_pct": null,
       "expires_at": null,
@@ -39,14 +50,16 @@
         "min_age": null,
         "requires_constitution_done": false
       },
-      "copy_for_writer": "如果嚟唔到診所，我哋有網上視診，洪醫師會視訊幫你睇，藥都會包郵送上門 📦"
+      "copy_for_writer": "嚟唔到診所？可以網上視診 + 包郵送藥同湯水"
     },
     {
       "id": "package_5_pct_off_v1",
       "title_zh": "購買療程95折",
       "description_zh": "整套療程（藥膏 / 湯水 / 針灸組合）95 折優惠。",
       "applies_to": ["product_pitch", "package_pitch"],
-      "trigger_stage": "sales_close",
+      "trigger_stages": [
+        "sales_close", "ointment_pitch", "soup_pitch", "sales_pitch"
+      ],
       "free_item": null,
       "discount_pct": 0.05,
       "expires_at": null,
@@ -56,7 +69,7 @@
         "requires_constitution_done": false,
         "min_basket_items": 2
       },
-      "copy_for_writer": "依家買成套療程仲有 95 折，比逐件買抵啲。"
+      "copy_for_writer": "買成套療程 (2 件或以上) 有 95 折"
     }
   ]
 }

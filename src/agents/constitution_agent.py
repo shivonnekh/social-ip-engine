@@ -45,6 +45,7 @@ from src.crm.models import Constitution, UserStatus
 from src.tools.kb_index import KBIndex
 from src.tools.kb_search import KBSearch
 from src.tools.product_catalog import ProductCatalog
+from src.tools.promotions import PromotionsLoader
 from src.tools.recipe_extractor import RecipeExtractor, recipe_to_dict
 
 logger = logging.getLogger("agents.constitution")
@@ -149,6 +150,7 @@ class ConstitutionAgent:
         self._kb = kb_index or KBIndex.load()
         self._kb_search = KBSearch(self._kb)
         self._recipes = RecipeExtractor()
+        self._promotions = PromotionsLoader()
         self._vision_model = vision_model
         self._max_vision_tokens = max_vision_tokens
 
@@ -248,12 +250,21 @@ class ConstitutionAgent:
                 }
             )
 
+            active_offers = [
+                {
+                    "id": p.id,
+                    "title": p.title_zh,
+                    "description": p.description_zh,
+                }
+                for p in self._promotions.for_stage("constitution_close")
+            ]
             payload = _build_payload_declare(
                 constitution,
                 findings or {},
                 free_recipes=free_recipes,
                 ranked=ranked,
                 confidence=confidence,
+                active_offers=active_offers,
             )
 
             suggested_diff["constitution"] = constitution.value
@@ -621,6 +632,7 @@ def _build_payload_declare(
     free_recipes: list[dict[str, Any]] | None = None,
     ranked: list[dict[str, Any]] | None = None,
     confidence: float = 0.6,
+    active_offers: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     recipes = free_recipes or []
     recipe_titles = [r.get("title", "")[:30] for r in recipes]
@@ -645,6 +657,15 @@ def _build_payload_declare(
             f"用 1-2 句講特徵。"
         )
 
+    offers = active_offers or []
+    offers_hint = ""
+    if offers:
+        offer_lines = "; ".join(f"{o['title']} ({o['description']})" for o in offers[:3])
+        offers_hint = (
+            f"\n如果合適，可以輕輕提一兩個優惠（唔好 push，當係 useful info）："
+            f"{offer_lines}"
+        )
+
     return {
         "phase": "declaring",
         "constitution": constitution.value,
@@ -652,12 +673,13 @@ def _build_payload_declare(
         "confidence": confidence,
         "tongue_findings": findings,
         "free_recipes": recipes,
+        "active_offers": offers,
         "writer_hint": (
             opener +
             f"\n然後推介呢幾款免費家用食譜：{recipe_titles or '(空)'}。"
             "每款 1 bubble，附 image_url 落 media_to_send。"
             "最尾一個 bubble 可以好輕咁提一句:「如果想試方便啲嘅，我哋都有預製"
-            "湯水送上門」— 但唔好 push、唔好講價錢。"
+            "湯水送上門」— 但唔好 push、唔好講價錢。" + offers_hint
         ),
     }
 

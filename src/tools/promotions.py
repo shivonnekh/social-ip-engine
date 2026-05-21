@@ -37,15 +37,25 @@ class PromotionsLoader:
     ) -> list[Promotion]:
         """Return offers matching the given conversational stage.
 
+        Supports two JSON formats:
+          - legacy: ``trigger_stage: "..."`` (single)
+          - new:    ``trigger_stages: [...]`` (list — promo can surface
+                    in MULTIPLE conversational moments)
+
         Args:
-            stage: e.g. "appointment_close", "sales_close", "appointment_mode_choice"
+            stage: e.g. "appointment_close", "sales_pitch", "ointment_pitch"
             applies_to: optional context filter ("appointment", "product_pitch", ...)
             now: clock injection for tests / expiry check
         """
         n = now or datetime.utcnow()
         out: list[Promotion] = []
         for raw in self._offers_raw:
-            if raw.get("trigger_stage") != stage:
+            stages = raw.get("trigger_stages")
+            if not stages:
+                # Legacy single-stage format
+                single = raw.get("trigger_stage")
+                stages = [single] if single else []
+            if stage not in stages:
                 continue
             if applies_to and applies_to not in raw.get("applies_to", []):
                 continue
