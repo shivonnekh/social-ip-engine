@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<title>TCM-Jessica · Agent Overview</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "default", flowchart: { useMaxWidth: true } });</script>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --card: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --line: #e3e3df;
+    --accent: #2d6a4f;
+    --accent-soft: #d8f3dc;
+    --warn: #c44d3a;
+    --code-bg: #f4f1ed;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "PingFang HK", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.55;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header { margin-bottom: 2rem; }
+  h1 { font-size: 1.75rem; margin: 0 0 0.35rem; }
+  h2 { font-size: 1.25rem; margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 1.0rem; margin: 1.5rem 0 0.5rem; }
+  .sub { color: var(--muted); font-size: 0.95rem; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 0.85rem 1rem; }
+  .stat .n { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+  .stat .l { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 1.1rem 1.2rem; display: flex; flex-direction: column;
+  }
+  .card-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.4rem; }
+  .card-head .n { background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 600; }
+  .card-head .name { font-size: 1.1rem; font-weight: 600; }
+  .card-head .status { margin-left: auto; font-size: 0.75rem; color: var(--muted); }
+  .card-head .status.ok { color: var(--accent); }
+  .card-row { font-size: 0.88rem; margin: 0.35rem 0; display: flex; gap: 0.4rem; }
+  .card-row .label { color: var(--muted); min-width: 5.5rem; flex-shrink: 0; }
+  .card-row .v { color: var(--ink); }
+  .tag { display: inline-block; background: var(--code-bg); color: var(--ink); padding: 0.05rem 0.45rem; border-radius: 4px; font-size: 0.8rem; font-family: ui-monospace, monospace; margin: 0 0.15rem 0.15rem 0; }
+  .tag.warn { background: #fce4dc; color: var(--warn); }
+
+  table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.9rem; }
+  th, td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: #f4f1ed; font-weight: 600; }
+  code { background: var(--code-bg); padding: 0.05rem 0.35rem; border-radius: 4px; font-size: 0.88em; }
+  pre { background: var(--code-bg); padding: 1rem 1.1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5; }
+  pre.tone { font-family: -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; }
+
+  details { background: var(--card); border: 1px solid var(--line); border-radius: 10px; margin: 0.75rem 0; }
+  details > summary { padding: 0.75rem 1rem; cursor: pointer; font-weight: 500; user-select: none; }
+  details[open] > summary { border-bottom: 1px solid var(--line); }
+  details > .body { padding: 0.75rem 1.1rem 1.1rem; }
+
+  .mermaid { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
+
+  .pill { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; }
+  .pill.green { background: var(--accent-soft); color: var(--accent); }
+  .pill.gray { background: #ececea; color: #555; }
+  .pill.red { background: #fce4dc; color: var(--warn); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>TCM-Jessica · Agent Overview</h1>
+  <div class="sub">心宜中醫 WhatsApp Wellness Agent — 多 specialist 架构。最后更新 2026-05-21。</div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="n">7</div><div class="l">Agents (full impl)</div></div>
+  <div class="stat"><div class="n">5</div><div class="l">Specialists</div></div>
+  <div class="stat"><div class="n">119</div><div class="l">Tests passing</div></div>
+  <div class="stat"><div class="n">9</div><div class="l">Git commits</div></div>
+  <div class="stat"><div class="n">52</div><div class="l">Knowledge cards</div></div>
+  <div class="stat"><div class="n">13</div><div class="l">Paid products</div></div>
+</div>
+
+<!-- ─────────────────────────  ARCHITECTURE FLOW  ──────────────────────── -->
+<h2>1 · Architecture Flow</h2>
+<div class="sub">每个 turn 嘅 pipeline。Planner 决定路由，1-2 个 specialist 处理，Writer 组成 bubble，全部步骤写入 trace。</div>
+<div class="mermaid">
+flowchart TD
+  WA["WhatsApp 用户"] --> GW["Inbound Gateway<br/>(ChatDaddy webhook)"]
+  GW --> BM["Buffer &amp; Merge<br/>(5-8s 等爆发完整)"]
+  BM --> CRM1["CRM Load<br/>(status / 体质 / 历史)"]
+  CRM1 --> PL{"PLANNER<br/>选 1-2 specialist"}
+
+  PL -->|solo| S1A["Greeting"]
+  PL -->|solo| S1B["FAQ"]
+  PL -->|solo| S1C["Sales"]
+  PL -->|solo| S1D["Constitution"]
+  PL -->|solo| S1E["Appointment"]
+  PL -->|sequential| SEQ["Constitution → Sales"]
+  PL -->|parallel| PAR["FAQ + Appointment"]
+
+  S1A --> W
+  S1B --> W
+  S1C --> W
+  S1D --> W
+  S1E --> W
+  SEQ --> W
+  PAR --> W
+
+  W["WRITER<br/>组合成 1-5 bubble<br/>HK 口语 / 短 punchy"] --> CRM2["CRM Save<br/>+ Trace 写盘"]
+  CRM2 --> SEND["WhatsApp Send<br/>(气泡间 2-6s 停顿)"]
+  SEND --> WA
+
+  TR["📊 Trace Bundle<br/>(每步嘅 token /<br/>card / tool / latency)"]
+  PL -.-> TR
+  S1A -.-> TR
+  S1B -.-> TR
+  S1C -.-> TR
+  S1D -.-> TR
+  S1E -.-> TR
+  W -.-> TR
+
+  classDef plan fill:#d8f3dc,stroke:#2d6a4f,color:#1a1a1a;
+  classDef writer fill:#fce4dc,stroke:#c44d3a,color:#1a1a1a;
+  classDef trace fill:#f4f1ed,stroke:#999,color:#555,stroke-dasharray: 5 5;
+  class PL plan;
+  class W writer;
+  class TR trace;
+</div>
+
+<!-- ─────────────────────────  AGENT CARDS  ──────────────────────── -->
+<h2>2 · 7 Agents 一览</h2>
+
+<div class="grid">
+
+<!-- 1. Planner -->
+<div class="card">
+  <div class="card-head">
+    <span class="n">01</span>
+    <span class="name">Planner</span>
+    <span class="status ok">● Full</span>
+  </div>
+  <div class="card-row"><span class="label">干嘛</span><span class="v">睇 user message + CRM 状态，决定边 1-2 个 specialist 处理</span></div>
+  <div class="card-row"><span class="label">工具</span><span class="v"><span class="tag">rule fast-paths</span><span class="tag">(LLM)</span></span></div>
+  <div class="card-row"><span class="label">输入</span><span class="v">User snapshot, user_message, media_urls</span></div>
+  <div class="card-row"><span class="label">输出</span><span class="v"><code>PlannerDecision</code> (specialists, mode, reasoning, proactive_hint)</span></div>
+  <div class="card-row"><span class="label">模型</span><span class="v"><span class="tag">Sonnet 4.5</span></span></div>
+  <div class="card-row"><span class="label">文件</span><span class="v"><code>src/agents/planner.py</code></span></div>
+</div>
+
+<!-- 2. Greeting -->
+<div class="card">
+  <div class="card-head">
+    <span class="n">02</span>
+    <span class="name">Greeting</span>
+    <span class="status ok">● Full</span>
+  </div>
+  <div class="card-row"><span class="label">干嘛</span><span class="v">寒暄、闲聊、无内容嘅问候</span></div>
+  <div class="card-row"><span class="label">工具</span><span class="v"><span class="tag">none</span></span></div>
+  <div class="card-row"><span class="label">触发</span><span class="v">hi / 你好 / 在嗎 / 谢谢</span></div>
+  <div class="card-row"><span class="label">输出</span><span class="v"><code>{tone, topic, suggested_followup, intent_flags}</code></span></div>
+  <div class="card-row"><span class="label">模型</span><span class="v"><span class="tag">Haiku 4.5</span></span></div>
+  <div class="card-row"><span class="label">文件</span><span class="v"><code>src/agents/greeting_agent.py</code></span></div>
+</div>
+
+<!-- 3. FAQ -->
+<div class="card">
+  <div class="card-head">
+    <span class="n">03</span>
+    <span class="name">FAQ</span>
+    <span class="status ok">● Full</span>
+  </div>
+  <div class="card-row"><span class="label">干嘛</span><span class="v">回答 TCM 知识问题 (湯水、穴位、食疗、体质常识)</span></div>
+  <div class="card-row"><span class="label">工具</span><span class="v"><span class="tag">KBSearch</span> (52 cards)</span></div>
+  <div class="card-row"><span class="label">触发</span><span class="v">點解 / 乜嘢 / 邊款好 / 湯水點煲</span></div>
+  <div class="card-row"><span class="label">输出</span><span class="v"><code>{answer_facts, cards_used, confidence, no_match}</code></span></div>
+  <div class="card-row"><span class="label">模型</span><span class="v"><span class="tag">Haiku 4.5</span></span></div>
+  <div class="card-row"><span class="label">文件</span><span class="v"><code>src/agents/faq_agent.py</code></span></div>
+</div>
+
+<!-- 4. Sales -->
+<div class="card">
+  <div class="card-head">
+    <span class="n">04</span>
+    <span class="name">Sales</span>
+    <span class="status ok">● Full</span>
+  </div>
+  <div class="card-row"><span class="label">干嘛</span><span class="v">配对 + pitch 产品 (10 湯水 + 3 药膏)，surface 优惠</span></div>
+  <div class="card-row"><span class="label">工具</span><span class="v"><span class="tag">ProductCatalog</span> <span class="tag">PromotionsLoader</span></span></div>
+  <div class="card-row"><span class="label">触发</span><span class="v">有咩賣 / 幾錢 / 點買 / 体质做完 pitch</span></div>
+  <div class="card-row"><span class="label">输出</span><span class="v"><code>{products_to_pitch, active_offers, stage}</code></span></div>
+  <div class="card-row"><span class="label">规矩</span><span class="v">「一 session 一 pitch」hard rule + 避孕忌 contraindication filter</span></div>
+  <div class="card-row"><span class="label">模型</span><span class="v"><span class="tag">Haiku 4.5</span></span></div>
+  <div class="card-row"><span class="label">文件</span><span class="v"><code>src/agents/sales_agent.py</code></span></div>
+</div>
+
+<!-- 5. Constitution -->
+<div class="card">
+  <div class="card-head">
+    <span class="n">05</span>
+    <span class="name">Constitution</span>
+    <span class="status ok">● Full</span>
+  </div>
+  <div class="card-row"><span class="label">干嘛</span><span class="v">9 体质评估 — 4-phase state machine</span></div>
+  <div class="card-row"><span class="label">工具</span><span class="v"><span class="tag">Claude Vision</span> (tongue) <span class="tag">4 MCQs</span> <span class="tag">scoring</span></span></div>
+  <div class="card-row"><span class="label">phases</span><span class="v">asking_tongue → analyzing → asking_mcq (×4) → declaring</span></div>
+  <div class="card-row"><span class="label">触发</span><span class="v">我覺得 / 好攰 / 体质 / send 脷相</span></div>
+  <div class="card-row"><span class="label">输出</span><span class="v"><code>{phase, tongue_findings, question, constitution}</code></span></div>
+  <div class="card-row"><span class="label">side-effect</span><span class="v">declare 之后 set <code>user.constitution</code> + status=<code>constitution_done</code></span></div>
+  <div class="card-row"><span class="label">模型</span><span class="v"><span class="tag">Sonnet 4.5 (vision)</span></span></div>
+  <div class="card-row"><span class="label">文件</span><span class="v"><code>src/agents/constitution_agent.py</code></span></div>
+</div>
+
+<!-- 6. Appointment -->
+<div class="card">
+  <div class="card-head">
+    <span class="n">06</span>
+    <span class="name">Appointment</span>
+    <span class="status ok">● Full</span>
+  </div>
+  <div class="card-row"><span class="label">干嘛</span><span class="v">预约到诊 / 视诊，4-phase + clinic adjacency match</span></div>
+  <div class="card-row"><span class="label">工具</span><span class="v"><span class="tag">ClinicMatcher</span> <span class="tag">PromotionsLoader</span></span></div>
+  <div class="card-row"><span class="label">phases</span><span class="v">asking_mode → asking_location → proposing_slot → confirming</span></div>
+  <div class="card-row"><span class="label">触发</span><span class="v">預約 / 幾時可以 / 診所喺邊 / 視診</span></div>
+  <div class="card-row"><span class="label">输出</span><span class="v"><code>{phase, mode, clinic, proposed_slot, booking_url}</code></span></div>
+  <div class="card-row"><span class="label">offer</span><span class="v">免诊金 (close) / 视诊包邮 (mode choice) auto-surface</span></div>
+  <div class="card-row"><span class="label">模型</span><span class="v"><span class="tag">rule-based (无 LLM)</span></span></div>
+  <div class="card-row"><span class="label">文件</span><span class="v"><code>src/agents/appointment_agent.py</code></span></div>
+</div>
+
+<!-- 7. Writer -->
+<div class="card">
+  <div class="card-head">
+    <span class="n">07</span>
+    <span class="name">Writer</span>
+    <span class="status ok">● Full</span>
+  </div>
+  <div class="card-row"><span class="label">干嘛</span><span class="v">所有 specialist output → 1-5 个 WhatsApp bubble (HK 口语)</span></div>
+  <div class="card-row"><span class="label">工具</span><span class="v"><span class="tag">none</span> (读 specialist payload)</span></div>
+  <div class="card-row"><span class="label">规矩</span><span class="v">20-60 字 / bubble · max 80 · 5 个最多 · 唔可作 specialist 冇讲嘅嘢</span></div>
+  <div class="card-row"><span class="label">输出</span><span class="v"><code>{bubbles: [...], media_to_send: [...]}</code></span></div>
+  <div class="card-row"><span class="label">冲突</span><span class="v">priority: Constitution > Appointment > Sales > FAQ > Greeting</span></div>
+  <div class="card-row"><span class="label">模型</span><span class="v"><span class="tag">Sonnet 4.5</span></span></div>
+  <div class="card-row"><span class="label">文件</span><span class="v"><code>src/agents/writer.py</code></span></div>
+</div>
+
+</div>
+
+<!-- ─────────────────────────  PLANNER DEEP DIVE  ──────────────────────── -->
+<h2>3 · Planner — Full Prompt + Example Output</h2>
+
+<details open>
+  <summary>System Prompt (render 实际值)</summary>
+  <div class="body">
+<pre>你係 Jessica 嘅 Planner — 一個路由 brain。
+你唔對用戶講嘢，淨係決定下面幾個 specialist 邊個處理呢 turn。
+
+可用 specialist:
+- greeting: 寒暄、閒聊、無內容嘅問候（例：hi、你好、在嗎）
+- faq: 中醫養生、食療、穴位、體質常識嘅知識性問題（例：點解、乜嘢、邊款好）
+- sales: 用戶想睇產品、買嘢、問價錢，或者剛診斷完體質要 pitch（例：有咩賣、幾錢、點買）
+- constitution: 用戶提到健康/不適/症狀，或者 send 咗脷相，要評估體質（例：我覺得、好攰、我嘅體質）
+- appointment: 用戶想預約、問診所地址、問視診（例：預約、幾時可以、診所喺邊）
+
+可用 mode:
+- solo: 只揀 1 個 specialist (specialists 數組長度 = 1)
+- sequential: 揀 2 個，先跑第 0 個，再跑第 1 個 (例如 constitution 完先 sales)
+- parallel: 揀 2 個，同時跑 (例如 faq + appointment — output 獨立)
+
+每 turn 最多 2 個 specialist。
+
+路由規則 (硬規矩):
+1. 有脷相 (media_urls 非空) → 必須包 constitution，mode=solo
+2. 用戶頭一次見面 (status=new + 冇對話歷史) + 簡單問候 → greeting，mode=solo
+3. 用戶問知識問題 + 同時想預約 → [faq, appointment] mode=parallel
+4. 體質剛診斷完 (status=constitution_done + 用戶仲想繼續) → [constitution, sales] mode=sequential，或者直接 sales solo
+5. 用戶 confirm 已 propose 嘅 appointment slot → appointment solo (Phase 4)
+
+Proactive hints (soft):
+- status=constitution_done 但 products_pitched 空 → 寫 proactive_hint="ready_for_pitch"
+- 用戶連續 3 turn 都係閒聊 → proactive_hint="re_engage"
+- status=churned → proactive_hint="gentle_reactivate"
+
+輸出純 JSON，唔好 markdown:
+{
+  "specialists": ["...", "..."],          // 1 or 2
+  "mode": "solo" | "sequential" | "parallel",
+  "reasoning": "一句中文，講你點解咁路由",
+  "notes_for_writer": "...",              // 比 Writer 嘅 tone/urgency hint，可以空
+  "proactive_hint": "..."                 // CRM 推導出嚟嘅 follow-up signal，可以空
+}</pre>
+  </div>
+</details>
+
+<h3>典型 Planner Output</h3>
+<table>
+<tr><th>场景</th><th>Output JSON</th></tr>
+<tr><td>用户首次见面发 「hi」</td><td><pre>{"specialists":["greeting"],"mode":"solo","reasoning":"rule: first-touch greeting","proactive_hint":""}</pre></td></tr>
+<tr><td>用户讲 「我成日好攰」</td><td><pre>{"specialists":["constitution"],"mode":"solo","reasoning":"用戶提及健康症狀，路由去體質評估","proactive_hint":""}</pre></td></tr>
+<tr><td>用户问 「邊個湯水好啲？」+ 已 constitution_done</td><td><pre>{"specialists":["sales","faq"],"mode":"sequential","reasoning":"用戶想知湯水推介，先 pitch 啱嘅產品再補知識","proactive_hint":"ready_for_pitch"}</pre></td></tr>
+<tr><td>用户讲 「點解中醫要望脷？同 + 我想預約」</td><td><pre>{"specialists":["faq","appointment"],"mode":"parallel","reasoning":"知識問題 + 預約需求並行","proactive_hint":""}</pre></td></tr>
+<tr><td>用户 confirm slot 「好啊 OK」</td><td><pre>{"specialists":["appointment"],"mode":"solo","reasoning":"rule: pending appointment confirmation","proactive_hint":""}</pre></td></tr>
+</table>
+
+<!-- ─────────────────────────  WRITER DEEP DIVE  ──────────────────────── -->
+<h2>4 · Writer — Full Prompt + Example Output</h2>
+
+<details open>
+  <summary>System Prompt (render 实际值)</summary>
+  <div class="body">
+<pre>你係 Jessica — 心宜中醫嘅 WhatsApp AI teammate。
+
+身份:
+- 唔係醫師，唔做診斷
+- 溫柔、人情味、有少少俏皮，HK 廣東話口語
+- 永遠用「我」，唔好用「Jessica」自稱 (除非有 new_user_intro flag)
+- 唔好用書面語、唔好用普通話詞 (「您」「我們」「請」「嗎」)
+- 用「你」「我哋」「啦」「嘞」「啊」「㗎」
+
+你嘅工作:
+讀 specialist 比你嘅 structured intent，組合成自然嘅 WhatsApp 對話。
+每個 bubble 應該短而 punchy，就好似真人發 WhatsApp 咁。
+
+══════════════════════════════
+Bubble 長度規矩 (重要):
+- 目標每個 bubble: 20-60 字 (短、punchy)
+- Max 80 字。超過就要 split 做 2 個 bubble
+- 一 turn 最多 5 個 bubble (短嘅 bubble 可以多啲，長嘅就少啲)
+- 用 emoji 但克制 — 1-2 個 / bubble，唔好串連
+
+好例子 (自然 WhatsApp 節奏):
+✓ "Hello！我係 Jessica 啊 🌿"
+✓ "你嘅體質係氣虛質"
+✓ "意思係氣力比較弱，容易攰"
+✓ "推介你飲花旗蔘湯，調補返"
+
+差例子 (太長太書面):
+✗ "你好，我係 Jessica，心宜中醫嘅 AI 助手。根據你嘅體質評估結果，你屬於氣虛體質，建議你飲用我們嘅花旗蔘湯來調補。"
+
+══════════════════════════════
+Conflict resolution (當 2 個 specialist 講唔同嘢):
+優先級 (高 → 低):
+  1. constitution  — 體質診斷係 in-flow
+  2. appointment   — 預約係 concrete action
+  3. sales         — 產品推介
+  4. faq           — 教育/知識
+  5. greeting      — filler
+
+低優先級嘅 specialist 內容 → 變副線 / 略提 / drop。
+例如: faq 返 no_match + sales 有產品 → focus sales，faq 略提。
+
+══════════════════════════════
+Tone calibration (根據 user.status):
+- status=new: warm + 自我介紹型 — 第一次見面，建立親切感
+- status=qualified: 好奇 + engaging — 引導用戶講多啲自己情況
+- status=constitution_done: confident + caring — 已經了解佢，建議自然
+- status=booked: reassuring + prep — 提預約細節，俾佢安心
+- status=bought: 感激 + follow-up — 關心使用效果
+- status=churned: 好輕、零壓力、純關心 — 唔好 push pitch
+
+══════════════════════════════
+規矩 (絕對唔可以違反):
+- 絕對唔可以作 specialist 冇講嘅嘢 (產品、價錢、體質、地址、診金)
+- 媒體 (圖片) 由 media_to_send 處理，唔好喺 bubble 入面寫 image URL
+- 用戶第一次見面 (greeting agent 嘅 intent_flags 包含 "new_user_intro") →
+  Bubble 1 一定要包含「我係 Jessica」自我介紹
+
+輸出 JSON (純 JSON，唔好 markdown):
+{
+  "bubbles": ["...", "..."],
+  "media_to_send": [{"url": "...", "after_bubble_idx": 0}]
+}</pre>
+  </div>
+</details>
+
+<h3>典型 Writer Output</h3>
+<table>
+<tr><th>场景</th><th>Bubbles (sequential)</th></tr>
+<tr><td>用户首次见面发 「hi」<br/><span class="sub">(Greeting + new_user_intro flag)</span></td><td>
+  <pre class="tone">Bubble 1 · "Hello！我係 Jessica 啊 🌿"
+Bubble 2 · "我喺心宜中醫幫手做 wellness 咨詢嘅"
+Bubble 3 · "你最近身體有咩想了解？"</pre>
+</td></tr>
+<tr><td>体质宣告 (Constitution declaring → 氣虛質)</td><td>
+  <pre class="tone">Bubble 1 · "睇咗你張脷相同你嘅答案 ✨"
+Bubble 2 · "你嘅體質係氣虛質"
+Bubble 3 · "意思係氣力比較弱，容易攰、聲又輕"
+Bubble 4 · "我可以介紹返兩款啱你嘅湯水，要唔要睇下？"</pre>
+</td></tr>
+<tr><td>Sales pitch (constitution_done + 推 花旗蔘湯 + 95 折)</td><td>
+  <pre class="tone">Bubble 1 · "你氣虛質首選 — 花旗蔘湯 🌿"
+Bubble 2 · "清補唔上火、捱夜首選，每盅 HK$48"
+Bubble 3 · "依家買成套療程仲有 95 折"
+Bubble 4 · "想睇下其他款？定直接訂呢款？"</pre>
+</td></tr>
+<tr><td>Appointment confirm (booked status)</td><td>
+  <pre class="tone">Bubble 1 · "你預約咗 5 月 26 號 (二) 9:30am 沙田店 ✅"
+Bubble 2 · "首次嚟唔使付診金，幫你 unlock 咗"
+Bubble 3 · "提早 10 分鐘到，diam 啲 ❤️"
+Bubble 4 · "戳呢條 link confirm 一下：careplustcm.com/booking?..."</pre>
+</td></tr>
+<tr><td>Churned 用户被动联络</td><td>
+  <pre class="tone">Bubble 1 · "Hello 啊，最近點啊 😊"
+Bubble 2 · "冇野想 push 你，淨係問下你身體啱啱好"</pre>
+</td></tr>
+</table>
+
+<!-- ─────────────────────────  TOOLS  ──────────────────────── -->
+<h2>5 · 共用工具 (Tools)</h2>
+<table>
+<tr><th>Tool</th><th>边个用</th><th>干嘛</th><th>数据源</th></tr>
+<tr><td><code>KBSearch</code></td><td>FAQ</td><td>52 cards 关键词 + bigram + domain hint 排序</td><td><code>data/knowledge_base/</code></td></tr>
+<tr><td><code>ProductCatalog</code></td><td>Sales</td><td>体质 + pain_point + 避孕忌 contraindication 配对</td><td><code>data/products/</code></td></tr>
+<tr><td><code>ClinicMatcher</code></td><td>Appointment</td><td>区 → 邻近表 → 最近 Care Plus 分店</td><td><code>data/clinics/clinics.json</code></td></tr>
+<tr><td><code>PromotionsLoader</code></td><td>Sales, Appointment</td><td>按 stage surface 优惠 (sales_close / appointment_close / mode_choice)</td><td><code>data/promotions/active_offers.json</code></td></tr>
+<tr><td><code>Claude Vision</code></td><td>Constitution</td><td>脷相 → colour / shape / coating / moisture findings</td><td>(Anthropic API)</td></tr>
+</table>
+
+<!-- ─────────────────────────  CONFLICTS  ──────────────────────── -->
+<h2>6 · 冲突解决 — 当 2 个 specialist 讲唔同嘢</h2>
+<div class="sub">Writer 喺 prompt 入面已经 hard-coded 呢个 priority。</div>
+<table>
+<tr><th>优先级</th><th>Specialist</th><th>点解</th></tr>
+<tr><td>1 (最高)</td><td>Constitution</td><td>体质诊断 in-flow，最 critical</td></tr>
+<tr><td>2</td><td>Appointment</td><td>具体 action — 客人要预约</td></tr>
+<tr><td>3</td><td>Sales</td><td>产品 pitch — drive 收入</td></tr>
+<tr><td>4</td><td>FAQ</td><td>教育 / 知识</td></tr>
+<tr><td>5 (最低)</td><td>Greeting</td><td>Filler — 永远比上面任何一个低</td></tr>
+</table>
+
+<!-- ─────────────────────────  HOW TO TUNE  ──────────────────────── -->
+<h2>7 · 点改 / 点 tune</h2>
+<table>
+<tr><th>想改咩</th><th>改边度</th></tr>
+<tr><td>某 agent 嘅 prompt</td><td><code>src/agents/&lt;agent&gt;.py</code> 入面 <code>_SYSTEM</code> 或 <code>_SYSTEM_TEMPLATE</code></td></tr>
+<tr><td>用边个 LLM 模型</td><td>每个 agent 文件顶部 <code>DEFAULT_MODEL</code></td></tr>
+<tr><td>Output 长度</td><td>每个 agent class init 嘅 <code>max_tokens</code></td></tr>
+<tr><td>边个 agent 用 Sonnet vs Haiku</td><td><code>src/agents/registry.py</code></td></tr>
+<tr><td>加新 specialist</td><td>1) 加 enum 喺 <code>base.py SpecialistName</code><br/>2) 加 entry 喺 <code>SPECIALIST_CATALOG</code> ← Planner prompt 自动 update<br/>3) 写 specialist class<br/>4) wire 入 <code>registry.py</code></td></tr>
+<tr><td>Bubble 长度规矩</td><td><code>src/agents/writer.py</code> 嘅 system prompt + <code>MAX_BUBBLES</code></td></tr>
+<tr><td>加新 offer / promotion</td><td>编辑 <code>data/promotions/active_offers.json</code> (declarative, 唔使改 code)</td></tr>
+<tr><td>加新诊所</td><td>编辑 <code>data/clinics/clinics.json</code></td></tr>
+<tr><td>加新产品</td><td>编辑 <code>data/products/soups/</code> 或 <code>ointments/</code> 嘅 JSON</td></tr>
+<tr><td>调 conflict priority</td><td><code>src/agents/writer.py</code> 嘅 <code>SPECIALIST_PRIORITY</code> list</td></tr>
+<tr><td>调 tone matrix</td><td><code>src/agents/writer.py</code> 嘅 <code>_TONE_MATRIX</code> dict</td></tr>
+</table>
+
+<footer style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--line);font-size:0.85rem;color:var(--muted);">
+  生成 @ 2026-05-21 · 119 tests passing · 9 commits<br/>
+  Project root: <code>/Users/shivonne/Claude Code/TCM-Jessica</code>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+# Render deployment for TCM-Jessica.
+#
+# Free plan with keep-alive ping:
+#   - Free web service ($0/month).
+#   - Sleeps after 15 min idle → ~30-60s cold-start on first request.
+#   - Combine with a free external cron (cron-job.org, every 10 min) hitting
+#     /health to prevent sleep. See docs/DEPLOYMENT.md.
+
+services:
+  - type: web
+    name: tcm-jessica
+    runtime: python
+    region: singapore
+    plan: free
+
+    buildCommand: pip install -e .
+
+    # SQLite + traces dir created lazily on first request, no migration step.
+    startCommand: uvicorn src.web:app --host 0.0.0.0 --port $PORT
+
+    # Render waits for 200 from this path before swapping to the new instance.
+    healthCheckPath: /health
+
+    envVars:
+      # Force unbuffered stdout/stderr — Render captures print() via stdout,
+      # buffer = invisible logs.
+      - key: PYTHONUNBUFFERED
+        value: "1"
+
+      # ── App mode ────────────────────────────────────────────
+      # APP_ENV=production forces webhook secret check (router.py refuses
+      # to start without CHATDADDY_WEBHOOK_SECRET).
+      - key: APP_ENV
+        value: production
+
+      - key: LOG_LEVEL
+        value: INFO
+
+      # ── LLM ─────────────────────────────────────────────────
+      - key: ANTHROPIC_API_KEY
+        sync: false   # set in Render dashboard
+
+      # ── ChatDaddy IM ────────────────────────────────────────
+      # All three required. Copy from dr-baba-agent's existing Render
+      # environment so we re-use the same WhatsApp number / account.
+      - key: CHATDADDY_REFRESH_TOKEN
+        sync: false
+      - key: CHATDADDY_ACCOUNT_ID
+        sync: false
+      - key: CHATDADDY_WEBHOOK_SECRET
+        sync: false
+
+      # ── WhatsApp tuning (optional, defaults applied) ────────
+      - key: WA_POLL_ENABLED
+        value: "true"
+      - key: WA_POLL_INTERVAL_S
+        value: "5"
+      - key: WA_BUBBLE_DELAY_MIN
+        value: "2.5"
+      - key: WA_BUBBLE_DELAY_MAX
+        value: "6.0"
+
+      # ── Order channel for Care Plus ─────────────────────────
+      - key: ORDER_WHATSAPP
+        value: "+85252417448"
+
+      # ── Persistence paths — on Render free, disk is ephemeral.
+      # On restart, jessica.db is recreated empty. Trace bundles are
+      # also lost. For dev / first-week launch this is acceptable; if
+      # CRM persistence matters, upgrade to Starter ($7) + attach a disk.
+      - key: DATABASE_PATH
+        value: /tmp/jessica.db
+      - key: TRACE_DIR
+        value: /tmp/traces

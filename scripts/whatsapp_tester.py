@@ -256,46 +256,46 @@ async def wait_for_agent_burst(
 
 # ── AI patient reply ──────────────────────────────────────────────────────────
 
-# Fallback replies when API is unavailable — cycle through these
-_FALLBACK_REPLIES = [
-    "B", "A", "B", "係呀", "有時會", "唔係好清楚", "好的", "明白", "係",
-    "冇特別", "有少少", "一般", "好的，謝謝", "Amy，32歲", "係呀，最近幾個月",
-]
-_fallback_idx = 0
-
-
 def patient_reply(
     client: anthropic.Anthropic | None,
     conversation: list,
     agent_text: str,
 ) -> str:
-    """Generate a natural patient reply using Claude Haiku, with fallback."""
-    global _fallback_idx
+    """Generate a natural patient reply using the claude CLI (Max plan — no API key needed)."""
+    # Build conversation history for context
+    history = ""
+    for entry in conversation[-10:]:  # last 10 turns for context
+        if entry["role"] == "agent":
+            history += f"\nAgent: {entry['text']}"
+        elif entry["role"] == "patient":
+            history += f"\nPatient (you): {entry['text']}"
 
-    if client:
-        messages: list[dict] = []
-        for entry in conversation:
-            if entry["role"] == "agent":
-                messages.append({"role": "user", "content": entry["text"]})
-            elif entry["role"] == "patient":
-                messages.append({"role": "assistant", "content": entry["text"]})
-        messages.append({"role": "user", "content": agent_text})
+    prompt = f"""{PATIENT_SYSTEM_PROMPT}
 
-        try:
-            resp = client.messages.create(
-                model="claude-haiku-4-5",
-                max_tokens=200,
-                system=PATIENT_SYSTEM_PROMPT,
-                messages=messages,
-            )
-            return resp.content[0].text.strip()
-        except Exception as e:
-            print(f"⚠️  API error ({e.__class__.__name__}) — using fallback reply.")
+Conversation so far:
+{history}
 
-    # Fallback: cycle through preset answers
-    reply = _FALLBACK_REPLIES[_fallback_idx % len(_FALLBACK_REPLIES)]
-    _fallback_idx += 1
-    return reply
+Agent just said:
+{agent_text}
+
+Reply as Amy (the patient) in 1-2 short sentences. WhatsApp style. No explanation."""
+
+    try:
+        result = subprocess.run(
+            ["claude", "--print"],
+            input=prompt,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        reply = result.stdout.strip()
+        if reply:
+            return reply
+        print(f"⚠️  claude CLI returned empty. stderr: {result.stderr[:100]}")
+    except Exception as e:
+        print(f"⚠️  claude CLI error: {e}")
+
+    return "好的，請繼續"  # absolute fallback
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -345,10 +345,7 @@ def launch_chrome_with_debug() -> subprocess.Popen:
 
 
 async def main() -> None:
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    client = anthropic.Anthropic(api_key=api_key) if api_key else None
-    if not client:
-        print("⚠️  ANTHROPIC_API_KEY missing — replies will be static fallback.")
+    client = None  # not used — patient replies via claude CLI (Max plan)
 
     log_file, conversation = setup_log()
 
@@ -460,7 +457,29 @@ async def main() -> None:
             await asyncio.sleep(REPLY_PAUSE)
 
         # ── Dynamic conversation loop ─────────────────────────────────────────
+        # At this point the agent has replied to our last opener.
+        # Loop: reply to agent → wait for agent → repeat.
+        # Get the last logged agent message to seed the first reply.
+        last_agent_text = next(
+            (e["text"] for e in reversed(conversation) if e["role"] == "agent"), ""
+        )
+
         for turn in range(MAX_TURNS):
+            # 1. Respond to what the agent last said
+            await asyncio.sleep(REPLY_PAUSE)
+
+            asking_for_tongue = any(
+                sig.lower() in last_agent_text.lower() for sig in TONGUE_REQUEST_SIGNALS
+            )
+            if asking_for_tongue and os.path.exists(TONGUE_IMAGE):
+                await send_image(page, TONGUE_IMAGE)
+                log_msg(conversation, "patient", "[sent tongue photo]")
+            else:
+                p_reply = patient_reply(client, conversation, last_agent_text)
+                await send(page, p_reply)
+                log_msg(conversation, "patient", p_reply)
+
+            # 2. Wait for agent's next burst
             print(f"\n⏳ [{turn + 1}/{MAX_TURNS}] Waiting for agent burst…")
             reply_text, last_id = await wait_for_agent_burst(page, last_id)
 
@@ -469,24 +488,12 @@ async def main() -> None:
                 break
 
             log_msg(conversation, "agent", reply_text)
+            last_agent_text = reply_text
 
             end_signals = ["再見", "bye", "appointment confirmed", "預約成功", "感謝你", "thank you"]
             if any(sig.lower() in reply_text.lower() for sig in end_signals):
                 print("\n✅ Conversation reached a natural end.")
                 break
-
-            await asyncio.sleep(REPLY_PAUSE)
-
-            asking_for_tongue = any(
-                sig.lower() in reply_text.lower() for sig in TONGUE_REQUEST_SIGNALS
-            )
-            if asking_for_tongue and os.path.exists(TONGUE_IMAGE):
-                await send_image(page, TONGUE_IMAGE)
-                log_msg(conversation, "patient", "[sent tongue photo]")
-            else:
-                p_reply = patient_reply(client, conversation, reply_text) if client else "好的，請繼續"
-                await send(page, p_reply)
-                log_msg(conversation, "patient", p_reply)
 
         # ── Done ──────────────────────────────────────────────────────────────
         save_log(log_file, conversation)
