@@ -650,14 +650,33 @@ async def _send_bubbles(
         for url in media_by_idx.get(i, []):
             try:
                 await asyncio.sleep(0.8)  # gentle pause before the image
+                mimetype = _guess_mimetype(url)
                 await client.send_message(
                     account_id,
                     chat_id,
                     text="",
-                    attachments=[{"url": url, "type": "image"}],
+                    attachments=[
+                        {"url": url, "type": "image", "mimetype": mimetype}
+                    ],
                 )
             except Exception:
                 logger.exception("[WA] media send failed (url=%s)", url[:80])
+
+
+def _guess_mimetype(url: str) -> str:
+    """Map a URL/path's extension to the mimetype ChatDaddy expects."""
+    lower = (url or "").lower().split("?")[0]
+    if lower.endswith((".jpg", ".jpeg")):
+        return "image/jpeg"
+    if lower.endswith(".png"):
+        return "image/png"
+    if lower.endswith(".webp"):
+        return "image/webp"
+    if lower.endswith(".gif"):
+        return "image/gif"
+    if lower.endswith(".mp4"):
+        return "video/mp4"
+    return "image/jpeg"  # safe default for unknown image extensions
 
 
 # ---------------------------------------------------------------------------
