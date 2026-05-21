@@ -284,16 +284,14 @@ class SalesAgent:
             "active_offers": [],
             "stage": _default_stage(user),
             "no_match_reason": reason,
-            # Hard fact — always available even when nothing new to pitch.
-            "order_channel": {
-                "whatsapp": os.environ.get("ORDER_WHATSAPP", "+852 5241 7448"),
-                "url": f"https://wa.me/{os.environ.get('ORDER_WHATSAPP', '+852 5241 7448').lstrip('+').replace(' ', '')}",
-            },
             "writer_must_not_say": [
                 "我哋冇新產品",
                 "我哋唔賣",
                 "市售產品",
                 "唔係我哋自己做",
+                "WhatsApp 我哋",
+                "+852 5241 7448",
+                "wa.me",
             ],
             "catalog_facts": {
                 "total_paid_soups": 10,
@@ -315,8 +313,6 @@ class SalesAgent:
             p for p in self._catalog.all_products if p.product_type == "ointment"
         ]
         products = [_product_dict_simple(p) for p in ointments]
-        whatsapp = os.environ.get("ORDER_WHATSAPP", "+852 5241 7448")
-        clean = whatsapp.lstrip("+").replace(" ", "")
         payload = {
             "intent": "pitch_products",
             "products_to_pitch": products,
@@ -327,13 +323,11 @@ class SalesAgent:
                 )
             ],
             "stage": "ointment_pitch",
-            "order_channel": {
-                "whatsapp": whatsapp,
-                "url": f"https://wa.me/{clean}",
-            },
             "writer_hint": (
                 "用戶問藥膏。**必須**列晒呢 3 款 (名 + 價錢 + 1 句用途)，"
-                "每款 1 bubble + 圖。最尾講 order WhatsApp 連結。"
+                "每款 1 bubble + 圖。最尾問用戶「要唔要試其中一款？"
+                "想要邊款講聲我聽，我幫你跟進。」絕對唔好叫用戶 WhatsApp"
+                "去任何號碼 — 用戶已經喺呢個對話度 chat 緊。"
             ),
         }
         return SpecialistOutput(
@@ -392,8 +386,6 @@ class SalesAgent:
                 for pm in candidates[:4]:
                     chosen.append(_product_dict_simple(pm.product))
 
-        whatsapp = os.environ.get("ORDER_WHATSAPP", "+852 5241 7448")
-        clean = whatsapp.lstrip("+").replace(" ", "")
         payload = {
             "intent": "where_to_buy",
             "products_to_pitch": chosen,
@@ -404,10 +396,6 @@ class SalesAgent:
                 )
             ],
             "stage": "where_to_buy",
-            "order_channel": {
-                "whatsapp": whatsapp,
-                "url": f"https://wa.me/{clean}",
-            },
             "catalog_facts": {
                 "total_paid_soups": 10,
                 "total_ointments": 3,
@@ -416,9 +404,10 @@ class SalesAgent:
             "writer_hint": (
                 "用戶問點買 / 想要產品。**必須**列晒 products_to_pitch 入面每"
                 "款 (名 + 價錢 HK$)，每款 1 個 bubble，並且每款都要附返"
-                "image_url 落 media_to_send。最尾加一個 bubble 講 order "
-                "WhatsApp 號碼 + 連結。**絕對唔好**只講「我哋有 10 款」"
-                "然後叫客 WhatsApp 客服自己問 — 必須立刻 show 產品。"
+                "image_url 落 media_to_send。最尾加一個 bubble 問用戶「想要"
+                "邊款？同我講你嘅選擇 + 收件地址，我會幫你跟進 order。」"
+                "**絕對唔好**叫客 WhatsApp 任何號碼 — 用戶已經喺呢個 WhatsApp"
+                "對話度，叫佢去同一個地方完全係 nonsense。"
             ),
             "writer_must_not_say": [
                 "我哋冇新產品",
@@ -426,6 +415,9 @@ class SalesAgent:
                 "唔係我哋自己做",
                 "WhatsApp 客服問",
                 "自己問客服",
+                "WhatsApp 我哋",
+                "+852 5241 7448",
+                "wa.me",
             ],
         }
         return SpecialistOutput(
