@@ -1,0 +1,104 @@
+{
+  "knowledge_card": {
+    "knowledge_card_note": "Clinical service card for shoulder/neck program. Distinct from urban-office-pain self-care card.",
+    "metadata": {
+      "card_id": "tcm_treatment_shoulder_neck",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.8_shoulder_neck",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Multiple SRs + WHO 2003 (frozen shoulder)",
+      "research_note": "Multiple SRs support acupuncture for non-specific neck pain (JPR Dovepress; JAMA Open 2022 Tuina + Yijinjing RCT). Cervical spondylotic radiculopathy SR (Frontiers 2025). 五十肩 (periarthritis of shoulder) is WHO 2003 proven indication. Tuina protocol PMC6337769: 3×/wk × 4 wks (12 sessions). Care Plus has /specialty/shoulder-periarthritis (五十肩 specifically)."
+    },
+    "overview": {
+      "title": "肩頸治療療程介紹：針灸 + 推拿 + 拔罐組合、典型 12 次療程、五十肩 WHO 認可治療",
+      "objective": "完整介紹中醫肩頸治療療程 — 針灸 + 推拿 + 拔罐 + 艾灸組合方案、慢性頸痛 + 五十肩（肩周炎，WHO 2003 認可）+ 頸椎病（cervical spondylotic radiculopathy）治療設計、禁忌、HK 治療現況",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "肩頸",
+        "肩頸治療",
+        "肩頸痛",
+        "頸痛",
+        "肩痛",
+        "五十肩",
+        "肩周炎",
+        "凍結肩",
+        "頸椎病",
+        "頸椎神經根病",
+        "頸椎間盤突出",
+        "上背痛",
+        "斜方肌痛",
+        "肩頸僵硬",
+        "辦公室肩頸痛",
+        "電腦頸",
+        "低頭族",
+        "肩頸針灸",
+        "肩頸推拿",
+        "肩頸拔罐",
+        "肩頸艾灸",
+        "肩頸療程",
+        "肩頸治療幾耐",
+        "肩頸治療次數",
+        "肩頸治療幾錢",
+        "Tuina",
+        "推拿",
+        "正骨",
+        "肩頸放鬆",
+        "肩周炎針灸",
+        "frozen shoulder TCM",
+        "neck pain TCM",
+        "Care Plus 五十肩",
+        "Care Plus 肩頸"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫肩頸治療通常係多種手法結合 — 針灸、推拿（Tuina）、拔罐、艾灸。多個系統評價（JPR Dovepress、Frontiers 2025 NMA）支持中醫對慢性非特異性頸痛、頸椎神經根病有效。五十肩（肩周炎）係 WHO 2003 認可嘅針灸 proven indication。\n\n【肩頸問題分類（治療策略不同）】\n\n📍 1. 慢性非特異性頸痛 — 最常見\n• 症狀：頸僵硬、活動範圍受限、時痛時緩\n• 原因：姿勢、壓力、肌肉緊張\n• 治療策略：針灸 + 推拿 + 拔罐\n\n📍 2. 五十肩（肩周炎、Frozen Shoulder）\n• WHO 2003 proven indication\n• 症狀：肩痛 + 活動範圍嚴重受限（梳頭、扣 bra 困難）\n• 病程：通常 1–3 年（疼痛期 → 凝結期 → 解凍期）\n• 治療策略：針灸 + 艾灸（溫經散寒）+ 推拿（解凍）+ 主動運動\n\n📍 3. 頸椎神經根病（Cervical Spondylotic Radiculopathy）\n• 症狀：頸痛 + 一側手臂麻痺/放射痛 + 肌力減退\n• Frontiers 2025 NMA 支持綜合中醫治療\n• 治療策略：針灸 + 中藥 + 牽引（西醫合作）\n• ⚠️ 必須先西醫評估排除嚴重椎間盤突出\n\n📍 4. 肌筋膜疼痛（Myofascial Pain）/ 斜方肌痛\n• 症狀：點狀觸發痛、放射痛模式、條索狀緊繃帶\n• 治療策略：針灸（包括 ashi 痛點針）+ 推拿 + 拔罐（走罐放鬆筋膜）\n\n📍 5. 緊張性頭痛（從肩頸而起）\n• 症狀：頸後緊張感伴隨後腦脹痛\n• 治療策略：針灸 + 推拿\n\n【典型療程設計（基於 RCT 證據）】\n\n• 慢性頸痛推拿方案（PMC6337769 RCT）：\n  - 3×/週 × 4 週 = 12 次（每次 15 分鐘）\n  - 或 3×/週 × 8 週 = 24 次（重症）\n• 針灸方案：2–3×/週 × 4–6 週 = 8–18 次\n• 五十肩：通常 12–24 次跨 6–12 週（疼痛期更密、解凍期可疏）\n• HK 私營實踐（Bowtie + JP Health）verbatim：「急性扭傷 1–3 次見效；慢性勞損每週 1–3 次，相隔 2–3 日」\n• 結合多種手法（針 + 推拿 + 拔罐）通常效果優於單一手法\n\n【單次療程過程】\n1. 望聞問切 + 動作評估（活動範圍測試、觸診痛點）\n2. 中醫師選穴 + 手法組合\n3. 一般順序：針灸（15–25 分鐘）→ 推拿（15–20 分鐘）→ 拔罐（10–15 分鐘）→ 必要時艾灸\n4. 治療總時長 45–75 分鐘\n5. 治療後簡單拉伸指導\n\n【適合中醫肩頸治療 vs 應該優先西醫】\n✅ 中醫適合：\n• 慢性非特異性頸痛\n• 姿勢性肩頸僵硬\n• 五十肩（WHO 認可）\n• 輕中度頸椎神經根病（影像確認）\n• 緊張性頭痛從肩頸而起\n⚠️ 必須先西醫評估：\n• 突然嚴重頸痛 + 發燒（排除感染）\n• 神經根病 + 嚴重肌力減退（排除壓迫）\n• 頸痛 + 走路不穩（脊髓壓迫紅旗）\n• 外傷後頸痛（排除骨折、椎管狹窄）\n• 嚴重椎間盤突出（可能需要手術）\n\n【禁忌（針灸 + 推拿）】\n❌ 推拿絕對禁忌\n• 頸椎骨折/不穩\n• 治療部位惡性腫瘤\n• 頸髓壓迫伴脊髓病變徵象（必須先轉介手術評估）\n• 椎基底動脈供血不足（高速手法絕對禁）\n• 嚴重骨質疏鬆\n• 治療部位急性感染/炎症\n• 抗凝藥未控制（強力推拿相對禁忌）\n❌ 針灸\n• GB21（肩井穴）深針 — 氣胸風險（PMC9465868 案例）；CMC 註冊中醫師會用安全角度\n• 椎動脈區避免高速手法\n• 出血性疾病\n• 心臟起搏器（電針避免）\n\n【副作用】\n• 推拿後 24–48 小時酸痛屬正常反應\n• 罕見：椎動脈剝離（高速手法 — HK 中醫推拿技術一般避免）\n• GB21 深針致氣胸（個案級別，必須避免）\n• 暫時性手臂感覺異常\n\n【後注意】\n• 治療後熱敷加強療效\n• 輕柔活動範圍練習（中醫師指導）\n• 24 小時內避免：重物搬運、長時間低頭、冷水沖洗治療部位\n• 改善人體工學：屏幕在眼水平、用支托椅、定期休息（每 30 分鐘）\n\n【生活調整（必要配合）】\n• 屏幕高度 = 眼水平\n• 每 30 分鐘起身/伸展\n• 枕頭高度：仰睡 5–8cm，側睡 10–12cm\n• 避免單肩揹重袋\n• 避免趴睡\n\n【點揀中醫師】\n✅ 必查：CMC 註冊中醫師\n✅ 推拿背景：HK 中醫師「一般執業」範疇包括推拿\n✅ 良好醫師：先做完整評估、識讀 X-ray/MRI、有西醫合作網絡（轉介嚴重病例）\n❌ 警號：唔做評估直接做高速整骨、保證「一次根治」、忽視紅旗症狀\n\n【HK 監管】\n針灸屬於「針灸科」範疇；推拿屬於「一般執業」範疇 — 兩者都需要 CMC 註冊中醫師執行。\n\n【關於 Care Plus 心宜中醫】\nCare Plus（沙田馬鞍山）有提供肩周炎/五十肩專科服務頁面（careplustcm.com/specialty/shoulder-periarthritis，sitemap 確認）。一般肩頸治療可能在綜合療程中涵蓋。具體療程次數、價錢請直接聯絡 Care Plus 了解。\n\n【關於 洪煊宜中醫師（Jessica）】\n根據其 Instagram 公開個人介紹，洪醫師（@babyj_jessica）係 HK 註冊中醫師，自我聲明專科包括「皮膚科 / 痛症 / 婦科 / 針灸」— 痛症範疇覆蓋肩頸治療。\n\n肩頸係日常勞損嘅高危區 — 治療 + 人體工學調整缺一不可，否則「治完又痛」 🌿",
+      "supporting_points": [
+        "中醫肩頸治療通常係多種手法結合 — 針灸 + 推拿 + 拔罐 + 艾灸",
+        "五十肩（肩周炎）係 WHO 2003 認可嘅針灸 proven indication",
+        "推拿 RCT 方案（PMC6337769）：3×/週 × 4 週 = 12 次（每次 15 分鐘）",
+        "Frontiers 2025 NMA 支持中醫對頸椎神經根病有效",
+        "五十肩 WHO 2003 認可；典型 12–24 次跨 6–12 週療程",
+        "GB21（肩井穴）深針有氣胸風險（PMC9465868 案例）— CMC 註冊中醫師會用安全角度",
+        "突然嚴重頸痛 + 發燒、走路不穩、嚴重肌力減退、外傷後 = 必須先西醫評估",
+        "生活調整必要：屏幕在眼水平、每 30 分鐘伸展、枕頭高度合適"
+      ],
+      "evidence_level": "WHO 2003 (frozen shoulder) + Multiple SRs (neck pain, radiculopathy) + HK Clinical Practice",
+      "next_best_question": "你嘅肩頸困擾係邊一類？慢性僵硬 / 五十肩活動受限 / 一側手臂放射痛 / 緊張性頭痛？我可以同你講解最啱嘅治療組合（針灸/推拿/拔罐/艾灸）同預期次數 🌿"
+    },
+    "execution_logic": {
+      "recommended_action": "Educate on shoulder/neck program. Always cover: (1) classify the pain type (general / 五十肩 / radiculopathy / myofascial), (2) recommend combination approach (acupuncture + tuina + cupping), (3) RCT-cited course length (PMC6337769: 12 sessions), (4) red flags requiring Western workup, (5) Care Plus has 五十肩 specialty page — direct user there.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "Always co-fetch tcm_urban_office_pain (self-care education companion). If 頭痛 → fetch tcm_headache_migraine.",
+      "escalation_trigger": "MANDATORY: if user has fever + neck pain, gait disturbance, severe weakness, post-trauma neck pain, or progressive neurological symptoms → recommend immediate Western medical workup BEFORE TCM."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_treatment_cupping",
+        "tcm_treatment_moxibustion",
+        "tcm_urban_office_pain",
+        "tcm_headache_migraine"
+      ],
+      "sources": [
+        "WHO 2003 Acupuncture: Review and Analysis (frozen shoulder proven): https://chiro.org/acupuncture/FULL/Acupuncture_WHO_2003.pdf",
+        "PMC6337769 — Tuina chronic neck pain RCT protocol (3×/wk × 4 wks): https://pmc.ncbi.nlm.nih.gov/articles/PMC6337769/",
+        "JAMA Network Open (2022) — Tuina + Yijinjing RCT chronic neck pain: https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2799438",
+        "Acupuncture neck pain SR/MA (Dovepress JPR): https://www.dovepress.com/effectiveness-of-acupuncture-for-neck-pain-systematic-review-and-metaa-peer-reviewed-fulltext-article-JPR",
+        "Frontiers 2025 — Cervical spondylotic radiculopathy network meta-analysis",
+        "PMC9465868 — GB21 deep needling pneumothorax case series: https://pmc.ncbi.nlm.nih.gov/articles/PMC9465868/",
+        "Bowtie & JP Health 針灸時間及次數: https://www.bowtiejphealth.com/blog/acupuncture-time-and-frequency",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫《肩周炎》(sitemap-confirmed): https://careplustcm.com/specialty/shoulder-periarthritis",
+        "洪煊宜 Jessica 中醫師 Instagram (@babyj_jessica) — IG 自我聲明專科：皮膚科/痛症/婦科/針灸"
+      ]
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_fatigue_qi_deficiency",
+      "domain": "5_sleep_energy",
+      "category": "5.2_fatigue",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "氣虛疲勞：補氣食療、熬夜傷害與提神方法",
+      "objective": "解釋中醫氣虛疲勞的成因，提供補氣食療、應對熬夜損耗及日常提神方法",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "氣虛",
+        "氣虛疲勞",
+        "好攰",
+        "成日攰",
+        "冇氣力",
+        "精力差",
+        "容易疲勞",
+        "做少少嘢就攰",
+        "補氣食療",
+        "補氣食物",
+        "補氣湯",
+        "黃芪",
+        "黨參",
+        "人參",
+        "熬夜傷身",
+        "熬夜影響",
+        "通頂後遺症",
+        "晚瞓傷害",
+        "熬夜補救",
+        "熬夜後點補",
+        "咖啡傷身",
+        "咖啡副作用中醫",
+        "咖啡同中醫",
+        "提神方法中醫",
+        "精力不足",
+        "好攰呀",
+        "冇力",
+        "冇氣",
+        "做嘢好攰",
+        "瞓極唔夠",
+        "通頂",
+        "捱夜",
+        "OT攰",
+        "tired",
+        "fatigue",
+        "冇精神",
+        "容易病",
+        "成日傷風"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫「氣虛」係現代都市人最常見嘅體質問題之一，主要原因係生活壓力大、睡眠不足、飲食不規律。\n\n【氣虛的主要徵兆】\n• 容易疲勞，做少少嘢就累\n• 少氣懶言，說話聲音偏低\n• 容易出汗（特別係稍微活動就冒汗）\n• 抵抗力差，容易傷風感冒\n• 面色偏白或偏黃，唇色淡\n• 舌頭邊緣有齒痕（脾氣虛）\n\n【熬夜的中醫傷害】\n子時（晚上11時至凌晨1時）係肝膽代謝排毒最旺盛時段：\n• 錯過子時睡覺 → 肝血無法充分補充 → 翌日眼澀、面黃、判斷力下降\n• 長期熬夜 → 腎精損耗 → 加速衰老、脫髮、免疫力下降\n熬夜補救方法：\n• 翌日午休20-30分鐘（子午覺）\n• 多食補腎食物（黑芝麻、核桃、枸杞）\n• 避免再連續熬夜，讓身體逐步補回\n\n【補氣食療推介】\n• 黃芪水：補脾肺之氣，提升免疫力，泡水代茶飲\n• 黨參：補中益氣，比人參溫和，可煮雞湯或泡水\n• 黃精茶（養生咖啡替代品）：補腎填精，可製成「養生咖啡」混合飲\n• 四神湯（芡實、淮山、茯苓、薏米）：健脾補氣，亦適合寵物飲用\n• 紅棗枸杞水：補氣血，最平易近人，適合日常\n\n【咖啡同中醫的關係】\n中醫角度：咖啡屬溫熱、苦性，適量提神無大礙\n⚠️ 問題在於過量：咖啡因刺激「動用」腎精（透支未來精力），長期依賴會加重腎虛\n內關穴：飲咖啡後出現心跳快或手震，按壓內關穴（手腕內側2寸）緩解\n洪醫師建議：一天1-2杯可接受；以「養生咖啡」（混入黃精）作改良\n\n【日常提神四個方法】\n1. 合谷穴按壓（手背虎口）\n2. 20分鐘午休\n3. 薑棗茶（早上飲，補陽氣）\n4. 深呼吸配合擴胸，活化肺氣",
+      "supporting_points": [
+        "氣虛體質調理需時3-6個月，唔係喝幾次補氣茶就能改變",
+        "補氣食物如黃芪、黨參性偏溫，濕熱體質不宜大量使用",
+        "人參補氣效果最強但亦最易上火，建議在中醫師指導下使用",
+        "長期嚴重疲勞應排除貧血、甲狀腺問題、抑鬱症等西醫診斷",
+        "最根本的補氣方法是：充足睡眠＋規律飲食＋適量運動"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你係最近才開始疲勞，還是一直都係這樣呢？有沒有同時睡眠問題？",
+      "media": [
+        {
+          "id": "video_neiguan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/neiguan.mp4",
+          "caption": "內關穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_hegu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/hegu.mp4",
+          "caption": "合谷穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "區分急性疲勞（如熬夜後）和慢性氣虛，提供對應方案",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "長期嚴重疲勞影響日常生活，建議西醫排查貧血、甲狀腺、慢性病因"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_sleep_insomnia",
+        "tcm_education_concepts"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "中醫基礎理論 — 氣的生成與功能",
+        "本草綱目 — 黃芪、黨參條目"
+      ]
+    }
+  }
+}

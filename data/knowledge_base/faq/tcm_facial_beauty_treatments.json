@@ -1,0 +1,105 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_facial_beauty_treatments",
+      "domain": "3_skin_beauty",
+      "category": "3.3_facial_treatments",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-04-29",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "中醫面部美容療法：美顏針、面部拔罐、中藥面膜",
+      "objective": "介紹除穴位按摩之外，中醫專業面部美容療法嘅選擇 — 美顏針、面部拔罐、中藥面膜、食療調理 — 同埋幾時應該搵中醫師面診",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "黑眼圈點處理",
+        "黑眼圈嚴重",
+        "黑眼圈消唔到",
+        "黑眼圈仲有咩方法",
+        "想去黑眼圈",
+        "黑眼圈解決方法",
+        "美顏針",
+        "面針",
+        "美容針灸",
+        "面部針灸",
+        "面部拔罐",
+        "面拔罐",
+        "中醫美容",
+        "中醫面部療法",
+        "中醫變靚",
+        "中醫去斑",
+        "中醫去暗瘡印",
+        "中醫去細紋",
+        "中醫去皺",
+        "面部刮痧",
+        "中藥面膜",
+        "面色暗沉點救",
+        "面色差點處理",
+        "膚色不均",
+        "皮膚老化",
+        "皮膚下垂",
+        "面色蒼白",
+        "面黃肌瘦",
+        "雀斑",
+        "色斑",
+        "黃褐斑",
+        "點搵中醫做美容",
+        "中醫師美容",
+        "美容睇邊個",
+        "facial cupping",
+        "facial acupuncture",
+        "cosmetic acupuncture",
+        "中醫變年輕",
+        "面部養生",
+        "提拉面部",
+        "面部緊緻",
+        "提升面部輪廓",
+        "面部水腫",
+        "包包面解決",
+        "中醫鼻敏感面",
+        "面部僵硬"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫嘅面部美容療法多元化，唔止係按穴位咁簡單。除咗自己屋企可以做嘅穴位按摩，仲有幾種臨床效果更明顯嘅專業療法：\n\n【一、美顏針 (面部針灸 / 美容針)】\n用極幼嘅針（比一般針灸針幼一半），刺激面部經絡同肌肉層，改善氣血循環、淡化色斑、提拉緊緻、減淡細紋同黑眼圈。\n• 適合：黑眼圈、暗沉、色斑、面部下垂、細紋、面部水腫\n• 過程：30-60 分鐘，輕微痠脹感，唔會出血\n• 頻率：療程通常每週 1-2 次，連續 8-12 次見明顯效果\n• 優點：自然、無創傷、配合內服中藥效果更佳\n• 比 botox / filler 嘅分別：刺激身體自我修復，唔係注射外來物質\n\n【二、面部拔罐 (Facial Cupping)】\n用矽膠細罐輕力吸附面部皮膚，藉負壓刺激局部循環、淋巴排毒、提拉肌肉。\n• 適合：面部水腫、淋巴循環差、暗沉、想 lift up 輪廓\n• 過程：5-10 分鐘，唔會留紅印（用面部專用嘅輕力罐）\n• 頻率：每週 1-2 次\n• 優點：即時消水腫、面部輪廓更立體\n\n【三、中藥面膜 / 外敷療法】\n用中藥粉（白芷、白朮、茯苓、珍珠粉等）調製外敷面膜，針對唔同問題：\n• 暗沉 / 黃斑 → 七白散（白芷、白朮、白茯苓、白蘞、白芨、白蒺藜、白丁香）\n• 暗瘡 → 黃連、苦參、黃柏粉\n• 色斑 → 白芷、白茯苓、珍珠粉\n要中醫師根據體質配方，唔係市面成藥可以替代\n\n【四、食療調理 — 由内而外】\n中醫認為面部問題多源於內臟氣血失衡：\n• 黑眼圈 → 多數係腎虛 / 血虛 → 黑芝麻、紅棗、桂圓、黨參湯\n• 暗瘡 → 多數係濕熱 / 血熱 → 苦瓜、薏米、綠豆湯\n• 暗沉 → 多數係血虛 / 氣虛 → 紅棗黨參湯、阿膠 (女士)\n• 色斑 → 多數係肝鬱 / 血瘀 → 玫瑰花茶、山楂\n外治 + 內服一齊調理效果最持久\n\n【五、幾時應該搵中醫師面診？】\n以下情況建議親身搵註冊中醫師做正式辨證 + 治療規劃，唔好淨係靠自助按摩：\n• 黑眼圈 / 暗沉 持續超過 3 個月，按穴位無明顯改善\n• 面部色斑、雀斑、黃褐斑變深\n• 暗瘡反覆發作、留印\n• 面部水腫早晚明顯\n• 想全面提升膚質、抗衰老調理\n• 配合美顏針或面部拔罐療程\n• 配合內服中藥同食療調理\n\n中醫面診會結合望聞問切、脈診、舌診，先判斷你嘅體質根源（肝鬱? 腎虛? 血瘀? 濕熱?），再開個人化嘅治療方案。\n\n【總結】穴位按摩自助 = 第一線；針灸 / 拔罐 / 中藥 = 專業介入；食療 = 內在調理。三者配合先係中醫養生嘅完整面部美容方案。",
+      "supporting_points": [
+        "美顏針唔係注射，係用極幼針刺激穴位，無創、無休息期",
+        "面部拔罐唔留紅印 — 用嘅係輕力面部專用矽膠罐，唔係背部用嘅大罐",
+        "中藥外敷面膜需要中醫師配方，市面成藥唔等於專業中藥",
+        "食療調理通常要堅持 4-8 週先見明顯改善 — 由内而外需要時間",
+        "自助按摩 + 專業治療 + 食療三管齊下，效果比單一方法明顯快 2-3 倍",
+        "持續性面部問題（>3個月）嘅根源喺體質失衡，必須搵中醫師辨證先係根治"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你嘅面部困擾係邊一類？黑眼圈 / 暗沉 / 色斑 / 暗瘡 / 水腫？我可以根據你嘅情況，建議啱嘅療法組合 🌿"
+    },
+    "execution_logic": {
+      "recommended_action": "Educate user on the breadth of TCM facial beauty options beyond self-massage. Mention all 4 modalities (acupuncture / cupping / herbal masks / dietetics) AND the threshold for professional consult. Avoid pushing the clinic too hard — let curiosity build via education first.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user expresses interest in 美顏針 / 拔罐 / 中藥, suggest specific consultation OR fetch related cards (skin acne, dampness, blood deficiency).",
+      "escalation_trigger": "If user mentions persistent (>3 month) skin issues with no improvement from self-care, suggest 中醫師面診."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_beauty",
+        "tcm_skin_acne_complexion",
+        "tcm_skin_hair_loss",
+        "tcm_food_therapy_seasonal",
+        "tcm_constitution_assessment"
+      ],
+      "sources": [
+        "中醫美容學 — 面部針灸應用",
+        "中醫外治法臨床實踐",
+        "Care Plus TCM 心宜中醫臨床經驗 (2024-2026)"
+      ]
+    }
+  }
+}

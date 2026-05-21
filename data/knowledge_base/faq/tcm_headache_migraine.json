@@ -1,0 +1,125 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_headache_migraine",
+      "domain": "9_urban_health",
+      "category": "9.5_headache",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-04-22",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Mixed (Traditional Practice + Modern Evidence)"
+    },
+    "overview": {
+      "title": "中醫頭痛：類型辨別、穴位按摩、食療同警訊",
+      "objective": "幫用戶分清頭痛類型（緊張型、偏頭痛、頸源性、中醫辨證），提供自我按摩穴位同食療，並清楚列明幾時要睇醫生",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "頭痛",
+        "成日頭痛",
+        "經常頭痛",
+        "偏頭痛",
+        "半邊頭痛",
+        "一陣陣頭痛",
+        "跳痛",
+        "頭脹痛",
+        "緊張型頭痛",
+        "頸源性頭痛",
+        "頸膊痛連頭痛",
+        "肩頸痛頭痛",
+        "壓力頭痛",
+        "電腦用耐頭痛",
+        "經前頭痛",
+        "肝陽上亢",
+        "肝火頭痛",
+        "風池穴",
+        "太陽穴",
+        "百會穴",
+        "合谷穴",
+        "肩井穴",
+        "風池穴點按",
+        "太陽穴按摩",
+        "印堂穴",
+        "四神聰",
+        "頭痛穴位",
+        "頭痛食療",
+        "頭痛點算",
+        "頭痛點樣搞",
+        "中醫睇頭痛",
+        "中醫點睇頭痛",
+        "migraine",
+        "tension headache",
+        "頭痛頻繁",
+        "頭痛+頸硬"
+      ],
+      "block_conditions": [
+        "突然最劇烈頭痛（thunderclap）",
+        "頭痛+發燒+頸梗",
+        "頭痛+視力模糊或複視",
+        "頭痛+手腳無力或言語不清",
+        "頭痛+嘔吐噴射式",
+        "外傷後新發頭痛"
+      ]
+    },
+    "core_content": {
+      "core_answer": "頭痛成因好多，首先要分清楚類型，先至知道點處理。中醫會按「辨證」去睇，唔係所有頭痛都一樣嘅調理方法。\n\n【頭痛四大常見類型（西醫分類）】\n\n1. 緊張型頭痛（最常見）\n   特徵：雙邊太陽穴或後腦「箍住咁痛」、脹痛，持續數小時至一日\n   成因：肩頸肌肉長時間繃緊（office族最多）、壓力、姿勢不良\n   中醫對應：多屬「氣滯」或「肝陽上亢」\n\n2. 偏頭痛（Migraine）\n   特徵：通常一邊頭、跳痛、伴噁心、怕光怕聲、可持續4-72小時\n   前兆：部分人會有視覺閃光、麻痺感（aura）\n   中醫對應：多屬「肝陽上亢」或「血瘀」\n\n3. 頸源性頭痛（Cervicogenic headache）\n   特徵：由後頸/肩井位置延伸上後腦再到太陽穴，頸椎活動誘發\n   成因：頸椎關節或肌肉問題——office族、低頭族最常見\n   中醫對應：多屬「經絡不通」「寒凝」\n\n4. 叢集性頭痛（Cluster — 較少見）\n   特徵：單邊眼眶劇痛、眼紅流鼻水、每日同一時間發作\n   建議：呢種一定要睇神經科\n\n【中醫辨證分型（簡化）】\n• 肝陽上亢：頭脹痛、面紅、易怒、失眠 → 菊花茶、天麻鈎藤茶\n• 氣滯（壓力型）：雙邊頭痛、胸悶、嘆氣 → 玫瑰花茶、合歡花\n• 血瘀：固定部位刺痛、夜間加重、面色暗 → 需中醫師把脈後處方\n• 痰濕：頭重如裹、伴困倦噁心 → 薏米茯苓水、山楂陳皮\n• 氣血虛：頭隱隱痛、疲勞、面色白 → 紅棗黃芪水（但如肝陽上亢則禁用）\n\n【自我穴位按摩（每個按1-2分鐘，順時針打圈）】\n\n• 太陽穴：眉尾同外眼角中間凹陷位——最經典緩解頭痛穴位，尤其太陽穴區域痛\n• 風池穴：後頸兩條大筋外側凹陷位，髮際線上一點——緩解頸源性頭痛、感冒頭痛\n• 百會穴：頭頂正中（兩耳尖連線中點）——頭頂痛、頭脹必按\n• 印堂穴：兩眉中間——前額痛、眼疲勞型頭痛\n• 合谷穴：手背虎口（拇指食指之間肌肉隆起最高點）——「面口合谷收」，有止頭痛作用，孕婦忌按\n• 肩井穴：肩膊頂部、大椎穴同肩峰中點——按落去通常有酸緊感，針對頸源性頭痛、肩頸緊張；孕婦忌按\n• 四神聰：百會穴前後左右各一吋（四個穴位）——失眠+頭痛同時按\n\n按壓力度：酸脹有「得氣」感覺就啱，唔使好用力。\n\n【食療（按類型）】\n• 菊花茶：清肝明目，肝陽上亢型頭痛首選（不適合脾胃虛寒者長期飲）\n• 天麻魚頭湯：傳統治頭暈頭痛方，天麻可買切片（需中醫師建議劑量）\n• 葛根粉：緩解頸源性頭痛、落枕（開水沖調）\n• 薑茶：寒性頭痛（受涼後發作）適用\n• 玫瑰花茶：壓力型頭痛，疏肝解鬱\n• 避免：酒精、朱古力、陳年芝士、味精（common migraine triggers）\n\n【生活調整】\n• 設定每45分鐘企起身、轉動頸膊\n• 電腦屏幕調到眼睛水平線略低（頸唔需要後仰）\n• 睡眠7-8小時，固定時間\n• 每日至少1.5L水（脫水係常見頭痛誘因）\n• 記頭痛日記：幾時發作、吃咗咩、壓力事件 → 搵出個人triggers",
+      "supporting_points": [
+        "研究證據：針灸同穴位按摩對緊張型頭痛和偏頭痛預防有中等程度證據（Cochrane 2016 acupuncture for tension-type and migraine prevention）",
+        "頸源性頭痛通常係肌骨骼問題，物理治療、姿勢矯正效果往往比止痛藥更持久",
+        "偏頭痛患者應避免過度使用止痛藥（>10日/月）——會引致「藥物過度使用性頭痛」",
+        "如果頭痛模式突然改變、越嚟越頻、或者強度升級，應該睇醫生排除其他原因",
+        "孕婦按穴位要避開合谷、肩井、三陰交（有活血作用）"
+      ],
+      "evidence_level": "Mixed (Traditional Practice + Cochrane evidence for acupuncture)",
+      "next_best_question": "你嘅頭痛係一邊定兩邊？有冇跟頸膊緊或者壓力有關？",
+      "media": [
+        {
+          "id": "video_hegu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/hegu.mp4",
+          "caption": "合谷穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_fengchi_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/fengchi.mp4",
+          "caption": "風池穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "先幫用戶分清頭痛類型（部位、性質、誘因），再對應中醫辨證同穴位／食療建議。如有block_conditions列出嘅警訊症狀，即時escalate到急症/神經科",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如涉及長期office頭痛 → 推介 tcm_urban_office_pain；如伴失眠 → 推介 tcm_sleep_insomnia",
+      "escalation_trigger": "突然最劇烈頭痛、伴神經症狀（視力/言語/肢體無力）、外傷後新發頭痛、發燒頸硬、嘔吐噴射式 → 立即急症室 / 999"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_urban_office_pain",
+        "tcm_acupressure_pain",
+        "tcm_sleep_insomnia",
+        "tcm_red_flags"
+      ],
+      "sources": [
+        "Cochrane Database of Systematic Reviews: Acupuncture for tension-type headache (Linde et al., 2016)",
+        "Cochrane Database of Systematic Reviews: Acupuncture for the prevention of episodic migraine (Linde et al., 2016)",
+        "IHS International Classification of Headache Disorders (ICHD-3)",
+        "中醫內科學 — 頭痛篇（人民衛生出版社）",
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）"
+      ]
+    }
+  }
+}

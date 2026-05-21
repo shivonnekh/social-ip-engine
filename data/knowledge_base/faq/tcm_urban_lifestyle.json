@@ -1,0 +1,113 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_urban_lifestyle",
+      "domain": "9_urban_health",
+      "category": "9.1_lifestyle",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "都市生活養生：手腳冰冷、過敏鼻炎、肺健康",
+      "objective": "解決香港都市人常見的生活健康問題：手腳冰冷（陽虛）、過敏鼻炎、天氣轉變保健及肺部護理",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "手腳凍",
+        "手腳冰冷",
+        "手凍腳凍",
+        "陽虛手腳凍",
+        "冬天手腳冰冷",
+        "暖手腳方法",
+        "鼻敏感",
+        "鼻炎",
+        "過敏鼻炎中醫",
+        "鼻敏感中醫",
+        "打噴嚏",
+        "流鼻水",
+        "天氣轉涼鼻敏感",
+        "肺健康",
+        "肺保養",
+        "潤肺",
+        "喉嚨乾",
+        "喉嚨痛中醫",
+        "天氣轉變保健",
+        "轉季保健",
+        "天灸",
+        "天灸三伏",
+        "三伏天",
+        "冷氣病",
+        "冷氣太凍",
+        "空調健康",
+        "冷氣室工作",
+        "免疫力提升",
+        "增強抵抗力",
+        "手凍",
+        "腳凍",
+        "好凍",
+        "怕冷",
+        "鼻水",
+        "打乞嚏",
+        "鼻塞",
+        "成日病",
+        "冷氣凍",
+        "泡腳",
+        "cold hands",
+        "allergy"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "都市生活有獨特嘅健康挑戰——冷氣辦公室、快節奏、飲食不規律，令「陽氣不足」成為香港人最普遍體質問題。\n\n【手腳冰冷：陽虛還是氣血虛？】\n• 全身怕冷、手腳凍：陽虛——需補陽暖身\n  食療：生薑、桂枝、羊肉、核桃；薑棗茶\n• 手腳凍但身體不特別怕冷：氣血虛——氣血循環差\n  食療：當歸、紅棗、阿膠；補血食療\n• 手腳心熱（潮熱）：陰虛——唔係手腳凍問題\n\n穴位暖身：\n• 陽池穴（手背，腕橫紋中央）：補陽氣，改善手部冰冷\n• 湧泉穴（腳心）：按摩或泡腳刺激，全身暖和\n熱水泡腳法：每晚38-42度，浸10-15分鐘（加薑片效果更好）\n\n【鼻敏感（過敏性鼻炎）】\n中醫認為鼻敏感係「肺氣虛、衛氣不固」，易受風寒侵入：\n穴位：迎香穴（鼻翼旁）按壓每次2分鐘，每日2-3次\n食療：黃芪水（補肺衛氣）；辛夷花（通鼻竅）泡水\n生活：天氣轉涼及時加衣，避免直吹冷氣\n\n【天灸療法（三伏天灸）】\n天灸係中醫外治法，於夏季三伏天（一年中最熱時期）在特定穴位貼藥餅：\n原理：「冬病夏治」——夏天陽氣最旺盛，此時補陽效果最強\n適合：鼻敏感、哮喘、虛寒體質人士\n⚠️ 天灸必須由中醫師操作，貼藥時間和穴位需個人化\n貼藥後局部皮膚可能起水泡，屬正常反應，需注意護理\n\n【肺部保養（香港空氣污染背景下）】\n• 白色食物潤肺：銀耳、百合、梨、蓮藕（見 tcm_food_therapy_seasonal）\n• 潤肺茶：雪梨陳皮水、百合銀耳糖水\n• 早上咳嗽多痰：可能係夜間冷氣太凍，令肺系受寒\n• 呼吸練習：腹式呼吸（深呼吸時肚子向外脹），強化肺氣\n\n【冷氣病保健】\n長時間在冷氣環境工作是香港常見問題：\n• 在辦公室備薄外套，避免肩頸直接對著出風口\n• 多飲溫水（不喝凍飲）\n• 午飯後在自然空氣環境走15分鐘\n• 下班後用溫水沖澡，驅散寒氣",
+      "supporting_points": [
+        "嚴重手腳冰冷（手指變白/紫）可能係雷諾氏症，需西醫評估",
+        "嚴重鼻敏感影響睡眠和工作效率，建議耳鼻喉科確診+中醫輔助",
+        "天灸需由正規中醫師操作，唔建議自行嘗試",
+        "肺部症狀（持續咳嗽、喘息）請排除哮喘、COPD等西醫診斷",
+        "補陽食物性溫熱，陰虛火旺體質少用"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你係手腳凍、鼻敏感，還是轉季容易感冒呢？",
+      "media": [
+        {
+          "id": "video_yongquan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yongquan.mp4",
+          "caption": "湧泉穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_yingxiang_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yingxiang.mp4",
+          "caption": "迎香穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "根據具體問題（手腳凍/鼻敏感/肺保養）提供對應段落",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "手指變白/紫、嚴重喘息、持續咳嗽超過3週，請就醫"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_urban_office_pain",
+        "tcm_food_therapy_seasonal",
+        "tcm_education_concepts"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "中醫內科學 — 感冒、鼻鼽篇",
+        "本草綱目 — 辛夷花、黃芪條目"
+      ]
+    }
+  }
+}

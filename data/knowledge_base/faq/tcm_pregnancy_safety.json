@@ -1,0 +1,93 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_pregnancy_safety",
+      "domain": "2_safety",
+      "category": "2.1_pregnancy",
+      "card_type": "Medical",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-04-13",
+      "version": 1
+    },
+    "overview": {
+      "title": "懷孕期間中醫安全：禁忌中藥、穴位與安全食療",
+      "objective": "教育用戶懷孕期間哪些中藥材、穴位屬禁忌，哪些食材安全可用",
+      "patient_profile": [
+        "懷孕婦女",
+        "計劃懷孕人士",
+        "照顧懷孕家人嘅人",
+        "對中醫養生有興趣嘅孕婦"
+      ],
+      "trigger_conditions": [
+        "懷孕可唔可以飲涼茶",
+        "孕婦可以按穴位嗎",
+        "懷孕食咩中藥安全",
+        "懷孕禁忌",
+        "孕期中醫",
+        "孕婦薏米",
+        "懷孕紅花",
+        "懷孕當歸",
+        "孕婦食療",
+        "懷孕飲花茶",
+        "pregnant TCM",
+        "孕期穴位",
+        "三陰交孕婦"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "懷孕期間使用中藥材同穴位按摩需要特別小心。中醫將孕期禁忌藥分為「禁用」（絕對唔可以用）同「慎用」（需中醫師評估）兩類。\n\n【絕對禁用中藥（禁用藥）】\n以下藥材有明確嘅胚胎毒性、致畸性或強烈促進子宮收縮作用：\n• 麝香：強力開竅活血，可誘發流產\n• 三棱、莪術：破血力強，刺激子宮收縮\n• 巴豆、大戟、芫花、甘遂：峻烈瀉下藥，可毒害胎兒\n• 水蛭、斑蝥、蜈蚣、全蝎：動物類破血/毒性藥\n• 雄黃、砒霜：含砷礦物，有致畸性\n• 蘆薈（藥用劑量）：含蒽醌類化合物，強烈瀉下\n⚠️ 以上屬《中國藥典》明確列為妊娠禁用藥物\n\n【需特別注意嘅慎用藥】\n• 紅花：已證實對子宮有刺激作用（PMID: 7646782）\n• 當歸：活血作用強，首三個月尤其需避免，有抗凝血特性\n• 桃仁：促進子宮收縮（經動物實驗證實）\n• 薏苡仁（薏米）：傳統認為「滑利」可致滑胎，HK煲湯常用，孕早期宜避免\n• 益母草：名為「益母」但係產後用藥，孕期禁用——已證實刺激子宮收縮\n• 肉桂（藥用劑量）：動物實驗發現致畸風險，烹飪少量一般安全\n• 山楂：活血行氣，傳統認為可刺激子宮收縮\n• 大黃、芒硝：峻烈瀉下，刺激腸道及子宮平滑肌\n• 半夏：生品有毒，有降氣散結作用\n\n【懷孕禁按穴位】\n以下穴位喺37週前應避免按壓（傳統禁忌，臨床上用於催產）：\n• 三陰交（SP-6）：脾肝腎三經交匯，強力下行作用，可刺激子宮活動\n• 合谷穴（LI-4）：強力行氣，可促進子宮收縮\n• 至陰穴（BL-67）：傳統用於轉胎位（艾灸），對子宮有影響\n• 崑崙穴（BL-60）：助胎兒下降\n• 肩井穴（GB-21）：促進「胎兒下降」\n⚠️ 學術研究（Carr 2015, Levett 2019）指出目前證據不足以確認傷害，但作為預防原則，建議避免\n\n【孕期安全食材】\n以下食材一般認為孕期安全：\n✅ 紅棗：補氣養血，孕期煲湯常用\n✅ 枸杞：滋補肝腎，性質溫和\n✅ 百合、蓮子：養陰安神，適合甜品湯水\n✅ 淮山（山藥）：健脾補腎，HK煲湯常見\n✅ 生薑（少量）：止嘔，每日低於1000mg安全（有研究支持）\n\n【HK常見陷阱】\n• 薏米湯：好多HK湯水都有薏米，孕早期宜避免\n• 涼茶：廿四味孕婦禁用，五花茶、夏枯草偏寒涼亦不適合\n• 玫瑰花茶：輕微活血，大量飲用需注意\n• 滷水食品中嘅肉桂：烹飪量一般安全，但唔好額外大量進食",
+      "supporting_points": [
+        "《中國藥典（2020年版）》列出95種對生殖系統有毒性嘅中藥材：37種禁用、58種慎用",
+        "紅花、當歸、益母草對子宮嘅刺激作用已有動物實驗證實（PMID: 7646782）",
+        "懷孕禁按穴位屬傳統預防原則——研究（Carr 2015, PMC4680134）審查15項試驗未發現客觀傷害證據，但證據質量低，建議保守處理",
+        "薏苡仁嘅現代研究（PMID: 34203783）反而發現其可放鬆子宮肌肉收縮，與傳統觀點矛盾——但保守建議仍係孕早期避免",
+        "任何中藥使用需先諮詢註冊中醫師，唔可以自行配藥服用"
+      ],
+      "evidence_level": "Traditional Practice + Pharmacopoeia",
+      "next_best_question": "你而家懷孕幾多週？有冇正在服用任何中藥或西藥？",
+      "media": [
+        {
+          "id": "video_hegu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/hegu.mp4",
+          "caption": "合谷穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "提供安全資訊，強調諮詢中醫師",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如用戶提及具體症狀（孕吐、腰痛），可連接相關食療卡",
+      "escalation_trigger": "如用戶報告腹痛、出血、或已服用禁忌藥物，立即建議就醫"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_food_therapy_teas",
+        "tcm_food_therapy_seasonal",
+        "tcm_acupressure_pain",
+        "tcm_red_flags"
+      ],
+      "sources": [
+        "中國藥典 Pharmacopoeia of the People's Republic of China（2020年版）— 妊娠禁忌藥分類",
+        "Wang YG et al. Safety grade of application of TCM during pregnancy. Zhongguo Zhong Yao Za Zhi 2016;41(1):150-153. PMID: 28845658",
+        "紅花/當歸/益母草子宮刺激作用研究. Zhongguo Zhong Yao Za Zhi 1995. PMID: 7646782",
+        "Carr DJ. The safety of obstetric acupuncture: forbidden points revisited. Acupuncture in Medicine 2015. PMC4680134",
+        "Levett KM et al. Using Forbidden Points in Pregnancy. EBCAM 2019. PMC6918516",
+        "薏苡仁子宮肌肉放鬆研究. Biomolecules 2021. PMID: 34203783",
+        "肉桂致畸風險動物實驗. Frontiers in Pharmacology 2022. PMC8802657",
+        "Li X et al. Overview of Contraindicated Chinese Medicines for Pregnancy. IntechOpen 2017. DOI: 10.5772/intechopen.68671",
+        "NCCIH: Traditional Chinese Medicine — What You Need to Know. nccih.nih.gov"
+      ]
+    }
+  }
+}

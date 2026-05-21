@@ -1,0 +1,121 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_elderly_wellness",
+      "domain": "9_urban_health",
+      "category": "9.3_elderly",
+      "card_type": "Medical",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-04-14",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Grade B"
+    },
+    "overview": {
+      "title": "長者養生：中醫調理、防跌穴位、食療與認知保健",
+      "objective": "從中醫角度為長者提供全面養生方案，涵蓋常見體質問題（腎虛、脾虛、氣血不足）、防跌運動、骨質健康、認知保健、安眠及四季調養",
+      "patient_profile": [
+        "60歲以上長者",
+        "長者照顧者",
+        "關注父母健康嘅中年人士",
+        "安老院護理人員"
+      ],
+      "trigger_conditions": [
+        "長者養生",
+        "老人家保健",
+        "老人中醫",
+        "長者中醫",
+        "老人家食療",
+        "老人家容易跌倒",
+        "長者防跌",
+        "老人家骨質疏鬆",
+        "長者骨質健康",
+        "老人家記性差",
+        "長者認知退化",
+        "老人家瞓唔著",
+        "長者失眠",
+        "老人家冇胃口",
+        "長者脾虛",
+        "老人家腎虛",
+        "長者氣血不足",
+        "老人家怕凍",
+        "長者太極",
+        "老人家穴位按摩",
+        "醫管局中醫門診長者",
+        "長者健康中心中醫",
+        "安老院中醫",
+        "老人家補腎",
+        "長者四季養生",
+        "老人家點樣補身"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫養生講究「治未病」，對長者嚟講特別重要——唔係等到病咗先搞，而係平時保養好身體。\n\n【長者常見中醫體質問題】\n\n1. 腎虛（最核心）\n   中醫話「腎為先天之本」，年紀大腎氣自然衰退\n   徵兆：腰膝酸軟、夜尿多、耳鳴、記性差、怕凍\n   調理：杜仲煲腰花、核桃黑芝麻糊、枸杞桑葚茶\n\n2. 脾虛\n   脾主運化，長者脾胃功能衰退容易消化差\n   徵兆：冇胃口、食完肚脹、大便爛、面色黃、容易攰\n   調理：淮山蓮子粥、四神湯（淮山、芡實、茯苓、薏米）、陳皮水\n\n3. 氣血不足\n   氣血係身體嘅「燃料」，老人家生產氣血能力下降\n   徵兆：面色蒼白、頭暈、手腳凍、氣促、易倦\n   調理：紅棗桂圓水、當歸黃芪燉雞、黨參紅棗粥\n\n【長者防跌：太極與穴位按摩】\n\n太極拳係有最多研究證據支持嘅長者運動：\n• 改善平衡力同下肢力量，有效減少跌倒風險\n• 每星期練2-3次，每次30-45分鐘\n• 楊式太極最適合長者，動作慢、重心低\n• 可以喺公園、社區中心跟班學\n\n安全穴位自我按摩（適合長者）：\n• 足三里（膝蓋下四指）：健脾補氣、強壯體質，每日按2-3分鐘\n• 湧泉穴（腳底前三分之一凹陷處）：補腎安神，瞓前用掌心搓熱\n• 百會穴（頭頂正中）：醒腦提神、改善記性，輕輕按壓1-2分鐘\n• 合谷穴（手背虎口）：通經活絡、紓緩頭痛，力度要輕\n• 內關穴（手腕內側兩寸）：安神定志、紓緩心悸\n⚠️ 注意：長者皮膚薄，按壓力度要輕柔，唔好太大力\n\n【骨質健康】\n中醫角度：「腎主骨」，補腎就係護骨\n• 杜仲補腎壯骨茶：杜仲15克 + 桑寄生15克，煲水代茶飲\n• 淫羊藿（仙靈脾）：研究證實有抗骨質疏鬆活性\n• 黑豆排骨湯：補腎養血，黑色食物入腎\n• 配合曬太陽（每日15-20分鐘）同適量負重運動\n\n【認知保健】\n• 百會穴 + 四神聰穴（百會前後左右各一寸）：每日按摩改善腦部血液循環\n• 核桃、黑芝麻、桑葚：補腦益智食物\n• 太極拳改善認知功能有系統性回顧證據支持\n• 穴位按摩對輕度認知障礙有正面效果\n\n【長者安眠】\n• 酸棗仁茶：瞓前1小時飲，安神助眠\n• 百合蓮子糖水：清心安神\n• 泡腳：38-42度溫水，加艾葉或薑片，浸15分鐘\n• 神門穴（手腕橫紋小指側）：瞓前按壓2分鐘\n\n【四季養生要點】\n• 春天：疏肝理氣，飲玫瑰花茶、菊花茶\n• 夏天：清熱祛濕，冬瓜薏米湯、綠豆沙（唔好凍飲）\n• 秋天：潤肺養陰，雪梨燉川貝、沙參玉竹湯\n• 冬天：溫補腎陽，羊肉煲、杞子杜仲煲雞\n⚠️ 長者脾胃弱，食物要煮到軟爛易消化，少食多餐\n\n【長者食療原則】\n• 以溫性食物為主，避免生冷寒涼\n• 粥品係最佳選擇：易消化、可加藥材\n• 湯水要煲得夠耐，營養先出到嚟\n• 避免太油膩、太甜、太硬嘅食物",
+      "supporting_points": [
+        "太極拳防跌有強力研究證據支持——一個涵蓋24個隨機對照試驗嘅meta-analysis證實可有效減少長者跌倒風險（PMID: 37736087）",
+        "穴位按摩對長者認知功能有正面效果，一個系統性回顧同meta-analysis證實可維持長者認知能力（PMID: 29584457）",
+        "中藥補腎方劑對骨質疏鬆有積極效果，使用中藥嘅患者骨折風險降低27%（PMID: 30721331）",
+        "傳統中國運動（包括太極）與香港長者全因死亡率降低有顯著關聯（PMID: 26646293）",
+        "穴位按壓對長者安全、無創、適合自我操作，對改善睡眠質素同認知功能高度有效（PMID: 31426687）",
+        "長者用藥要特別小心，中藥亦有藥物相互作用，服用西藥嘅長者應諮詢註冊中醫師",
+        "嚴重骨質疏鬆、認知退化或其他慢性病應配合西醫治療，中醫作為輔助"
+      ],
+      "evidence_level": "Grade B",
+      "next_best_question": "你想了解邊方面多啲呢？例如防跌運動、食療湯水、定係改善瞓眠？",
+      "media": [
+        {
+          "id": "video_neiguan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/neiguan.mp4",
+          "caption": "內關穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_hegu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/hegu.mp4",
+          "caption": "合谷穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_yongquan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yongquan.mp4",
+          "caption": "湧泉穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "了解長者主要健康關注（防跌/認知/睡眠/骨質/脾胃），再針對性提供對應中醫養生方案",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如用戶提及具體症狀（失眠、消化差、記性差），導向相應專題卡片深入講解",
+      "escalation_trigger": "長者出現突然跌倒、嚴重記性衰退、持續胸痛、呼吸困難等急症徵兆，即刻建議撥打999或前往急症室"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_sleep_insomnia",
+        "tcm_fatigue_qi_deficiency",
+        "tcm_food_therapy_seasonal",
+        "tcm_food_therapy_teas",
+        "tcm_acupressure_pain",
+        "tcm_acupressure_energy_stress",
+        "tcm_education_concepts"
+      ],
+      "sources": [
+        "Huang ZG et al. Tai Chi for fall prevention and balance improvement in older adults: a systematic review and meta-analysis of randomized controlled trials. J Exerc Rehabil. 2023;19(5):273-286. PMID: 37736087",
+        "Li Z et al. Acupoint Massage for Managing Cognitive Alterations in Older Adults: A Systematic Review and Meta-Analysis. J Gerontol Nurs. 2018;44(4):43-50. PMID: 29584457",
+        "Lee HW et al. Systematic Review and Meta-Analysis on Using Acupressure to Promote the Health of Older Adults. J Appl Gerontol. 2020;39(10):1141-1164. PMID: 31426687",
+        "Yu F et al. Is Traditional Chinese Exercise Associated With Lower Mortality Rates in Older People? Evidence From a Prospective Chinese Elderly Cohort Study in Hong Kong. J Am Geriatr Soc. 2016;64(11):2356-2361. PMID: 26646293",
+        "Lee HW et al. Chinese herbal medicine for bone health — a systematic review. Phytother Res. 2014;28(12):1725-1732. PMID: 24963946",
+        "Weng SW et al. Association of use of Chinese herbal medicines and the risk of fracture in patients with osteoporosis: a population-based cohort study. Osteoporos Int. 2019;30(4):807-815. PMID: 30721331",
+        "Kim H et al. Effectiveness of Tai Chi as a non-invasive intervention for mild cognitive impairment in the elderly: A comprehensive review and meta-analysis. Complement Ther Med. 2024;82:103042. PMID: 38798853",
+        "Li C et al. Traditional and complementary medicine for promoting healthy ageing in WHO Western Pacific Region: Policy implications from utilization patterns and current evidence. Ageing Res Rev. 2020;64:101191. PMID: 32874912",
+        "Hong Kong Hospital Authority — 中醫門診服務 https://www.ha.org.hk/visitor/ha_visitor_index.asp?Content_ID=214172",
+        "衞生署長者健康中心 https://www.elderly.gov.hk/tc_chi/healthy_ageing/index.html"
+      ]
+    }
+  }
+}

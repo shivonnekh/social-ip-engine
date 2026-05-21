@@ -1,0 +1,98 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_constitution_assessment",
+      "domain": "4_body_constitution",
+      "category": "4.3_assessment",
+      "card_type": "Medical",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-04-14",
+      "version": 1
+    },
+    "overview": {
+      "title": "中醫體質自我評估：九種體質分類與調理",
+      "objective": "幫助用戶初步了解自己嘅中醫體質類型，認識王琦教授九種體質分類系統，提供每種體質嘅自我判斷要點同埋飲食生活建議，並指引去邊度做正式評估",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "體質評估",
+        "體質自我評估",
+        "體質測試",
+        "我係咩體質",
+        "我屬於邊種體質",
+        "九種體質",
+        "體質分類",
+        "體質辨識",
+        "中醫體質",
+        "點知自己咩體質",
+        "體質問卷",
+        "CCMQ",
+        "王琦體質",
+        "平和質",
+        "氣虛質",
+        "陽虛質",
+        "陰虛質",
+        "痰濕質",
+        "濕熱質",
+        "血瘀質",
+        "氣鬱質",
+        "特稟質",
+        "寒底定熱底",
+        "我係寒底",
+        "我係熱底",
+        "body constitution",
+        "constitution test",
+        "體質調理",
+        "邊種體質食咩好",
+        "體質養生"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫體質分類係由北京中醫藥大學王琦教授建立嘅系統，將人嘅體質分為9種基本類型。呢個系統喺2009年被中華中醫藥學會確立為國家標準（ZYYXH/T157-2009），之後喺香港都做過好多驗證研究。你可以透過以下特徵初步判斷自己嘅體質，但準確評估需要搵中醫師望舌把脈。\n\n【1. 平和質（健康體質）】\n自評要點：精力充沛、面色紅潤、唔怕冷唔怕熱、瞓得好食得好、少病少痛\n調理建議：保持均衡飲食、規律運動、充足睡眠就得\n\n【2. 氣虛質（容易攰）】\n自評要點：成日覺得好攰、做少少嘢就冇氣冇力、容易出汗、講嘢聲細、易感冒\n飲食建議：多食北芪、黨參、淮山、紅棗、蓮子；煲湯可加北芪黨參\n生活建議：適度運動（太極、散步），唔好做到太攰；瞓飽啲，唔好捱夜\n\n【3. 陽虛質（怕凍底）】\n自評要點：特別怕凍、手腳成日冰冰冷、著多件衫都唔夠暖、肚痾多、夜尿多、面色偏白\n飲食建議：多食薑、桂圓、羊肉、韭菜、核桃；少食生冷嘢（壽司、沙律、凍飲）\n生活建議：注意保暖特別係腰腹同腳底；用暖水泡腳；曬下朝早太陽\n\n【4. 陰虛質（燥熱底）】\n自評要點：口乾舌燥、手心腳心發熱、瞓覺出汗（盜汗）、面紅、心煩易嬲、大便乾\n飲食建議：多食雪梨、百合、銀耳、枸杞、芝麻、蜂蜜；煲下沙參玉竹湯\n生活建議：唔好捱夜（捱夜最傷陰）、避免辛辣煎炸嘢、做柔和運動如瑜伽\n\n【5. 痰濕質（痰多肥胖底）】\n自評要點：身體偏肥胖（特別係肚腩）、容易覺得疲倦沉重、痰多、大便黏、面油多、舌苔厚膩\n飲食建議：多食薏米、冬瓜、赤小豆、茯苓；少食甜食、油膩嘢、奶茶\n生活建議：一定要做運動出汗（跑步、游水都好）；食少啲宵夜\n\n【6. 濕熱質（濕毒底）】\n自評要點：容易生暗瘡、口苦口臭、大便臭而黏、小便黃、容易出汗而且有味、面油多\n飲食建議：多食綠豆、苦瓜、土茯苓、菊花；飲下五花茶、雞骨草\n生活建議：飲食清淡、少食煎炸辛辣嘢同酒；保持皮膚清潔乾爽\n\n【7. 血瘀質（血行唔暢）】\n自評要點：面色偏暗沉、嘴唇偏紫色、容易瘀青、皮膚乾燥、女性月經有血塊同痛經、健忘\n飲食建議：多食山楂、黑木耳、醋、紅糖、玫瑰花茶；少食肥膩同生冷嘢\n生活建議：多做伸展運動促進血液循環；唔好坐得太耐、定期起身行下\n\n【8. 氣鬱質（情緒壓抑底）】\n自評要點：情緒容易低落、成日歎氣、胸口同兩邊肋骨脹悶、喉嚨好似有嘢頂住、瞓唔好\n飲食建議：飲玫瑰花茶、茉莉花茶、佛手柑茶；食下陳皮、柑橘類水果\n生活建議：做自己鍾意嘅運動（跑步、行山）；搵朋友傾下偈；學下深呼吸\n\n【9. 特稟質（過敏體質）】\n自評要點：容易鼻敏感（打噴嚏、流鼻水）、皮膚過敏（出風癩、濕疹）、對花粉或食物過敏、哮喘\n飲食建議：多食北芪、靈芝增強免疫力；少食蝦蟹等容易致敏食物\n生活建議：留意同避開自己嘅致敏原；保持居住環境清潔；轉季時特別注意\n\n⚠️ 重要提醒：\n• 大部分人係混合體質（例如氣虛兼痰濕），唔係純粹一種\n• 體質會隨年齡、季節、生活習慣改變，唔係一世固定\n• 以上只係初步自我參考，準確評估需要搵中醫師望聞問切\n• 香港有好多地方可以做正式體質評估",
+      "supporting_points": [
+        "王琦教授九種體質分類係目前最廣泛使用嘅中醫體質標準，2009年被列為國家標準",
+        "CCMQ（中醫體質量表）有60條問題，已喺香港人群驗證過有效（1,084名香港受試者，98.6%可被分類）",
+        "2023年廣東話版老人體質問卷（TCMECQ-C）已通過驗證，適用於65歲以上長者",
+        "香港研究發現，30-65歲女性最常見嘅偏頗體質係氣虛質、痰濕質同陽虛質",
+        "體質辨識已被納入中國公共衞生服務基本項目，香港越嚟越多中醫診所都有呢個服務",
+        "研究證實偏頗體質嘅人，健康相關生活質素（HRQOL）明顯低過平和質",
+        "香港政府資助中醫診所遍布18區，部分提供體質辨識服務，收費相宜",
+        "浸大中醫藥診所、仁濟醫院中醫、博愛醫院中醫、東華三院中醫都有提供體質評估相關服務",
+        "理大康復治療診所、港大中醫診所亦有相關服務"
+      ],
+      "evidence_level": "Grade B",
+      "next_best_question": "你有冇留意到自己有邊幾個體質嘅特徵呢？定係想知邊度可以做正式體質評估？"
+    },
+    "execution_logic": {
+      "recommended_action": "根據用戶描述嘅症狀，幫佢初步判斷可能屬於邊種體質類型，提供對應嘅飲食生活建議，並建議去正規中醫診所做全面體質評估",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如用戶表現出明顯嘅單一體質特徵，可推薦相關嘅食療卡（tcm_food_therapy_seasonal, tcm_dampness_removal, tcm_fatigue_qi_deficiency）；如用戶問到邊度做評估，推薦 tcm_red_flags 確認冇緊急情況",
+      "escalation_trigger": "如用戶描述嘅症狀涉及嚴重唔舒服（胸痛、持續高燒、突然消瘦），需要即刻建議求醫，唔好當體質問題處理"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_education_concepts",
+        "tcm_dampness_removal",
+        "tcm_fatigue_qi_deficiency",
+        "tcm_food_therapy_seasonal",
+        "tcm_food_therapy_teas",
+        "tcm_sleep_insomnia",
+        "tcm_womens_hormonal"
+      ],
+      "sources": [
+        "Wang Q. Classification and Diagnosis Basis of Nine Basic Constitutions in Chinese Medicine. J Beijing Univ Tradit Chin Med. 2005;28(4):1-8.",
+        "China Association of Chinese Medicine. Classification and Determination of Constitution in TCM (ZYYXH/T157-2009). Beijing: China Association of Chinese Medicine; 2009.",
+        "Wong W, Lam CL, Wong VT, et al. Validation of the Constitution in Chinese Medicine Questionnaire: Does the Traditional Chinese Medicine Concept of Body Constitution Exist? Evid Based Complement Alternat Med. 2013;2013:481491. PMID: 23710222",
+        "Zhu Y, Shi H, Wang Q, et al. Development and evaluation of short form of constitution in Chinese medicine questionnaire: a national epidemiological survey data of 21,948 cases. J Chin Integr Med. 2022;20(4):355-362. PMID: 35294132",
+        "Li L, Yao H, et al. Valid and Convenient Questionnaire Assessment of Chinese Body Constitution: Item Characteristics, Reliability, and Construct Validation. Patient Prefer Adherence. 2022;16:1995-2007. PMID: 35942226",
+        "Chung VCH, et al. Validation of the Cantonese version of the Traditional Chinese Medicine (TCM) Body Constitution Questionnaire in elderly people. Chin Med. 2023;18(1):132. PMID: 37821975",
+        "Huang YP, et al. Characteristics of TCM constitutions of adult Chinese women in Hong Kong and identification of related influencing factors: a cross-sectional survey. J Transl Med. 2014;12:140. PMID: 24886055",
+        "Zhu Y, Wang Q, et al. Development and evaluation of short-form version of the Constitution in Chinese Medicine Questionnaire. Chin Med. 2023;18(1):147. PMID: 37904166",
+        "Chung VCH, et al. Measuring body constitution: validation of the Body Constitution Questionnaire (BCQ) in Hong Kong. Complement Ther Med. 2014;22(6):987-995. PMID: 25146072"
+      ]
+    }
+  }
+}

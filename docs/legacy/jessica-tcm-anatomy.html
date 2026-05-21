@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>Jessica TCM — Tool & Prompt Anatomy</title>
+<style>
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang HK","PingFang SC","Helvetica Neue",sans-serif;background:#f7f9fb;color:#1a2332;margin:0;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .page{max-width:1280px;margin:0 auto;padding:48px 32px 96px}
+
+  header{border-bottom:1px solid #e3e8ef;padding-bottom:32px;margin-bottom:48px}
+  header .kicker{text-transform:uppercase;letter-spacing:.12em;font-size:12px;color:#10b981;font-weight:600;margin-bottom:12px}
+  header h1{font-size:36px;line-height:1.15;font-weight:700;margin:0 0 12px;letter-spacing:-.01em}
+  header p.lead{font-size:16px;color:#556073;max-width:820px;margin:0}
+  header .meta{margin-top:18px;font-size:13px;color:#8a94a6}
+  header .meta code{background:#eef2f7;padding:2px 8px;border-radius:4px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:48px}
+  .stat-card{background:#fff;border:1px solid #e3e8ef;border-radius:10px;padding:18px 20px;border-top:4px solid #10b981}
+  .stat-card.tools{border-top-color:#059669}
+  .stat-card.simplified{border-top-color:#2563eb}
+  .stat-card.production{border-top-color:#dc2626}
+  .stat-card .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#8a94a6;margin-bottom:6px}
+  .stat-card .value{font-size:28px;font-weight:700;color:#1a2332;line-height:1.1}
+  .stat-card .sub{font-size:12px;color:#556073;margin-top:4px}
+
+  .section{margin-bottom:48px}
+  .section h2{font-size:24px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
+  .section .lede{font-size:14px;color:#556073;margin:0 0 24px;max-width:760px}
+
+  .phase-block{margin-bottom:32px}
+  .phase-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:8px 14px;border-radius:8px}
+  .phase-header h3{font-size:18px;font-weight:700;margin:0}
+  .phase-header .count{margin-left:auto;font-size:13px;color:#556073;background:#fff;padding:3px 10px;border-radius:999px;border:1px solid #e3e8ef}
+
+  .tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:12px}
+  .tool-card{background:#fff;border:1px solid #e3e8ef;border-radius:10px;padding:14px 18px;border-left:3px solid #475569}
+  .tool-card .head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .tool-card .icon{font-size:20px;line-height:1}
+  .tool-card .name{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;font-weight:600;color:#1a2332}
+  .tool-card .when{font-size:11px;color:#8a94a6;margin-left:auto;font-weight:500}
+  .tool-card .plain{font-size:14px;color:#1a2332;margin:6px 0}
+  .tool-card .meta{display:flex;gap:14px;font-size:11px;color:#556073;margin-top:8px;padding-top:8px;border-top:1px solid #f3f4f6}
+  .tool-card .meta strong{color:#1a2332;font-weight:600}
+  .tool-card .meta code{background:#f3f4f6;padding:1px 6px;border-radius:3px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:10px}
+  .tool-card.greeting{border-left-color:#2563eb}
+  .tool-card.diagnosis{border-left-color:#059669}
+  .tool-card.product{border-left-color:#ea580c}
+  .tool-card.clinic{border-left-color:#7c3aed}
+  .tool-card.cross{border-left-color:#475569}
+
+  .prompt-anatomy{background:#fff;border:1px solid #e3e8ef;border-radius:12px;padding:24px 28px;margin-bottom:24px}
+  .prompt-section{display:grid;grid-template-columns:240px 60px 1fr;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid #f3f4f6}
+  .prompt-section:last-child{border-bottom:none}
+  .prompt-section .sname{font-weight:600;font-size:14px;color:#1a2332}
+  .prompt-section .schar{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;color:#8a94a6;text-align:right}
+  .prompt-section .sbar{height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;position:relative}
+  .prompt-section .sbar > div{height:100%;background:#10b981;border-radius:4px}
+
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+  .compare-card{background:#fff;border:1px solid #e3e8ef;border-radius:10px;padding:20px 24px}
+  .compare-card.simp{border-top:4px solid #2563eb}
+  .compare-card.prod{border-top:4px solid #dc2626}
+  .compare-card h4{font-size:15px;font-weight:700;margin:0 0 12px}
+  .compare-card .big{font-size:32px;font-weight:700;color:#1a2332;line-height:1.1}
+  .compare-card .small{font-size:13px;color:#556073;margin-top:6px}
+
+  details.prompt-show{margin-top:16px;background:#fff;border:1px solid #e3e8ef;border-radius:10px;padding:14px 18px}
+  details.prompt-show summary{cursor:pointer;font-weight:600;color:#10b981}
+  details.prompt-show pre{background:#f8fafc;border:1px solid #e3e8ef;border-radius:8px;padding:14px 18px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;line-height:1.55;overflow-x:auto;margin-top:12px;white-space:pre-wrap;color:#1a2332}
+
+  footer{margin-top:64px;padding-top:24px;border-top:1px solid #e3e8ef;color:#8a94a6;font-size:13px}
+</style>
+</head>
+<body><div class="page">
+
+<header>
+  <div class="kicker">Jessica TCM Wellness · System Anatomy</div>
+  <h1>Tool 同 Prompt 解剖圖</h1>
+  <p class="lead">
+    Jessica 收到病人訊息嗰陣，背後其實有 <strong>18 個 tools</strong> + 一個 <strong>2.3k 字嘅 system prompt</strong> 喺度。呢度逐個拆開俾你睇 — 每個 tool 做咩、幾時用、依家 prompt 入面有咩。
+  </p>
+  <p class="meta">
+    Build: <code>2026-05-04 11:15</code> · Branch: <code>experiment/simplified-jessica-prompt</code> · Variant: <code>JESSICA_PROMPT_VARIANT=simplified</code>
+  </p>
+</header>
+
+<div class="stat-grid">
+  <div class="stat-card tools">
+    <div class="label">Total tools</div>
+    <div class="value">18</div>
+    <div class="sub">14 銷售流程 + 4 背景</div>
+  </div>
+  <div class="stat-card simplified">
+    <div class="label">Simplified prompt</div>
+    <div class="value">2,297 chars</div>
+    <div class="sub">~919 tokens · 你而家用嘅版本</div>
+  </div>
+  <div class="stat-card production">
+    <div class="label">Production prompt</div>
+    <div class="value">16,007 chars</div>
+    <div class="sub">~6403 tokens · 預設、live 用嘅</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Saved per turn</div>
+    <div class="value">86%</div>
+    <div class="sub">~5484 tokens</div>
+  </div>
+</div>
+
+<section class="section">
+  <h2>🛠 18 個 Tools (按 4 個階段分類)</h2>
+  <p class="lede">
+    每個 tool 做一件具體嘅事。Jessica 嘅 LLM 喺每一輪自己決定 call 邊個 tool — 但 prompt 要俾佢清晰指引「幾時用邊個」。
+  </p>
+
+  <div class="phase-block">
+    <div class="phase-header" style="background:#eaf2ff">
+      <h3 style="color:#2563eb">Phase 1 — 招呼</h3>
+      <span class="count">1 tools</span>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card greeting">
+        <div class="head">
+          <span class="icon">👋</span>
+          <span class="name">send_doctor_greeting()</span>
+          <span class="when">對話最開頭，未介紹過自己嗰陣</span>
+        </div>
+        <div class="plain">送出洪醫師相片 + 自我介紹</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>(冇 input)</code></span>
+          <span><strong>返回:</strong> Jessica portrait photo + 「你好我係...」bubble</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-header" style="background:#e6f5ef">
+      <h3 style="color:#059669">Phase 2 — 體質診斷</h3>
+      <span class="count">9 tools</span>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">📝</span>
+          <span class="name">record_complaint()</span>
+          <span class="when">病人講第一次「我有咩唔舒服」</span>
+        </div>
+        <div class="plain">記低病人主要不舒服嘅嘢</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>text</code></span>
+          <span><strong>返回:</strong> JSON: 已記低 complaint</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">🤔</span>
+          <span class="name">record_complaint_probe()</span>
+          <span class="when">對主訴做 caring follow-up（持續多耐？/ 點樣不適？）</span>
+        </div>
+        <div class="plain">記低你問病人嘅關心反問 + 佢嘅答覆</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>question, answer</code></span>
+          <span><strong>返回:</strong> JSON: 已記低 probe，需要至少 3 條先可以影脷</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">👅</span>
+          <span class="name">request_tongue_photo()</span>
+          <span class="when">完成 3 條 caring probe 之後</span>
+        </div>
+        <div class="plain">叫病人影張脷相俾你睇</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>(冇 input)</code></span>
+          <span><strong>返回:</strong> JSON: 已 mark 為已邀請影脷</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">🔬</span>
+          <span class="name">analyze_tongue()</span>
+          <span class="when">收到病人 send 嘅 tongue photo</span>
+        </div>
+        <div class="plain">用 AI vision 分析病人嘅脷相 (Anthropic→Groq→OpenAI 三層 fallback)</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>image_url</code></span>
+          <span><strong>返回:</strong> JSON: 顏色 / 苔 / 形態 / 信號 list</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">🌿</span>
+          <span class="name">describe_tongue_findings()</span>
+          <span class="when">analyze_tongue 完之後，下一句話</span>
+        </div>
+        <div class="plain">用 Cantonese 寫出脷象分析 (lead bubble — 病人睇到嘅文字)</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>description</code></span>
+          <span><strong>返回:</strong> 「睇到你條脷...」LLM 寫嘅 reading bubble</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">❓</span>
+          <span class="name">ask_constitution_question()</span>
+          <span class="when">問 5 條體質問題嘅每一條</span>
+        </div>
+        <div class="plain">問 Q1-Q5 體質問題（自動 render a/b/c 選項 bubble）</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>question_number</code></span>
+          <span><strong>返回:</strong> JSON: a/b/c bubble 已 queue</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">✅</span>
+          <span class="name">record_q_answer()</span>
+          <span class="when">病人答完一條 Q</span>
+        </div>
+        <div class="plain">記低病人答 Q1-Q5 邊個 letter (a/b/c)</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>question_number, letter, elaboration</code></span>
+          <span><strong>返回:</strong> JSON: 答案存咗</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">🎯</span>
+          <span class="name">declare_constitution()</span>
+          <span class="when">5 條 Q 全部答完之後（少於 5 會 reject）</span>
+        </div>
+        <div class="plain">計算病人嘅體質 (5 Q + 脷象 + 主訴 fused posterior scoring)</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>(冇 input)</code></span>
+          <span><strong>返回:</strong> JSON: primary + secondary 體質 + 分數 + 證據</span>
+        </div>
+      </div>
+
+      <div class="tool-card diagnosis">
+        <div class="head">
+          <span class="icon">💬</span>
+          <span class="name">share_diagnosis()</span>
+          <span class="when">declare_constitution 之後立即</span>
+        </div>
+        <div class="plain">把體質結果用 Cantonese 講俾病人聽 + 引用 YAML 食療/避免建議</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>diagnosis_text, product_recommendation_text</code></span>
+          <span><strong>返回:</strong> JSON: diagnosis_shared = True</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-header" style="background:#fff0e5">
+      <h3 style="color:#ea580c">Phase 3 — 產品推薦</h3>
+      <span class="count">1 tools</span>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card product">
+        <div class="head">
+          <span class="icon">💊</span>
+          <span class="name">share_product()</span>
+          <span class="when">宣布完體質之後，下一輪主動 (1-2 caring 之後)</span>
+        </div>
+        <div class="plain">推薦 Maca 極致黑G + 產品圖片 bubble + URL</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>product_pitch_text</code></span>
+          <span><strong>返回:</strong> Maca product photo + pitch text bubble</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-header" style="background:#f3edff">
+      <h3 style="color:#7c3aed">Phase 4 — 診所預約</h3>
+      <span class="count">3 tools</span>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card clinic">
+        <div class="head">
+          <span class="icon">🏥</span>
+          <span class="name">match_clinic()</span>
+          <span class="when">病人答完佢住喺邊區</span>
+        </div>
+        <div class="plain">根據病人住嘅區，配對最近嘅 Care Plus 診所</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>district</code></span>
+          <span><strong>返回:</strong> JSON: 診所名 / 地址 / 電話 / MTR / 營業時間</span>
+        </div>
+      </div>
+
+      <div class="tool-card clinic">
+        <div class="head">
+          <span class="icon">📅</span>
+          <span class="name">propose_booking_slot()</span>
+          <span class="when">病人答想幾時去（i.e. 「聽日下午」/「星期六」）</span>
+        </div>
+        <div class="plain">根據病人時間 hint 提議 2-3 個合適預約時段</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>date_hint, time_hint</code></span>
+          <span><strong>返回:</strong> JSON: proposed_date + proposed_time</span>
+        </div>
+      </div>
+
+      <div class="tool-card clinic">
+        <div class="head">
+          <span class="icon">✓</span>
+          <span class="name">confirm_booking()</span>
+          <span class="when">病人答「OK」/「好」/「確認」之後</span>
+        </div>
+        <div class="plain">確認預約並 save 入 CRM</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>(冇 input)</code></span>
+          <span><strong>返回:</strong> JSON: booking_confirmed = True</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-header" style="background:#eef2f7">
+      <h3 style="color:#475569">Cross-cutting (背景常用)</h3>
+      <span class="count">3 tools</span>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card cross">
+        <div class="head">
+          <span class="icon">📚</span>
+          <span class="name">find_knowledge_cards()</span>
+          <span class="when">病人問純 FAQ 問題（funnel 進行中唔好 call）</span>
+        </div>
+        <div class="plain">搵 KMS 卡片回答 FAQ 問題（Qdrant 向量搜尋）</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>query, card_domain, card_type, exclude_explored</code></span>
+          <span><strong>返回:</strong> JSON: 5-6 張卡片內容</span>
+        </div>
+      </div>
+
+      <div class="tool-card cross">
+        <div class="head">
+          <span class="icon">🔗</span>
+          <span class="name">get_related_cards()</span>
+          <span class="when">FAQ 模式跟進深入問題</span>
+        </div>
+        <div class="plain">攞同一張卡相關嘅其他卡片</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>card_ids</code></span>
+          <span><strong>返回:</strong> JSON: 1-3 張相關卡</span>
+        </div>
+      </div>
+
+      <div class="tool-card cross">
+        <div class="head">
+          <span class="icon">🧠</span>
+          <span class="name">update_conversation_summary()</span>
+          <span class="when">對話超過 8 輪自動壓縮</span>
+        </div>
+        <div class="plain">壓縮對話歷史成短 summary (saving tokens)</div>
+        <div class="meta">
+          <span><strong>輸入:</strong> <code>new_exchange_note</code></span>
+          <span><strong>返回:</strong> JSON: summary updated</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="section">
+  <h2>📜 Simplified Prompt 結構解剖</h2>
+  <p class="lede">
+    Jessica 而家用緊嘅 prompt 共 2,297 chars，分成 6 段。每一段做唔同嘅事。
+  </p>
+  <div class="prompt-anatomy">
+    <div class="prompt-section">
+      <div class="sname">溝通開場</div>
+      <div class="schar">126 chars</div>
+      <div class="sbar"><div style="width:19%"></div></div>
+    </div>
+    <div class="prompt-section">
+      <div class="sname">體質診斷</div>
+      <div class="schar">491 chars</div>
+      <div class="sbar"><div style="width:75%"></div></div>
+    </div>
+    <div class="prompt-section">
+      <div class="sname">產品推薦</div>
+      <div class="schar">290 chars</div>
+      <div class="sbar"><div style="width:44%"></div></div>
+    </div>
+    <div class="prompt-section">
+      <div class="sname">預約面診</div>
+      <div class="schar">530 chars</div>
+      <div class="sbar"><div style="width:81%"></div></div>
+    </div>
+    <div class="prompt-section">
+      <div class="sname">對話節奏</div>
+      <div class="schar">153 chars</div>
+      <div class="sbar"><div style="width:23%"></div></div>
+    </div>
+    <div class="prompt-section">
+      <div class="sname">🔧 Tool 一覽（每個 tool 一句指引）</div>
+      <div class="schar">655 chars</div>
+      <div class="sbar"><div style="width:100%"></div></div>
+    </div>
+
+  </div>
+
+  <details class="prompt-show">
+    <summary>👁 睇下 prompt 全文 (簡體 / 繁體 / 口語清理過)</summary>
+    <pre>你係香港中醫師 Jessica 洪醫師，喺心宜中醫工作。
+
+收到病人問題，按以下邏輯處理：
+
+## 溝通開場
+(a) 病人打招呼 → 先做自我介紹。
+(b) 病人直接問問題 → 自我介紹後，根據 Knowledge Base 簡短回答。
+
+開場範例：
+「你好 🌿 我係洪煊宜 Jessica，心宜中醫嘅註冊中醫師 👩‍⚕️ 請問你邊度唔舒服？」
+
+## 體質診斷
+
+🌟 **主動提議規則（重要）：**
+做完 1-2 輪 caring follow-up（探完病情 / 持續多耐 / 點樣不適）後，
+**主動 offer** 體質測試 — 唔好等病人開口問。範例：
+「我幫你睇下體質好唔好？影張脷相加答 5 條短題，
+我可以針對性同你建議養生方法 🌿 你 OK 嗎？」
+
+主動 trigger 嘅情況：
+- 病人講完辛苦症狀 → 做 1-2 個 caring 反問之後 → offer 體質測試
+- 病人問「點調理」/「有冇方法」 → 直接 offer
+- 病人問「我係咩體質」 → 直接 offer
+
+(a) 病人答應 → 叫佢影張脷相俾你睇。
+    用呢句：「中醫講『望聞問切』，可唔可以影張脷相俾我睇下？ 👅」
+
+(b) 跟住問 5 條問題判斷體質。
+
+呢兩步唔好一齊出 — 收到脷相之後至去問問題。
+不過，如果病人唔想 send 脷相，就直接問問題。
+
+每條問題俾 2-3 個選項（a, b, c 咁樣），一定要問足 5 條。
+
+(c) 體質可以係混合型，i.e. 20% 某種 + 30% 另一種 + 50% 第三種。
+
+## 產品推薦
+
+🌟 **主動推薦規則：**
+declare_constitution + share_diagnosis 之後 → **下一輪主動** share_product。
+唔好等病人問「有咩可以食」 — 完成診斷就自然帶到產品。
+
+**前提：推薦產品之前，必須已經幫佢做完體質測試。**
+未做過 → 唔好直接推 → 引導佢做「脷相 + 5 條問題」流程。
+
+產品推薦範例：
+「呢個體質適合用 Dr. Jessica 極致黑G瑪卡 ✨ 15 日份量，
+幫你提升能量、改善怕凍同精神差。👉 https://www.drjessica.com/products/maca」
+
+## 預約面診
+
+🌟 **主動邀請預約規則：**
+share_product 之後 1-2 輪 caring（病人有 reaction 嘅話）→ **主動** invite：
+「想唔想約個時間，等洪醫師親自望你脷象、開個療程？」
+
+病人答應 → 即刻問住邊區。
+
+兩間診所揀近啲：
+
+a. 沙田診所
+   沙田乙明邨明信樓地下 43 號地舖
+   沙田圍站 A 出口，步行約 2 分鐘
+   星期一至五：0930-1400；1530-1930
+   星期六、日：0930-1400；1530-1800
+   電話：2647 6566
+
+b. 馬鞍山診所
+   馬鞍山欣安商場二期一樓 113 號舖
+   恆安站 B 出口，步行約 3 分鐘
+   星期一、二、四、五：0930-1400；1530-1930
+   星期六：0930-1400；1530-1800
+   電話：2633 5668
+
+知道佢住邊區後 → match_clinic → 講：「好呀，嚟我哋呢度會好方便㗎。」
+跟住問佢想幾時去 → propose_booking_slot →
+病人答「OK」/「好」/「就咁」/「確認」 → IMMEDIATELY confirm_booking()。
+
+## 對話節奏
+每次回覆 **唔可以超過 200 字** — 簡潔、自然、似真人傾偈。
+每輪就住佢講開嘅話題反問，引佢講多啲，等佢感受到關懷。
+
+🌉 連續 2 輪短答（i.e.「OK」/「好」/「明白」）→ 主動 propose 下一步：
+「不如約個時間見面深入傾下？」 OR「想試吓我哋推薦嘅食療嗎？」
+
+## 🔧 Tool 一覽（每個 tool 一句指引）
+- `record_complaint(text)` — 病人第一次講辛苦/症狀時
+- `record_complaint_probe(question, answer)` — 對主訴做 caring 反問時
+- `request_tongue_photo()` — 想叫病人影脷相時
+- `analyze_tongue(image_url)` — 收到脷相之後
+- `ask_constitution_question(qid)` — 問 Q1-Q5 任何一條時（連返非 a/b/c 答案要重問都用呢個）
+- `record_q_answer(qid, letter, elaboration)` — 病人答完一條 Q 時
+- `declare_constitution()` — 5 條 Q 全部答完之後
+- `share_diagnosis(text, &quot;&quot;)` — declare_constitution 之後立即
+- `match_clinic(district)` — 病人講完住邊區時
+- `propose_booking_slot(preferred_day, preferred_time)` — 病人答想幾時去時
+- `confirm_booking()` — 病人確認時段時（包括「OK」/「好」/「就咁」）
+- `find_knowledge_cards(query)` — 純 FAQ 問題；funnel 進行中唔好 call
+</pre>
+  </details>
+</section>
+
+<section class="section">
+  <h2>📊 Simplified vs Production</h2>
+  <p class="lede">
+    Production 用 16k 字 prompt，simplified 用 2.3k — 細 7×。但 production 嘅 sequence enforcement 同 anti-pattern rules 多好多。
+  </p>
+  <div class="compare-grid">
+    <div class="compare-card simp">
+      <h4>🟦 Simplified (你而家用緊)</h4>
+      <div class="big">2,297</div>
+      <div class="small">chars · ~919 tokens</div>
+      <ul style="font-size:13px;color:#556073;margin-top:14px">
+        <li>5 段 + 1 個 tool reference list</li>
+        <li>3 個 🌟 主動 trigger 規則</li>
+        <li>口語化 Cantonese</li>
+        <li>畀 LLM 大量自由度</li>
+        <li>UX 好但 tool firing rate 較低 (~55%)</li>
+      </ul>
+    </div>
+    <div class="compare-card prod">
+      <h4>🟥 Production (live)</h4>
+      <div class="big">16,007</div>
+      <div class="small">chars · ~6403 tokens</div>
+      <ul style="font-size:13px;color:#556073;margin-top:14px">
+        <li>14-step journey 表 + 完整 sequence rules</li>
+        <li>Anti-pattern 例子 (✗ vs ✓)</li>
+        <li>Acupoint anti-repeat ledger</li>
+        <li>Pacing compress mode</li>
+        <li>Tool firing rate ~95% 但機械感</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>🔑 點解 Simplified 嘅 prompt 短咁多？</h2>
+  <p class="lede">
+    Simplified 嘅 design philosophy：<strong>prompt = 個性同對話風格 / tools = 處理流程</strong>。
+    Production 個 prompt 將兩樣嘢都包埋，所以變得好長。
+  </p>
+  <div class="tool-grid">
+    <div class="tool-card cross">
+      <div class="head"><span class="icon">🎭</span><span class="name">Personality</span></div>
+      <div class="plain">Jessica 講嘢嘅 tone、Cantonese 用詞、200 字 limit、reflection 反問風格 — 呢啲只能由 prompt 提供。</div>
+    </div>
+    <div class="tool-card cross">
+      <div class="head"><span class="icon">📋</span><span class="name">Tool guidance</span></div>
+      <div class="plain">每個 tool 一句解釋「幾時用」— LLM 用 tool description 同呢段 reference 自己決定 call 邊個。</div>
+    </div>
+    <div class="tool-card cross">
+      <div class="head"><span class="icon">🌟</span><span class="name">Proactive triggers</span></div>
+      <div class="plain">3 個主動 trigger（offer 體質測試 / 推產品 / invite 預約）— 確保 Jessica 唔係淨係被動等。</div>
+    </div>
+    <div class="tool-card cross">
+      <div class="head"><span class="icon">🚫</span><span class="name">Hard gates (在 tool 內部)</span></div>
+      <div class="plain">declare_constitution 要 5/5 答完先 unblock、share_product 要 diagnosis_shared、confirm_booking 要 slot_proposed — 呢啲規則喺 tool 內部 enforce，唔需要 prompt 重複。</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Generated 2026-05-04 11:15 · Branch <code>experiment/simplified-jessica-prompt</code> · 數據嚟自 <code>src/tools/sales.py</code> + <code>src/sales/sales_prompt.py</code>
+</footer>
+
+</div></body></html>

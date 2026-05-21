@@ -1,0 +1,94 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_dark_circles_food_therapy",
+      "domain": "3_skin_beauty",
+      "category": "3.5_dark_circles_food_therapy",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "Jessica",
+      "last_updated": "2026-04-30",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "黑眼圈嘅中醫食療：杞子茶、紅棗水、黑芝麻糊、黑豆湯，按體質揀啱先有效",
+      "objective": "畀用戶睇到，黑眼圈唔係淨係外面按穴位、做療程，內在嘅食療調理一樣重要。介紹按腎虛、血虛、氣滯三型體質嘅食療配搭",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "黑眼圈食療",
+        "食咩去黑眼圈",
+        "黑眼圈飲咩",
+        "黑眼圈飲乜",
+        "去黑眼圈嘅食物",
+        "黑眼圈飲湯",
+        "黑眼圈茶",
+        "黑眼圈中藥",
+        "黑眼圈茶飲",
+        "黑眼圈內服",
+        "杞子茶黑眼圈",
+        "紅棗水黑眼圈",
+        "黑芝麻糊黑眼圈",
+        "黑芝麻黑眼圈",
+        "黑豆湯黑眼圈",
+        "黑豆水黑眼圈",
+        "黨參湯黑眼圈",
+        "桂圓黑眼圈",
+        "腎虛黑眼圈食咩",
+        "血虛黑眼圈食咩",
+        "肝鬱黑眼圈食咩",
+        "黑眼圈內外調理",
+        "由内而外去黑眼圈",
+        "黑眼圈體質食物",
+        "補腎去黑眼圈",
+        "補血去黑眼圈",
+        "黑眼圈仲有咩方法",
+        "中醫仲有咩方法",
+        "黑眼圈其他方法",
+        "黑眼圈調理",
+        "黑眼圈湯水"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫睇黑眼圈，從來都係由內到外一齊調理 🌿。淨係按穴位、做療程係治標，飲返啱嘅食療先係治本。黑眼圈喺中醫嘅根源多數係腎虛、血虛或者肝鬱，唔同型嘅黑眼圈要搭唔同嘅食療：\n\n【一、腎虛型黑眼圈】\n特徵：深啡色、青黑色，眼下凹陷，伴隨腰痠、易攰、夜尿多\n適合食材：黑色入腎\n• 黑芝麻糊：每日早餐 1 碗，連食 4 週\n• 黑豆湯：黑豆 + 紅棗 + 桂圓煲水飲\n• 杞子茶：杞子 10-15 粒泡水，每日飲（上班族最方便）\n• 黑色食物食譜：黑米飯、黑木耳炒蛋、烏雞湯\n避免：生冷、凍飲、過鹹\n\n【二、血虛型黑眼圈】\n特徵：色淡偏褐、面色蒼白，伴隨經量少、易頭暈、手腳冰冷（女士尤其常見）\n適合食材：補血養顏\n• 紅棗黨參湯：紅棗 5 粒 + 黨參 10g + 桂圓 6 粒煲水\n• 阿膠紅棗水（女士）：經期完後一星期飲，補血效果倍增\n• 紅棗杞子茶：日常飲用最方便\n• 補血食譜：豬肝菠菜湯、紅菜頭湯、雞肉黑木耳粥\n避免：生冷、凍飲、減肥節食\n\n【三、肝鬱／血瘀型黑眼圈】\n特徵：青藍色、灰暗，伴隨經期不順、PMS、情緒易怒、肩頸繃緊\n適合食材：疏肝活血\n• 玫瑰花茶：玫瑰花 5-8 朵泡熱水，每日飲（疏肝最佳）\n• 山楂洛神花茶：活血散瘀\n• 三七粉（要先諮詢中醫師）：早餐前 3g 沖水\n• 食譜：紅菜頭湯、紫菜蛋花湯（含礦物質促循環）\n避免：油膩、甜食、熬夜\n\n【實戰建議】\n• 杞子紅棗茶 — 最 lazy、最易堅持嘅組合：杞子 10 粒 + 紅棗 3 粒，泡熱水每日飲\n• 食療通常要堅持 4-8 週先見明顯改善（內在調理需要時間）\n• 食療 + 自助按穴位 + 早瞓 三管齊下，效果比單一方法快 2-3 倍\n• 體質判斷唔準確嘅話，可以搵 Care Plus 中醫師做辨證後再配方\n\n【唔啱亂食嘅情況】\n• 經期：唔好飲補血類嘅阿膠 / 紅棗茶（會令經量過多）\n• 懷孕：阿膠、三七粉、桂圓、玫瑰花 全部要先問中醫師\n• 容易上火 / 暗瘡：避免桂圓、紅棗（過甜熱）",
+      "supporting_points": [
+        "黑眼圈嘅食療要先分清體質：腎虛 vs 血虛 vs 肝鬱，型唔啱會冇效甚至加重",
+        "食療通常要 4-8 週先見明顯改善 — 由內而外調理需要時間",
+        "杞子紅棗茶係最易堅持嘅日常飲品 — 上班族都可以泡保溫杯",
+        "經期、懷孕、易上火嘅人，部分中藥要避免 — 唔好亂飲",
+        "食療配合穴位按摩 + 早瞓，效果比單一方法快 2-3 倍",
+        "唔識辨體質可以搵中醫師做正式辨證 — 唔好估"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你嘅黑眼圈比較似邊一型？深啡（腎虛）/ 淡褐（血虛）/ 青藍（肝鬱）？我可以根據你嘅體質推薦最啱嘅食療方案 🌿",
+      "media": []
+    },
+    "execution_logic": {
+      "recommended_action": "當用戶問『黑眼圈食咩好』『黑眼圈飲咩茶』『中醫食療去黑眼圈』時，先快速問返體質類型（腎虛/血虛/肝鬱），再針對性推薦食材。如果用戶分唔清，可以先推薦最 universal 嘅杞子紅棗茶 + 黑芝麻糊組合。記住要提醒『內在調理要堅持 4-8 週』。",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user wants to know their constitution → fetch tcm_constitution_assessment. If user mentions related symptoms (經期不順 / 易攰 / 易冷), fetch corresponding card.",
+      "escalation_trigger": "If user mentions pregnancy, breastfeeding, or current TCM medication, advise consulting 中醫師 before starting food therapy."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_dark_circles_clinical_treatments",
+        "tcm_dark_circles_lifestyle",
+        "tcm_acupressure_beauty",
+        "tcm_facial_beauty_treatments",
+        "tcm_food_therapy_teas",
+        "tcm_constitution_assessment",
+        "tcm_womens_menstrual"
+      ],
+      "sources": [
+        "中醫食療學 — 面部美容調理",
+        "Care Plus TCM 心宜中醫臨床食療指引 (2024-2026)",
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容",
+        "黃帝內經 — 五色入五臟理論"
+      ]
+    }
+  }
+}

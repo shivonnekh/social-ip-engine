@@ -1,0 +1,104 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_slimming_program",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.9_slimming_program",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Frontiers NMA (low-moderate) — auricular alone ≈ sham",
+      "research_note": "Frontiers 2024 NMA shows acupuncture > sham/no treatment for BMI/weight (low-moderate certainty). PMC11333859 (Frontiers SR/MA): auricular alone ≈ sham unless combined with diet+exercise. Ding & Xiao 2026 SAGE SR/MA confirms modest benefit. WHO 2003 lists obesity as second-tier (further proof needed). 穴位埋線 protocol from Bowtie HK. Care Plus has /treatment/weight-loss (sitemap-confirmed)."
+    },
+    "overview": {
+      "title": "瘦身調理療程介紹：針灸 + 穴位埋線 + 耳穴、必須配合飲食運動（誠實聲明）",
+      "objective": "誠實介紹中醫瘦身調理療程 — 針灸 + 穴位埋線 + 耳穴方案、Frontiers 2024 NMA 支持嘅證據（低-中度確定性）、SR 確認單獨耳穴 ≈ sham 嘅事實、必須配合飲食運動先有效",
+      "patient_profile": [
+        "all_adult"
+      ],
+      "trigger_conditions": [
+        "瘦身",
+        "減肥",
+        "瘦身調理",
+        "中醫瘦身",
+        "中醫減肥",
+        "針灸減肥",
+        "針灸瘦身",
+        "穴位埋線",
+        "埋線",
+        "耳穴",
+        "耳穴減肥",
+        "耳穴瘦身",
+        "減肥針灸幾耐",
+        "減肥針灸幾錢",
+        "減肥針灸次數",
+        "瘦身療程",
+        "瘦身療程設計",
+        "瘦身療程禁忌",
+        "穴位埋線幾錢",
+        "穴位埋線幾耐見效",
+        "穴位埋線禁忌",
+        "減重",
+        "減重 中醫",
+        "weight loss TCM",
+        "acupuncture weight loss",
+        "Care Plus 瘦身",
+        "Care Plus 減肥"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫瘦身調理用針灸 + 穴位埋線 + 耳穴抑制食慾、促進代謝、調理痰濕體質。\n\n⚠️【誠實證據聲明】\n• Frontiers 2024 NMA：針灸對 BMI/體重減輕優於 sham/no treatment（低-中度確定性證據）\n• PMC11333859（Frontiers 2024 SR/MA）：單獨耳穴貼壓 ≈ sham，除非配合飲食運動\n• Ding & Xiao 2026 SAGE SR/MA：確認針灸對體重管理有溫和效益，副作用優於減肥藥\n• WHO 2003 將肥胖列為第二級（療效已顯示，需進一步證明）\n• ⚠️ 重要：中醫瘦身單獨使用效果有限 — 必須配合低熱量飲食 + 運動先有效（SR 共識）\n\n【主要技術】\n\n📍 1. 體針（Body Acupuncture）\n• 抑制食慾、促進代謝\n• 調理脾胃、化痰祛濕\n• 常用穴位：天樞、中脘、足三里、三陰交、豐隆、陰陵泉、太衝\n• 療程：2–3×/週 × 8–12 週（共 16–36 次）\n\n📍 2. 穴位埋線（Catgut Embedding）— Bowtie HK 詳述\n• 用可吸收蛋白線（PGLA / Catgut）埋入穴位\n• 線於體內持續刺激穴位 24+ 小時，逐漸被吸收（10–14 日）\n• 機制：「降低食慾 + 促進代謝，刺激胃經、脾經、腎經、任脈，補脾腎祛痰濕」（Bowtie HK 中醫師資料）\n• 頻率：每 3–4 週 1 次，每次 5–10 分鐘\n• 線材在皮下吸收期間持續產生療效\n• 適合：忙碌人士、討厭頻繁針灸者\n\n📍 3. 耳穴（Auricular Therapy）\n• 王不留行籽貼 / 磁珠貼 + 醫用膠帶\n• 用戶自行按壓 4–6×/日，特別係餐前\n• 常用耳穴：飢點、神門、內分泌、脾、胃、肺\n• 每週更換，左右耳輪流\n• ⚠️ 單獨使用 ≈ sham（PMC11333859）— 必須配合飲食運動\n\n📍 4. 中藥配合（個人化）\n• 痰濕型：二陳湯、苓桂朮甘湯\n• 脾虛型：參苓白朮散\n• 肝鬱型：逍遙散\n• 陰虛火旺：知柏地黃丸\n\n【典型療程設計】\n• 體針：2–3×/週 × 8–12 週（16–36 次）\n• 穴位埋線：每 3–4 週 1 次 × 4–6 次（=3–6 個月）\n• 耳穴：每週 1 次更換 × 8–12 週\n• 結合方案（體針 + 耳穴 + 中藥）：3–6 個月\n• ⚠️ 必須配合：每日 ≤1500–1800 kcal 飲食 + 每週 150 分鐘運動\n• 預期：3 個月 5–8% 體重；6 個月 10–15%（個體差異大）\n\n【適合中醫瘦身 vs 應該優先西醫】\n✅ 中醫適合：\n• BMI 25–35（超重 / 輕中度肥胖）\n• 飲食運動已嘗試但效果緩慢\n• 痰濕體質（水腫型）\n• 壓力性飲食 / 情緒性進食\n• 想避免減肥藥副作用\n⚠️ 必須先西醫評估：\n• BMI ≥35 嚴重肥胖 — 考慮西醫減重藥物 / 代謝手術\n• 進食障礙（厭食、暴食症）— 必須精神科\n• 甲狀腺功能異常（甲減致肥胖）— 內分泌科\n• 多囊卵巢症候群（PCOS）相關肥胖 — 婦科 + 內分泌\n• 已有 GLP-1 藥物 / 減肥藥（藥物互動需中醫師評估）\n\n【副作用】\n• 體針：標準副作用（暫時瘀斑、輕微疲倦）\n• 穴位埋線：\n  - 局部紅腫、瘀青 3–7 日\n  - 結節感（線吸收前可摸到）\n  - 罕見：感染、過敏、線體排斥\n• 耳穴：\n  - 局部紅腫、按壓痛\n  - ⚠️ 罕見但嚴重：軟骨炎（perichondritis）— 無菌技術不嚴格時\n  - 接觸性皮膚炎（膠帶過敏）\n• 中藥：個別過敏、消化不適\n\n【禁忌】\n❌ 絕對禁忌\n• 妊娠 / 哺乳期\n• 進食障礙（厭食、暴食症）— 必須精神科\n• BMI <18.5（過瘦）\n• 嚴重心血管病\n• 出血性疾病\n• 抗凝藥未控制（穴位埋線絕對禁，體針相對禁）\n❌ 相對禁忌\n• 糖尿病神經病變（耳穴部位感覺差，傷口癒合慢）\n• 耳部活動感染、皮膚炎（耳穴禁）\n• 心臟起搏器（電針避免）\n• 嚴重蛋白過敏（穴位埋線絕對禁 — 線含蛋白）\n\n【後注意】\n• 穴位埋線後：\n  - 24 小時內傷口避免沾水\n  - 局部結節係正常（線未完全吸收）— 7–14 日消失\n  - 紅腫熱痛超過 3 日 = 求醫評估感染\n• 耳穴：\n  - 保持耳貼乾燥\n  - 餐前 30 分鐘按壓 100 次\n  - 1 週更換換另一耳\n\n【生活調整（療效關鍵）】\n• 飲食：\n  - 三餐定時、八分飽\n  - 減少精製糖、油炸、含糖飲品\n  - 增加蔬菜（每日 5 份）+ 蛋白質\n  - 晚餐前 6 小時收檔（早食晚禁）\n• 運動：\n  - 每週 ≥150 分鐘中等強度（步行、游泳、自行車）\n  - 加入力量訓練 2×/週（保肌肉）\n• 睡眠：≥7 小時（睡眠不足 → 食慾激素失衡）\n• 飲水：每日 1.5–2L 溫水\n\n【點揀中醫師】\n✅ 必查：CMC 註冊中醫師\n✅ 穴位埋線需要專業培訓（並非每位中醫師都做）\n✅ 良好醫師：先評估體質、計算 BMI、提供飲食運動指導、定期評估療效（每 4 週量度）、有營養師 / 健身教練合作網絡\n❌ 警號：保證「30 日 -10kg」、唔評估體質直接埋線、無生活方式建議、用「神秘藥物」\n\n【HK 監管】\n瘦身針灸 + 穴位埋線屬於針灸科範疇，必須 CMC 註冊中醫師執行。\n\n【關於 Care Plus 心宜中醫】\nCare Plus（沙田馬鞍山）有提供瘦身專科服務頁面（careplustcm.com/treatment/weight-loss，sitemap 確認）。具體療程設計、次數、價錢請直接聯絡 Care Plus 了解。\n\n中醫瘦身唔係「淨係針幾下就瘦」 — 飲食運動先係 70% 工作，針灸 + 埋線係輔助 🌿",
+      "supporting_points": [
+        "Frontiers 2024 NMA 顯示針灸對 BMI/體重減輕優於 sham（低-中度確定性）",
+        "⚠️ PMC11333859 SR/MA 確認：單獨耳穴貼壓 ≈ sham，除非配合飲食運動",
+        "穴位埋線（Bowtie HK）：可吸收蛋白線埋入穴位，每 3–4 週 1 次，刺激胃脾腎經、補脾腎祛痰濕",
+        "典型療程：體針 2–3×/週 × 8–12 週；穴位埋線 4–6 次跨 3–6 個月；耳穴每週",
+        "必須配合：每日 ≤1500–1800 kcal 飲食 + 每週 150 分鐘運動（SR 共識）— 飲食運動係 70% 工作",
+        "BMI ≥35 嚴重肥胖、進食障礙、甲狀腺異常、PCOS = 必須先西醫評估",
+        "穴位埋線禁忌：妊娠、嚴重蛋白過敏（線含蛋白）、抗凝藥未控制",
+        "耳穴罕見但嚴重副作用：軟骨炎（perichondritis）— 無菌技術不嚴格時"
+      ],
+      "evidence_level": "Frontiers NMA Low-Moderate Certainty — auricular alone ≈ sham; combination with diet+exercise required",
+      "next_best_question": "你想用邊類方法瘦身？體針（每週 2–3 次）/ 穴位埋線（每 3–4 週 1 次）/ 耳穴（自助按壓）？我可以根據你嘅體質傾向（痰濕/脾虛/壓力型）同生活作息，建議最啱嘅組合 🌿",
+      "media": [
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "Educate honestly — emphasise diet+exercise is mandatory companion (auricular alone ≈ sham per SR). Always cover: (1) which technique suits user, (2) Frontiers NMA evidence + low-moderate certainty caveat, (3) BMI threshold for Western referral, (4) absolute contraindications (pregnancy, eating disorder), (5) Care Plus has weight-loss page — direct user there.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "Co-fetch tcm_weight_management + tcm_acupressure_weight_slim + tcm_dampness_removal (痰濕 connection).",
+      "escalation_trigger": "MANDATORY: if user mentions binge eating, restriction patterns, body-image distress, BMI <18.5, or rapid recent weight loss → STOP weight-loss focus, redirect to mental health / eating disorder support."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_weight_management",
+        "tcm_acupressure_weight_slim",
+        "tcm_dampness_removal",
+        "tcm_food_therapy_soups",
+        "tcm_constitution_assessment"
+      ],
+      "sources": [
+        "Frontiers in Medicine 2024 — Acupuncture modalities for obesity NMA: https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2024.1446515/full",
+        "Frontiers in Neuroscience 2024 (PMC11333859) — Auricular stimulation for weight SR/MA: https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2024.1393826/full",
+        "Ding & Xiao 2026 SAGE SR/MA — Acupuncture for weight management",
+        "WHO 2003 Acupuncture: Review and Analysis (obesity second-tier): https://chiro.org/acupuncture/FULL/Acupuncture_WHO_2003.pdf",
+        "Bowtie HK 穴位埋線解說（中醫師資料）: https://www.bowtie.com.hk/blog/zh/中醫知識/埋線/",
+        "Trials 2016 — Body + auricular acupuncture for obesity protocol: https://link.springer.com/article/10.1186/s13063-016-1458-2",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫《瘦身》(sitemap-confirmed): https://careplustcm.com/treatment/weight-loss"
+      ]
+    }
+  }
+}

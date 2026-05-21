@@ -1,0 +1,123 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_womens_menstrual",
+      "domain": "6_womens_health",
+      "category": "6.1_menstrual",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "女性月經健康：經痛、PMS、月經後調補",
+      "objective": "提供中醫對月經健康的全面指引，包括經痛穴位、PMS情緒（肝氣鬱結）、月經後調補食療",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "經痛",
+        "月經痛",
+        "M痛",
+        "痛經",
+        "舒緩經痛",
+        "經痛中醫",
+        "月經不順",
+        "月經唔准",
+        "PMS",
+        "經前綜合症",
+        "月經前暴躁",
+        "經前情緒",
+        "M嚟前好嬲",
+        "M嚟前易怒",
+        "月經前心情差",
+        "肝氣鬱結",
+        "月經後調補",
+        "月經後食療",
+        "月經後補血",
+        "當歸紅棗",
+        "黑糖薑茶",
+        "玫瑰花茶月經",
+        "月經調期",
+        "調期",
+        "旅行調期",
+        "經期推遲",
+        "乳房脹痛",
+        "胸脹月經",
+        "月經血塊",
+        "月經顏色",
+        "嚟M",
+        "嚟M痛",
+        "M嚟好痛",
+        "M前好嬲",
+        "M遲咗",
+        "M唔嚟",
+        "經期亂",
+        "胸脹",
+        "乳房脹",
+        "有血塊",
+        "PMS情緒",
+        "period",
+        "cramps",
+        "月經食咩好"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "月經健康係女性體質的重要指標，中醫認為月經異常多與氣血、肝腎功能相關。\n\n【經痛：地機穴 ＋ 三陰交】\n• 地機穴：小腿內側，脛骨後緣，膝關節下方4寸\n• 三陰交：足踝內側骨上方3寸\n按法：月經來前3天每日按兩穴各2分鐘，月經期間可繼續\n效果：活血通經，緩解下腹痙攣\n💡 洪醫師建議：教伴侶學呢個穴位，比叫人「飲暖水」更實際！\n⚠️⚠️ 三陰交孕婦禁按——可能誘發宮縮\n\n【PMS情緒暴躁：肝氣鬱結】\nPMS（月經前綜合症）唔係「事多」，係真實嘅生理問題：\n• TCM解釋：月經前肝氣容易鬱滯，影響情緒、消化同睡眠\n• 常見症狀：易怒、哭泣、胸脹、乳房脹痛、腹脹、便秘/腹瀉\n• 食療：玫瑰花茶（疏肝理氣）；陳皮蜂蜜水\n• 穴位：太衝穴（腳背拇趾二趾之間）疏肝，按至酸脹感\n\n【玫瑰花茶的適合對象】\n✅ 適合：壓力大、肝氣鬱結、月經少量、膚色暗沉、月經痛\n❌ 不適合：月經量多、陰虛火旺（手心熱、夜汗）、孕婦\n\n【月經後調補黃金窗口】\n月經結束後的7-10天係「最佳補血期」——子宮內膜新生，身體對滋補最敏感：\n• 當歸紅棗雞湯：補血溫中，最經典月經後補品\n• 黑糖薑茶 ＋ 枸杞：補氣暖身，適合虛寒體質\n• 阿膠：補血滋陰，但性滋膩，消化差者少用\n\n【月經血塊/顏色異常（中醫解讀）】\n• 血塊多、顏色深紫：血瘀——需活血化瘀調理\n• 顏色淡紅、量少：血虛——補血為主\n• 顏色鮮紅、量多：血熱——清熱涼血\n• 顏色暗、有腥味：可能有婦科問題，建議婦科就診\n\n【旅行/特殊場合調期】\n有方法透過中醫調整月經時機，但需中醫師評估體質後個人化建議。\n⚠️ 絕對不要自行服用西藥調期（如黃體素），有風險",
+      "supporting_points": [
+        "三陰交孕婦禁按——需特別提醒",
+        "嚴重痛經（影響日常生活）建議婦科就診，排除子宮內膜異位症",
+        "PMS嚴重影響生活（PMDD）請諮詢婦科或精神科",
+        "玫瑰花茶補品量少即可，每日1-2朵泡水，唔需要大量",
+        "月經後補品以溫補為主，唔要大熱大補"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你係主要想了解：經痛、月經前情緒、還是月經後調補？",
+      "media": [
+        {
+          "id": "video_taichong_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/taichong.mp4",
+          "caption": "太衝穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_diji_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/diji.mp4",
+          "caption": "地機穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "詢問具體月經問題（痛/情緒/調補），提供對應段落，必須提醒三陰交孕婦禁忌",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "嚴重痛經（臥床、嘔吐）或異常出血（大量/停經）請婦科就診"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_pain",
+        "tcm_womens_hormonal",
+        "tcm_food_therapy_teas"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "中醫婦科學（人民衛生出版社）",
+        "針灸學 — 三陰交、地機穴條目"
+      ]
+    }
+  }
+}

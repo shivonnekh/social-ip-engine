@@ -1,0 +1,114 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_integrative_oncology",
+      "domain": "10_tcm_education",
+      "category": "10.3_integrative_oncology",
+      "card_type": "Medical",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "中醫輔助腫瘤學：中醫在癌症治療中的角色",
+      "objective": "解釋中醫在癌症治療中的輔助角色，包括減少化療副作用、體質調理，以及明確的使用邊界",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "中醫癌症",
+        "癌症可以睇中醫嗎",
+        "化療配合中醫",
+        "化療副作用中醫",
+        "中醫減化療副作用",
+        "電療配合中醫",
+        "癌症中醫輔助",
+        "腫瘤中醫",
+        "中醫治癌",
+        "中藥治癌",
+        "中醫能不能治癌",
+        "癌症體質",
+        "癌症調理",
+        "術後中醫調理",
+        "手術後中醫",
+        "康復期中醫",
+        "中西醫結合癌症",
+        "針灸化療",
+        "針灸噁心嘔吐",
+        "化療噁心針灸",
+        "白血球低中醫",
+        "增強免疫力癌症",
+        "癌症患者食療",
+        "做緊化療",
+        "化療好辛苦",
+        "做完化療",
+        "電療副作用",
+        "想睇中醫",
+        "cancer中醫",
+        "chemo中醫",
+        "化療嘔",
+        "化療冇胃口",
+        "中醫抗癌",
+        "癌症食咩好"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫在腫瘤治療中扮演「輔助」而非「替代」的角色，呢個邊界非常重要。\n\n【中醫唔能做的事】\n• ❌ 唔能替代手術、化療、放療、標靶治療\n• ❌ 唔能「治癒」癌症\n• ❌ 任何聲稱「中藥可以殺癌」的說法都係不負責任的\n• ⚠️ 如果有人叫你停西醫治療改用中藥，請立即拒絕並告知你的腫瘤科醫生\n\n【中醫可以輔助的範疇】\n基於現有臨床研究和傳統實踐：\n\n1. 化療相關副作用緩解：\n   • 針灸：對化療引起的噁心嘔吐有研究支持（ASCO指引提及輔助使用）\n   • 穴位：內關穴（手腕內側）按壓可減輕噁心感\n   • 食療：化療後白血球低，可用黃芪、黨參補氣提升免疫功能（需中醫師評估）\n\n2. 術後康復：\n   • 補氣血食療（當歸紅棗、黃芪）幫助手術後體能恢復\n   • 健脾食療改善化療後食慾不振\n\n3. 情緒支持：\n   • 針灸輔助改善癌症相關焦慮和失眠\n   • 穴位按摩：合谷穴、太衝穴疏肝理氣\n\n4. 體質調理（康復期）：\n   • 治療完成後透過中醫調理體質，降低復發風險的研究仍在進行\n   • 中醫強調「扶正祛邪」——增強正氣，抑制邪氣\n\n【重要提醒：藥物交互作用】\n• 化療期間服用中藥需告知腫瘤科醫生——部分中藥影響肝酵素，改變化療藥代謝\n• 例如：聖約翰草（St. John's Wort）可降低多種化療藥血藥濃度\n• 積極治療期間，中藥建議暫停，除非腫瘤科醫生同意\n• 康復期相對安全，但仍需告知醫療團隊",
+      "supporting_points": [
+        "針灸輔助化療噁心有一定研究基礎（ASCO補充醫學指引提及）",
+        "中醫唔能治癌——任何聲稱否則的說法都係誤導",
+        "化療期間服用中藥必須告知腫瘤科醫生，避免藥物交互作用",
+        "中西醫整合治療需要雙方醫療團隊溝通協調",
+        "香港瑪麗醫院等部分公立醫院設有中西醫協作計劃，可詢問"
+      ],
+      "evidence_level": "Expert Opinion",
+      "next_best_question": "你係想了解中醫如何幫助減輕化療副作用，還是康復期調理？",
+      "media": [
+        {
+          "id": "video_taichong_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/taichong.mp4",
+          "caption": "太衝穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_neiguan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/neiguan.mp4",
+          "caption": "內關穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_hegu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/hegu.mp4",
+          "caption": "合谷穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "先強調中醫是輔助而非替代，再提供具體輔助範疇",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如用戶係癌症患者，建議引導至對應疾病的Dr.Baba專科知識庫",
+      "escalation_trigger": "任何暗示停止西醫治療改用中醫的諮詢，必須明確反對並建議告知主診醫生"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_education_myths",
+        "tcm_education_concepts"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica（香港大學中醫學碩士：腫瘤學）",
+        "ASCO — Integrative Therapies During and After Breast Cancer Treatment (2018)",
+        "NCCN — Survivorship Guidelines (Integrative Medicine section)",
+        "Wong R, et al. — Acupuncture for chemotherapy-induced nausea. Cochrane Review",
+        "香港醫管局中西醫協作計劃"
+      ]
+    }
+  }
+}

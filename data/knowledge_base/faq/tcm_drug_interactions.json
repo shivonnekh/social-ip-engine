@@ -1,0 +1,94 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_drug_interactions",
+      "domain": "2_safety",
+      "category": "2.4_drug_interactions",
+      "card_type": "Medical",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-04-14",
+      "version": 1
+    },
+    "overview": {
+      "title": "中西藥相互作用：中藥同西藥一齊食嘅風險",
+      "objective": "教育用戶常見中藥同西藥之間嘅高風險相互作用，強調安全用藥原則，幫助用戶避免危險嘅藥物交互",
+      "patient_profile": [
+        "有食中藥或飲涼茶習慣嘅人",
+        "同時睇中醫同西醫嘅人",
+        "長期服用西藥（特別係薄血藥、心臟藥、血壓藥）嘅人",
+        "癌症患者同時用中藥輔助調理",
+        "長期病患者（糖尿病、高血壓、心臟病）",
+        "照顧者幫屋企人管理中西藥"
+      ],
+      "trigger_conditions": [
+        "中藥西藥一齊食",
+        "中藥同西藥會唔會衝",
+        "食緊薄血藥可唔可以飲涼茶",
+        "食緊藥可唔可以飲涼茶",
+        "中西藥相互作用",
+        "中藥會唔會影響西藥",
+        "食中藥要隔幾耐先食西藥",
+        "飲涼茶影響藥效",
+        "當歸同薄血藥",
+        "人參同薄血藥",
+        "甘草同心臟藥",
+        "食緊血壓藥可唔可以食中藥",
+        "化療期間食中藥",
+        "中藥影響肝酵素",
+        "herb drug interaction",
+        "涼茶同藥物",
+        "中西醫協作",
+        "點樣安全食中藥西藥",
+        "食緊warfarin可唔可以食中藥",
+        "麻黃同血壓藥"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中藥同西藥一齊食係有機會產生嚴重相互作用嘅，唔係話天然就安全。以下係幾個高風險嘅組合，一定要知：\n\n【高風險組合一：活血中藥 + 薄血藥（warfarin、抗凝血藥）】\n⚠️ 風險：出血風險大幅增加\n• 丹參（Danshen）：會抑制血小板凝集，增強 warfarin 抗凝血效果，有報告指患者 INR 急升至危險水平導致出血\n• 當歸（Dong Quai）：含有香豆素成分，有案例報告指患者 INR 由正常升至 4.9，停當歸後回落\n• 紅花、桃仁：同樣有抗凝血活性，同薄血藥疊加會增加出血風險\n🔴 如果你食緊薄血藥，丹參、當歸、紅花、桃仁都要避免，除非經腫瘤科或血液科醫生評估\n\n【高風險組合二：人參 + 薄血藥（warfarin）】\n⚠️ 風險：減低薄血藥效果\n• 花旗參（American Ginseng）：臨床研究顯示會降低 warfarin 嘅抗凝血效果（INR 下降），增加血栓風險\n• 高麗參同花旗參成分唔同，但都建議食薄血藥期間避免\n🔴 食緊薄血藥嘅人唔好自己食參類補品\n\n【高風險組合三：甘草 + 心臟藥（digoxin）/ 血壓藥】\n⚠️ 風險：低鉀血症 + 心臟毒性 / 血壓上升\n• 甘草入面嘅甘草酸（glycyrrhizin）會抑制 11β-HSD 酶，導致鈉滯留、排鉀增加\n• 同 digoxin 一齊用：低鉀會加重 digoxin 毒性，可致心律不整\n• 同降壓藥一齊用：甘草令身體儲水儲鈉，血壓升高，抵消降壓藥效果\n• 好多涼茶、喉糖都含甘草，唔知不覺就攝入咗\n🔴 食心臟藥或血壓藥嘅人要注意甘草攝入量，包括涼茶同喉糖\n\n【高風險組合四：麻黃 + MAOIs / 降壓藥】\n⚠️ 風險：高血壓危象（hypertensive crisis）\n• 麻黃含麻黃鹼，係交感神經興奮劑，會升高血壓同心跳\n• 同 MAOIs（單胺氧化酶抑制劑，一種抗抑鬱藥）一齊用可引致高血壓危象，極度危險\n• 同降壓藥一齊用會抵消降壓效果\n• 《新英格蘭醫學期刊》報告麻黃相關嘅嚴重心血管事件，包括高血壓、中風、心律不整\n🔴 食緊降壓藥或抗抑鬱藥嘅人絕對唔好食含麻黃嘅中藥\n\n【高風險組合五：黃連/黃芩 + CYP 酵素代謝嘅藥物】\n⚠️ 風險：改變西藥血藥濃度\n• 黃連嘅主要成分小蘗鹼（berberine）臨床研究證實會抑制 CYP2D6 同 CYP3A4 酵素活性\n• CYP3A4 負責代謝超過 50% 嘅西藥，包括好多化療藥、免疫抑制劑、降膽固醇藥\n• 抑制呢啲酵素會令西藥血藥濃度升高，增加毒性\n🔴 食緊需要肝臟代謝嘅西藥（特別係化療藥、免疫抑制劑），黃連黃芩要特別小心\n\n【香港常見情景：涼茶 + 處方藥】\n• 好多人覺得涼茶係飲品唔係藥，但涼茶含有金銀花、菊花、甘草、夏枯草等中藥材\n• 廿四味涼茶成分複雜，可能包含多種同西藥有交互作用嘅藥材\n• 龜苓膏含土茯苓、龜板等，長期食對某些西藥都有潛在影響\n• 涼茶鋪買嘅涼茶成分未必標示清楚\n🔴 食緊任何長期西藥嘅人，飲涼茶前最好問下醫生或藥劑師\n\n【安全用藥原則】\n✅ 中藥同西藥至少隔 2 小時食\n✅ 一定要同時告知中醫師你食緊咩西藥、同西醫你食緊咩中藥\n✅ 而家醫管局公立醫院入院都會問你有冇食中藥，如實講\n✅ 善用醫管局「中西醫協作計劃」——中西醫團隊會一齊制定安全治療方案\n✅ 唔好自己上網買中藥補品，特別係食緊薄血藥、化療藥、免疫抑制劑期間\n✅ 涼茶都係中藥，唔好當水飲",
+      "supporting_points": [
+        "一項系統性文獻回顧發現 78 種中草藥同 warfarin 有交互作用報告，其中 57.7% 會增強抗凝血效果，29.5% 會減弱效果（Tan & Lee, 2021）",
+        "丹參同 warfarin 交互作用有多個案例報告，患者出現 INR 過高同出血併發症（Chan, 2001）",
+        "當歸 565mg 每日一至兩次令服用 warfarin 患者 INR 升至 4.9（Page & Lawrence, 1999）",
+        "花旗參（American Ginseng）隨機對照試驗證實會降低 warfarin 嘅 INR（Yuan et al., 2004）",
+        "甘草酸抑制 11β-HSD 酶導致假性醛固酮增多症，引致高血壓同低鉀（Sontia et al., 2008）",
+        "小蘗鹼（berberine）臨床研究顯示抑制 CYP2D6 活性達 9 倍、CYP3A4 活性增加 40%（Guo et al., 2012）",
+        "麻黃相關嚴重心血管不良事件包括高血壓（17 例）、中風（10 例）、心律不整（Haller & Benowitz, 2000）",
+        "一項針對 90 種中藥嘅回顧發現 306 種同抗凝血/抗血小板藥嘅交互作用，79.9% 屬中度至嚴重（Choi et al., 2013）",
+        "醫管局 2024 年擴展中西醫協作計劃至 53 個醫院服務點，涵蓋中風、癌症紓緩、肌骨痛症",
+        "香港調查顯示約 26% 服用 warfarin 嘅患者同時使用中藥（Leung et al., 2015）"
+      ],
+      "evidence_level": "Grade B",
+      "next_best_question": "你而家有冇食緊邊啲西藥？我可以幫你睇下有冇需要注意嘅中藥交互作用。"
+    },
+    "execution_logic": {
+      "recommended_action": "先了解用戶正在服用嘅西藥同中藥，再針對性提供相關交互作用資訊。強調安全用藥原則同告知兩邊醫生嘅重要性。",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如用戶提及正在接受化療或服用免疫抑制劑，引導至 tcm_integrative_oncology 卡片了解更多安全資訊",
+      "escalation_trigger": "如用戶正在服用 warfarin（薄血藥）、化療藥物、或免疫抑制劑，同時食緊中藥或打算開始食中藥，必須強烈建議立即諮詢主診醫生，唔好自行調整任何藥物。如出現異常出血（流鼻血唔止、瘀斑增多、黑色大便）、心悸、血壓急升等症狀，建議即刻去急症室。"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_integrative_oncology",
+        "tcm_red_flags",
+        "tcm_education_myths",
+        "tcm_food_therapy_teas"
+      ],
+      "sources": [
+        "Tan CSS, Lee SWH. Warfarin and food, herbal or dietary supplement interactions: A systematic review. Br J Clin Pharmacol. 2021;87(2):352-374. PMID: 32478963",
+        "Chan TYK. Interaction between warfarin and danshen (Salvia miltiorrhiza). Ann Pharmacother. 2001;35(4):501-504. PMID: 11302416",
+        "Page RL, Lawrence JD. Potentiation of warfarin by dong quai. Pharmacotherapy. 1999;19(7):870-876. PMID: 10417036",
+        "Yuan CS, Wei G, Dey L, et al. Brief communication: American ginseng reduces warfarin's effect in healthy patients: a randomized, controlled trial. Ann Intern Med. 2004;141(1):23-27. PMID: 15238367",
+        "Guo Y, Chen Y, Tan ZR, et al. Repeated administration of berberine inhibits cytochromes P450 in humans. Eur J Clin Pharmacol. 2012;68(2):213-217. PMID: 21870106",
+        "Haller CA, Benowitz NL. Adverse cardiovascular and central nervous system events associated with dietary supplements containing ephedra alkaloids. N Engl J Med. 2000;343(25):1833-1838. PMID: 11117974",
+        "Choi S, Oh DS, Jerng UM. A review of potential harmful interactions between anticoagulant/antiplatelet agents and Chinese herbal medicines. PLoS One. 2013;8(5):e64255. PMID: 23671711",
+        "Leung SW, Huang Y, Chan TYK. Interaction between warfarin and Chinese herbal medicines. Singapore Med J. 2015;56(1):11-18. PMID: 25640094",
+        "Sontia B, Mooney J, Engeli S, et al. Pseudohyperaldosteronism, liquorice, and hypertension. J Clin Hypertens. 2008;10(2):153-157. PMID: 18256580",
+        "Fasinu PS, Bouic PJ, Rosenkranz B. An overview of the evidence and mechanisms of herb-drug interactions. Front Pharmacol. 2012;3:69. PMID: 22557968",
+        "香港醫院管理局. 中西醫協作計劃 — 擴展至53個醫院服務點 (2024年3月)",
+        "香港中醫藥管理委員會. 中藥使用安全指引"
+      ]
+    }
+  }
+}

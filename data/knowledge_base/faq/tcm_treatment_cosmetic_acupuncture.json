@@ -1,0 +1,94 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_cosmetic_acupuncture",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.5_cosmetic_acupuncture",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Limited Evidence — flagged honestly",
+      "research_note": "EVIDENCE GAP FLAGGED. Yun et al. 2013 open-label single-arm pilot showed mid-facial elasticity improvement. PMC11339128 retrospective study on nasolabial folds. PMC11852262 MRI study on masseter hypertrophy. NO high-quality RCT support. NCCIH does NOT endorse cosmetic acupuncture. '8–12 sessions' protocol is HK clinic-level industry norm, NOT guideline-level. Care Plus has /treatment/beauty-acupuncture page (sitemap-confirmed, content unread)."
+    },
+    "overview": {
+      "title": "美顏針（美容針灸）介紹：適合人士、療程設計、預期效果、證據限制",
+      "objective": "誠實介紹美顏針作為臨床美容療程 — 包括目前嘅有限證據、所謂「8–12 次療程」嘅來源（HK 行業慣例非醫學指引）、適合人士、禁忌、HK 註冊中醫師專業要求",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "美顏針",
+        "美顏針介紹",
+        "美顏針係咩",
+        "美顏針療程",
+        "美顏針幾錢",
+        "美顏針次數",
+        "美顏針幾耐",
+        "美顏針有效嗎",
+        "美容針",
+        "美容針灸",
+        "面部針灸",
+        "面針",
+        "美顏針同 botox",
+        "美顏針同 filler",
+        "美顏針痛唔痛",
+        "美顏針恢復期",
+        "美顏針會留瘀嗎",
+        "美顏針禁忌",
+        "美顏針孕婦",
+        "美顏針細紋",
+        "美顏針提拉",
+        "美顏針黑眼圈",
+        "美顏針色斑",
+        "美顏針水腫",
+        "facial acupuncture",
+        "cosmetic acupuncture",
+        "Care Plus 美顏針"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "美顏針（美容針灸）用比一般針灸針幼 3 倍嘅極幼針（0.10–0.12mm，多家 HK 診所引用），刺激面部經絡同肌肉層。\n\n⚠️【證據誠實聲明】\n美顏針嘅 peer-reviewed 證據相當有限：\n• Yun et al. 2013（Hindawi ECAM）— 單組開放試驗，顯示中面部彈性改善\n• PMC11339128 — 鼻唇溝回顧性研究\n• PMC11852262 — 咬肌肥大 MRI 研究（個案級別）\n❌ 暫時無高質量 RCT 支持\n❌ NCCIH（美國國家補充與整合健康中心）唔包括美顏針於認可項目\n❌ WHO 2003 認可清單唔包括美容針灸\n\n所謂「8–12 次療程，初期 1–2 次/週，穩定後每月保養」係 HK 多家中醫診所行業慣例引用標準，但唔係醫學指引級別。HK 私營美顏針療程設計差異大，主要由臨床經驗主導。\n\n【聲稱適應症（行業普遍引用，證據級別低）】\n• 細紋、皺紋（特別係動態紋）\n• 鼻唇溝（PMC11339128 回顧性研究支持）\n• 木偶紋\n• 面部下垂、輪廓鬆弛\n• 面部水腫\n• 暗沉、面色不勻\n• 咬肌肥大（PMC11852262 MRI 個案）\n• 黑眼圈（傳統用法）\n• 部分臉部不對稱\n\n【典型療程設計（行業慣例，非指引）】\n• 初期：1–2×/週 × 5–6 週（共 10–12 次）\n• 維持期：每月 1–2 次保養\n• 根據臨床經驗，療程效果通常 6–8 次後開始可見，10–12 次達穩定\n• ⚠️ 此療程設計屬 HK 中醫美容診所共識，唔等於有指引或 RCT 證明\n\n【單次過程】\n1. 望聞問切 + 面診（評估面部肌肉、皮膚狀態、體質）\n2. 清潔面部\n3. 落針（30–60 個面部極幼針，0.10–0.12mm）\n4. 留針 30–45 分鐘（部分配合 LED 紅光、紅外線）\n5. 起針 + 按壓針孔避免出血\n6. 簡單按摩 / 面膜（部分療程包含）\n\n【感覺】\n• 落針：因針極幼，感覺輕微「𤆌」一下\n• 留針：可能有「酸、麻、脹」感（得氣）\n• 唔應該感覺：劇烈刺痛、燒灼感\n\n【副作用（基於 Yun 2013 pilot + 一般針灸面部安全文獻）】\n• 瘀斑：14.28% 治療後出現（Yun 2013）— 因面部血管密度高\n• 暫時紅斑\n• 偶發暈針（迷走反應）\n• 罕見：神經損傷、瘢痕（Yun 2013 隨訪未報告）\n• 過敏（消毒液、無菌膠帶）\n• 偏頭痛觸發（個別案例）\n\n【禁忌（基於面部針灸安全文獻外推）】\n❌ 絕對禁忌\n• 面部活動感染（皰疹單純病毒、膿皰、impetigo）\n• 嚴重痤瘡（膿皰）\n• 出血性疾病\n• 近期面部填充劑/Botox（<2 週 — 有移位風險）\n• 玫瑰痤瘡急性發作\n• 黑色素瘤 / 治療部位皮膚癌\n❌ 相對禁忌（中醫師判斷）\n• 孕婦/哺乳期（安全數據不足，避免）\n• 糖尿病未控制（瘀斑癒合差 — Body of Beverly Hills 2024）\n• 心臟起搏器（電針絕對禁用）\n• 瘢痕體質（疤痕傾向）\n• 抗凝藥物（華法林）— 增加瘀斑\n• 慢性偏頭痛（個別案例觸發）\n\n【美顏針 vs Botox/Filler 嘅分別】\n• 美顏針：刺激身體自我修復；無注射外來物質；恢復期短（24 小時瘀斑為主）；證據有限\n• Botox：神經阻斷；短暫（3–6 個月）；西醫操作；FDA 認可\n• Filler：注射外來物質；中長期；西醫操作；FDA 認可\n⚠️ 三者係唔同範疇 — 唔可以直接比較。如想做美顏針，應由 CMC 註冊中醫師執行；Botox/Filler 由註冊西醫執行。\n\n【後注意（一般面部針灸護理）】\n• 6 小時內：只用溫和潔面，避免維他命 A 衍生物 / AHA / 果酸\n• 12 小時：避免重妝\n• 24 小時：避免桑拿、熱瑜珈、劇烈運動\n• SPF 防曬必須（瘀斑期防色沉）\n• 冷敷可減輕瘀斑\n\n【點揀中醫師】\n✅ 必查：CMC 註冊中醫師\n✅ 美顏針係針灸科專業 — 中醫師應有面部針灸培訓背景\n✅ 用一次性無菌極幼針，包裝即場拆開\n✅ 良好醫師：詳細問診、評估期望值（管理預期）、解釋證據限制、唔承諾「保證效果」\n❌ 警號：保證效果、強推大量預付套餐、唔做面診直接落針、用「祖傳」針具\n\n【HK 監管】\n美顏針屬於針灸科範疇，必須 CMC 註冊中醫師執行。香港中醫藥條例下，醫療美容操作仍屬中醫執業範疇。\n\n【關於 Care Plus 心宜中醫】\nCare Plus（沙田馬鞍山）有提供美顏針專科服務頁面（careplustcm.com/treatment/beauty-acupuncture，sitemap 確認頁面存在）。具體療程設計、次數、價錢請直接聯絡 Care Plus 了解。\n\n美顏針可作為皮膚保養嘅其中一個選擇 — 但管理好預期值（證據有限，效果因人而異）係必要嘅前提 🌿",
+      "supporting_points": [
+        "⚠️ 美顏針 peer-reviewed 證據有限 — Yun 2013 開放試驗 + 個案研究級別；NO 高質量 RCT；NCCIH 不認可",
+        "「8–12 次療程」係 HK 行業慣例引用，唔係醫學指引 — 真實個體效果差異大",
+        "美顏針屬針灸科範疇，必須 CMC 註冊中醫師執行（中醫藥條例）",
+        "瘀斑率約 14.28%（Yun 2013）— 面部血管密度高；服薄血藥患者風險更高",
+        "美顏針 vs Botox vs Filler 係唔同範疇 — 美顏針刺激自我修復、無外來物質、證據有限；Botox/Filler 西醫操作、FDA 認可",
+        "面部活動感染、近期填充劑（<2 週）、黑色素瘤、玫瑰痤瘡急性發作 = 絕對禁忌",
+        "孕婦/哺乳期 = 相對禁忌（安全數據不足），由中醫師決定",
+        "點揀中醫師：必須 CMC 註冊 + 面部針灸培訓 + 一次性無菌針 + 唔承諾保證效果"
+      ],
+      "evidence_level": "Limited Evidence — flagged honestly",
+      "next_best_question": "你想針對邊類面部困擾做美顏針？細紋 / 提拉 / 黑眼圈 / 暗沉 / 水腫？我可以同你講解該情況嘅證據限制同預期 🌿"
+    },
+    "execution_logic": {
+      "recommended_action": "Educate honestly — emphasise evidence is LIMITED, NCCIH does not endorse, '8–12 sessions' is industry norm not guideline. Always cover: (1) what conditions are claimed (with evidence-level caveat), (2) typical course (clinic-level only), (3) contraindications, (4) Care Plus has dedicated service page — direct user there for protocol/pricing. AVOID over-promising results.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user mentions black circles → fetch tcm_dark_circles_clinical_treatments + tcm_facial_beauty_treatments. If acne / dark skin → fetch tcm_skin_acne_complexion. If user mentions Botox/Filler comparison → reinforce different domains.",
+      "escalation_trigger": "If user has facial herpes, recent fillers (<2 weeks), severe rosacea flare, or is pregnant → recommend skipping; advise consult registered TCM doctor for evaluation."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_facial_beauty_treatments",
+        "tcm_acupressure_beauty",
+        "tcm_dark_circles_clinical_treatments",
+        "tcm_skin_acne_complexion",
+        "tcm_pregnancy_safety"
+      ],
+      "sources": [
+        "Yun et al. 2013 — Cosmetic acupuncture for facial elasticity pilot (Hindawi ECAM): https://pmc.ncbi.nlm.nih.gov/articles/PMC3745857/",
+        "PMC11339128 — Cosmetic acupuncture for nasolabial folds retrospective study",
+        "PMC11852262 — Acupuncture for masseter hypertrophy MRI study",
+        "Acupuncture cosmetic prospective SR (ResearchGate 2019): https://www.researchgate.net/publication/330729970",
+        "NCCIH Acupuncture: Effectiveness and Safety (no cosmetic endorsement): https://www.nccih.nih.gov/health/acupuncture-effectiveness-and-safety",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫《美顏針》(sitemap-confirmed page, 沙田馬鞍山): https://careplustcm.com/treatment/beauty-acupuncture"
+      ]
+    }
+  }
+}

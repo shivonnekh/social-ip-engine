@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCM Jessica Sales Flow — Node Map</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f9fb;
+    --surface: #ffffff;
+    --ink: #1a2332;
+    --ink-soft: #556073;
+    --ink-muted: #8a94a6;
+    --border: #e3e8ef;
+
+    --layer-entry: #2563eb;       /* blue — entry / routing */
+    --layer-entry-bg: #eaf2ff;
+    --layer-tool: #059669;        /* green — tool calls */
+    --layer-tool-bg: #e6f5ef;
+    --layer-decision: #ea580c;    /* orange — decisions */
+    --layer-decision-bg: #fff0e5;
+    --layer-bubble: #7c3aed;      /* purple — output bubbles */
+    --layer-bubble-bg: #f3edff;
+    --layer-state: #475569;       /* slate — state transitions */
+    --layer-state-bg: #eef2f7;
+    --layer-error: #dc2626;       /* red — errors / not-a-tongue */
+    --layer-error-bg: #fde8e8;
+
+    --code-bg: #0f172a;
+    --code-ink: #e2e8f0;
+    --accent-green: #10b981;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", "PingFang SC", "Helvetica Neue", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+
+  header.hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+  header.hero .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--accent-green);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  header.hero h1 {
+    font-size: 38px;
+    line-height: 1.15;
+    font-weight: 700;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  header.hero p.lead {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 820px;
+    margin: 0;
+  }
+  header.hero .meta {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  header.hero .meta code {
+    background: #eef2f7;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+  }
+
+  /* TOC */
+  nav.toc {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 64px;
+  }
+  nav.toc a {
+    display: block;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+  }
+  nav.toc a:hover {
+    border-color: var(--accent-green);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+  }
+  nav.toc a .num {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  section {
+    margin-bottom: 72px;
+  }
+  section h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  section h2 .step-num {
+    display: inline-block;
+    background: var(--accent-green);
+    color: white;
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 12px;
+    vertical-align: 3px;
+  }
+  section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+  }
+  section .section-lede {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0 0 24px;
+    max-width: 800px;
+  }
+
+  /* Mermaid wrapper */
+  .mermaid-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .mermaid {
+    font-size: 13px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  table th {
+    background: #f1f5f9;
+    color: var(--ink);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f3f7;
+    vertical-align: top;
+  }
+  table tr:last-child td { border-bottom: none; }
+  table code, p code, li code {
+    background: #eef2f7;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  table .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .pill-tool { background: var(--layer-tool-bg); color: var(--layer-tool); }
+  .pill-bubble { background: var(--layer-bubble-bg); color: var(--layer-bubble); }
+  .pill-decision { background: var(--layer-decision-bg); color: var(--layer-decision); }
+  .pill-entry { background: var(--layer-entry-bg); color: var(--layer-entry); }
+  .pill-state { background: var(--layer-state-bg); color: var(--layer-state); }
+  .pill-error { background: var(--layer-error-bg); color: var(--layer-error); }
+
+  /* Stage cards */
+  .stage-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .stage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--layer-tool);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .stage-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .stage-card .stage-num {
+    display: inline-block;
+    background: var(--layer-tool);
+    color: white;
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 8px;
+    vertical-align: 2px;
+  }
+  .stage-card .stage-trigger {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+    font-style: italic;
+  }
+  .stage-card .stage-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .stage-card .stage-tool {
+    background: var(--layer-tool-bg);
+    color: var(--layer-tool);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .stage-card .stage-state {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 8px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  /* Flow diagram (CSS-only fallback for stage list) */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .flow-row {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+  }
+  .flow-row:not(:last-child)::after {
+    content: "↓";
+    text-align: center;
+    display: block;
+    font-size: 18px;
+    color: var(--ink-muted);
+    padding: 4px 0;
+  }
+
+  /* Code blocks */
+  pre.code {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 20px 24px;
+    border-radius: 10px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+  }
+  pre.code .keyword { color: #93c5fd; }
+  pre.code .string { color: #fde68a; }
+  pre.code .comment { color: #64748b; font-style: italic; }
+  pre.code .arrow { color: #34d399; }
+
+  /* Turn walkthrough */
+  .turn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 16px;
+  }
+  .turn .turn-num {
+    background: var(--accent-green);
+    color: white;
+    height: 32px;
+    width: 48px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .turn .turn-body { font-size: 14px; }
+  .turn .turn-user { color: var(--ink); margin: 0 0 6px; }
+  .turn .turn-user::before { content: "👤 "; }
+  .turn .turn-bot { color: var(--ink-soft); margin: 0 0 8px; padding: 8px 12px; background: #f0fdf4; border-left: 3px solid var(--accent-green); border-radius: 4px; }
+  .turn .turn-bot::before { content: "🤖 "; }
+  .turn .turn-meta { font-size: 12px; color: var(--ink-muted); font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .turn .turn-meta .label { color: var(--ink-soft); font-weight: 600; }
+
+  /* Side-flow blocks */
+  .side-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .side-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+  .side-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .side-card .side-trigger {
+    font-size: 13px;
+    color: var(--accent-green);
+    margin: 0 0 8px;
+    font-weight: 500;
+  }
+  .side-card p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 96px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent-green); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <div class="kicker">TCM Wellness · Live Sales Flow</div>
+  <h1>Jessica — TCM Sales Funnel Map</h1>
+  <p class="lead">
+    Node-by-node trace of the <strong>tcm-wellness</strong> Jessica sales agent — every tool call, decision branch, bubble channel, and state transition. Mapped from live code as of 2026-04-28 (commits up to <code>779754b</code>).
+  </p>
+  <p class="meta">
+    Source files: <code>src/sales/sales_prompt.py</code> · <code>src/tools/sales.py</code> · <code>src/agent.py</code> · <code>src/whatsapp/router.py</code> · <code>configs/tcm-wellness.yaml</code> · <code>configs/tcm-sales-flow.yaml</code>
+  </p>
+</header>
+
+<nav class="toc">
+  <a href="#overview"><span class="num">01</span>Top-level Flow</a>
+  <a href="#entry"><span class="num">02</span>Entry Pipeline</a>
+  <a href="#stages"><span class="num">03</span>9 Stages</a>
+  <a href="#tools"><span class="num">04</span>13 Tools</a>
+  <a href="#vision"><span class="num">05</span>Vision Cascade</a>
+  <a href="#bubbles"><span class="num">06</span>Bubble Channels</a>
+  <a href="#sideflows"><span class="num">07</span>Side Flows</a>
+  <a href="#proactive"><span class="num">08</span>Proactive Triggers</a>
+  <a href="#postproc"><span class="num">09</span>Post-Processing</a>
+  <a href="#happypath"><span class="num">10</span>Happy Path</a>
+  <a href="#extend"><span class="num">11</span>Extension Points</a>
+</nav>
+
+<section id="overview">
+  <h2><span class="step-num">01</span>Top-level Flow</h2>
+  <p class="section-lede">
+    The full Jessica funnel from inbound message to confirmed booking. Tools in green, decisions in orange, output bubbles in purple, terminal states in slate.
+  </p>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    Entry[/WhatsApp webhook<br/>OR /tcm-wellness/api/chat/]:::entry
+    Entry --> Detect{Image attached?}:::decision
+
+    Detect -- yes --> ImgSave[Save bytes locally<br/>OR fall back to ChatDaddy URL]:::entry
+    ImgSave --> Marker[Inject analyze_tongue marker]:::entry
+    Marker --> Restart{RESTART /<br/>opt_out keyword?}:::decision
+
+    Detect -- no --> Restart
+    Restart -- yes --> WipeRestart[Wipe state · Cancel pending]:::terminal
+    Restart -- no --> JessicaCheck{_jessica_mode<br/>= true?}:::decision
+
+    JessicaCheck -- no --> StandardAgent[Standard Dr Baba agent]:::terminal
+    JessicaCheck -- yes --> SeedID[Pre-seed identity<br/>user_role=自己<br/>main_concern=中醫養生]:::state
+
+    SeedID --> S0{sales_state<br/>empty?}:::decision
+
+    S0 -- yes --> T_Greet["send_doctor_greeting()"]:::tool
+    T_Greet --> Q_LeadBubble1[Lead bubble: portrait<br/>+ 你好 我係 Jessica]:::bubble
+
+    S0 -- no --> S1{complaint set?}:::decision
+    S1 -- no --> T_RecordC["record_complaint(text)"]:::tool
+    T_RecordC --> T_ReqTongue["request_tongue_photo()"]:::tool
+    T_ReqTongue --> Q_TongueAsk[Reply: 望聞問切<br/>+ 影脷相 invite]:::bubble
+
+    S1 -- yes --> S2{tongue_described?}:::decision
+    S2 -- no --> TongueIn{User input?}:::decision
+
+    TongueIn -- photo --> T_Analyze["analyze_tongue(image_url)"]:::tool
+    T_Analyze --> Vision{Vision result}:::decision
+
+    Vision -- "real tongue" --> RealFind[findings populated<br/>tongue_described=True]:::state
+    Vision -- "vision API down" --> FakeGen[Generic neutral reading<br/>tongue_described=True]:::state
+    Vision -- "NOT a tongue" --> NotTongue[Polite redirect<br/>tongue_described=False<br/>journey paused]:::error
+
+    NotTongue --> WaitRetry[Wait for valid tongue]:::error
+    WaitRetry --> TongueIn
+
+    RealFind --> T_Q1
+    FakeGen --> T_Q1
+
+    TongueIn -- "等下影 / 冇相 / OK" --> Defer[Photo deferral path]:::state
+    Defer --> T_Q1
+
+    T_Q1["ask_constitution_question(1)"]:::tool
+    T_Q1 --> Q_Q1[Scripted bubble Q1<br/>A/B/C options]:::bubble
+
+    Q_Q1 --> S3{Q1 answered?}:::decision
+    S3 -- letter A/B/C --> T_RecordQ1["record_q_answer(1, letter)"]:::tool
+    T_RecordQ1 --> T_Q2["ask_constitution_question(2)"]:::tool
+    T_Q2 --> Q_Q2[Scripted bubble Q2<br/>NO transition text]:::bubble
+
+    Q_Q2 --> S4{Q2 answered?}:::decision
+    S4 -- letter A/B/C --> T_RecordQ2["record_q_answer(2, letter)"]:::tool
+    T_RecordQ2 --> T_Declare["declare_constitution()"]:::tool
+    T_Declare --> T_ShareDx["share_diagnosis(diag, pitch)"]:::tool
+    T_ShareDx --> Q_3para[3-paragraph reply +<br/>Maca product photo]:::bubble
+
+    Q_3para --> S5{User accepts?}:::decision
+    S5 -- "OK / 想 book" --> S5b{Gave district?}:::decision
+    S5b -- yes --> T_Match["match_clinic(district)"]:::tool
+    S5b -- no --> AskDistrict[Ask: 你住邊個區?]:::bubble
+    AskDistrict --> S5b
+
+    T_Match --> Q_Clinic[Lead bubble: clinic card +<br/>travel hint + 幾時過嚟?]:::bubble
+
+    Q_Clinic --> S6{Date/time hint?}:::decision
+    S6 -- yes --> T_Propose["propose_booking_slot()"]:::tool
+    T_Propose --> Q_Slot[Reply: proposed slot<br/>確認嗎?]:::bubble
+    Q_Slot --> S7{User confirms?}:::decision
+    S7 -- "好/OK/嗯/👍" --> T_Confirm["confirm_booking()"]:::tool
+    T_Confirm --> Q_Done[Reply: 搞掂啦 ✨ 已 book 嗮]:::bubble
+    Q_Done --> JourneyDone[journey_complete=True]:::terminal
+    JourneyDone --> FAQMode[FAQ mode<br/>find_knowledge_cards]:::terminal
+
+    S5 -- "唔使住 / 拒絕" --> EscapeAck[Acknowledge<br/>defer to FAQ]:::terminal
+
+    classDef tool fill:#059669,stroke:#047857,color:#fff
+    classDef bubble fill:#7c3aed,stroke:#6d28d9,color:#fff
+    classDef decision fill:#ea580c,stroke:#c2410c,color:#fff
+    classDef entry fill:#2563eb,stroke:#1d4ed8,color:#fff
+    classDef state fill:#475569,stroke:#334155,color:#fff
+    classDef error fill:#dc2626,stroke:#b91c1c,color:#fff
+    classDef terminal fill:#94a3b8,stroke:#64748b,color:#fff
+    </div>
+  </div>
+</section>
+
+<section id="entry">
+  <h2><span class="step-num">02</span>Entry Pipeline</h2>
+  <p class="section-lede">
+    Every inbound message — WhatsApp webhook or web POST — passes through this routing layer before reaching the agent.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Step</th><th>File / Line</th><th>Action</th><th>Output</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="pill pill-entry">Entry</span></td>
+        <td><code>router.py:webhook</code> · <code>web.py:disease_chat</code></td>
+        <td>Receive inbound message + attachments</td>
+        <td>Normalized payload</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-decision">Detect</span></td>
+        <td><code>router.py:1164</code></td>
+        <td>Wide check: <code>att_type ∈ {image, imagemessage, photo}</code> OR <code>mimetype.startswith("image/")</code></td>
+        <td>Triggers Jessica v2 image branch</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-entry">Save</span></td>
+        <td><code>router.py:1180-1209</code></td>
+        <td>Try <code>download_media()</code> → save bytes to <code>MEDIA_PATH/wa/{user_id}/{uuid}.jpg</code></td>
+        <td>Inject marker pointing at <code>/media/wa/...</code></td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-entry">URL fallback</span></td>
+        <td><code>router.py:1232-1257</code></td>
+        <td>If save fails, inject ORIGINAL ChatDaddy https URL as marker</td>
+        <td><code>analyze_tongue</code> uses ChatDaddy auth</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-error">Apology</span></td>
+        <td><code>router.py:1264-1290</code></td>
+        <td>If both fail, inject "couldn't fetch photo" marker</td>
+        <td>LLM apologises + asks for retry</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-state">Opt-out</span></td>
+        <td><code>router.py:1011</code> (<code>停 / unsubscribe</code>)</td>
+        <td>Cancel all pending follow-ups + persist opt-out</td>
+        <td>Send ack message</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-state">RESTART</span></td>
+        <td><code>router.py:715-720</code></td>
+        <td>Wipe patient row + sales state + queues + ChatDaddy + AOS CRM</td>
+        <td>Send "I forgot everything" ack</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-state">Selective cancel</span></td>
+        <td><code>router.py:1052-1068</code></td>
+        <td>On any reply: cancel <code>welcome_checkin</code> always; cancel <code>symptom_followup</code> / <code>emotional_checkin</code> if <code>resolution_detector.is_resolved()</code> matches</td>
+        <td>Removes stale follow-ups</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Jessica mode gate</h3>
+  <pre class="code">_jessica_mode = (
+    <span class="comment"># env var (render.yaml)</span>
+    SALES_AGENT_V2_ENABLED=true
+    AND
+    <span class="comment"># per-disease YAML</span>
+    configs/tcm-wellness.yaml: agent.sales_agent_v2_enabled=true
+    AND
+    <span class="comment"># journey not yet complete</span>
+    NOT is_journey_complete(patient)
+)</pre>
+</section>
+
+<section id="stages">
+  <h2><span class="step-num">03</span>9 Stages of the Journey</h2>
+  <p class="section-lede">
+    Each turn the LLM reads <code>sales_state</code> from the prompt, identifies the current stage, and calls the matching tool(s). Stages advance only when their tool's preconditions are met — every tool has a hard guard.
+  </p>
+
+  <div class="stage-grid">
+    <div class="stage-card">
+      <h4><span class="stage-num">0</span>Intro / greeting</h4>
+      <p class="stage-trigger">Trigger: sales_state empty OR only <code>greeting_shown=True</code> (stale flag)</p>
+      <div class="stage-tools">
+        <span class="stage-tool">send_doctor_greeting</span>
+      </div>
+      <p>Queue lead bubble (canonical greeting text) + media (Jessica portrait <code>/static/sales/hong_doctor.jpg</code>). Set <code>greeting_shown=True</code>.</p>
+      <p class="stage-state">→ state: <code>+ greeting_shown</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">1</span>Complaint capture</h4>
+      <p class="stage-trigger">Trigger: user shares 主訴 (失眠 / 頭痛 / 經痛 / 美容 / etc.)</p>
+      <div class="stage-tools">
+        <span class="stage-tool">record_complaint</span>
+        <span class="stage-tool">request_tongue_photo</span>
+      </div>
+      <p>Both fire in the same turn. Reply combines: empathy ack + 1 clarifying Q + <strong>望聞問切</strong> framing + tongue ask — all in a single message (split by <code>\n</code>).</p>
+      <p class="stage-state">→ state: <code>+ complaint, complaint_recorded_at, tongue_requested</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">2-3</span>Tongue analysis</h4>
+      <p class="stage-trigger">Trigger: user replies with photo (or text deferral)</p>
+      <div class="stage-tools">
+        <span class="stage-tool">analyze_tongue</span>
+        <span class="stage-tool">describe_tongue_findings <em>(optional)</em></span>
+      </div>
+      <p>3-tier vision cascade. Three outcomes:</p>
+      <ul style="margin: 8px 0 0; padding-left: 20px; font-size: 13px;">
+        <li><strong>Real tongue</strong> → real findings → <code>tongue_described=True</code></li>
+        <li><strong>Vision API down</strong> → fake generic reading → <code>tongue_described=True</code> (journey continues)</li>
+        <li><strong>NOT a tongue</strong> → polite redirect → <code>tongue_described=False</code> (journey paused, retry expected)</li>
+      </ul>
+      <p class="stage-state">→ state: <code>+ tongue_findings, tongue_described, tongue_description_text</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">4</span>Constitution Q1 — energy</h4>
+      <p class="stage-trigger">Trigger: tongue step done OR photo deferred</p>
+      <div class="stage-tools">
+        <span class="stage-tool">ask_constitution_question(1)</span>
+      </div>
+      <p>Queues scripted bubble verbatim (LLM never writes A/B/C — prevents character drift like 攰→劫). Reply text = short transition (≤20 chars) like <em>"等我再問你兩條題 😊"</em>.</p>
+      <p class="stage-state">→ state: <code>+ q1_asked</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">5</span>Q1 answer + Q2 — temperature</h4>
+      <p class="stage-trigger">Trigger: user sends single letter A/B/C (or "A就啱")</p>
+      <div class="stage-tools">
+        <span class="stage-tool">record_q_answer(1, letter)</span>
+        <span class="stage-tool">ask_constitution_question(2)</span>
+      </div>
+      <p>Both fire in the same turn. <strong>Q2 turn LLM reply text is wholesale-suppressed</strong> by post-processor — Q2 scripted bubble lands clean with no redundant intro.</p>
+      <p class="stage-state">→ state: <code>+ constitution_answers.q1, q2_asked</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">6</span>Constitution declaration + product pitch</h4>
+      <p class="stage-trigger">Trigger: Q2 answered (Q1 + Q2 both in <code>constitution_answers</code>)</p>
+      <div class="stage-tools">
+        <span class="stage-tool">record_q_answer(2, letter)</span>
+        <span class="stage-tool">declare_constitution</span>
+        <span class="stage-tool">share_diagnosis</span>
+      </div>
+      <p>3 tools in 1 turn. Reply is <strong>3 paragraphs separated by <code>\n\n</code></strong>:</p>
+      <ul style="margin: 8px 0 0; padding-left: 20px; font-size: 13px;">
+        <li><strong>Part A</strong> — diagnosis ("根據你嘅脷相 + 答案，你可能主要屬於 陽虛質 🌿 ...")</li>
+        <li><strong>Part B</strong> — Maca product pitch with full URL ("呢個體質啱用 Dr. Jessica 極致黑G瑪卡 ✨ 👉 [URL]")</li>
+        <li><strong>Part C</strong> — soft-close ("如果想更精準調理, 可以嚟我哋 clinic 見醫師面診 🌿")</li>
+      </ul>
+      <p>+ Maca product photo attachment.</p>
+      <p class="stage-state">→ state: <code>+ dominant_constitution, constitution_distribution, diagnosis_shared</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">7</span>Clinic match</h4>
+      <p class="stage-trigger">Trigger: user expresses booking interest + provides specific district</p>
+      <div class="stage-tools">
+        <span class="stage-tool">match_clinic(district)</span>
+      </div>
+      <p>Hard rejects regional umbrella terms — <em>"九龍" / "Kowloon" / "港島" / "新界"</em> all return <code>district_too_broad</code>; LLM must ask for specific district. Self-contained lead bubble (clinic name + address + travel hint + "幾時過嚟?" question). LLM reply suppressed (clinic card stands alone).</p>
+      <p class="stage-state">→ state: <code>+ user_district, matched_clinic_id</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">8</span>Booking slot proposal</h4>
+      <p class="stage-trigger">Trigger: user gives date/time hint ("聽日下午" / "星期六上午")</p>
+      <div class="stage-tools">
+        <span class="stage-tool">propose_booking_slot(date_hint, time_hint)</span>
+      </div>
+      <p>Walks forward 14 days from <strong>HKT today</strong> (not server UTC) — anchored to fix the timezone-edge bug where 6am HKT showed yesterday's "tomorrow". Picks first open slot in clinic's <code>opening_hours</code>.</p>
+      <p class="stage-state">→ state: <code>+ proposed_booking_date, proposed_booking_time</code></p>
+    </div>
+
+    <div class="stage-card">
+      <h4><span class="stage-num">9</span>Booking confirmation</h4>
+      <p class="stage-trigger">Trigger: user confirms slot ("好" / "OK" / "嗯" / "可以" / "👍")</p>
+      <div class="stage-tools">
+        <span class="stage-tool">confirm_booking</span>
+      </div>
+      <p>Returns <code>booking_full_display_zh</code> ("2026年4月29日（星期三）下午3:30") which the LLM uses <strong>verbatim</strong> in reply (LLM has hallucinated dates like "2024年2024" when reformatting raw ISO).</p>
+      <p class="stage-state">→ state: <code>+ booking_confirmed=True, journey_complete=True, booking_confirmed_at (HKT-aware)</code></p>
+      <p class="stage-state" style="color: var(--accent-green); margin-top: 12px;">🎉 Journey complete → falls through to FAQ mode</p>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <h2><span class="step-num">04</span>The 13 Tools</h2>
+  <p class="section-lede">
+    Each tool has hard preconditions enforced at the function level — skip a step and you get an error with a hint pointing to the prerequisite. This is the architectural fence that prevents LLM-driven flow corruption.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Tool</th><th>Pre-condition</th><th>Side effects</th><th>Idempotency</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>send_doctor_greeting</code></td>
+        <td>state empty OR only <code>greeting_shown</code> (stale)</td>
+        <td>Lead bubble + portrait photo</td>
+        <td>3 guards: flag + journey progress + module-level set</td>
+      </tr>
+      <tr>
+        <td><code>record_complaint</code></td>
+        <td>none</td>
+        <td>Set <code>complaint</code></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>request_tongue_photo</code></td>
+        <td>complaint set</td>
+        <td>Set <code>tongue_requested=True</code></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>analyze_tongue</code></td>
+        <td>complaint set; image_url present</td>
+        <td>3-tier vision cascade → <code>tongue_findings</code></td>
+        <td>blocks if <code>tongue_described=True</code> + real findings; <strong>NEW</strong>: not-a-tongue keeps <code>tongue_described=False</code> for retry</td>
+      </tr>
+      <tr>
+        <td><code>describe_tongue_findings</code></td>
+        <td><code>tongue_findings</code> exists</td>
+        <td>Override auto-queued reading with richer LLM-written one</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>ask_constitution_question(n)</code></td>
+        <td>n=1: tongue done; n=2: Q1 answered</td>
+        <td>Scripted bubble, <code>q{n}_asked=True</code></td>
+        <td>blocks if already answered OR awaiting answer (prevents re-ask spam)</td>
+      </tr>
+      <tr>
+        <td><code>record_q_answer(n, letter)</code></td>
+        <td><code>q{n}_asked=True</code></td>
+        <td>Persist <code>constitution_answers.q{n}</code></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>declare_constitution</code></td>
+        <td>Q1 + Q2 both answered</td>
+        <td>Compute distribution, set <code>dominant_constitution</code></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>share_diagnosis</code></td>
+        <td><code>dominant_constitution</code> set</td>
+        <td>Validates diag (≥15ch + has constitution) + pitch (≥15ch + product + URL); queues Maca photo</td>
+        <td>blocks if already shared (LLM has tried to re-pitch in observed runs)</td>
+      </tr>
+      <tr>
+        <td><code>match_clinic(district)</code></td>
+        <td><code>diagnosis_shared=True</code>; rejects regional umbrella terms</td>
+        <td>Pick nearest clinic, queue clinic card lead bubble</td>
+        <td>blocks if <code>matched_clinic_id</code> already set</td>
+      </tr>
+      <tr>
+        <td><code>propose_booking_slot</code></td>
+        <td><code>matched_clinic_id</code> set</td>
+        <td>HKT-anchored 14-day walk for first open slot</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>confirm_booking</code></td>
+        <td>clinic + date + time all set</td>
+        <td><code>booking_confirmed=True</code>, <code>journey_complete=True</code>, HKT-aware <code>booking_confirmed_at</code></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>find_knowledge_cards</code></td>
+        <td>none — fires anytime for off-journey questions</td>
+        <td>Qdrant retrieval, returns top-N cards</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="vision">
+  <h2><span class="step-num">05</span>Vision Cascade (analyze_tongue internals)</h2>
+  <p class="section-lede">
+    3 vision providers in tiered fallback. Each tier produces structured findings (<code>signals</code>, <code>color</code>, <code>coating</code>, <code>shape</code>, <code>summary</code>). Refusal hints are tracked across all tiers to distinguish "vision down" from "user sent wrong image".
+  </p>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    Fetch["_fetch_image_bytes"]:::entry
+    Fetch --> FetchOK{Bytes ok?}:::decision
+    FetchOK -- exception --> SkipVision[fetch_failed=True<br/>vision_failed=True<br/>SKIP cascade]:::error
+    FetchOK -- ok --> T1["Tier 1: Anthropic<br/>claude-sonnet-4-5"]:::tool
+
+    T1 --> T1Result{Result?}:::decision
+    T1Result -- "valid signals" --> ValidA[Valid findings]:::state
+    T1Result -- "weak / refusal" --> CheckRefusalA{Refusal hint<br/>in summary?}:::decision
+    CheckRefusalA -- yes --> RefusalA[had_explicit_refusal = True]:::error
+    CheckRefusalA -- no --> WeakA[weak only]:::state
+    RefusalA --> T2
+    WeakA --> T2
+
+    T2["Tier 2: Groq<br/>llama-4-scout"]:::tool
+    T2 --> T2Result{Result?}:::decision
+    T2Result -- "valid" --> ValidB[Valid findings]:::state
+    T2Result -- "weak / refusal" --> CheckRefusalB{Refusal hint?}:::decision
+    CheckRefusalB -- yes --> RefusalB[had_explicit_refusal = True]:::error
+    CheckRefusalB -- no --> WeakB[weak only]:::state
+    RefusalB --> T3
+    WeakB --> T3
+
+    T3["Tier 3: OpenAI<br/>gpt-4o (last resort)"]:::tool
+    T3 --> T3Result{Result?}:::decision
+    T3Result -- "valid" --> ValidC[Valid findings]:::state
+    T3Result -- "weak / refusal" --> CheckRefusalC{Refusal hint?}:::decision
+    CheckRefusalC -- yes --> RefusalC[had_explicit_refusal = True]:::error
+    CheckRefusalC -- no --> AllFail[vision_failed = True<br/>NO valid findings]:::error
+
+    ValidA --> Outcome{Final outcome}:::decision
+    ValidB --> Outcome
+    ValidC --> Outcome
+    AllFail --> Outcome
+    RefusalC --> Outcome
+    SkipVision --> Outcome
+
+    Outcome -- "valid findings" --> RealReading["Real TCM reading<br/>tongue_described=True"]:::state
+    Outcome -- "fetch_failed OR<br/>vision_failed (no refusal)" --> FakeGeneric["Generic reading<br/>tongue_described=True<br/>journey continues"]:::state
+    Outcome -- "had_explicit_refusal<br/>AND not fetch_failed" --> NotTongue["Polite redirect<br/>tongue_described=False<br/>journey paused"]:::error
+
+    classDef tool fill:#059669,stroke:#047857,color:#fff
+    classDef decision fill:#ea580c,stroke:#c2410c,color:#fff
+    classDef entry fill:#2563eb,stroke:#1d4ed8,color:#fff
+    classDef state fill:#475569,stroke:#334155,color:#fff
+    classDef error fill:#dc2626,stroke:#b91c1c,color:#fff
+    </div>
+  </div>
+
+  <h3>Refusal hint patterns</h3>
+  <pre class="code">_REFUSAL_HINTS = (
+    <span class="comment"># Cantonese / Chinese</span>
+    <span class="string">"唔係舌頭"</span>, <span class="string">"唔係脷"</span>, <span class="string">"不是舌頭"</span>, <span class="string">"無法評估"</span>, <span class="string">"無法分析"</span>,
+    <span class="string">"請提供"</span>, <span class="string">"唔係呢類"</span>,
+
+    <span class="comment"># English</span>
+    <span class="string">"not a tongue"</span>, <span class="string">"cannot analyze"</span>, <span class="string">"can't analyze"</span>, <span class="string">"unable to"</span>, <span class="string">"please provide"</span>,
+
+    <span class="comment"># What providers actually describe (added 2026-04-28)</span>
+    <span class="string">"logo"</span>, <span class="string">"標誌"</span>, <span class="string">"圖標"</span>, <span class="string">"promotional"</span>, <span class="string">"廣告"</span>,
+    <span class="string">"screenshot"</span>, <span class="string">"屏幕截圖"</span>, <span class="string">"螢幕擷圖"</span>,
+)</pre>
+
+  <h3>Outcome contract</h3>
+  <table>
+    <thead>
+      <tr><th>Outcome</th><th>tongue_described</th><th>Lead bubble text</th><th>Q1 fires?</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="pill pill-tool">Real tongue</span></td>
+        <td><code>True</code></td>
+        <td><em>"睇到你條脷偏紅、苔薄少 🌿 傾向陰虛偏熱"</em></td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-state">Vision API down</span></td>
+        <td><code>True</code></td>
+        <td><em>"脷相收到啦 🌿 整體睇落色澤大致正常範圍, 苔薄白, 暫時冇明顯偏差..."</em></td>
+        <td>Yes (journey continues)</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-error">NOT a tongue</span></td>
+        <td><code>False</code></td>
+        <td><em>"唔好意思 🙏 呢張似乎唔係脷相 — 我哋中醫望脷需要清楚見到條脷..."</em></td>
+        <td>No (waiting for retry)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="bubbles">
+  <h2><span class="step-num">06</span>Bubble Channels — 4 output streams per turn</h2>
+  <p class="section-lede">
+    Jessica's reply is composed across 4 parallel channels. Each is queued by tools and drained at the end of the turn — per-user (no cross-user leak after <code>0599a6f</code>).
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Channel</th><th>Source</th><th>Render position</th><th>Used for</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="pill pill-bubble">Lead bubble</span></td>
+        <td><code>_queue_lead_bubble(text, user_id)</code></td>
+        <td>Sent FIRST as own messages with typing pause</td>
+        <td>"What the doctor saw" — tongue reading, clinic card, doctor portrait greeting</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-tool">LLM reply text</span></td>
+        <td><code>final_text</code> from agent</td>
+        <td>Sent merged with scripted bubbles via <code>\n\n</code></td>
+        <td>Short transitions, soft-closes (often empty by design on Q2 / clinic-card turns)</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-bubble">Scripted bubble</span></td>
+        <td><code>_queue_scripted_bubble(text, user_id)</code></td>
+        <td>Sent AFTER LLM reply (merged into same message)</td>
+        <td>Q1/Q2 verbatim — bypasses LLM character drift (攰→劫, 乜精神→乏)</td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-bubble">Media attachment</span></td>
+        <td><code>_queue_media(url, kind, user_id)</code></td>
+        <td>Sent as ChatDaddy image attachments AFTER text</td>
+        <td>Doctor portrait (intro), Maca product photo (diagnosis turn)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Cross-user isolation</h3>
+  <pre class="code"><span class="comment"># Per-user queues (added 2026-04-28 in commit 0599a6f)</span>
+_pending_lead_bubbles_by_user: dict[user_id, list[str]] = {}
+_pending_scripted_bubbles_by_user: dict[user_id, list[str]] = {}
+_pending_sales_media_by_user: dict[user_id, list[dict]] = {}
+
+<span class="comment"># Drained at end of turn — only the matching user's bucket</span>
+get_pending_lead_bubbles(user_id) <span class="arrow">→</span> only that user's items
+get_pending_sales_media(user_id) <span class="arrow">→</span> same</pre>
+</section>
+
+<section id="sideflows">
+  <h2><span class="step-num">07</span>Side Flows</h2>
+  <p class="section-lede">
+    Patterns that branch off the main funnel. Each handles a real conversational pattern observed in production.
+  </p>
+
+  <div class="side-grid">
+    <div class="side-card">
+      <h4>A. Photo deferral</h4>
+      <p class="side-trigger">Trigger: "等下影" / "OK" / "知喇" / "冇相" / "影唔到"</p>
+      <p>LLM calls <code>ask_constitution_question(1)</code> directly (no tongue findings) → Q1 fires; tongue is bonus, never blocker. State: <code>tongue_requested=True, tongue_findings={}, tongue_described=False</code>.</p>
+    </div>
+
+    <div class="side-card">
+      <h4>B. Mid-journey FAQ</h4>
+      <p class="side-trigger">Trigger: "幾錢?" / "點影?" / 穴位 questions</p>
+      <p>LLM calls <code>find_knowledge_cards(query)</code> → answers from Qdrant cards → soft-bring-back to next journey step. <strong>No state change</strong>.</p>
+    </div>
+
+    <div class="side-card">
+      <h4>C. Refusal / escape</h4>
+      <p class="side-trigger">Trigger: "唔 book 啦" / "等我諗下"</p>
+      <p>LLM acknowledges warmly, journey pauses; subsequent messages auto-route to FAQ mode (still Jessica prompt, no push).</p>
+    </div>
+
+    <div class="side-card">
+      <h4>D. Reactive constitution probe</h4>
+      <p class="side-trigger">Trigger: 調理 / 補身 / 點改善 + low constitution signal</p>
+      <p>Dispatcher returns <code>Decision(ASK | RETRY | RESUME | DROP | PASSTHROUGH)</code>. ASK injects diagnostic Q before answering original; RESUME merges score then answers; DROP apologises briefly.</p>
+    </div>
+
+    <div class="side-card">
+      <h4>E. Wait mode (tongue pending)</h4>
+      <p class="side-trigger">Trigger: tongue requested but not described, user sends non-photo content</p>
+      <p>Short ack, NO new question, gentle remind to send tongue. Photo deferral still wins if user explicitly defers.</p>
+    </div>
+
+    <div class="side-card">
+      <h4>F. NOT-a-tongue retry</h4>
+      <p class="side-trigger">Trigger: vision providers reject image as non-tongue</p>
+      <p>Lead bubble = polite redirect. <code>tongue_described=False</code>. <code>tongue_invalid_attempt_count++</code>. User can retry with a real tongue — idempotency guard doesn't block (no real findings yet).</p>
+    </div>
+  </div>
+</section>
+
+<section id="proactive">
+  <h2><span class="step-num">08</span>Proactive Triggers (Background, Scheduled)</h2>
+  <p class="section-lede">
+    Fire AFTER each turn. SQLite-backed scheduler polls every 60s, respects HK quiet hours 22:00–08:00, sends via ChatDaddy. Cancel-on-progress sweep removes stale follow-ups when user advances.
+  </p>
+
+  <h3>Detection-driven</h3>
+  <table>
+    <thead><tr><th>Trigger</th><th>Delay</th><th>Detection signal</th><th>Cancel rule</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>emotional_checkin</code></td>
+        <td>24h</td>
+        <td>regex: 擔心 / 好辛苦 / 壓力大 / 焦慮 / stressed / depressed</td>
+        <td>Cancel if user signals positive affect</td>
+      </tr>
+      <tr>
+        <td><code>symptom_followup</code></td>
+        <td>48h</td>
+        <td>regex: 失眠 / 頭痛 / 經痛 / 胃痛 / 便秘 / 暗瘡 (canonical name captured)</td>
+        <td>Cancel if specific symptom resolved</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Funnel-driven (sales-state stage)</h3>
+  <table>
+    <thead><tr><th>Trigger</th><th>Delay</th><th>When fires</th><th>Cancel rule</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>funnel_complaint_pending</code></td>
+        <td>24h</td>
+        <td>greeting_shown=True, no complaint</td>
+        <td>Cancels when complaint set</td>
+      </tr>
+      <tr>
+        <td><code>funnel_tongue_pending</code></td>
+        <td>24h</td>
+        <td>complaint set, no tongue ack</td>
+        <td>Cancels when tongue described</td>
+      </tr>
+      <tr>
+        <td><code>funnel_q1_pending</code></td>
+        <td>24h</td>
+        <td>tongue done, no Q1</td>
+        <td>Cancels when Q1 answered</td>
+      </tr>
+      <tr>
+        <td><code>funnel_q2_pending</code></td>
+        <td>24h</td>
+        <td>Q1 done, no Q2</td>
+        <td>Cancels when Q2 answered</td>
+      </tr>
+      <tr>
+        <td><code>funnel_booking_pending</code></td>
+        <td>48h</td>
+        <td>diagnosis shared, no clinic match</td>
+        <td>Cancels when clinic matched</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Disabled by design</h3>
+  <ul>
+    <li><code>welcome_checkin</code> — intrusive for no-progress user</li>
+    <li><code>constitution_journey</code> 9-Q over 27 days — Phase 0 (data + scoring exist), scheduler not wired (see <code>docs/plans/constitution-journey-proactive-wiring.md</code>)</li>
+  </ul>
+</section>
+
+<section id="postproc">
+  <h2><span class="step-num">09</span>Post-Processing Pipeline</h2>
+  <p class="section-lede">
+    Every turn, after the LLM produces <code>final_text</code>, 16 gates run before the response goes out. Pipeline trace events are emitted at each gate for the Flow Inspector.
+  </p>
+
+  <pre class="code">final_text from LLM
+    <span class="arrow">↓</span>
+1.  _enforce_role_question_first       <span class="comment"># onboarding gate</span>
+2.  _enforce_next_onboarding_field
+3.  _strip_proactive_clinical_on_completion
+4.  _enforce_single_onboarding_question
+5.  _enforce_single_phase2_question
+6.  _strip_repeated_questions
+7.  _clean_token_loops                  <span class="comment"># collapse 好好好</span>
+8.  Lead-bubble ack suppression         <span class="comment"># drop short '好' after lead</span>
+9.  Q2 transition suppression           <span class="comment"># wholesale drop on ask_constitution_question(2)</span>
+10. add_emojis_to_response
+11. Backtick / markdown cleanup
+
+<span class="comment">─── if _jessica_mode ───</span>
+
+12. url_repair                          <span class="comment"># fix mangled drgracie URLs</span>
+13. intro_dedup                         <span class="comment"># strip repeated 脷相收到啦
+                                          (gated: NOT on tongue-tool turn)</span>
+
+14. safety_check                        <span class="comment"># profanity de-escalation, etc.</span>
+15. _enforce_mandatory_keywords
+16. Bubble splitter (\n\n separates)
+
+    <span class="arrow">↓</span>
+final response → drain lead/scripted/media queues for THIS user
+    <span class="arrow">↓</span>
+return JSON to web/whatsapp router</pre>
+
+  <h3>Pipeline trace event statuses</h3>
+  <table>
+    <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>pass</code></td><td>Gate passed, expected path</td></tr>
+      <tr><td><code>fail</code></td><td>Gate rejected, alt path taken</td></tr>
+      <tr><td><code>skip</code></td><td>Gate not applicable this turn</td></tr>
+      <tr><td><code>fired</code></td><td>Action triggered (ack suppression, intro dedup)</td></tr>
+      <tr><td><code>noop</code></td><td>Gate ran but no change</td></tr>
+      <tr><td><code>error</code></td><td>Exception caught (turn continues)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="happypath">
+  <h2><span class="step-num">10</span>End-to-End Happy Path</h2>
+  <p class="section-lede">
+    Turn-by-turn walkthrough of a customer who completes the full funnel from greeting to confirmed booking.
+  </p>
+
+  <div class="turn">
+    <div class="turn-num">T1</div>
+    <div class="turn-body">
+      <p class="turn-user">"hi"</p>
+      <p class="turn-bot"><strong>Lead:</strong> 你好 🌿 我係 洪煊宜 Jessica, 心宜中醫 嘅註冊中醫師 👩‍⚕️ 請問你邊度唔舒服？<br>
+        <strong>Media:</strong> hong_doctor.jpg</p>
+      <p class="turn-meta"><span class="label">tools:</span> send_doctor_greeting<br/><span class="label">state:</span> + greeting_shown</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T2</div>
+    <div class="turn-body">
+      <p class="turn-user">"我胃唔舒服"</p>
+      <p class="turn-bot">"聽到你胃唔舒服，真係好辛苦 😔 係咪食完先覺得唔舒服？中醫講『望聞問切』，可唔可以影張條脷俾我睇下 👅"</p>
+      <p class="turn-meta"><span class="label">tools:</span> record_complaint, request_tongue_photo<br/><span class="label">state:</span> + complaint, tongue_requested</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T3</div>
+    <div class="turn-body">
+      <p class="turn-user">📸 &lt;tongue photo&gt;</p>
+      <p class="turn-bot"><strong>Lead:</strong> 睇到你條脷偏紅、苔薄少 🌿 傾向有少少陰虛<br>
+        <strong>Reply:</strong> 等我再多問你兩條題 😊<br>
+        <strong>Scripted:</strong> Q1: 你通常會覺得—— A. 好攰... B. 有時攰... C. 精神不錯</p>
+      <p class="turn-meta"><span class="label">tools:</span> analyze_tongue, ask_constitution_question(1)<br/><span class="label">state:</span> + tongue_findings, tongue_described, q1_asked</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T4</div>
+    <div class="turn-body">
+      <p class="turn-user">"B"</p>
+      <p class="turn-bot"><em>(LLM reply suppressed — Q2 turn)</em><br><strong>Scripted:</strong> Q2: 你嘅體感係—— A. 容易手腳凍 B. 冷熱都可以 C. 容易口乾</p>
+      <p class="turn-meta"><span class="label">tools:</span> record_q_answer(1, B), ask_constitution_question(2)<br/><span class="label">state:</span> + constitution_answers.q1, q2_asked</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T5</div>
+    <div class="turn-body">
+      <p class="turn-user">"C"</p>
+      <p class="turn-bot"><strong>Part A:</strong> "根據你嘅脷相 + 答案，你可能主要屬於 陽虛質 🌿..."<br>
+        <strong>Part B:</strong> "呢個體質啱用 Dr. Jessica 極致黑G瑪卡 ✨ 👉 [URL]"<br>
+        <strong>Part C:</strong> "如果想更精準調理，可以嚟我哋 clinic 見醫師面診 🌿"<br>
+        <strong>Media:</strong> maca_product.jpg</p>
+      <p class="turn-meta"><span class="label">tools:</span> record_q_answer(2, C), declare_constitution, share_diagnosis<br/><span class="label">state:</span> + dominant_constitution, diagnosis_shared</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T6</div>
+    <div class="turn-body">
+      <p class="turn-user">"好呀我住沙田"</p>
+      <p class="turn-bot"><strong>Lead:</strong> Care Plus 沙田乙明邨明信樓地下 / 港鐵沙田站 8min / 營業時間: 週一至週六 / 你方便邊一日 / 幾點過嚟?<br>
+        <strong>Reply:</strong> 好 <em>(auto-suppressed)</em></p>
+      <p class="turn-meta"><span class="label">tools:</span> match_clinic("沙田")<br/><span class="label">state:</span> + user_district, matched_clinic_id</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T7</div>
+    <div class="turn-body">
+      <p class="turn-user">"聽日下午"</p>
+      <p class="turn-bot">"好呀, 我幫你預咗 4月29日（星期三）下午 3:30, OK 嗎?"</p>
+      <p class="turn-meta"><span class="label">tools:</span> propose_booking_slot("聽日", "下午")<br/><span class="label">state:</span> + proposed_booking_date, proposed_booking_time</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T8</div>
+    <div class="turn-body">
+      <p class="turn-user">"好"</p>
+      <p class="turn-bot">"搞掂啦 ✨ 已經幫你 book 咗 2026年4月29日（星期三）下午3:30，地址 沙田乙明邨明信樓地下，到時見 🌿"</p>
+      <p class="turn-meta"><span class="label">tools:</span> confirm_booking<br/><span class="label">state:</span> + booking_confirmed=True, journey_complete=True</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="turn-num">T9+</div>
+    <div class="turn-body">
+      <p class="turn-user">"點搽暗瘡膏好?"</p>
+      <p class="turn-bot"><em>FAQ mode — find_knowledge_cards retrieves matching card → answers</em></p>
+      <p class="turn-meta"><span class="label">tools:</span> find_knowledge_cards<br/><span class="label">state:</span> (unchanged — journey complete)</p>
+    </div>
+  </div>
+</section>
+
+<section id="extend">
+  <h2><span class="step-num">11</span>Extension Points</h2>
+  <p class="section-lede">
+    How to add new behaviors without breaking the existing flow.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Want to add…</th><th>Where to start</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>New journey step</td>
+        <td>Add to <code>_JOURNEY_STEPS</code> in <code>sales_prompt.py:23</code> + new tool in <code>tools/sales.py</code> + dispatch in <code>handle_sales_tool_call()</code></td>
+      </tr>
+      <tr>
+        <td>New proactive trigger</td>
+        <td><code>proactive/trigger_detector.py:scan()</code> + template in <code>templates.py</code> + config block in disease YAML</td>
+      </tr>
+      <tr>
+        <td>Different vision provider</td>
+        <td><code>tools/sales.py</code>: <code>_vision_describe_tongue_*</code> (3 functions, one per tier) + update tier order in <code>analyze_tongue</code></td>
+      </tr>
+      <tr>
+        <td>New disease config</td>
+        <td>Copy <code>configs/template.yaml</code> → <code>configs/&lt;slug&gt;.yaml</code>; create <code>data/cards/&lt;slug&gt;-...</code> directory; index via <code>scripts/index_all.py</code></td>
+      </tr>
+      <tr>
+        <td>Skip onboarding for a disease</td>
+        <td>Set <code>agent.sales_agent_v2_enabled: true</code> (Jessica path bypasses standard onboarding by pre-seeding identity)</td>
+      </tr>
+      <tr>
+        <td>Change journey order</td>
+        <td>Edit <code>_JOURNEY_STEPS</code> AND each tool's precondition guard in <code>tools/sales.py</code> — guards must be updated atomically with order</td>
+      </tr>
+      <tr>
+        <td>Disable a proactive trigger</td>
+        <td>Flip <code>enabled: false</code> in <code>proactive_triggers.&lt;name&gt;</code> in disease YAML — no code redeploy needed</td>
+      </tr>
+      <tr>
+        <td>Add a side flow (e.g. emergency redirect)</td>
+        <td>New regex matcher in <code>safety_guards.py</code> that fires before tool dispatch + new template</td>
+      </tr>
+      <tr>
+        <td>Change Jessica's tone / persona</td>
+        <td>Edit <code>build_jessica_prompt()</code> in <code>src/sales/sales_prompt.py</code>. Behavioral rules section starts at line ~99</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <p>
+    Generated 2026-04-28 from live code (commits up to <code>779754b</code>).
+    Companion docs: <a href="proactive-follow-up-system.html">Proactive Follow-up System</a>,
+    <a href="media-rag-pipeline.html">Media RAG Pipeline</a>,
+    <a href="plans/constitution-journey-proactive-wiring.md">Constitution Journey Wiring (Phase 1 plan)</a>.
+  </p>
+  <p>
+    Source map: <code>src/tools/sales.py</code> (2400 LOC), <code>src/sales/sales_prompt.py</code> (~520 LOC),
+    <code>src/agent.py:1731-2837</code> (Jessica integration), <code>src/whatsapp/router.py:1130-1600</code> (entry pipeline).
+  </p>
+</footer>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: {
+      curve: 'basis',
+      padding: 16,
+    },
+    securityLevel: 'loose',
+  });
+</script>
+</body>
+</html>

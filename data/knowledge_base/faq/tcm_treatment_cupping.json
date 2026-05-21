@@ -1,0 +1,105 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_cupping",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.3_cupping",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Frontiers 2023 evidence-mapping + StatPearls + HK clinical sources",
+      "research_note": "Indications grounded in Frontiers 2023 evidence-mapping (135 trials) + StatPearls. HK technique taxonomy + 罐印 colour interpretation from FWD HK & Cigna HK clinical content. Care Plus has no dedicated cupping page in sitemap."
+    },
+    "overview": {
+      "title": "拔罐療程介紹：火罐 vs 真空罐、4 種手法（留/走/閃/刺絡）、罐印解讀、禁忌",
+      "objective": "完整介紹拔罐作為臨床療程 — 罐種類（火罐/真空罐/橡膠易罐）、4 種主要手法、罐印顏色點解讀、適應症、禁忌、HK 火警條例下嘅執業現況",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "拔罐",
+        "拔罐作用",
+        "拔罐功效",
+        "拔罐療程",
+        "拔罐係咩",
+        "拔罐點做",
+        "火罐",
+        "真空罐",
+        "矽膠罐",
+        "易罐",
+        "留罐",
+        "走罐",
+        "閃罐",
+        "刺絡拔罐",
+        "刺血拔罐",
+        "拔罐留印",
+        "罐印",
+        "罐印顏色",
+        "罐印代表咩",
+        "罐印幾耐消",
+        "拔罐瘀青",
+        "拔罐痛唔痛",
+        "拔罐後注意",
+        "拔罐禁忌",
+        "孕婦拔罐",
+        "經期拔罐",
+        "拔罐肩頸",
+        "拔罐腰背痛",
+        "拔罐感冒",
+        "拔罐去濕",
+        "拔罐減肥",
+        "cupping",
+        "cupping therapy",
+        "Care Plus 拔罐"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "拔罐用負壓吸附皮膚，刺激局部循環、釋放筋膜、行氣活血。Frontiers 2023 evidence-mapping（135 個臨床試驗）顯示對多種痛症有中度證據。\n\n【3 種主要罐具（FWD HK）】\n1️⃣ 玻璃火罐 — 用酒精火燄製造真空（吸力較強，操作技術要求高，火災風險）\n2️⃣ 真空吸罐（抽氣式）— 手動或槍式抽氣，吸力可分級控制（較安全，HK 火警條例下私營診所首選）\n3️⃣ 橡膠/矽膠「易罐」— 擠壓式吸附，吸力溫和（家用、面部、敏感部位）\n\n【4 種主要手法（FWD HK 中醫師資料）】\n1️⃣ 留罐（最基礎）— 罐留 5–15 分鐘\n  • 適合：勞損、肌肉僵硬、局部皮膚冰涼\n2️⃣ 走罐（滑罐）— 塗按摩油，罐沿肌肉滑動\n  • 適合：整幅肌肉僵硬（背部、大腿）— 拉鬆筋膜\n3️⃣ 閃罐 — 快速吸附+取下重複 5–10 次\n  • 適合：感冒初起伴全身痛、面癱（虛弱/寒涼患者）— 袪濕祛風寒\n4️⃣ 刺絡拔罐（濕拔罐 / 刺血）— 三棱針/採血針點刺，再拔罐放血 ~3–5ml\n  • 適合：氣滯血瘀重症、急性扭挫傷、帶狀皰疹急性期\n  • ⚠️ 屬侵入性操作，對無菌技術要求極高\n\n【適應症（Frontiers 2023 evidence-mapping，中度證據）】\n• 痛症：肩頸痛、腰背痛、坐骨神經痛、膝關節炎、強直性脊柱炎、腰椎間盤突出\n• 神經：偏頭痛、面癱（Bell's palsy）\n• 皮膚：銀屑病（plaque psoriasis）、慢性蕁麻疹、暗瘡、帶狀皰疹（含 PHN）\n• 呼吸：咳嗽、喘\n• 骨科：頸椎病\n\n【罐印顏色解讀（FWD HK 中醫師資料 verbatim）】\n• 粉紅色 → 氣血充足，正常\n• 紫黑色 → 氣血積滯不通（常見於經痛、身痛）\n• 鮮紅色 → 局部氣血有熱（發炎）\n• 淡灰白色 → 氣血虛弱（畏寒、易疲勞）\n• 罐內水氣 → 體內濕氣重\n⚠️ 罐印唔等於越深越好 — 有經驗中醫師會根據體質控制吸力\n\n【罐印消退時間】\n一般 3–5 日（FWD HK）；瘀血嚴重者 7–10 日；老人/敏感肌膚需更耐心觀察。\n\n【典型療程】\n• 痛症：1–2×/週 × 4–6 週\n• 帶狀皰疹急性期：每日 × 5–10 日（配合抗病毒藥物）\n• 一般保健：每月 1–2 次\n\n【副作用（StatPearls + 案例文獻）】\n• 預期反應：圓形瘀斑（罐印）— 3–10 日消退，唔屬於併發症\n• 罕見併發症：\n  - 燒傷（火罐）\n  - 水皰（吸力過強或留時過長）\n  - 皮膚潰瘍\n  - 脂肪炎\n  - 瘢痕（濕拔罐）\n  - 迷走神經暈厥（特別係濕拔罐）\n  - 色素沉著\n  - 銀屑病/濕疹 Koebner 反應（局部皮疹擴大）\n  - 感染（採血用針非無菌）\n\n【禁忌（FWD HK + StatPearls）】\n❌ 絕對禁忌\n• 出血性疾病（血友病、嚴重血小板減少）\n• 抗凝藥未控制（華法林 INR 不穩） — 乾拔罐相對禁忌，濕拔罐絕對禁忌\n• 治療部位皮膚感染、開放傷口、皮疹\n• 嚴重心血管病、近期中風\n• 嚴重水腫\n• 大動脈/眼/孔竅上方\n• 孕婦腹部/腰骶部\n❌ 相對禁忌（中醫師判斷）\n• 濕疹/銀屑病（Koebner 現象風險）\n• 老人皮膚脆弱\n• 糖尿病（傷口癒合差）\n• 心臟起搏器（避免濕拔罐近裝置）\n• 月經期量多/血色素低/體質虛弱（FWD HK）\n• 服緊薄血藥\n\n【拔罐後注意（FWD HK）】\n• 24 小時內避免：沖涼、洗澡（特別係濕拔罐後）、桑拿、游泳池\n• 濕拔罐穿刺位 48 小時內保持清潔乾燥\n• 罐印區域避免直接日曬（避免色素沉著）\n• 當日避免：飲酒、劇烈運動\n• 多飲溫水排濕氣\n• 預期：罐印 3–10 日消退\n\n【點揀中醫師】\n✅ 必查：CMC 註冊中醫師（cmchk.org.hk）\n✅ 火罐：診所有專屬阻燃台、消防設備齊全\n✅ 濕拔罐：三棱針/採血針必須一次性、即場開封\n✅ 良好醫師：先問診、解釋罐種選擇、控制吸力、定期檢查皮膚反應\n❌ 警號：無問診直接拔罐、強推大量療程、用重複消毒嘅針具做濕拔罐\n\n【HK 監管 + 火警考量】\n拔罐屬於中醫執業範疇，必須 CMC 註冊中醫師執行（中醫藥條例）。HK 大廈火警條例下，多數私營診所改用真空抽氣罐取代火罐。\n\n【HK 參考價（HKBU 中醫藥服務 2025-04-01）】\n• 拔罐單獨療程：HK$100\n• 同其他針灸/推拿合併療程多數計總費用\n（私營診所價錢有差異，請聯絡相關診所了解。Care Plus 心宜中醫位於沙田馬鞍山，未見專屬拔罐網頁但可包括在綜合療程內 — 詳情請聯絡 Care Plus）\n\n拔罐唔係「越深紅越有效」 — 係根據體質+症狀，由中醫師控制吸力同時長 🌿",
+      "supporting_points": [
+        "拔罐 = 中醫執業範疇，必須由 CMC 註冊中醫師執行（中醫藥條例）",
+        "Frontiers 2023 evidence-mapping（135 個臨床試驗）支持拔罐對多種痛症（肩頸、腰背、膝關節、坐骨神經）+ 帶狀皰疹 + 銀屑病有中度證據",
+        "罐印顏色解讀（FWD HK）：粉紅=正常、紫黑=氣滯血瘀、鮮紅=熱、淡灰白=氣血虛、罐內水氣=濕重",
+        "HK 火警條例下，多數私營診所用真空抽氣罐取代玻璃火罐 — 操作更安全",
+        "濕拔罐（刺絡）係侵入性操作 — 三棱針/採血針必須一次性、無菌",
+        "罐印 3–10 日消退係正常 — 唔等於越深越好；有經驗中醫師會根據體質控制吸力",
+        "孕婦腹部/腰骶部禁拔罐；經期量多/體質虛弱者禁（FWD HK）",
+        "拔罐後 24 小時避免沖涼、桑拿、游泳；濕拔罐穿刺位 48 小時保持乾燥"
+      ],
+      "evidence_level": "Frontiers 2023 Evidence-Mapping + StatPearls + HK Clinical Sources",
+      "next_best_question": "你係想拔罐處理咩問題？肩頸痛 / 腰背痛 / 感冒初起 / 去濕？我可以同你講解最啱嘅手法（留罐/走罐/閃罐）同預期療程 🌿"
+    },
+    "execution_logic": {
+      "recommended_action": "Educate on cupping technique types + 罐印 colour interpretation. Always cover: (1) which condition matches which technique, (2) 罐印 fade timeline (3–10 days), (3) contraindications (especially anticoagulation, pregnancy, fragile skin), (4) HKBU reference price + 'Care Plus 心宜中醫具體請直接聯絡'.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user mentions specific condition (肩頸痛 → tcm_urban_office_pain; 感冒 → tcm_cold_flu_prevention; 去濕 → tcm_dampness_removal). If pregnancy/menstrual context → fetch tcm_pregnancy_safety / tcm_womens_menstrual.",
+      "escalation_trigger": "If user is on warfarin/anticoagulation, has bleeding disorder, or has eczema/psoriasis flare → recommend professional consultation before cupping; warn about Koebner risk for skin conditions."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_treatment_moxibustion",
+        "tcm_treatment_guasha",
+        "tcm_treatment_shoulder_neck",
+        "tcm_urban_office_pain",
+        "tcm_dampness_removal",
+        "tcm_cold_flu_prevention",
+        "tcm_pregnancy_safety"
+      ],
+      "sources": [
+        "Frontiers in Neurology (2023) — Cupping evidence mapping (135 trials): https://www.frontiersin.org/journals/neurology/articles/10.3389/fneur.2023.1266712/full",
+        "StatPearls NBK538253 — Cupping Therapy: https://www.ncbi.nlm.nih.gov/books/NBK538253/",
+        "Cupping for musculoskeletal pain SR (Mohamed 2023): https://journals.sagepub.com/doi/10.3233/BMR-210242",
+        "FWD 香港《拔罐療法詳細解讀》(中醫師資料 2024-2025): https://www.fwd.com.hk/zh/blog/health/cupping-therapy/",
+        "Cigna HK《拔罐療法 — 益處同副作用》: https://www.cigna.com.hk/zh-hant/smarthealth/medical/cupping-therapy-benefits-side-effects",
+        "HK01 健康 Easy 拔罐相關文章: https://www.hk01.com/健康Easy/523536/",
+        "HKBU TCM Service & Charges (2025-04-01): https://www.hkbucm.com/?page_id=4327&lang=en",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫（沙田馬鞍山）: https://careplustcm.com/"
+      ]
+    }
+  }
+}

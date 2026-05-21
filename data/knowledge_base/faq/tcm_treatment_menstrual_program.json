@@ -1,0 +1,107 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_menstrual_program",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.6_menstrual_program",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Cochrane + WHO 2003 + HKU Med",
+      "research_note": "Cochrane CD007854.pub3 supports acupuncture for primary dysmenorrhea (manual & electro > NSAIDs and > no treatment, ≈ sham at 3 cycles). 4-phase 月經周期療法 framework from HKU Medical School. WHO 2003 lists primary dysmenorrhea as proven indication. Care Plus has /specialty/menstrual-disorders + adjacent PCOS/infertility/menopause pages."
+    },
+    "overview": {
+      "title": "調經療程介紹：月經周期療法（4 階段）、針灸+中藥組合、療程設計（HKU + Cochrane）",
+      "objective": "完整介紹中醫調經療程 — HKU Medical School 月經周期 4 階段框架（行經/經後/排卵/經前）、Cochrane 認可嘅針灸方案、典型 12 週療程、適合情況、禁忌",
+      "patient_profile": [
+        "all_female"
+      ],
+      "trigger_conditions": [
+        "調經",
+        "調經療程",
+        "月經失調",
+        "月經唔準",
+        "月經量少",
+        "月經量多",
+        "經痛",
+        "原發性經痛",
+        "PMS",
+        "經前症候群",
+        "閉經",
+        "月經周期療法",
+        "中醫調經",
+        "中醫月經",
+        "針灸調經",
+        "針灸經痛",
+        "中藥調經",
+        "調經幾耐見效",
+        "調經幾錢",
+        "調經次數",
+        "PCOS 中醫",
+        "多囊卵巢",
+        "更年期 中醫",
+        "不孕症 中醫",
+        "暖宮",
+        "menstrual TCM",
+        "Care Plus 調經"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫調經療程係綜合性介入 — 包括針灸、中藥、艾灸、生活/飲食調理。Cochrane CD007854.pub3 系統評價（2016）支持針灸（手針 + 電針）對原發性經痛有效（優於 NSAIDs 同 no treatment，3 個月經週期後同假治療相若）。WHO 2003 將原發性經痛列為針灸 proven indication。\n\n【香港大學醫學院《月經周期療法》框架】\n根據港大醫學院公開教學（2022），中醫調經採用 4 階段周期療法（4-phase）：\n\n📍 行經期（Day 1–5）— 「以通為順」\n• 治法：活血祛瘀、行氣止痛\n• 重點：助月經順利排出\n• 針灸常用：合谷（孕婦禁）、三陰交、太衝、地機\n• 中藥：當歸、川芎、桃仁、紅花\n📍 經後期（Day 6–12）— 「滋陰養血」\n• 治法：補血滋陰，恢復子宮內膜\n• 重點：補血為主\n• 針灸常用：三陰交、血海、足三里\n• 中藥：熟地、白芍、阿膠（女性）、當歸\n📍 排卵期（Day 13–16）— 「補腎活血」\n• 治法：補腎陽促排卵 + 適度活血\n• 重點：助排卵\n• 針灸常用：關元、氣海、腎俞\n• 中藥：菟絲子、仙茅、淫羊藿\n📍 經前期（Day 17–28）— 「疏肝理氣」\n• 治法：疏肝理氣、補腎陽\n• 重點：穩定情緒、預防經前症狀\n• 針灸常用：太衝、合谷（非孕期）、三陰交\n• 中藥：柴胡、香附、玫瑰花\n\n【適合調經療程嘅情況】\n• 原發性經痛（Cochrane 認可，9 次跨 3 週期）\n• 月經失調（量、週期、規律性問題）\n• PMS（經前症候群）\n• 繼發性閉經\n• PCOS 相關少經（證據混合）\n• 圍絕經期/更年期不適\n• 不孕症輔助治療（與 IVF 配合）\n• 子宮內膜異位症（症狀緩解輔助）\n\n【典型療程設計】\n• Cochrane 方案：9 次針灸跨 3 個經期\n  - 經前 5–7 日開始介入\n  - 每週期 3 次（經前/經期中/經後）\n• HK 私營診所常見：2×/週 × 3 個週期（≈12 週）\n• 中藥配合：每日服用，跟隨周期療法調整方劑\n• 完整療程：3–6 個月經週期\n• 嚴重問題（多年失調、不孕）：6–12 個月\n\n【適合針灸調經 vs 應該優先西醫】\n✅ 針灸調經適合：\n• 原發性經痛（無器質性病變）\n• 功能性月經失調\n• 壓力型 PMS\n• 西醫已排除嚴重病因\n⚠️ 必須先西醫評估：\n• 突然經量大增/不停（可能子宮肌瘤、息肉、惡性病變）\n• 突然停經（>3 個月）— 排除妊娠 + 內分泌病\n• 經期間出血\n• 嚴重經痛影響生活（次發性經痛 — 可能子宮內膜異位症、肌瘤）\n• 長期不孕（>1 年規律性生活未孕）— 需要西醫生殖科評估\n\n【禁忌（針灸部分）】\n❌ 絕對禁忌\n• 妊娠（除非中醫師特別確認穴位安全 — 禁針穴：合谷、三陰交、崑崙、至陰、下腹部）\n• IUD 插入處併發症期\n• 未診斷異常子宮出血（必須先西醫排除惡性）\n• 活動性盆腔炎\n• 出血性疾病\n❌ 中藥相對禁忌\n• 妊娠：活血化瘀藥（紅花、桃仁、川芎大劑量、活血類）禁\n• 哺乳期：部分中藥需中醫師評估\n• 慢性病用藥（特別係薄血藥）：需中醫師調整\n\n【副作用】\n• 針灸：標準副作用（暫時瘀斑、輕微疲倦）\n• 中藥：個別過敏、消化不適\n• 暫時月經量變化（首 1–2 週期可能稍多/稍少）— 屬正常調整反應\n\n【後注意】\n• 治療日避免冷水接觸下腹\n• 經期內避免桑拿、游泳、冰飲\n• 飲食：忌生冷、寒涼食物（西瓜、雪糕、生菜）\n• 保持下腹溫暖（暖水袋、紅糖薑茶）\n• 記錄月經週期 3 個週期評估療效\n\n【點揀中醫師】\n✅ 必查：CMC 註冊中醫師（cmchk.org.hk）\n✅ 婦科專科背景：中醫師應有婦科臨床經驗\n✅ 良好醫師：先要求 USG 同基本驗血排除器質性病變、有西醫合作網絡\n❌ 警號：保證「3 次根治」、唔問病史直接針、強推大量療程、唔識同西醫合作\n\n【HK 監管】\n調經療程屬於中醫婦科範疇，必須 CMC 註冊中醫師執行。\n\n【關於 Care Plus 心宜中醫】\nCare Plus（沙田馬鞍山）提供婦科專科服務 — sitemap 確認包括月經失調（/specialty/menstrual-disorders）、PCOS、不孕症-IVF、更年期、子宮肌瘤等專科頁面。乳腺、內分泌等亦在範圍內。具體療程次數、價錢、診症流程請直接聯絡 Care Plus。\n\n【關於 洪煊宜中醫師（Jessica）】\n根據其 Instagram 公開個人介紹，洪醫師（@babyj_jessica）係 HK 註冊中醫師，自我聲明專科包括「皮膚科 / 痛症 / 婦科 / 針灸」。她與 Care Plus（@careplus_chinmed）有關聯。\n\n調經唔係「3 次見效」嘅速食 — 至少 3 個經期先評估真實效果，係耐性同身體合作嘅過程 🌿",
+      "supporting_points": [
+        "Cochrane CD007854.pub3 系統評價支持針灸對原發性經痛有效 — 9 次跨 3 個經期方案",
+        "WHO 2003 將原發性經痛列為針灸 proven indication",
+        "HKU Medical School 月經周期療法 4 階段：行經（活血）→ 經後（補血）→ 排卵（補腎活血）→ 經前（疏肝）",
+        "Care Plus 心宜中醫提供婦科專科服務（月經失調、PCOS、不孕症-IVF、更年期）— 沙田馬鞍山診所",
+        "洪煊宜中醫師（@babyj_jessica）IG 自我聲明專科包括「婦科」— 與 Care Plus 有關聯",
+        "突然經量大增/突然停經/經期間出血 = 必須先西醫排除（子宮肌瘤、息肉、內膜異位症、惡性病變）",
+        "孕婦針灸禁穴：合谷、三陰交、崑崙、至陰、下腹部 — 必須由 CMC 註冊中醫師判斷",
+        "完整療程通常 3–6 個經期評估真實效果 — 中醫調經唔係「3 次根治」"
+      ],
+      "evidence_level": "Cochrane (dysmenorrhea) + WHO 2003 + HKU Medical School + HK Clinical Practice",
+      "next_best_question": "你嘅月經困擾係邊一類？經痛 / 月經量少多 / 週期亂 / PMS / 圍絕經期 / 不孕症輔助？我可以根據 HKU 4 階段框架同 Cochrane 證據，同你講解預期療程 🌿",
+      "media": [
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "Educate on TCM menstrual program grounded in HKU 4-phase framework + Cochrane evidence. Always cover: (1) which type of menstrual issue suits TCM, (2) which require Western workup FIRST, (3) Cochrane-cited course (9 sessions × 3 cycles), (4) pregnancy contraindications, (5) Care Plus has menstrual-disorders specialty page — direct user there.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If pregnancy mentioned → fetch tcm_pregnancy_safety FIRST. If specific symptoms (PMS, irregular cycles) → fetch tcm_womens_menstrual + tcm_womens_hormonal.",
+      "escalation_trigger": "If user reports sudden heavy bleeding, sudden amenorrhea, intermenstrual bleeding, severe dysmenorrhea (worsening), >1 year infertility → MUST advise Western medical workup FIRST before TCM."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_treatment_moxibustion",
+        "tcm_womens_menstrual",
+        "tcm_womens_hormonal",
+        "tcm_postpartum_confinement",
+        "tcm_pregnancy_safety",
+        "tcm_food_therapy_soups",
+        "tcm_constitution_assessment"
+      ],
+      "sources": [
+        "Cochrane CD007854.pub3 — Acupuncture for dysmenorrhoea (2016): https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD007854.pub3/pdf/full",
+        "WHO 2003 Acupuncture: Review and Analysis of Reports on Controlled Clinical Trials: https://chiro.org/acupuncture/FULL/Acupuncture_WHO_2003.pdf",
+        "ScienceDirect S2405844024069433 — Network meta-analysis on acupuncture for irregular cycles & secondary amenorrhea (2024)",
+        "港大醫學院《中醫月經周期療法之臨床應用》(2022): https://www.med.hku.hk/zh-hk/media/knowledge-exchange/newspaper-columns/2022/jan/clinical-practice-of-chinese-medicine-for-menstrual-disorders",
+        "Liu et al. 2022 SAGE meta-analysis on acupuncture for dysmenorrhea",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫《月經失調》(sitemap-confirmed): https://careplustcm.com/specialty/menstrual-disorders",
+        "Care Plus TCM 心宜中醫 — 婦科相關專科頁: PCOS, 不孕症-IVF, 更年期, 子宮肌瘤",
+        "洪煊宜 Jessica 中醫師 Instagram (@babyj_jessica) — IG 自我聲明專科：皮膚科/痛症/婦科/針灸"
+      ]
+    }
+  }
+}

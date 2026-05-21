@@ -1,0 +1,114 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_seasonal_spring_summer",
+      "domain": "7_food_therapy",
+      "category": "7.4_spring_summer",
+      "card_type": "Medical",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-04-14",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice + Modern Pharmacological Evidence"
+    },
+    "overview": {
+      "title": "春夏養生：養肝清暑、節氣食療與香港濕熱對策",
+      "objective": "根據中醫「天人合一」理論，提供春季養肝疏肝、夏季清熱祛暑嘅實用食療同生活建議，針對香港濕熱氣候特點",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "春天養生",
+        "春天食咩好",
+        "春困",
+        "春困點算",
+        "好攰好眼瞓春天",
+        "養肝",
+        "養肝食物",
+        "疏肝解鬱",
+        "肝氣鬱結",
+        "夏天養生",
+        "夏天食咩好",
+        "清熱解暑",
+        "消暑食物",
+        "消暑湯水",
+        "中暑",
+        "中暑點算",
+        "冷氣病",
+        "吹冷氣唔舒服",
+        "濕熱",
+        "暑濕",
+        "夏天濕熱",
+        "涼茶消暑",
+        "五花茶",
+        "銀菊露",
+        "竹蔗茅根水",
+        "節氣養生",
+        "立春",
+        "驚蟄",
+        "清明",
+        "立夏",
+        "小暑",
+        "大暑",
+        "春天湯水",
+        "夏天湯水",
+        "韭菜功效",
+        "菊花功效",
+        "冬瓜功效",
+        "綠豆功效",
+        "西瓜翠衣",
+        "荷葉功效",
+        "春夏養生",
+        "春夏食療",
+        "summer heat TCM",
+        "spring wellness"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫講「春生夏長」，春天同夏天各有唔同養生重點。香港春天潮濕、夏天濕熱，更加要識得順應節氣調理。\n\n═══════════════════════\n【春季養生：養肝疏肝】\n═══════════════════════\n\n中醫認為春屬木，對應肝臟。春天陽氣初升，養生重點係「養肝」同「疏肝解鬱」。\n\n🌱 春困點解？\n春天陽氣升發，身體由冬天收藏模式轉換，如果肝氣唔暢，容易出現「春困」——成日好攰、無精神、想瞓覺。\n對策：早瞓早起、適量戶外活動（行山、散步）、食疏肝食物\n\n🥬 春季食療：\n• 韭菜：春韭最鮮嫩，性溫，助陽氣升發，健胃暖腎。研究證實韭菜有護肝、抗氧化作用（PMID: 29196001）\n  食法：韭菜炒蛋、韭菜餃子\n• 薺菜：清肝明目、涼血止血，春天時令菜\n  食法：薺菜豆腐湯、薺菜餛飩\n• 菊花：疏風清熱、平肝明目，科學研究確認有抗炎、抗氧化功效（PMID: 30827670）\n  食法：菊花杞子茶、菊花煲水\n• 玫瑰花茶：疏肝理氣、解鬱，適合壓力大、情緒鬱悶\n\n🍲 春季湯水推介：\n• 霸王花無花果瘦肉湯：潤肺養肝\n• 蟲草花淮山湯：健脾養肝、補氣\n• 番茄薯仔豬骨湯：酸甘化陰，養肝血\n\n📅 春季節氣重點：\n• 立春（2月初）：飲食由冬補轉為清淡，減少油膩厚味\n• 驚蟄（3月初）：陽氣漸盛，少食酸味（酸收斂肝氣），多食甘味（甘緩養脾）\n• 清明（4月初）：香港已回暖潮濕，開始要注意祛濕，可飲粟米鬚茶\n\n═══════════════════════\n【夏季養生：清熱養心祛暑】\n═══════════════════════\n\n中醫認為夏屬火，對應心臟。夏天養生重點係「清熱」「養心」「祛暑濕」。\n\n☀️ 香港夏天三大問題：\n\n1️⃣ 中暑（暑邪）\n症狀：頭暈、口渴、大汗、發燒、嚴重可昏倒\n中醫研究總結咗多種草藥療法對中暑有幫助（PMID: 37818183）\n預防：避免烈日下長時間活動、補水、飲消暑茶飲\n⚠️ 嚴重中暑請立即打999，唔好等\n\n2️⃣ 冷氣病（空調病）\n香港室內冷氣凍到震，出到街又熱到溶——寒熱交替最傷身\n症狀：頭痛、鼻塞、周身骨痛、頸梗膊痛、手腳凍\n對策：\n• 隨身帶薄外套，保護頸背\n• 辦公室放杯暖水，定時飲\n• 冷氣房唔好飲凍嘢（雪上加霜）\n• 薑茶暖身（生薑3片+紅棗2粒+紅糖）\n\n3️⃣ 暑濕困脾\n香港夏天又熱又濕，脾胃最易受困\n症狀：無胃口、成身重墜、大便黏、容易肚瀉\n對策：健脾祛濕為主，少食生冷\n\n🥒 夏季食療：\n• 冬瓜：清熱利水、消暑祛濕。藥理研究證實有抗炎、利尿功效（PMID: 34925698）\n  食法：冬瓜薏米湯、冬瓜荷葉湯\n• 綠豆：清熱解毒、消暑利濕。現代研究證實綠豆有顯著抗炎作用（PMID: 23193422, PMID: 31159173）\n  食法：綠豆沙、綠豆薏米糖水\n  ⚠️ 脾胃虛寒者少食\n• 西瓜翠衣（西瓜皮白色部分）：清暑利尿，比紅肉更清熱\n  食法：涼拌西瓜翠衣、西瓜翠衣煲湯\n• 荷葉：清暑利濕、升發清陽\n  食法：荷葉冬瓜湯、荷葉蒸飯、荷葉茶\n• 苦瓜：清心降火，夏天當造\n  食法：涼瓜炒蛋、涼瓜排骨湯\n\n🍵 香港夏季涼茶推介：\n• 五花茶：金銀花、菊花、槐花、木棉花、雞蛋花——清熱祛濕，夏天經典涼茶\n  金銀花（忍冬）有廣泛抗菌、抗炎、抗病毒功效（PMID: 21864666）\n• 銀菊露：金銀花+菊花，較溫和，適合輕度上火\n• 竹蔗茅根水：竹蔗+茅根+紅蘿蔔+馬蹄——清熱潤燥生津，老少咸宜\n• 酸梅湯：生津止渴、開胃消滯，夏天消暑恩物\n⚠️ 涼茶性寒，虛寒體質（手腳凍、怕冷、大便稀）唔好日日飲\n⚠️ 孕婦飲涼茶前請問中醫師\n\n📅 夏季節氣重點：\n• 立夏（5月初）：開始養心，紅色食物入心——紅棗、番茄、紅豆\n• 小暑（7月初）：暑氣漸盛，清淡飲食為主，可飲綠豆湯\n• 大暑（7月下旬）：一年最熱，防中暑最重要，多飲水、食清熱食物\n  「冬病夏治」：大暑係天灸最佳時機（三伏灸），適合虛寒體質、鼻敏感、哮喘\n\n═══════════════════════\n【中醫預防醫學：治未病】\n═══════════════════════\n\n春夏養生體現中醫「治未病」哲學（PMID: 15137181）——順應四時、未病先防，好過病咗先醫。\n\n日常要點：\n• 春天早瞓早起，舒展身體\n• 夏天晚瞓早起（但要午休），避免烈日\n• 飲食隨季節調整，唔好成年食同樣嘅嘢\n• 情緒管理同樣重要——春天要疏肝解鬱，保持心情舒暢",
+      "supporting_points": [
+        "中醫「天人合一」理論強調人要順應四季變化調整起居飲食",
+        "春天養肝係因為肝屬木，與春季「生發」之氣對應",
+        "夏天養心係因為心屬火，與夏季「長旺」之氣對應",
+        "香港特殊情況：室內冷氣過猛導致「冷氣病」，係中醫「寒邪」入侵",
+        "涼茶文化係廣東/香港非物質文化遺產，但飲用要睇體質",
+        "韭菜、薺菜等時令蔬菜嘅養生效用有現代藥理研究支持",
+        "綠豆、冬瓜、菊花、金銀花等夏季常用食材均有現代抗炎研究證據",
+        "節氣養生唔係迷信，係幾千年實踐總結嘅預防醫學智慧",
+        "嚴重中暑係醫療急症，一定要打999，唔可以淨係靠涼茶"
+      ],
+      "evidence_level": "Traditional Practice + Grade B (Pharmacological Studies)",
+      "next_best_question": "你係想了解春天定夏天嘅養生？定係有具體症狀想問，例如春困、中暑、或者冷氣病？"
+    },
+    "execution_logic": {
+      "recommended_action": "根據當前月份/節氣自動推薦對應季節建議；如用戶有具體症狀（春困、中暑、冷氣病），優先回應症狀相關部分",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如用戶提及濕氣重 → 推薦 tcm_dampness_removal；如用戶問涼茶詳情 → 推薦 tcm_food_therapy_teas；如用戶問體質 → 推薦 tcm_education_concepts",
+      "escalation_trigger": "嚴重中暑症狀（高燒、昏迷、抽搐）→ 立即建議打999急救；情緒問題（抑鬱、焦慮嚴重）→ 建議求醫"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_food_therapy_seasonal",
+        "tcm_food_therapy_teas",
+        "tcm_dampness_removal",
+        "tcm_education_concepts",
+        "tcm_cold_flu_prevention"
+      ],
+      "sources": [
+        "Wiseman N, Ellis A. The liver in traditional Chinese medicine. J Chin Med. 1998;(57):22-27. PMID: 9641312",
+        "Zhao Y et al. Therapeutic potential of traditional Chinese medicine on heat stroke. Front Pharmacol. 2023;14:1228943. PMID: 37818183",
+        "Zhu S et al. It is not just folklore: the aqueous extract of mung bean coat is protective against sepsis. Evid Based Complement Alternat Med. 2012;2012:498467. PMID: 23193422",
+        "Tang D et al. Mung bean (Vigna radiata L.): bioactive polyphenols, polysaccharides, peptides, and health benefits. Nutrients. 2019;11(6):1238. PMID: 31159173",
+        "Islam MZ et al. A literature-based update on Benincasa hispida (Thunb.) Cogn.: traditional uses, nutraceutical, and phytopharmacological profiles. Oxid Med Cell Longev. 2021;2021:6349041. PMID: 34925698",
+        "Wang Y et al. Chemical compositions of chrysanthemum teas and their anti-inflammatory and antioxidant properties. Food Chem. 2019;286:159-168. PMID: 30827670",
+        "Mutha RE et al. Allium tuberosum: antidiabetic and hepatoprotective activities. Food Res Int. 2018;103:49-56. PMID: 29196001",
+        "Shang X et al. Lonicera japonica Thunb.: ethnopharmacology, phytochemistry and pharmacology of an important traditional Chinese medicine. J Ethnopharmacol. 2011;138(1):1-21. PMID: 21864666",
+        "Tang JL et al. Health promotion in traditional Chinese medicine: preventive treatment of a disease. Zhong Xi Yi Jie He Xue Bao. 2004;2(2):89-92. PMID: 15137181",
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "黃帝內經·素問·四氣調神大論"
+      ]
+    }
+  }
+}

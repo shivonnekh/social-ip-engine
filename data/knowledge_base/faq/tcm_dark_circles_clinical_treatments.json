@@ -1,0 +1,107 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_dark_circles_clinical_treatments",
+      "domain": "3_skin_beauty",
+      "category": "3.4_dark_circles_clinical",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "Jessica",
+      "last_updated": "2026-04-30",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "黑眼圈嘅中醫臨床療程：美顏針、面部拔罐、面部刮痧、面部針灸",
+      "objective": "畀用戶知道，除咗自己屋企按穴位之外，黑眼圈仲有專業中醫嘅臨床療程選擇 — 美顏針、面部拔罐、面部刮痧、面部針灸 — 同點樣決定幾時應該搵中醫師面診",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "黑眼圈仲有咩方法",
+        "黑眼圈其他方法",
+        "中醫仲有咩方法去黑眼圈",
+        "黑眼圈仲有咩可以做",
+        "除咗按穴位仲有咩方法",
+        "按穴位無效",
+        "按穴位冇用",
+        "按四白穴冇效",
+        "按穴冇改善",
+        "黑眼圈點處理",
+        "黑眼圈嚴重點算",
+        "黑眼圈消唔到",
+        "黑眼圈搞唔走",
+        "深層黑眼圈",
+        "頑固黑眼圈",
+        "中醫療程黑眼圈",
+        "中醫黑眼圈療程",
+        "美顏針黑眼圈",
+        "面針黑眼圈",
+        "面部針灸黑眼圈",
+        "面部拔罐黑眼圈",
+        "面拔罐黑眼圈",
+        "面部刮痧黑眼圈",
+        "刮痧去黑眼圈",
+        "中醫師療程",
+        "中醫師面診黑眼圈",
+        "搵中醫做黑眼圈",
+        "去眼袋",
+        "眼袋黑眼圈",
+        "提拉眼周",
+        "眼周緊緻",
+        "提拉面部",
+        "Care Plus 中醫",
+        "facial acupuncture",
+        "cosmetic acupuncture",
+        "facial cupping",
+        "guasha eye"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "黑眼圈唔係淨係按穴位咁簡單，中醫其實有好多臨床療程可以針對性處理。當你按咗一段時間仍然冇明顯改善，就係時候考慮搵中醫師做專業介入嘞 🌿\n\n【一、美顏針 (面部針灸)】\n用比一般針灸針幼一半嘅極幼針，刺激眼周經絡（睛明、攢竹、承泣、四白）同肌肉層，促進局部氣血、淡化色素、提拉鬆弛眼袋。\n• 適合：色素型、血瘀型、結構型眼袋黑眼圈\n• 過程：30-45 分鐘，輕微痠脹感，唔流血、無創傷\n• 頻率：通常每週 1-2 次，連續 8-12 次見明顯改善\n• 比 botox / filler 嘅分別：刺激身體自我修復，唔係注射外來物質\n\n【二、面部拔罐 (Facial Cupping)】\n用矽膠細罐輕力吸附眼周外圍同顴骨位置，藉負壓促進淋巴循環、消水腫、提拉輪廓。\n• 適合：水腫型黑眼圈、淋巴循環差、朝早眼腫人群\n• 過程：5-10 分鐘，唔會留紅印（用嘅係面部專用輕力罐，唔同背部嘅大罐）\n• 頻率：每週 1-2 次\n• 即時可見輕微消腫效果\n\n【三、面部刮痧 (Facial Gua Sha)】\n用水牛角板或玉石板，沿經絡方向輕力刮推，疏通眼周氣血、消水腫。\n• 適合：氣滯血瘀型、暗沉型黑眼圈\n• 過程：10-15 分鐘\n• 中醫師會用專業手法，同自己屋企用嘅 gua sha 唔同 — 力度、角度、經絡走向都更精準\n\n【四、面部針灸 + 體針配合】\n中醫師通常唔會淨係處理面部，會配合體針調理根本（肝鬱針太衝、腎虛針太溪、脾虛針足三里），標本兼治。\n• 黑眼圈嘅根源多數喺體質失衡，淨係處理面部係治標\n• 體針配合面針，效果倍增\n\n【五、幾時應該搵中醫師面診？】\n以下情況建議搵註冊中醫師（例如 Care Plus 心宜中醫）做正式辨證：\n• 按穴位 4 週以上仍然冇明顯改善\n• 黑眼圈深啲、廣啲、由眼下擴展到顴骨\n• 伴隨眼袋、面部水腫、經期紊亂、易攰\n• 想短期見明顯效果（例如為咗婚禮、特別場合）\n• 想配合內服中藥同食療調理 — 內外兼治效果最持久\n\n中醫面診會結合望、聞、問、切 + 舌診脈診，先判斷你係腎虛、血瘀、氣滯定係濕熱型黑眼圈，再開個人化嘅療程方案。\n\n【記住】臨床療程效果比自助按摩快 2-3 倍，但要堅持完成療程先見效。一次半次唔會有奇蹟。",
+      "supporting_points": [
+        "美顏針唔係注射、無創、無休息期，同 botox/filler 完全唔同概念",
+        "面部拔罐用嘅係輕力矽膠罐，唔會留紅印 — 同背部拔罐唔同",
+        "面部刮痧效果視乎中醫師嘅手法精準度，自己屋企做效果有限",
+        "中醫師通常會體針 + 面針配合，治本同治標一齊做",
+        "黑眼圈持續 >3 個月、按穴位無效，係搵中醫師面診嘅警號",
+        "療程一般要 8-12 次先見明顯改善，唔好期望一兩次見奇蹟"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你嘅黑眼圈係邊一型？深啡色（色素型）/ 青藍色（血瘀型）/ 朝早腫脹（水腫型）？我可以根據你嘅情況推薦最啱嘅療程組合 🌿",
+      "media": [
+        {
+          "id": "video_sibai_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sibai.mp4",
+          "caption": "四白穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "當用戶問『黑眼圈仲有咩方法』『按穴位冇效』『中醫仲有咩可以做』時，列出美顏針、面部拔罐、面部刮痧、體針 + 面針 四個臨床選擇，唔好淨係 repeat 四白穴。最後再講幾時應該搵中醫師面診（持續 >3 個月、按穴位無效、伴隨其他症狀）。輕輕引導向 Care Plus 中醫師咨詢，唔好硬推。",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user expresses interest in any specific 療程 (美顏針/拔罐/刮痧), suggest booking 中醫師面診 OR fetch related cards (constitution assessment, blood deficiency, qi stagnation).",
+      "escalation_trigger": "If user has tried self-care for >3 months with no improvement OR mentions persistent eye-area issues (眼袋 + 黑眼圈 + 水腫), strongly suggest 中醫師面診."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_beauty",
+        "tcm_facial_beauty_treatments",
+        "tcm_dark_circles_food_therapy",
+        "tcm_dark_circles_lifestyle",
+        "tcm_constitution_assessment",
+        "tcm_service_navigation"
+      ],
+      "sources": [
+        "中醫美容學 — 面部針灸臨床應用",
+        "中醫外治法臨床實踐",
+        "Care Plus TCM 心宜中醫臨床經驗 (2024-2026)",
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容"
+      ]
+    }
+  }
+}

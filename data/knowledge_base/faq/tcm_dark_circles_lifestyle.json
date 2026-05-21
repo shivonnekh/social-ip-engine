@@ -1,0 +1,93 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_dark_circles_lifestyle",
+      "domain": "7_lifestyle_support",
+      "category": "7.4_dark_circles_lifestyle",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "Jessica",
+      "last_updated": "2026-04-30",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "黑眼圈嘅生活習慣調理：早瞓、減屏幕、護肝、護腎習慣",
+      "objective": "畀用戶知道，黑眼圈嘅根本原因好多時候係生活習慣問題 — 熬夜、屏幕太多、捱壞肝腎。提供具體可實踐嘅日常調整建議",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "黑眼圈生活習慣",
+        "黑眼圈點預防",
+        "點樣防止黑眼圈",
+        "黑眼圈日常護理",
+        "熬夜黑眼圈",
+        "捱夜黑眼圈",
+        "夜瞓黑眼圈",
+        "夜訓黑眼圈",
+        "瞓得遲黑眼圈",
+        "幾點瞓護肝",
+        "11點要瞓",
+        "子時要瞓",
+        "睇電話黑眼圈",
+        "屏幕黑眼圈",
+        "用電腦黑眼圈",
+        "對住電腦黑眼圈",
+        "做嘢眼攰",
+        "眼攰黑眼圈",
+        "黑眼圈習慣",
+        "預防黑眼圈",
+        "養肝護眼",
+        "養肝習慣",
+        "護肝中醫",
+        "保護腎黑眼圈",
+        "黑眼圈仲有咩方法",
+        "黑眼圈其他方法",
+        "中醫去黑眼圈",
+        "黑眼圈成因",
+        "黑眼圈點解",
+        "黑眼圈點搞"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫睇黑眼圈，最根本嘅成因其實唔係穴位、唔係食物、係生活習慣 🌿。穴位、食療、療程都係輔助；如果繼續熬夜、繼續對住屏幕 12 個鐘，幾貴嘅美顏針都救唔返。\n\n【一、最重要：11 點前瞓覺】\n中醫睇 23:00-01:00（子時）係膽經當令，01:00-03:00（丑時）係肝經當令。呢段時間瞓覺，肝膽先有時間排毒、修復血氣。\n• 肝開竅於目 — 肝血足，眼周先有光澤\n• 連續熬夜 1 週，黑眼圈會明顯加深\n• 補眠效果有限：朝早瞓到中午唔等於子時瞓覺\n• 實戰：將鬧鐘設喺 22:30 提醒『放下手機』，唔係 set 起身鬧鐘\n\n【二、減屏幕時間 + 20-20-20 法則】\n屏幕藍光 + 長時間聚焦會傷肝血、令眼周氣血滯留\n• 工作每 20 分鐘望返 20 呎外嘅嘢 20 秒\n• 瞓前 1 個鐘唔睇電話 / 平板（藍光抑制褪黑素，影響睡眠質素）\n• 屏幕亮度調低、開夜間模式\n• 用電腦戴一副 anti-blue light 眼鏡（office 一族必備）\n\n【三、護肝習慣】\n肝係血嘅倉庫，肝血充足眼周先靚\n• 唔好過度飲酒（傷肝）\n• 減少油炸、燒烤、加工食物（增加肝負擔）\n• 唔好憋怒 / 過度焦慮（情志傷肝）\n• 每日做少少疏肝動作：深呼吸、伸展、行山、瑜伽\n\n【四、護腎習慣】\n腎主水，眼周浮腫 / 黑眼圈深嘅人通常係腎氣不足\n• 唔好憋尿（直接傷腎）\n• 唔好喝凍水、凍飲（傷脾腎陽氣）\n• 適度運動但唔好過勞（過度消耗腎氣）\n• 每日按摩腰部 / 太溪穴 5 分鐘 — 補腎簡易動作\n\n【五、眼周日常護理（即時生效）】\n• 朝早冷敷 5 分鐘：消除朝早眼腫\n• 夜晚熱敷 5 分鐘：促進眼周循環\n• 唔好用手用力擦眼 — 眼周皮膚最薄，愈擦愈深\n• 卸眼妝要溫柔、用 oil-based 卸妝油\n\n【六、避開黑眼圈加重嘅 5 個壞習慣】\n1. 熬夜（>23:00 仲未瞓）\n2. 高鹽飲食（朝早面腫加重）\n3. 凍飲、生冷食物（傷脾腎陽氣）\n4. 用力擦眼（眼周敏感）\n5. 過度使用電子產品（傷肝血）\n\n【優先順序建議】\n如果一次改太多會放棄，先由呢三件事開始：\n1. 11 點前瞓 → 最大效果（連續 2 週見明顯改善）\n2. 瞓前 1 個鐘唔睇電話 → 改善睡眠質素\n3. 朝早溫水洗面 + 冷敷 5 分鐘 → 即時消腫\n\n堅持 4-6 週，黑眼圈會明顯改善 — 呢個係最便宜最持久嘅中醫方法 ✨",
+      "supporting_points": [
+        "11 點前瞓係中醫養肝養腎嘅黃金法則 — 補眠唔等於子時瞓覺",
+        "屏幕藍光直接影響肝血，令眼周氣血滯留 — 20-20-20 法則最易執行",
+        "凍飲、生冷食物傷脾腎陽氣，會令水腫型黑眼圈加重",
+        "情緒、憋怒會傷肝 — 肝開竅於目，所以情緒對眼周影響大",
+        "穴位 + 食療 + 早瞓 三管齊下，效果比單一方法快 2-3 倍",
+        "如果生活習慣唔改，幾貴嘅療程都係 short-term 效果"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你而家最大嘅生活習慣 challenge 係邊樣？熬夜 / 屏幕太多 / 飲食 / 情緒？我可以針對你嘅情況提供具體 plan 🌿",
+      "media": []
+    },
+    "execution_logic": {
+      "recommended_action": "當用戶問『黑眼圈點預防』『黑眼圈生活習慣』『熬夜黑眼圈點搞』時，重點推 11 點前瞓 + 減屏幕 + 護肝護腎 三大習慣。唔好一次過列十條 list（會被放棄），優先講『最重要嘅三件事』。提醒生活習慣 + 穴位 + 食療三管齊下效果最快。",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user mentions specific lifestyle issue (insomnia / screen / stress), fetch corresponding card (sleep_insomnia / urban_office_pain / acupressure_energy_stress).",
+      "escalation_trigger": "If user reports persistent insomnia (>1 month) despite 11pm bedtime attempts, suggest 中醫師 consultation."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_dark_circles_clinical_treatments",
+        "tcm_dark_circles_food_therapy",
+        "tcm_acupressure_beauty",
+        "tcm_facial_beauty_treatments",
+        "tcm_sleep_insomnia",
+        "tcm_urban_office_pain",
+        "tcm_urban_lifestyle"
+      ],
+      "sources": [
+        "黃帝內經 — 子午流注理論（肝膽經當令）",
+        "中醫養生學 — 起居有常",
+        "Care Plus TCM 心宜中醫日常調理指引 (2024-2026)",
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容"
+      ]
+    }
+  }
+}

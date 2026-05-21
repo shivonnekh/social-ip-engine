@@ -1,0 +1,323 @@
+"""JessicaPipeline — runs Planner → Specialists → Writer for one turn.
+
+The pipeline is responsible for:
+  - Loading CRM snapshot
+  - Calling Planner
+  - Dispatching specialists (parallel or sequential per decision)
+  - Calling Writer
+  - Persisting CRM updates
+  - Writing the trace bundle
+
+NOT responsible for:
+  - WhatsApp send (that's the caller's job, so tests can call the
+    pipeline without actually sending)
+  - Buffer / merge logic (that's the gateway's job — see CLAUDE.md §3.2)
+"""
+
+from __future__ import annotations
+
+import asyncio
+import logging
+import uuid
+from datetime import datetime
+from typing import Any
+
+from anthropic import AsyncAnthropic
+from pydantic import BaseModel, ConfigDict
+
+from src.agents.base import (
+    PlannerDecision,
+    SpecialistInput,
+    SpecialistName,
+    SpecialistOutput,
+    WriterOutput,
+)
+from src.agents.planner import PlannerAgent
+from src.agents.registry import SpecialistProtocol
+from src.agents.writer import WriterAgent
+from src.crm.models import ConversationMessage, User
+from src.crm.repo import CRMRepo
+from src.trace.models import (
+    SpecialistTrace,
+    StepTrace,
+    TraceBundle,
+)
+from src.trace.writer import TraceWriter
+
+logger = logging.getLogger("orchestrator.pipeline")
+
+
+class PipelineResult(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    turn_id: str
+    user: User
+    writer_output: WriterOutput
+    trace: TraceBundle
+
+
+class JessicaPipeline:
+    def __init__(
+        self,
+        *,
+        crm: CRMRepo,
+        trace_writer: TraceWriter,
+        client: AsyncAnthropic,
+        specialists: dict[SpecialistName, SpecialistProtocol],
+        planner: PlannerAgent | None = None,
+        writer: WriterAgent | None = None,
+    ) -> None:
+        self._crm = crm
+        self._trace_writer = trace_writer
+        self._planner = planner or PlannerAgent(client)
+        self._writer_agent = writer or WriterAgent(client)
+        self._specialists = specialists
+
+    async def run_turn(
+        self,
+        *,
+        phone: str,
+        user_message: str,
+        media_urls: list[str] | None = None,
+        merged_from_fragments: list[str] | None = None,
+        wa_message_id: str | None = None,
+    ) -> PipelineResult:
+        turn_id = _new_turn_id()
+        media_urls = media_urls or []
+        merged_from_fragments = merged_from_fragments or []
+        turn_start = datetime.utcnow()
+
+        # 1. Load CRM
+        user_before = await self._crm.get_or_create_user(phone)
+
+        # Append incoming user message
+        await self._crm.append_message(
+            phone,
+            ConversationMessage(
+                role="user",
+                content=user_message,
+                media_urls=media_urls,
+                wa_message_id=wa_message_id,
+                turn_id=turn_id,
+                at=turn_start,
+            ),
+        )
+
+        # Reload to include the new message in history snapshot
+        user_for_planner = await self._crm.get_user(phone) or user_before
+
+        bundle = TraceBundle(
+            turn_id=turn_id,
+            phone=phone,
+            received_at=turn_start,
+            user_message=user_message,
+            merged_from_fragments=merged_from_fragments,
+            media_urls=media_urls,
+            crm_snapshot=user_for_planner.model_dump(mode="json"),
+        )
+
+        try:
+            # 2. Planner
+            planner_step = StepTrace(input={"user_message": user_message})
+            t0 = _now_ms()
+            decision, planner_usage = await self._planner.decide(
+                user_for_planner, user_message, media_urls=media_urls
+            )
+            planner_step.latency_ms = _now_ms() - t0
+            planner_step.output = decision.model_dump(mode="json")
+            planner_step.model = planner_usage.get("model")
+            planner_step.input_tokens = planner_usage.get("input_tokens", 0)
+            planner_step.output_tokens = planner_usage.get("output_tokens", 0)
+            planner_step.ended_at = datetime.utcnow()
+            bundle.planner = planner_step
+
+            # 3. Dispatch specialists
+            outputs = await self._dispatch_specialists(
+                decision=decision,
+                user=user_for_planner,
+                user_message=user_message,
+                media_urls=media_urls,
+                bundle=bundle,
+            )
+
+            # 4. Writer
+            writer_step = StepTrace(
+                input={
+                    "specialists_used": [o.specialist.value for o in outputs],
+                }
+            )
+            t0 = _now_ms()
+            writer_output, writer_usage = await self._writer_agent.compose(
+                user=user_for_planner,
+                user_message=user_message,
+                planner_decision=decision,
+                specialist_outputs=outputs,
+            )
+            writer_step.latency_ms = _now_ms() - t0
+            writer_step.output = writer_output.model_dump(mode="json")
+            writer_step.model = writer_usage.get("model")
+            writer_step.input_tokens = writer_usage.get("input_tokens", 0)
+            writer_step.output_tokens = writer_usage.get("output_tokens", 0)
+            writer_step.ended_at = datetime.utcnow()
+            bundle.writer = writer_step
+
+            # 5. Apply suggested CRM diffs from specialists
+            user_after = _apply_specialist_diffs(user_for_planner, outputs)
+
+            # Append Jessica's reply to history (joined bubbles for storage)
+            jessica_text = "\n\n".join(writer_output.bubbles)
+            await self._crm.append_message(
+                phone,
+                ConversationMessage(
+                    role="jessica",
+                    content=jessica_text,
+                    turn_id=turn_id,
+                    at=datetime.utcnow(),
+                ),
+            )
+
+            await self._crm.save_user(user_after)
+            bundle.crm_diff = _diff_user(user_for_planner, user_after)
+
+        except Exception as exc:  # noqa: BLE001
+            logger.exception("pipeline error on turn=%s phone=%s", turn_id, phone)
+            bundle.fatal_error = f"{type(exc).__name__}: {exc}"
+            # Fall back to a generic apology bubble so trace can still
+            # capture the writer_output slot.
+            writer_output = WriterOutput(
+                bubbles=["唔好意思啊，我而家有啲技術問題，請你等一陣再試 🙏"]
+            )
+            user_after = user_for_planner
+
+        bundle.completed_at = datetime.utcnow()
+        bundle.total_latency_ms = _now_ms() - _epoch_ms(turn_start)
+        self._trace_writer.write(bundle)
+
+        return PipelineResult(
+            turn_id=turn_id,
+            user=user_after,
+            writer_output=writer_output,
+            trace=bundle,
+        )
+
+    # ---------------------------------------------------------------
+    # Internals
+    # ---------------------------------------------------------------
+
+    async def _dispatch_specialists(
+        self,
+        *,
+        decision: PlannerDecision,
+        user: User,
+        user_message: str,
+        media_urls: list[str],
+        bundle: TraceBundle,
+    ) -> list[SpecialistOutput]:
+        async def _run_one(
+            name: SpecialistName, co: SpecialistName | None
+        ) -> SpecialistOutput:
+            spec = self._specialists.get(name)
+            if spec is None:
+                logger.warning("unknown specialist: %s", name)
+                trace = SpecialistTrace(name=name.value, error="unknown_specialist")
+                bundle.add_specialist(trace)
+                return SpecialistOutput(specialist=name, payload={}, error="unknown")
+
+            trace = SpecialistTrace(name=name.value)
+            t0 = _now_ms()
+            try:
+                output, usage = await spec.run(
+                    SpecialistInput(
+                        user=user,
+                        user_message=user_message,
+                        media_urls=media_urls,
+                        planner_notes=decision.notes_for_writer,
+                        co_specialist=co,
+                    )
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.exception("specialist %s failed", name)
+                trace.error = f"{type(exc).__name__}: {exc}"
+                trace.latency_ms = _now_ms() - t0
+                trace.ended_at = datetime.utcnow()
+                bundle.add_specialist(trace)
+                return SpecialistOutput(
+                    specialist=name, payload={}, error=trace.error
+                )
+
+            trace.latency_ms = _now_ms() - t0
+            trace.input = {
+                "user_message": user_message,
+                "media_urls": media_urls,
+                "co_specialist": co.value if co else None,
+            }
+            trace.output = output.model_dump(mode="json")
+            trace.tools_called = output.tools_called
+            trace.cards_read = output.cards_used
+            trace.model = usage.get("model")
+            trace.input_tokens = usage.get("input_tokens", 0)
+            trace.output_tokens = usage.get("output_tokens", 0)
+            trace.ended_at = datetime.utcnow()
+            bundle.add_specialist(trace)
+            return output
+
+        names = list(decision.specialists)
+        co = names[1] if len(names) == 2 else None
+
+        if decision.parallel and len(names) == 2:
+            return list(
+                await asyncio.gather(
+                    _run_one(names[0], names[1]),
+                    _run_one(names[1], names[0]),
+                )
+            )
+
+        results: list[SpecialistOutput] = []
+        for i, n in enumerate(names):
+            other = names[1 - i] if len(names) == 2 else None
+            results.append(await _run_one(n, other))
+        return results
+
+
+# -------------------------------------------------------------------
+# Helpers
+# -------------------------------------------------------------------
+
+
+def _new_turn_id() -> str:
+    return uuid.uuid4().hex[:16]
+
+
+def _now_ms() -> int:
+    return int(datetime.utcnow().timestamp() * 1000)
+
+
+def _epoch_ms(dt: datetime) -> int:
+    return int(dt.timestamp() * 1000)
+
+
+def _apply_specialist_diffs(user: User, outputs: list[SpecialistOutput]) -> User:
+    """Merge `suggested_user_state_diff` from each specialist into User.
+
+    Only known User fields are applied; unknown keys are logged + dropped.
+    """
+    allowed = set(User.model_fields.keys())
+    changes: dict[str, Any] = {}
+    for o in outputs:
+        for k, v in o.suggested_user_state_diff.items():
+            if k not in allowed:
+                logger.warning(
+                    "specialist %s wrote unknown user field %r — dropped",
+                    o.specialist,
+                    k,
+                )
+                continue
+            changes[k] = v
+    return user.with_updates(**changes) if changes else user
+
+
+def _diff_user(before: User, after: User) -> dict[str, Any]:
+    """Return only the User fields that changed (for trace.crm_diff)."""
+    b = before.model_dump(mode="json")
+    a = after.model_dump(mode="json")
+    return {k: {"before": b[k], "after": a[k]} for k in a if a[k] != b.get(k)}

@@ -1,0 +1,44 @@
+"""Tests for Planner rule overrides — no LLM call."""
+
+from __future__ import annotations
+
+from src.agents.base import SpecialistName
+from src.agents.planner import _rule_overrides
+from src.crm.models import User, UserStatus
+
+
+def test_tongue_photo_routes_to_constitution() -> None:
+    user = User(phone="+85291234567", status=UserStatus.NEW)
+    decision = _rule_overrides(user, "我嚟睇下", ["https://media/tongue.jpg"])
+    assert decision is not None
+    assert decision.specialists == [SpecialistName.CONSTITUTION]
+
+
+def test_first_touch_hi_routes_to_greeting() -> None:
+    user = User(phone="+85291234567", status=UserStatus.NEW)
+    decision = _rule_overrides(user, "hi", [])
+    assert decision is not None
+    assert decision.specialists == [SpecialistName.GREETING]
+
+
+def test_substantive_message_falls_through_to_llm() -> None:
+    user = User(phone="+85291234567", status=UserStatus.QUALIFIED)
+    decision = _rule_overrides(user, "我想知有冇湯水可以調氣虛", [])
+    assert decision is None  # signal: LLM should decide
+
+
+def test_returning_user_says_hi_falls_through() -> None:
+    """A user with history saying 'hi' is NOT a first-touch — go to LLM."""
+    from datetime import datetime
+
+    from src.crm.models import ConversationMessage
+
+    user = User(
+        phone="+85291234567",
+        status=UserStatus.QUALIFIED,
+        conversation_history=[
+            ConversationMessage(role="user", content="hi", at=datetime.utcnow())
+        ],
+    )
+    decision = _rule_overrides(user, "hi", [])
+    assert decision is None

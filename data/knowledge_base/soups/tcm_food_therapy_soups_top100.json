@@ -1,0 +1,1109 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_food_therapy_soups_top100",
+      "card_type": "Wellness",
+      "domain": "7_food_therapy",
+      "category": "7.4_soups",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-08",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice — sourced from 芳姐保健湯餸 (registered HK TCM practitioner)",
+      "research_note": "100 家常湯水、粥品、茶飲精選自 healthy-food.hk（芳姐保健湯餸），按 9 大體質分類。所有食譜必須有圖片。體質分類依照 2009 中華中醫藥學會《中醫體質分類判定標準》。"
+    },
+    "overview": {
+      "title": "芳姐保健湯餸 100 款家常食療精選 — 按 9 大體質分類（連圖片）",
+      "objective": "提供 100 款家常湯水/粥品/茶飲食譜（全部有圖），按 9 種體質（氣虛/陽虛/陰虛/痰濕/濕熱/血瘀/氣鬱/特稟/平和）分類推薦。來源：芳姐保健湯餸 healthy-food.hk。",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "推薦湯水",
+        "湯水食譜",
+        "家常湯水",
+        "體質湯水",
+        "我體質適合咩湯",
+        "氣虛湯水",
+        "陽虛湯水",
+        "陰虛湯水",
+        "痰濕湯水",
+        "濕熱湯水",
+        "血瘀湯水",
+        "氣鬱湯水",
+        "過敏湯水",
+        "平和湯水",
+        "芳姐食譜",
+        "healthy-food.hk",
+        "100款湯水",
+        "煲咩湯好",
+        "推薦食療",
+        "家常食療"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "以下係從芳姐保健湯餸（healthy-food.hk）精選 100 款家常湯水、粥品、茶飲，按 9 大體質分類，每款均配有圖片。\n\n📌 不知道自己體質？先問體質評估（call get_tcm_constitution_info）\n\n========================================\n【🫁 氣虛質（易攰、少氣懶言、易感冒）】（30 款）\n========================================\n• 健脾安神—太子參淮蓮紅棗粥\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2025/08/IMG_20180101_114145_HDR-Medium-600x454.jpg\n  🔗 https://www.healthy-food.hk/?p=11188\n  適合：氣虛質、平和質\n\n• 補腎補氣血—四黑粥\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2025/10/IMG_2129-Medium-600x462.jpg\n  🔗 https://www.healthy-food.hk/?p=11255\n\n• 補氣健脾—鮮淮山栗子烏雞湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2021/01/IMG_20170531_153949-Medium-600x500.jpg\n  🔗 https://www.healthy-food.hk/?p=8369\n\n• 袪寒補氣血—黨參當歸羊肉湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2021/12/IMG_7042-600x450.jpg\n  🔗 https://www.healthy-food.hk/?p=8803\n  適合：氣虛質、陽虛質、血瘀質\n\n• 温補氣血—黨參當歸羊肉湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2020/12/IMG_5822-600x493.jpg\n  🔗 https://www.healthy-food.hk/?p=8335\n  適合：氣虛質、陽虛質、血瘀質\n\n  ▶ 更多 氣虛質 食譜見 supporting_points（共 30 款）\n\n========================================\n【🔥 陽虛質（怕凍、手腳冰冷、寒底）】（6 款）\n========================================\n• 暖胃養心安神—圓肉杞子生薑炒米茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2024/01/IMG_0494-Medium-600x476.jpg\n  🔗 https://www.healthy-food.hk/?p=10444\n  適合：陽虛質、陰虛質、平和質\n\n• 健康袪風—生薑薄荷茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2016/08/DSCN2535-600x450.jpg\n  🔗 https://www.healthy-food.hk/?p=5715\n  適合：陽虛質、平和質\n\n• 腎陽虛食療—淮杞腰果泥鰍湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2015/12/DSCN1577-600x450.jpg\n  🔗 https://www.healthy-food.hk/?p=5328\n\n• 潤肺燥助吸收—芫荽葱生薑皮蛋魚片湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2023/02/IMG-9218-Medium-600x458.jpg\n  🔗 https://www.healthy-food.hk/?p=9991\n\n• 補肺益腎–有益果仁、核桃山楂茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2019/09/s-011-600x400.jpg\n  🔗 https://www.healthy-food.hk/?p=7461\n\n  ▶ 更多 陽虛質 食譜見 supporting_points（共 6 款）\n\n========================================\n【💧 陰虛質（口乾、夜汗、虛火）】（22 款）\n========================================\n• 盜汗調理—五味子杞子甘草茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2024/05/IMG-9118-Medium-600x463.jpg\n  🔗 https://www.healthy-food.hk/?p=10601\n  適合：陰虛質、特稟質、平和質\n\n• 健脾消暑清熱—鮮蓮子百合冬瓜湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2024/04/IMG_0675-Medium-600x477.jpg\n  🔗 https://www.healthy-food.hk/?p=10579\n  適合：陰虛質、痰濕質、平和質\n\n• 虛火調理—花旗參石斛花茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2016/10/DSCN2684-600x450.jpg\n  🔗 https://www.healthy-food.hk/?p=5766\n  適合：陰虛質、平和質\n\n• 家常食療—辣椒葉杞子瘦肉湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2015/01/yo339.jpg\n  🔗 https://www.healthy-food.hk/?p=4875\n  適合：陰虛質、平和質\n\n• 疏肝理氣解鬱—玫瑰杞子陳皮蘋果茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2025/09/IMG_1725-Medium-600x416.jpg\n  🔗 https://www.healthy-food.hk/?p=11214\n  適合：陰虛質、痰濕質、氣鬱質、平和質\n\n  ▶ 更多 陰虛質 食譜見 supporting_points（共 22 款）\n\n========================================\n【🌫️ 痰濕質（水腫、肥胖、痰多、濕困）】（7 款）\n========================================\n• 痛風調理—赤小豆薏米陳皮粥\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2018/08/IMG_20180514_074947_HDR-600x451.jpg\n  🔗 https://www.healthy-food.hk/?p=6799\n  適合：痰濕質、濕熱質\n\n• 痛風調理—赤小豆粥\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2011/11/kee-019-600x400.jpg\n  🔗 https://www.healthy-food.hk/?p=2867\n  適合：痰濕質、濕熱質\n\n• 解酒茶飲—葛花陳皮蜜棗茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2021/08/IMG_6245-600x472.jpg\n  🔗 https://www.healthy-food.hk/?p=8652\n\n• 清熱健脾袪濕—竹蔗馬蹄紅蘿蔔薏米水\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2020/06/IMG_4831-1-600x484.jpg\n  🔗 https://www.healthy-food.hk/?p=7935\n\n• 健脾消滯—山楂茯苓陳皮蘋果茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2026/01/IMG_2413-Medium-600x481.jpg\n  🔗 https://www.healthy-food.hk/?p=11383\n\n  ▶ 更多 痰濕質 食譜見 supporting_points（共 7 款）\n\n========================================\n【🌡️ 濕熱質（熱底、暗瘡、口苦、尿黃）】（1 款）\n========================================\n• 節日過後調理—山楂決明綿茵陳茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2018/12/IMG_1532-558x500.jpg\n  🔗 https://www.healthy-food.hk/?p=7021\n\n========================================\n【🩸 血瘀質（面色暗、痛經、淤青）】（2 款）\n========================================\n• 血瘀體質調理—山楂紅蘿蔔飲\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2016/12/IMG_6148.jpg\n  🔗 https://www.healthy-food.hk/?p=5877\n\n• 調經止痛—益母草紅糖粥\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2026/04/IMG_2550-Medium-600x475.jpg\n  🔗 https://www.healthy-food.hk/?p=11523\n\n========================================\n【🌀 氣鬱質（情緒鬱結、壓力大、失眠）】（1 款）\n========================================\n• 失眠神經衰弱—養心安神粥\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2022/01/IMG_3414-600x472.jpg\n  🔗 https://www.healthy-food.hk/?p=8870\n\n========================================\n【🛡️ 特稟質（過敏體質、鼻敏感、濕疹）】（2 款）\n========================================\n• 秋天養肺湯水—虎乳靈芝白玉耳瘦肉湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2021/09/IMG_6502-600x466.jpg\n  🔗 https://www.healthy-food.hk/?p=8696\n\n• 强肺氣抗流感—虎乳靈芝椰子粟米甘筍湯\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2024/01/IMG_0477-Medium-600x447.jpg\n  🔗 https://www.healthy-food.hk/?p=10435\n\n========================================\n【⚖️ 平和質（體質均衡、日常調理）】（4 款）\n========================================\n• 健脾補血養顏—南瓜紅棗小米粥\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2022/09/IMG-8826-Medium-600x465.jpg\n  🔗 https://www.healthy-food.hk/?p=9707\n\n• 心律不正調理—製桑寄生蓮子雞蛋茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2024/08/IMG_0826-Medium-600x487.jpg\n  🔗 https://www.healthy-food.hk/?p=10743\n\n• 補血養顏—制寄生蓮子圓肉茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2017/07/IMG_20170708_075502-578x500.jpg\n  🔗 https://www.healthy-food.hk/?p=6183\n\n• 補血養顏—荔枝乾紅棗茶\n  🖼️ https://www.healthy-food.hk/wp-content/uploads/2021/03/IMG_3562-600x450.jpg\n  🔗 https://www.healthy-food.hk/?p=8451\n",
+      "supporting_points": [
+        {
+          "rank": 1,
+          "title": "健脾安神—太子參淮蓮紅棗粥",
+          "url": "https://www.healthy-food.hk/?p=11188",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/08/IMG_20180101_114145_HDR-Medium-600x454.jpg",
+          "constitutions": [
+            "氣虛質",
+            "平和質"
+          ],
+          "snippet": "ml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-st"
+        },
+        {
+          "rank": 2,
+          "title": "補腎補氣血—四黑粥",
+          "url": "https://www.healthy-food.hk/?p=11255",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/10/IMG_2129-Medium-600x462.jpg",
+          "constitutions": [
+            "氣虛質"
+          ],
+          "snippet": "e([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:soli"
+        },
+        {
+          "rank": 3,
+          "title": "補氣健脾—鮮淮山栗子烏雞湯",
+          "url": "https://www.healthy-food.hk/?p=8369",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/01/IMG_20170531_153949-Medium-600x500.jpg",
+          "constitutions": [
+            "氣虛質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 4,
+          "title": "袪寒補氣血—黨參當歸羊肉湯",
+          "url": "https://www.healthy-food.hk/?p=8803",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/12/IMG_7042-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陽虛質",
+            "血瘀質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 5,
+          "title": "温補氣血—黨參當歸羊肉湯",
+          "url": "https://www.healthy-food.hk/?p=8335",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/12/IMG_5822-600x493.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陽虛質",
+            "血瘀質"
+          ],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 6,
+          "title": "健脾益腎—淮山杞子芡實栗子湯",
+          "url": "https://www.healthy-food.hk/?p=11339",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/12/IMG-9121-Medium-600x470.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-"
+        },
+        {
+          "rank": 7,
+          "title": "病後手術後調理—五指毛桃淮山石斛芡實湯",
+          "url": "https://www.healthy-food.hk/?p=11153",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/07/IMG_1610-Medium-600x486.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "yle:solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){bo"
+        },
+        {
+          "rank": 8,
+          "title": "畏寒肢冷—北茋杞子紅棗禦寒茶",
+          "url": "https://www.healthy-food.hk/?p=10839",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/10/c6631b5f-0cb8-4897-892b-220d46b05765-499x500.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-"
+        },
+        {
+          "rank": 9,
+          "title": "暖胃養心安神—圓肉杞子生薑炒米茶",
+          "url": "https://www.healthy-food.hk/?p=10444",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/01/IMG_0494-Medium-600x476.jpg",
+          "constitutions": [
+            "陽虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "lid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-l"
+        },
+        {
+          "rank": 10,
+          "title": "健康袪風—生薑薄荷茶",
+          "url": "https://www.healthy-food.hk/?p=5715",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/08/DSCN2535-600x450.jpg",
+          "constitutions": [
+            "陽虛質",
+            "平和質"
+          ],
+          "snippet": "([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid"
+        },
+        {
+          "rank": 11,
+          "title": "腎陽虛食療—淮杞腰果泥鰍湯",
+          "url": "https://www.healthy-food.hk/?p=5328",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2015/12/DSCN1577-600x450.jpg",
+          "constitutions": [
+            "陽虛質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 12,
+          "title": "潤肺燥助吸收—芫荽葱生薑皮蛋魚片湯",
+          "url": "https://www.healthy-food.hk/?p=9991",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2023/02/IMG-9218-Medium-600x458.jpg",
+          "constitutions": [
+            "陽虛質"
+          ],
+          "snippet": "id}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-le"
+        },
+        {
+          "rank": 13,
+          "title": "補肺益腎–有益果仁、核桃山楂茶",
+          "url": "https://www.healthy-food.hk/?p=7461",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2019/09/s-011-600x400.jpg",
+          "constitutions": [
+            "陽虛質"
+          ],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 14,
+          "title": "降胆固醇防三高症—杜仲葉茶",
+          "url": "https://www.healthy-food.hk/?p=8541",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/05/IMG_6185-596x500.jpg",
+          "constitutions": [
+            "陽虛質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 15,
+          "title": "盜汗調理—五味子杞子甘草茶",
+          "url": "https://www.healthy-food.hk/?p=10601",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/05/IMG-9118-Medium-600x463.jpg",
+          "constitutions": [
+            "陰虛質",
+            "特稟質",
+            "平和質"
+          ],
+          "snippet": "ml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-st"
+        },
+        {
+          "rank": 16,
+          "title": "健脾消暑清熱—鮮蓮子百合冬瓜湯",
+          "url": "https://www.healthy-food.hk/?p=10579",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/04/IMG_0675-Medium-600x477.jpg",
+          "constitutions": [
+            "陰虛質",
+            "痰濕質",
+            "平和質"
+          ],
+          "snippet": "d}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-lef"
+        },
+        {
+          "rank": 17,
+          "title": "虛火調理—花旗參石斛花茶",
+          "url": "https://www.healthy-food.hk/?p=5766",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/10/DSCN2684-600x450.jpg",
+          "constitutions": [
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 18,
+          "title": "家常食療—辣椒葉杞子瘦肉湯",
+          "url": "https://www.healthy-food.hk/?p=4875",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2015/01/yo339.jpg",
+          "constitutions": [
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 19,
+          "title": "痛風調理—赤小豆薏米陳皮粥",
+          "url": "https://www.healthy-food.hk/?p=6799",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2018/08/IMG_20180514_074947_HDR-600x451.jpg",
+          "constitutions": [
+            "痰濕質",
+            "濕熱質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 20,
+          "title": "痛風調理—赤小豆粥",
+          "url": "https://www.healthy-food.hk/?p=2867",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2011/11/kee-019-600x400.jpg",
+          "constitutions": [
+            "痰濕質",
+            "濕熱質"
+          ],
+          "snippet": "style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid}h"
+        },
+        {
+          "rank": 21,
+          "title": "解酒茶飲—葛花陳皮蜜棗茶",
+          "url": "https://www.healthy-food.hk/?p=8652",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/08/IMG_6245-600x472.jpg",
+          "constitutions": [
+            "痰濕質"
+          ],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 22,
+          "title": "清熱健脾袪濕—竹蔗馬蹄紅蘿蔔薏米水",
+          "url": "https://www.healthy-food.hk/?p=7935",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/06/IMG_4831-1-600x484.jpg",
+          "constitutions": [
+            "痰濕質"
+          ],
+          "snippet": "id}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-le"
+        },
+        {
+          "rank": 23,
+          "title": "健脾消滯—山楂茯苓陳皮蘋果茶",
+          "url": "https://www.healthy-food.hk/?p=11383",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/01/IMG_2413-Medium-600x481.jpg",
+          "constitutions": [
+            "痰濕質"
+          ],
+          "snippet": "html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-"
+        },
+        {
+          "rank": 24,
+          "title": "疏肝理氣解鬱—玫瑰杞子陳皮蘋果茶",
+          "url": "https://www.healthy-food.hk/?p=11214",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/09/IMG_1725-Medium-600x416.jpg",
+          "constitutions": [
+            "陰虛質",
+            "痰濕質",
+            "氣鬱質",
+            "平和質"
+          ],
+          "snippet": "lid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-l"
+        },
+        {
+          "rank": 25,
+          "title": "健脾袪濕—赤小豆綠豆,扁豆陳皮水",
+          "url": "https://www.healthy-food.hk/?p=9994",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2023/02/DSCN2123-Medium-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "痰濕質",
+            "濕熱質"
+          ],
+          "snippet": "}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left"
+        },
+        {
+          "rank": 26,
+          "title": "節日過後調理—山楂決明綿茵陳茶",
+          "url": "https://www.healthy-food.hk/?p=7021",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2018/12/IMG_1532-558x500.jpg",
+          "constitutions": [
+            "濕熱質"
+          ],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 27,
+          "title": "清熱袪濕—土茯苓老黃瓜赤扁豆湯",
+          "url": "https://www.healthy-food.hk/?p=7230",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2019/05/IMG_2376-500x500.png",
+          "constitutions": [
+            "氣虛質",
+            "痰濕質",
+            "濕熱質"
+          ],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 28,
+          "title": "濕熱調理—土茯苓豬苓茯苓湯",
+          "url": "https://www.healthy-food.hk/?p=7190",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2019/04/DSCN1563-600x450.jpg",
+          "constitutions": [
+            "痰濕質",
+            "濕熱質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 29,
+          "title": "清熱利濕—合掌瓜淮山蜆肉湯",
+          "url": "https://www.healthy-food.hk/?p=5491",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/04/DSCN1830-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "濕熱質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 30,
+          "title": "清熱袪濕—粉葛赤小豆薏米排骨湯",
+          "url": "https://www.healthy-food.hk/?p=6693",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2018/05/IMG_20180524_072328_HDR-496x500.jpg",
+          "constitutions": [
+            "痰濕質",
+            "濕熱質"
+          ],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 31,
+          "title": "血瘀體質調理—山楂紅蘿蔔飲",
+          "url": "https://www.healthy-food.hk/?p=5877",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/12/IMG_6148.jpg",
+          "constitutions": [
+            "血瘀質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 32,
+          "title": "調經止痛—益母草紅糖粥",
+          "url": "https://www.healthy-food.hk/?p=11523",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/04/IMG_2550-Medium-600x475.jpg",
+          "constitutions": [
+            "血瘀質"
+          ],
+          "snippet": "where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:"
+        },
+        {
+          "rank": 33,
+          "title": "陽虛血虛手脚冰冷—北茋當歸生薑羊肉湯",
+          "url": "https://www.healthy-food.hk/?p=7581",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2019/12/11.24b-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陽虛質",
+            "血瘀質"
+          ],
+          "snippet": "olid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-"
+        },
+        {
+          "rank": 34,
+          "title": "四肢不温—當歸北茋羊肉湯",
+          "url": "https://www.healthy-food.hk/?p=4785",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2014/11/11.24b-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陽虛質",
+            "血瘀質"
+          ],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 35,
+          "title": "暖胃袪寒—川芎當歸黨參羊肉湯",
+          "url": "https://www.healthy-food.hk/?p=10415",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2023/12/IMG_0387-Medium-1-600x456.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陽虛質",
+            "血瘀質"
+          ],
+          "snippet": "html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-"
+        },
+        {
+          "rank": 36,
+          "title": "温中袪寒—當歸黨參羊肉湯",
+          "url": "https://www.healthy-food.hk/?p=6410",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/12/IMG_20171204_134136_HDR-600x433.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陽虛質",
+            "血瘀質"
+          ],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 37,
+          "title": "失眠神經衰弱—養心安神粥",
+          "url": "https://www.healthy-food.hk/?p=8870",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/01/IMG_3414-600x472.jpg",
+          "constitutions": [
+            "氣鬱質"
+          ],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 38,
+          "title": "緩解壓力—圓肉紅棗杞子桃膠湯",
+          "url": "https://www.healthy-food.hk/?p=8403",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/02/DSCN2231-Medium-600x450.jpg",
+          "constitutions": [
+            "陰虛質",
+            "氣鬱質",
+            "平和質"
+          ],
+          "snippet": "l :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-sty"
+        },
+        {
+          "rank": 39,
+          "title": "潤肺補虛—虎乳靈芝百合杏仁鷓鴣湯",
+          "url": "https://www.healthy-food.hk/?p=9237",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/03/ya-022-Medium-600x400.jpg",
+          "constitutions": [
+            "陰虛質",
+            "特稟質"
+          ],
+          "snippet": "}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left"
+        },
+        {
+          "rank": 40,
+          "title": "虛汗不止—山萸肉黨參五味子茶",
+          "url": "https://www.healthy-food.hk/?p=11493",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/03/IMG_2516-Medium-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "特稟質"
+          ],
+          "snippet": "html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-"
+        },
+        {
+          "rank": 41,
+          "title": "熬夜人士防疫湯水—靈芝花旗參石斛湯",
+          "url": "https://www.healthy-food.hk/?p=7690",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/02/IMG_4104-600x450.jpg",
+          "constitutions": [
+            "陰虛質",
+            "特稟質",
+            "平和質"
+          ],
+          "snippet": "id}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-le"
+        },
+        {
+          "rank": 42,
+          "title": "心律不正—黨參麥冬五味子燉雞湯",
+          "url": "https://www.healthy-food.hk/?p=6427",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/12/IMG_20171111_151658_HDR-600x484.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "特稟質"
+          ],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 43,
+          "title": "益氣安神—靈芝黑豆圓肉竹絲雞湯",
+          "url": "https://www.healthy-food.hk/?p=11534",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/04/IMG_2558-Medium-600x461.jpg",
+          "constitutions": [
+            "氣虛質",
+            "特稟質"
+          ],
+          "snippet": "d}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-lef"
+        },
+        {
+          "rank": 44,
+          "title": "秋天養肺湯水—虎乳靈芝白玉耳瘦肉湯",
+          "url": "https://www.healthy-food.hk/?p=8696",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/09/IMG_6502-600x466.jpg",
+          "constitutions": [
+            "特稟質"
+          ],
+          "snippet": "id}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-le"
+        },
+        {
+          "rank": 45,
+          "title": "强肺氣抗流感—虎乳靈芝椰子粟米甘筍湯",
+          "url": "https://www.healthy-food.hk/?p=10435",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/01/IMG_0477-Medium-600x447.jpg",
+          "constitutions": [
+            "特稟質"
+          ],
+          "snippet": "e:solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){bord"
+        },
+        {
+          "rank": 46,
+          "title": "健脾補血養顏—南瓜紅棗小米粥",
+          "url": "https://www.healthy-food.hk/?p=9707",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/09/IMG-8826-Medium-600x465.jpg",
+          "constitutions": [
+            "平和質"
+          ],
+          "snippet": "l :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-sty"
+        },
+        {
+          "rank": 47,
+          "title": "清熱袪濕—健脾袪濕茶",
+          "url": "https://www.healthy-food.hk/?p=10279",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2023/09/IMG-9716-Medium-600x466.jpg",
+          "constitutions": [],
+          "snippet": "ere([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:so"
+        },
+        {
+          "rank": 48,
+          "title": "補血明目—桑椹杞子圓肉茶",
+          "url": "https://www.healthy-food.hk/?p=10535",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/03/IMG_0614-Medium-600x450.jpg",
+          "constitutions": [
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 49,
+          "title": "清火食療—綠豆百合粥",
+          "url": "https://www.healthy-food.hk/?p=7594",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2019/12/IMG_20170909_144646-600x460.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": "([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid"
+        },
+        {
+          "rank": 50,
+          "title": "各種上火食療—雪梨百合蜜飲",
+          "url": "https://www.healthy-food.hk/?p=5020",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2015/05/aa-038-600x400.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 51,
+          "title": "清熱解毒潤肺燥—青蘿蔔雪耳馬蹄花果湯",
+          "url": "https://www.healthy-food.hk/?p=9827",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/11/IMG-8965-Medium-600x470.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": "olid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-"
+        },
+        {
+          "rank": 52,
+          "title": "清熱潤肺燥—合掌瓜百合馬蹄排骨湯",
+          "url": "https://www.healthy-food.hk/?p=11191",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/08/IMG_1945-Medium-600x428.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": "lid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-l"
+        },
+        {
+          "rank": 53,
+          "title": "心律不正調理—製桑寄生蓮子雞蛋茶",
+          "url": "https://www.healthy-food.hk/?p=10743",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/08/IMG_0826-Medium-600x487.jpg",
+          "constitutions": [
+            "平和質"
+          ],
+          "snippet": "lid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-l"
+        },
+        {
+          "rank": 54,
+          "title": "健脾和胃潤肺養顏—青木瓜雪耳花果湯",
+          "url": "https://www.healthy-food.hk/?p=9754",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/09/IMG-8868-Medium-600x470.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": "id}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-le"
+        },
+        {
+          "rank": 55,
+          "title": "清熱養陰止咳—沙參玉竹潤肺湯",
+          "url": "https://www.healthy-food.hk/?p=9704",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/09/IMG-8820-Medium-600x478.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": "l :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-sty"
+        },
+        {
+          "rank": 56,
+          "title": "潤肺止咳—桔餅麥冬梨乾茶",
+          "url": "https://www.healthy-food.hk/?p=8578",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/06/IMG_6243-600x490.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 57,
+          "title": "清熱潤肺—沙參海玉竹三果湯",
+          "url": "https://www.healthy-food.hk/?p=7637",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/01/IMG_1089-600x467.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 58,
+          "title": "補血養顏—制寄生蓮子圓肉茶",
+          "url": "https://www.healthy-food.hk/?p=6183",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/07/IMG_20170708_075502-578x500.jpg",
+          "constitutions": [
+            "平和質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 59,
+          "title": "清熱潤肺—紅枸杞豬肝瘦肉湯",
+          "url": "https://www.healthy-food.hk/?p=5140",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2015/08/DSCN1620-600x450.jpg",
+          "constitutions": [
+            "陰虛質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 60,
+          "title": "補血養顏—荔枝乾紅棗茶",
+          "url": "https://www.healthy-food.hk/?p=8451",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/03/IMG_3562-600x450.jpg",
+          "constitutions": [
+            "平和質"
+          ],
+          "snippet": "re([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:sol"
+        },
+        {
+          "rank": 61,
+          "title": "耳鳴調理—桑椹山萸肉南棗茶",
+          "url": "https://www.healthy-food.hk/?p=11562",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/05/IMG_2635-Medium-600x445.jpg",
+          "constitutions": [],
+          "snippet": "ml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-st"
+        },
+        {
+          "rank": 62,
+          "title": "健脾補血—金針木耳鯽魚湯",
+          "url": "https://www.healthy-food.hk/?p=11542",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/04/IMG_2591-Medium-600x451.jpg",
+          "constitutions": [],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 63,
+          "title": "清熱潤肺—西洋菜紅蘿蔔花果排骨湯",
+          "url": "https://www.healthy-food.hk/?p=8595",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/06/IMG_6274-600x450.jpg",
+          "constitutions": [],
+          "snippet": "}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left"
+        },
+        {
+          "rank": 64,
+          "title": "清熱潤肺—杏汁金銀花豬肺湯",
+          "url": "https://www.healthy-food.hk/?p=6309",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/10/DSCN1770-600x450.jpg",
+          "constitutions": [],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 65,
+          "title": "健脾補血—蓮藕馬蹄豬展湯",
+          "url": "https://www.healthy-food.hk/?p=5692",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/08/DSCN2577-600x450.jpg",
+          "constitutions": [],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 66,
+          "title": "補血養顏調五臟—制桑寄生黑豆南棗茶",
+          "url": "https://www.healthy-food.hk/?p=10638",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/06/IMG-9921-Medium-600x443.jpg",
+          "constitutions": [],
+          "snippet": "solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border"
+        },
+        {
+          "rank": 67,
+          "title": "清熱潤肺降火—西洋菜金羅漢果陳鴨腎湯",
+          "url": "https://www.healthy-food.hk/?p=10447",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/01/IMG_0497-Medium-600x454.jpg",
+          "constitutions": [],
+          "snippet": "e:solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){bord"
+        },
+        {
+          "rank": 68,
+          "title": "抗炎潤肺燥—蘋果花果茶",
+          "url": "https://www.healthy-food.hk/?p=8935",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/02/IMG_3856-600x450.jpg",
+          "constitutions": [],
+          "snippet": "re([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:sol"
+        },
+        {
+          "rank": 69,
+          "title": "清熱潤肺燥—青蘿蔔杏仁花果瑤柱湯",
+          "url": "https://www.healthy-food.hk/?p=7496",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2019/10/DSCN3068-600x450.jpg",
+          "constitutions": [],
+          "snippet": "}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left"
+        },
+        {
+          "rank": 70,
+          "title": "家常食療—合掌瓜花生芽瘦肉湯",
+          "url": "https://www.healthy-food.hk/?p=6647",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2018/04/IMG_20180429_161403_HDR-600x466.jpg",
+          "constitutions": [],
+          "snippet": "l :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-sty"
+        },
+        {
+          "rank": 71,
+          "title": "清熱下火防治三高—粉葛粥",
+          "url": "https://www.healthy-food.hk/?p=6414",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/12/DSCN1849-600x450.jpg",
+          "constitutions": [],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 72,
+          "title": "補血健脾—紅菜頭栗子薯仔湯",
+          "url": "https://www.healthy-food.hk/?p=6110",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/05/IMG_20170521_151553-600x495.jpg",
+          "constitutions": [],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 73,
+          "title": "痛風治理—青木瓜綠茶椰汁飲",
+          "url": "https://www.healthy-food.hk/?p=6058",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/05/IMG_20170429_165823-600x443.jpg",
+          "constitutions": [],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 74,
+          "title": "補血安神—圓肉洋參飲",
+          "url": "https://www.healthy-food.hk/?p=5623",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/06/DSCN2469-600x450.jpg",
+          "constitutions": [],
+          "snippet": "([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid"
+        },
+        {
+          "rank": 75,
+          "title": "清熱潤肺—菜乾紅蘿蔔鴨腎豬骨湯",
+          "url": "https://www.healthy-food.hk/?p=4840",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2015/01/30b-600x450.jpg",
+          "constitutions": [],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 76,
+          "title": "虛汗調理—浮小麥茶",
+          "url": "https://www.healthy-food.hk/?p=4172",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2013/09/9.27c-600x450.jpg",
+          "constitutions": [],
+          "snippet": "style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid}h"
+        },
+        {
+          "rank": 77,
+          "title": "養顏潤肺—桂花無花果茶",
+          "url": "https://www.healthy-food.hk/?p=10678",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/06/IMG_6057-Medium-600x450.jpg",
+          "constitutions": [],
+          "snippet": "where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:"
+        },
+        {
+          "rank": 78,
+          "title": "補血養顏安神—三棗麥米茶",
+          "url": "https://www.healthy-food.hk/?p=9765",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/10/IMG-8520-Medium-600x450.jpg",
+          "constitutions": [],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 79,
+          "title": "駐顏茶飲—三棗麥米茶",
+          "url": "https://www.healthy-food.hk/?p=8081",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/08/IMG_5024-1-600x456.jpg",
+          "constitutions": [],
+          "snippet": "([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid"
+        },
+        {
+          "rank": 80,
+          "title": "低血壓調理—補血養顏雞酒",
+          "url": "https://www.healthy-food.hk/?p=7598",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2019/12/IMG_20180531_113923_HDR-580x500.jpg",
+          "constitutions": [],
+          "snippet": "here([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:s"
+        },
+        {
+          "rank": 81,
+          "title": "防秋燥茶飲—蘋果菊花無花果茶",
+          "url": "https://www.healthy-food.hk/?p=6826",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2018/08/ac-037-600x400.jpg",
+          "constitutions": [],
+          "snippet": "l :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-sty"
+        },
+        {
+          "rank": 82,
+          "title": "清熱消脂—金蕎麥茶",
+          "url": "https://www.healthy-food.hk/?p=6131",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/06/IMG_20170601_123156-600x408.jpg",
+          "constitutions": [],
+          "snippet": "style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid}h"
+        },
+        {
+          "rank": 83,
+          "title": "講座茶飲–預防三高—決明荷葉菊花茶",
+          "url": "https://www.healthy-food.hk/?p=6041",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2017/04/4.21AA-600x282.jpg",
+          "constitutions": [],
+          "snippet": "ht-style:solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color"
+        },
+        {
+          "rank": 84,
+          "title": "乳房結節調理—蒲公英夏枯草茶",
+          "url": "https://www.healthy-food.hk/?p=11142",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/07/IMG_1733-Medium-600x367.jpg",
+          "constitutions": [],
+          "snippet": "html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-"
+        },
+        {
+          "rank": 85,
+          "title": "潤肺安神—鮮淮山蓮子百合杏仁豬肺湯",
+          "url": "https://www.healthy-food.hk/?p=10547",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/03/IMG_0625-Medium-600x471.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border"
+        },
+        {
+          "rank": 86,
+          "title": "健脾護肝—鮮石斛淮山響螺湯",
+          "url": "https://www.healthy-food.hk/?p=9516",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2022/05/IMG-8505-Medium-600x439.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 87,
+          "title": "滋補强壯—北茋黨參圓肉杞子茶",
+          "url": "https://www.healthy-food.hk/?p=8636",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/07/IMG_6360-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "l :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-sty"
+        },
+        {
+          "rank": 88,
+          "title": "甲減食療—鮮淮山石斛鵪鶉湯",
+          "url": "https://www.healthy-food.hk/?p=8360",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/12/DSCN1416-Medium-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 89,
+          "title": "手術及病後調理—鮮石斛淮山牛鰍魚湯",
+          "url": "https://www.healthy-food.hk/?p=8159",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/09/IMG_5503-1-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "id}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-le"
+        },
+        {
+          "rank": 90,
+          "title": "未病先防預防流感—北茋杞子紅棗茶",
+          "url": "https://www.healthy-food.hk/?p=6479",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2018/01/IMG_20180126_092045_HDR-600x477.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left"
+        },
+        {
+          "rank": 91,
+          "title": "滋陰清熱—鮮淮山石斛甘筍瘦肉湯",
+          "url": "https://www.healthy-food.hk/?p=5777",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/10/IMG_20160917_164051_HDR-486x500.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 92,
+          "title": "健脾袪濕湯—淮山蓮子薏米紅豆湯",
+          "url": "https://www.healthy-food.hk/?p=5465",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2016/03/DSCN2295-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "痰濕質",
+            "平和質"
+          ],
+          "snippet": "tml :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-s"
+        },
+        {
+          "rank": 93,
+          "title": "補益氣血抗衰老—黑杞子圓肉茶",
+          "url": "https://www.healthy-food.hk/?p=10872",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2024/11/IMG_1185-Medium-600x471.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-"
+        },
+        {
+          "rank": 94,
+          "title": "預防三高—蘋果山楂杞子茶",
+          "url": "https://www.healthy-food.hk/?p=11554",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/05/2-Medium-600x450.jpg",
+          "constitutions": [
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 95,
+          "title": "明目消除疲勞—花旗參杞子菊花茶",
+          "url": "https://www.healthy-food.hk/?p=11550",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2026/05/IMG_2618-Medium-600x457.jpg",
+          "constitutions": [
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "d}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-lef"
+        },
+        {
+          "rank": 96,
+          "title": "陰虛體質食療—鮮淮山雪耳馬蹄豬展湯",
+          "url": "https://www.healthy-food.hk/?p=5332",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2015/12/DSCN2025-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "陰虛質"
+          ],
+          "snippet": "id}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-le"
+        },
+        {
+          "rank": 97,
+          "title": "寧心安神—花旗參麥冬圓肉茶",
+          "url": "https://www.healthy-food.hk/?p=5281",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2015/11/DSCN1938-600x450.jpg",
+          "constitutions": [
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        },
+        {
+          "rank": 98,
+          "title": "補血養顏–紅衣花生杞子烏雞螺頭湯",
+          "url": "https://www.healthy-food.hk/?p=11318",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2025/11/IMG-9277-Medium-600x450.jpg",
+          "constitutions": [
+            "陰虛質",
+            "平和質"
+          ],
+          "snippet": "lid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-l"
+        },
+        {
+          "rank": 99,
+          "title": "清熱解毒—粉葛綠豆薏米扁豆水",
+          "url": "https://www.healthy-food.hk/?p=8752",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2021/10/IMG_6521-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "痰濕質"
+          ],
+          "snippet": "l :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-sty"
+        },
+        {
+          "rank": 100,
+          "title": "消除水腫—北茋澤瀉車前子茶",
+          "url": "https://www.healthy-food.hk/?p=7912",
+          "image_url": "https://www.healthy-food.hk/wp-content/uploads/2020/06/IMG_4815-600x450.jpg",
+          "constitutions": [
+            "氣虛質",
+            "痰濕質"
+          ],
+          "snippet": ":where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style"
+        }
+      ],
+      "evidence_level": "Traditional Practice",
+      "constitution_coverage": {
+        "氣虛質": 30,
+        "陽虛質": 6,
+        "陰虛質": 22,
+        "痰濕質": 7,
+        "濕熱質": 1,
+        "血瘀質": 2,
+        "氣鬱質": 1,
+        "特稟質": 2,
+        "平和質": 4
+      },
+      "total_recipes": 100,
+      "source": "https://www.healthy-food.hk",
+      "next_best_question": "你知唔知自己係咩體質？如果唔確定，我可以幫你評估一下。"
+    },
+    "execution_logic": {
+      "recommended_action": "根據用戶體質推薦對應嘅湯水食譜，展示圖片同連結。如用戶唔知體質，先引導做體質評估。",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "如用戶有興趣，可進一步查詢詳細材料做法（link to healthy-food.hk post）或建議體質評估",
+      "escalation_trigger": "如用戶有懷孕、嚴重疾病、服藥中，建議先諮詢中醫師再飲補湯"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_food_therapy_soups",
+        "tcm_constitution_assessment",
+        "tcm_food_therapy_teas"
+      ],
+      "sources": [
+        "芳姐保健湯餸 (healthy-food.hk) — 100 精選食療食譜",
+        "中華中醫藥學會《中醫體質分類判定標準》2009"
+      ]
+    }
+  }
+}

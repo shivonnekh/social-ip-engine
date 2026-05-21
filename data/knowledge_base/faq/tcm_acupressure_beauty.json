@@ -1,0 +1,142 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_acupressure_beauty",
+      "domain": "1_acupressure",
+      "category": "1.1_beauty",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "美容穴位：瘦面、亮膚、去黑眼圈",
+      "objective": "教導用戶實用嘅美容穴位按摩，針對瘦面、改善膚色、去黑眼圈、消水腫等常見都市女性訴求",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "瘦面穴位",
+        "面大想瘦",
+        "天容穴",
+        "去黑眼圈",
+        "黑眼圈穴位",
+        "四白穴",
+        "亮膚穴位",
+        "改善膚色",
+        "陽白穴",
+        "面色差",
+        "面黃",
+        "膚色暗啞",
+        "迎香穴",
+        "鼻敏感穴位",
+        "鼻塞穴位",
+        "美容穴位",
+        "顴髎穴",
+        "變靚穴位",
+        "新年變靚",
+        "按穴位靚",
+        "升CUP穴位",
+        "胸部穴位",
+        "消水腫穴位",
+        "水腫穴位",
+        "大陵穴",
+        "一指去水腫",
+        "手腕消水腫",
+        "狗狗穴位",
+        "寵物穴位",
+        "狗按摩",
+        "塊面好大",
+        "包包面",
+        "眼圈好深",
+        "熊貓眼",
+        "面色黃",
+        "皮膚暗啞",
+        "面腫",
+        "朝早面腫",
+        "想靚啲",
+        "dark circle",
+        "水腫面",
+        "鼻塞",
+        "鼻敏感"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "穴位按摩係中醫外治法之一，透過刺激特定穴位，調節氣血循環同經絡通暢，達到美容養顏效果。以下係幾個最實用嘅美容穴位：\n\n【瘦面：天容穴】\n位置：耳垂後下方，下頜角後方凹陷處\n功效：改善淋巴循環，疏通面部氣血，有助减輕面部浮腫\n按法：用食指或中指指腹，輕柔按壓，每次1-2分鐘，每日2-3次\n適合：面部容易水腫、下面大、淋巴循環差的人\n\n【去黑眼圈：四白穴】\n位置：眼眶骨下方約1寸（約一指寬），瞳孔正下方\n功效：疏通眼部氣血，改善局部循環，淡化黑眼圈\n按法：輕柔按壓，每日1分鐘\n⚠️ 注意：穴位係輔助工具。睡眠唔夠先係黑眼圈嘅根本原因，按穴位只係輔助改善，唔係根治\n\n【亮膚：陽白穴】\n位置：眉毛正中上方約1寸（一指寬）\n功效：改善眉眼間氣血流通，淡化面色偏黃偏暗\n按法：兩手食指各按一邊，輕柔打圈，每次1分鐘\n\n【鼻敏感：迎香穴】\n位置：鼻翼兩側凹陷處（鼻孔旁邊）\n功效：疏通鼻腔氣血，緩解鼻敏感、鼻塞、流鼻水\n按法：兩手食指同時按壓，每次1-2分鐘\n\n【消手腕水腫：大陵穴 — 一指去水腫法】\n位置：手腕橫紋中央凹陷處\n方法：用中指指節由大陵穴向手臂方向刮推（唔係按壓），10次為一組，即時見效\n適合：久坐辦公、手腕容易水腫的人\n\n【新年變靚四穴組合】\n迎香穴（排毒亮膚）＋顴髎穴（改善膚色）＋陽白穴（亮眼）＋四白穴（去黑眼圈）\n每穴按壓1分鐘，每日一次，堅持兩週效果更明顯",
+      "supporting_points": [
+        "穴位按摩係自我保健工具，唔係替代醫療",
+        "效果因個人體質同堅持程度而異，建議每日堅持",
+        "力度要適中：唔係越痛越有效，以有「酸脹感」為準",
+        "懷孕人士按摩前請先諮詢中醫師，部分穴位孕婦禁用",
+        "如有面部皮膚問題（暗瘡、濕疹），建議先睇中醫師再按摩"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你係主要想改善邊個問題：黑眼圈、面色定係水腫呢？",
+      "media": [
+        {
+          "id": "video_tianrong_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/tianrong.mp4",
+          "caption": "天容穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_sibai_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sibai.mp4",
+          "caption": "四白穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_daling_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/daling.mp4",
+          "caption": "大陵穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_yingxiang_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yingxiang.mp4",
+          "caption": "迎香穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_yangbai_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yangbai.mp4",
+          "caption": "陽白穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_quanliao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/quanliao.mp4",
+          "caption": "顴髎穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "根據用戶具體訴求（瘦面/去黑眼圈/亮膚）選取相關段落回答，唔需要全部列出",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "如有皮膚敏感反應或按壓後疼痛加劇，建議停止並諮詢中醫師"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_pain",
+        "tcm_skin_acne_complexion"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "黃帝內經 — 經絡穴位理論",
+        "中醫基礎理論教材（香港中文大學中醫學院）"
+      ]
+    }
+  }
+}

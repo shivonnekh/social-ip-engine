@@ -1,0 +1,110 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_acupressure_weight_slim",
+      "domain": "1_acupressure",
+      "category": "1.4_weight",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "消脂瘦身穴位：止餓、纖腿、消水腫",
+      "objective": "提供針對控制食慾、纖細腿部、消除水腫的穴位按摩方法",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "止餓穴位",
+        "飢點",
+        "控制食慾穴位",
+        "唔想食零食",
+        "減肥穴位",
+        "瘦腿穴位",
+        "纖腿穴位",
+        "承山穴",
+        "飛揚穴",
+        "小腿粗穴位",
+        "消小腿",
+        "消水腫穴位",
+        "水腫穴位",
+        "消腫穴位",
+        "百蟲窩",
+        "皮膚痕穴位",
+        "濕疹穴位",
+        "皮膚痕癢穴位",
+        "升CUP",
+        "豐胸穴位",
+        "胸部按摩",
+        "好想食嘢",
+        "口痕",
+        "想食零食",
+        "小腿粗",
+        "蘿蔔腳",
+        "對腳腫",
+        "手腫",
+        "好痕",
+        "皮膚痕",
+        "濕疹痕",
+        "slim",
+        "瘦身"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "以下係幾個同纖體、消脂相關的穴位：\n\n【止餓控慾：飢點（耳穴）】\n位置：耳廓上方靠近耳尖的一個特定點（耳穴）\n功效：刺激後可抑制食慾信號，適合想減少零食攝取的人\n按法：用手指或圓頭棉花棒按壓耳穴，感到有零食慾望時按壓2-3分鐘\n💡 洪醫師臨床心得：配合「細嚼慢嚥」效果更好，耳穴只係輔助工具\n⚠️ 耳穴治療最好由中醫師貼耳穴療法（王不留行籽），自按效果有限\n\n【纖腿：承山穴 ＋ 飛揚穴】\n位置：\n• 承山穴：小腿後方，腓腸肌肌腹正中凹陷處（踮腳時出現的V字形最深處）\n• 飛揚穴：承山穴外側斜上方約1寸\n功效：疏通膀胱經，改善小腿氣血循環，長期按摩配合運動有助改善小腿線條\n按法：每日按壓兩穴各1分鐘，以酸脹感為準\n注意：穴位只係輔助，「瘦腿」仍需配合飲食控制同適量運動\n\n【消水腫手腕：大陵穴推法】\n位置：手腕橫紋中央\n方法：用中指指節由大陵穴向手臂方向單方向刮推（非來回搓），10-15次\n功效：即時改善手腕及手部水腫，特別適合久坐辦公室、敲鍵盤後\n\n【皮膚痕癢：百蟲窩】\n位置：大腿內側，膝關節上方3寸\n功效：疏風清熱止癢，對濕疹引起的皮膚痕癢有輔助緩解作用\n按法：每日按壓1-2分鐘\n⚠️ 嚴重濕疹請就診，唔建議單靠穴位處理",
+      "supporting_points": [
+        "穴位唔係直接燃脂工具，係透過改善氣血循環間接輔助",
+        "減重效果最終仍取決於飲食控制同運動習慣",
+        "耳穴按壓力度要輕，耳廓皮膚嬌嫩",
+        "水腫如持續且全身性，請就醫排除腎臟或心臟問題",
+        "懷孕人士所有穴位按摩前請先諮詢中醫師"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你主要想控制食慾、消小腿，定係消水腫呢？",
+      "media": [
+        {
+          "id": "video_daling_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/daling.mp4",
+          "caption": "大陵穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_chengshan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/chengshan.mp4",
+          "caption": "承山穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_feiyang_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/feiyang.mp4",
+          "caption": "飛揚穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "根據用戶需求（控慾/纖腿/消腫）選取對應段落，提醒穴位係輔助非主要手段",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "全身水腫或急劇體重增加請就醫排除器質性疾病"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_dampness_removal",
+        "tcm_weight_management"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "針灸學（人民衛生出版社）"
+      ]
+    }
+  }
+}

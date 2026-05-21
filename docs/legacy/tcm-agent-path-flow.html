@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCM Agent Path & Flow — When does product / clinic appear?</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f9fb;
+    --surface: #ffffff;
+    --ink: #1a2332;
+    --ink-soft: #556073;
+    --ink-muted: #8a94a6;
+    --border: #e3e8ef;
+
+    --phase-greet: #2563eb;     --phase-greet-bg: #eaf2ff;
+    --phase-diag: #059669;      --phase-diag-bg: #e6f5ef;
+    --phase-prod: #ea580c;      --phase-prod-bg: #fff0e5;
+    --phase-clinic: #7c3aed;    --phase-clinic-bg: #f3edff;
+
+    --layer-tool: #059669;
+    --layer-tool-bg: #e6f5ef;
+    --layer-decision: #ea580c;
+    --layer-decision-bg: #fff0e5;
+    --layer-llm: #2563eb;
+    --layer-llm-bg: #eaf2ff;
+    --layer-state: #475569;
+    --layer-state-bg: #eef2f7;
+    --layer-gate: #dc2626;
+    --layer-gate-bg: #fde8e8;
+
+    --code-bg: #0f172a;
+    --code-ink: #e2e8f0;
+    --accent-green: #10b981;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", "PingFang SC", "Helvetica Neue", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  header.hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+  header.hero .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--accent-green);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  header.hero h1 {
+    font-size: 38px;
+    line-height: 1.15;
+    font-weight: 700;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  header.hero p.lead {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 820px;
+    margin: 0;
+  }
+  header.hero .meta {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  header.hero .meta code {
+    background: #eef2f7;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+  }
+
+  nav.toc {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 64px;
+  }
+  nav.toc a {
+    display: block;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+  }
+  nav.toc a:hover {
+    border-color: var(--accent-green);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+  }
+  nav.toc a .num {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  section { margin-bottom: 72px; }
+  section h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  section h2 .step-num {
+    display: inline-block;
+    background: var(--accent-green);
+    color: white;
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 12px;
+    vertical-align: 3px;
+  }
+  section h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+  section .section-lede {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0 0 24px;
+    max-width: 800px;
+  }
+
+  .mermaid-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .mermaid { font-size: 13px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  table th {
+    background: #f1f5f9;
+    color: var(--ink);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f3f7;
+    vertical-align: top;
+  }
+  table tr:last-child td { border-bottom: none; }
+  table code, p code, li code {
+    background: #eef2f7;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  table .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .pill-tool { background: var(--layer-tool-bg); color: var(--layer-tool); }
+  .pill-llm { background: var(--layer-llm-bg); color: var(--layer-llm); }
+  .pill-decision { background: var(--layer-decision-bg); color: var(--layer-decision); }
+  .pill-state { background: var(--layer-state-bg); color: var(--layer-state); }
+  .pill-gate { background: var(--layer-gate-bg); color: var(--layer-gate); }
+  .pill-greet { background: var(--phase-greet-bg); color: var(--phase-greet); }
+  .pill-diag { background: var(--phase-diag-bg); color: var(--phase-diag); }
+  .pill-prod { background: var(--phase-prod-bg); color: var(--phase-prod); }
+  .pill-clinic { background: var(--phase-clinic-bg); color: var(--phase-clinic); }
+
+  /* Phase strip — 4 macro phases as a horizontal track */
+  .phase-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--phase-greet);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+  .phase-card.diag { border-top-color: var(--phase-diag); }
+  .phase-card.prod { border-top-color: var(--phase-prod); }
+  .phase-card.clinic { border-top-color: var(--phase-clinic); }
+  .phase-card h4 { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
+  .phase-card .phase-num {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+  .phase-card .phase-when {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    margin-bottom: 8px;
+  }
+  .phase-card .phase-tools {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* Turn timeline — vertical track of conversation turns */
+  .turn-track {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .turn-row {
+    display: grid;
+    grid-template-columns: 60px 24px 1fr 240px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .turn-row:last-child { border-bottom: none; }
+  .turn-row .turn-id {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--ink-muted);
+    text-align: right;
+  }
+  .turn-row .turn-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    margin: 0 auto;
+  }
+  .turn-row.greet .turn-dot { background: var(--phase-greet); }
+  .turn-row.diag .turn-dot { background: var(--phase-diag); }
+  .turn-row.prod .turn-dot { background: var(--phase-prod); }
+  .turn-row.clinic .turn-dot { background: var(--phase-clinic); }
+  .turn-row .turn-text { font-size: 14px; }
+  .turn-row .turn-tool {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+  .turn-row.divider {
+    background: #fefce8;
+    border-radius: 6px;
+    margin: 6px 0;
+    padding: 8px 12px;
+    grid-template-columns: 60px 1fr;
+  }
+  .turn-row.divider .turn-id { color: var(--phase-prod); font-weight: 600; }
+  .turn-row.divider .turn-text { color: var(--phase-prod); font-weight: 600; }
+
+  /* Gate boxes — hard rules */
+  .gate-box {
+    background: var(--layer-gate-bg);
+    border: 1px solid var(--layer-gate);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .gate-box h4 {
+    color: var(--layer-gate);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: 0.02em;
+  }
+  .gate-box h4::before { content: "🔒 "; }
+  .gate-box p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .gate-box code {
+    background: rgba(220, 38, 38, 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--layer-gate);
+  }
+
+  /* Tool catalog */
+  .tool-catalog {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--layer-tool);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .tool-card .tool-name {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--layer-tool);
+    margin-bottom: 4px;
+  }
+  .tool-card .tool-desc {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .tool-card .tool-phase {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Decision matrix */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .decision-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+  .decision-card.llm { border-top: 3px solid var(--layer-llm); }
+  .decision-card.gate { border-top: 3px solid var(--layer-gate); }
+  .decision-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .decision-card.llm h4 { color: var(--layer-llm); }
+  .decision-card.gate h4 { color: var(--layer-gate); }
+  .decision-card ul {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .decision-card ul li { margin-bottom: 6px; }
+
+  /* Code blocks */
+  pre.code {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 20px 24px;
+    border-radius: 10px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+  }
+  pre.code .keyword { color: #93c5fd; }
+  pre.code .string { color: #fde68a; }
+  pre.code .comment { color: #64748b; font-style: italic; }
+  pre.code .arrow { color: #34d399; }
+
+  footer {
+    margin-top: 96px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent-green); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <div class="kicker">TCM Wellness · Agent Path & Flow</div>
+  <h1>Agent Path — When does product / clinic come in?</h1>
+  <p class="lead">
+    Visual map of Jessica's <strong>4 macro phases</strong>, where the LLM has agency vs deterministic gates, and the precise turn at which product and clinic booking surface.
+  </p>
+  <p class="meta">
+    Source files: <code>src/sales/sales_prompt.py</code> · <code>src/tools/sales.py</code> · <code>configs/tcm-sales-flow.yaml</code> · <code>dify/jessica-tcm-sales.yml</code>
+    · Mapped from commit <code>44077a0</code> (2026-04-30)
+  </p>
+</header>
+
+<nav class="toc">
+  <a href="#phases"><span class="num">01</span>4 Macro Phases</a>
+  <a href="#timeline"><span class="num">02</span>Turn Timeline</a>
+  <a href="#orchestration"><span class="num">03</span>Orchestration</a>
+  <a href="#gates"><span class="num">04</span>Hard Gates</a>
+  <a href="#agency"><span class="num">05</span>LLM vs Gate</a>
+  <a href="#tools"><span class="num">06</span>Tool Catalog</a>
+  <a href="#data"><span class="num">07</span>Data Flow</a>
+  <a href="#dify"><span class="num">08</span>Dify Mirror</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="phases">
+  <h2><span class="step-num">01</span>4 Macro Phases</h2>
+  <p class="section-lede">
+    Every patient conversation goes through four phases. <strong>Product appears in Phase 3</strong>, <strong>clinic booking in Phase 4</strong> — both gated by deterministic preconditions plus LLM judgment of patient readiness.
+  </p>
+
+  <div class="phase-strip">
+    <div class="phase-card">
+      <div class="phase-num">Phase 1</div>
+      <h4>Greeting · 招呼</h4>
+      <div class="phase-when">~T1</div>
+      <div class="phase-tools">
+        Doctor portrait + Jessica intro.
+        <br><strong>Tools:</strong> <code>send_doctor_greeting</code>
+      </div>
+    </div>
+    <div class="phase-card diag">
+      <div class="phase-num">Phase 2</div>
+      <h4>Diagnosis · 診斷</h4>
+      <div class="phase-when">~T2 → T13</div>
+      <div class="phase-tools">
+        探病情 → 望脷象 → 5-Q 體質問卷 → 宣布體質.
+        <br><strong>Tools:</strong> <code>record_complaint</code>, <code>record_complaint_probe</code> (×3), <code>request_tongue_photo</code>, <code>analyze_tongue</code>, <code>describe_tongue_findings</code>, <code>ask_constitution_question</code> (×5), <code>record_q_answer</code> (×5), <code>declare_constitution</code>, <code>share_diagnosis</code>
+      </div>
+    </div>
+    <div class="phase-card prod">
+      <div class="phase-num">Phase 3</div>
+      <h4>Product · 產品</h4>
+      <div class="phase-when">~T15 → T16 (after 1-2 caring turns)</div>
+      <div class="phase-tools">
+        Maca 極致黑 + product photo. Earliest possible firing.
+        <br><strong>Tools:</strong> <code>share_product</code>
+      </div>
+    </div>
+    <div class="phase-card clinic">
+      <div class="phase-num">Phase 4</div>
+      <h4>Clinic · 預約</h4>
+      <div class="phase-when">~T17 → T20</div>
+      <div class="phase-tools">
+        District match → propose slots → confirm.
+        <br><strong>Tools:</strong> <code>match_clinic</code>, <code>propose_booking_slot</code>, <code>confirm_booking</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+    P1([1. Greeting]):::greet
+    P2([2. Diagnosis]):::diag
+    P3([3. Product]):::prod
+    P4([4. Clinic]):::clinic
+    P5([Done]):::done
+
+    P1 --> P2
+    P2 -->|declare done| P3
+    P3 -->|product pitched| P4
+    P4 -->|booking confirmed| P5
+
+    P2 -.->|patient escapes 問症| QA([Q&A Mode]):::side
+    QA -.->|wants to come back| P2
+
+    classDef greet fill:#eaf2ff,stroke:#2563eb,stroke-width:2px,color:#1a2332
+    classDef diag fill:#e6f5ef,stroke:#059669,stroke-width:2px,color:#1a2332
+    classDef prod fill:#fff0e5,stroke:#ea580c,stroke-width:2px,color:#1a2332
+    classDef clinic fill:#f3edff,stroke:#7c3aed,stroke-width:2px,color:#1a2332
+    classDef done fill:#eef2f7,stroke:#475569,stroke-width:2px,color:#1a2332
+    classDef side fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#1a2332
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="timeline">
+  <h2><span class="step-num">02</span>Turn-by-Turn Timeline</h2>
+  <p class="section-lede">
+    Real conversation walkthrough. Each row is one bot turn. Product appears at <strong>T15-T16</strong>, clinic at <strong>T18+</strong>. The 4 dot colors map to the 4 phases above.
+  </p>
+
+  <div class="turn-track">
+    <div class="turn-row greet">
+      <div class="turn-id">T1</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">「你好 🌿 我係 Jessica，洪醫師助理。請問你邊度唔舒服？」 + portrait photo</div>
+      <div class="turn-tool"><code>send_doctor_greeting</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T2</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Patient: 「我成日好攰，瞓得唔好」 → bot acknowledges + asks 1 probe</div>
+      <div class="turn-tool"><code>record_complaint</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T3</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Probe #1 (持續多耐？)</div>
+      <div class="turn-tool"><code>record_complaint_probe</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T4</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Probe #2 (邊個時段最辛苦？)</div>
+      <div class="turn-tool"><code>record_complaint_probe</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T5</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Probe #3 (有冇試過 X？)</div>
+      <div class="turn-tool"><code>record_complaint_probe</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T6</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">「中醫講『望聞問切』，方便影張脷相俾我？」</div>
+      <div class="turn-tool"><code>request_tongue_photo</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T7</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Patient sends photo → vision analysis + Cantonese narration</div>
+      <div class="turn-tool"><code>analyze_tongue</code> + <code>describe_tongue_findings</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T8</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Q1: 「你嘅精神狀態？」 (A 好精神 / B 容易攰 / C 攰但瞓唔好)</div>
+      <div class="turn-tool"><code>ask_constitution_question(1)</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T9</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Q2: 寒熱 (A 怕凍 / B 平和 / C 容易熱氣)</div>
+      <div class="turn-tool"><code>ask_constitution_question(2)</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T10</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Q3: 睡眠 (A 易入睡 / B 一般 / C 難入睡多夢)</div>
+      <div class="turn-tool"><code>ask_constitution_question(3)</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T11</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Q4: 消化 (A 順利 / B 一般 / C 胃脹便秘)</div>
+      <div class="turn-tool"><code>ask_constitution_question(4)</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T12</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Q5: 情緒 (A 平穩 / B 一般 / C 容易焦慮)</div>
+      <div class="turn-tool"><code>ask_constitution_question(5)</code></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T13</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">「你可能屬於 氣虛質 — 可以食 黨參 / 黃芪 ...」 (Part A — NO product mention)</div>
+      <div class="turn-tool"><code>declare_constitution</code> + <code>share_diagnosis</code></div>
+    </div>
+
+    <div class="turn-row divider">
+      <div class="turn-id">↓ pacing gate</div>
+      <div class="turn-text">1-2 caring turns required before product can fire</div>
+    </div>
+
+    <div class="turn-row diag">
+      <div class="turn-id">T14</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Caring turn (LLM only): 「你最近壓力大唔大？試吓 8 點之後唔再用手機？」</div>
+      <div class="turn-tool"><em>(no tool — LLM only)</em></div>
+    </div>
+    <div class="turn-row diag">
+      <div class="turn-id">T15</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Optional 2nd caring turn (if patient still asking questions)</div>
+      <div class="turn-tool"><em>(no tool — LLM only)</em></div>
+    </div>
+
+    <div class="turn-row prod">
+      <div class="turn-id">T16</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text"><strong>「我哋有款 Maca 極致黑...」</strong> + Maca product photo</div>
+      <div class="turn-tool"><code>share_product</code> 🟠</div>
+    </div>
+    <div class="turn-row prod">
+      <div class="turn-id">T17</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">Patient asks question / shows interest → LLM keeps caring</div>
+      <div class="turn-tool"><em>(LLM judgment)</em></div>
+    </div>
+
+    <div class="turn-row clinic">
+      <div class="turn-id">T18</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">「你住邊區？我幫你睇下最近嘅診所」</div>
+      <div class="turn-tool"><code>match_clinic</code> 🟣</div>
+    </div>
+    <div class="turn-row clinic">
+      <div class="turn-id">T19</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">「聽日 11am / 後日 3pm / 星期六 2pm — 邊個時段啱你？」</div>
+      <div class="turn-tool"><code>propose_booking_slot</code></div>
+    </div>
+    <div class="turn-row clinic">
+      <div class="turn-id">T20</div>
+      <div class="turn-dot"></div>
+      <div class="turn-text">「已幫你預約咗 ✓ 期待見面 🌿」</div>
+      <div class="turn-tool"><code>confirm_booking</code></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="orchestration">
+  <h2><span class="step-num">03</span>Orchestration — Webhook to Reply</h2>
+  <p class="section-lede">
+    Inbound message goes through 7 layers before producing a reply. Voice notes have an extra decryption step (currently blocked on ChatDaddy transcoder JWT auth).
+  </p>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    WB[/WhatsApp webhook<br/>POST /api/webhooks/whatsapp/]:::entry
+    WB --> Dedup{message_id<br/>already seen?}:::decision
+    Dedup -- yes --> Drop[Drop — 200 OK]:::terminal
+    Dedup -- no --> MB[Merge buffer<br/>5-15s windows]:::layer
+
+    MB --> Media{Has<br/>attachment?}:::decision
+    Media -- voice --> VoicePath[transcribe_audio<br/>OpenAI Whisper → Groq fallback]:::layer
+    Media -- image --> ImgPath[Save bytes locally<br/>inject analyze_tongue marker]:::layer
+    Media -- text only --> Classify
+
+    VoicePath --> Classify
+    ImgPath --> Classify
+
+    Classify[Classify intent<br/>SOS / FAQ / Sales / Casual]:::layer
+    Classify --> SOS[SOS escalation]:::sosbox
+    Classify --> FAQ[FAQ retrieval<br/>find_knowledge_cards]:::layer
+    Classify --> Sales[Sales funnel state machine<br/>14 tools, 4 macro phases]:::salesbox
+    Classify --> Casual[Casual reply LLM]:::layer
+
+    SOS --> Send[ChatDaddy outbound<br/>send_long_message]:::out
+    FAQ --> Send
+    Sales --> Send
+    Casual --> Send
+
+    Send --> Live[live_review.jsonl<br/>+ patient_store update<br/>+ CRM sync]:::layer
+
+    classDef entry fill:#eaf2ff,stroke:#2563eb,stroke-width:2px,color:#1a2332
+    classDef decision fill:#fff0e5,stroke:#ea580c,stroke-width:2px,color:#1a2332
+    classDef layer fill:#e6f5ef,stroke:#059669,stroke-width:1.5px,color:#1a2332
+    classDef terminal fill:#eef2f7,stroke:#475569,stroke-width:1.5px,color:#1a2332
+    classDef sosbox fill:#fde8e8,stroke:#dc2626,stroke-width:2px,color:#1a2332
+    classDef salesbox fill:#fff0e5,stroke:#ea580c,stroke-width:2px,color:#1a2332
+    classDef out fill:#f3edff,stroke:#7c3aed,stroke-width:2px,color:#1a2332
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="gates">
+  <h2><span class="step-num">04</span>Hard Gates — When Tools Reject</h2>
+  <p class="section-lede">
+    The LLM has agency over <em>when</em> to call tools, but every tool checks preconditions before mutating state. These hard gates prevent rushed pitches and hallucinated diagnoses.
+  </p>
+
+  <div class="gate-box">
+    <h4>declare_constitution — 5/5 questions required</h4>
+    <p>
+      Tool returns <code>error: missing_quiz_answers</code> if any of Q1-Q5 unanswered. Listed missing keys + count returned. Even when <code>pacing_compress=true</code> (patient seems fatigued), no bypass — the agent must pivot to clinic invite instead.
+      <br><br>
+      <strong>Fixed:</strong> <code>src/tools/sales.py:2088-2102</code> · Tests: <code>test_declare_constitution_needs_both_answers</code>
+    </p>
+  </div>
+
+  <div class="gate-box">
+    <h4>share_product — requires diagnosis_shared=True</h4>
+    <p>
+      Cannot pitch product before diagnosis. Check at <code>src/tools/sales.py</code>: <code>if not sales_state.get("diagnosis_shared"):</code> → returns <code>error: diagnosis_not_shared_yet</code>. This is what enforces the 1-2 caring turn buffer between Phase 2 and Phase 3.
+    </p>
+  </div>
+
+  <div class="gate-box">
+    <h4>match_clinic — requires product_pitched=True</h4>
+    <p>
+      Cannot start booking flow before product. Check: <code>if not sales_state.get("product_pitched"):</code> → returns <code>error: no_product_pitched_yet</code>. Forces the macro-phase order: 診斷 → 產品 → 預約.
+    </p>
+  </div>
+
+  <div class="gate-box">
+    <h4>propose_booking_slot — requires matched_clinic_id</h4>
+    <p>
+      Cannot propose slots before clinic is matched. Returns <code>error: no_clinic_matched_yet</code>. The slot proposer reads opening hours from the matched clinic, not a default.
+    </p>
+  </div>
+
+  <div class="gate-box">
+    <h4>analyze_tongue — must run before describe_tongue_findings</h4>
+    <p>
+      The describe tool requires <code>tongue_findings</code> in state (set by analyze_tongue). Returns <code>error: analyze_tongue_must_run_first</code>. Prevents LLM from authoring tongue readings without vision input.
+    </p>
+  </div>
+
+  <div class="gate-box">
+    <h4>Pacing — no clinic / product mention before Turn 4</h4>
+    <p>
+      Soft rule (prompt-enforced, not tool-gated): <code>src/sales/sales_prompt.py:200-205</code> — "唔可以喺 Turn 4 之前提診所/見醫師/預約". Lets the LLM build trust before pivoting.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="agency">
+  <h2><span class="step-num">05</span>LLM Agency vs Deterministic Gates</h2>
+  <p class="section-lede">
+    Where the LLM <em>decides</em> vs where the system <em>enforces</em>. Critical to understand: even though the funnel feels deterministic, every tool call is an LLM choice.
+  </p>
+
+  <div class="decision-grid">
+    <div class="decision-card llm">
+      <h4>🧠 LLM Decides</h4>
+      <ul>
+        <li><strong>When</strong> to call <code>record_complaint</code> (after patient describes symptom)</li>
+        <li><strong>Which probes</strong> to ask (timing / severity / triggers / past)</li>
+        <li><strong>Which question phrasing</strong> for empathy</li>
+        <li><strong>How long to wait</strong> between diagnosis and product (1 vs 2 caring turns)</li>
+        <li><strong>Whether to fire share_product yet</strong> (patient ready? still asking?)</li>
+        <li><strong>How to compose the diagnosis Cantonese narrative</strong> (using YAML recommendations as source-of-truth)</li>
+        <li><strong>When to call match_clinic</strong> (after product fires + patient interest signal)</li>
+      </ul>
+    </div>
+
+    <div class="decision-card gate">
+      <h4>🔒 System Enforces</h4>
+      <ul>
+        <li>Q1-Q5 all answered before <code>declare_constitution</code> succeeds</li>
+        <li><code>diagnosis_shared</code> must be true before <code>share_product</code></li>
+        <li><code>product_pitched</code> must be true before <code>match_clinic</code></li>
+        <li><code>matched_clinic_id</code> required for <code>propose_booking_slot</code></li>
+        <li>Constitution name must appear in <code>diagnosis_text</code> (post-validation)</li>
+        <li>SOS pattern matching overrides everything (<code>胸痛</code>, <code>想死</code>, etc.)</li>
+        <li>Acupoint anti-repeat ledger blocks already-mentioned points</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="tools">
+  <h2><span class="step-num">06</span>Tool Catalog</h2>
+  <p class="section-lede">
+    14 tools, grouped by phase. Green = state mutation. Each returns JSON with <code>status: ok</code> or <code>status: error, reason: ...</code>.
+  </p>
+
+  <div class="tool-catalog">
+    <div class="tool-card">
+      <div class="tool-name">send_doctor_greeting</div>
+      <div class="tool-desc">Queue T1 portrait + Cantonese intro bubble. One-shot per session.</div>
+      <span class="tool-phase pill-greet">Phase 1</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">record_complaint</div>
+      <div class="tool-desc">Stores patient's chief complaint text. Sets <code>complaint</code> in state.</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">record_complaint_probe</div>
+      <div class="tool-desc">Records caring follow-up Q+A pair. Min 3 required before tongue request.</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">request_tongue_photo</div>
+      <div class="tool-desc">Queues scripted Cantonese bubble asking for tongue photo with self-shooting tips.</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">analyze_tongue</div>
+      <div class="tool-desc">3-tier vision cascade (Anthropic Claude → Groq → OpenAI). Returns findings dict with signals[].</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">describe_tongue_findings</div>
+      <div class="tool-desc">LLM-authored Cantonese reading queued as lead bubble. Requires analyze_tongue ran first.</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">ask_constitution_question</div>
+      <div class="tool-desc">Queue scripted A/B/C bubble for Q1-Q5. Default mode: scripted (NOT freeform).</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">record_q_answer</div>
+      <div class="tool-desc">Stores Q1-Q5 answer with letter + elaboration. Updates incremental scores.</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">declare_constitution</div>
+      <div class="tool-desc">Final scoring → primary + secondary constitution + recommendations dict (diet/lifestyle/exercise/avoid/seek_help_if).</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">share_diagnosis</div>
+      <div class="tool-desc">Deliver Part A diagnosis text to user. Must cite ≥2 specific items from recommendations dict.</div>
+      <span class="tool-phase pill-diag">Phase 2</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">share_product</div>
+      <div class="tool-desc">Deliver Part B Maca pitch + product photo. Requires diagnosis_shared=true.</div>
+      <span class="tool-phase pill-prod">Phase 3</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">match_clinic</div>
+      <div class="tool-desc">Find Care Plus clinic nearest to patient district. Requires product_pitched=true.</div>
+      <span class="tool-phase pill-clinic">Phase 4</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">propose_booking_slot</div>
+      <div class="tool-desc">Read clinic hours → propose 2-3 slots based on symptom day + closure logic.</div>
+      <span class="tool-phase pill-clinic">Phase 4</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">confirm_booking</div>
+      <div class="tool-desc">Save chosen slot to CRM. Final step — sets flow_type=complete.</div>
+      <span class="tool-phase pill-clinic">Phase 4</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="data">
+  <h2><span class="step-num">07</span>Data Flow — YAML to Bubble</h2>
+  <p class="section-lede">
+    The diagnosis Cantonese narrative comes from authoritative YAML recommendations (added 2026-04-30). The LLM composes prose; YAML provides the substance.
+  </p>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+    YAML[/configs/tcm-sales-flow.yaml<br/>9 constitutions × 5 fields/]:::data
+    YAML --> Loader[ConstitutionType dataclass<br/>frozen, immutable]:::layer
+    Loader --> Tool[declare_constitution tool<br/>scoring + recommendations dict]:::tool
+    Tool --> ToolResp[/JSON response with<br/>recommendations.diet[]<br/>recommendations.avoid[]<br/>recommendations.seek_help_if[]/]:::data
+    ToolResp --> Prompt[share_diagnosis tool description<br/>'cite ≥2 items from recommendations']:::layer
+    Prompt --> LLM[gpt-4o composes<br/>HK Cantonese narrative]:::llm
+    LLM --> Bubble[/「你可能屬於 氣虛質。<br/>可以食 黨參、黃芪。<br/>避免 生冷食物...」/]:::bubble
+    Bubble --> Patient([Patient WhatsApp]):::user
+
+    classDef data fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#1a2332
+    classDef layer fill:#e6f5ef,stroke:#059669,stroke-width:1.5px,color:#1a2332
+    classDef tool fill:#e6f5ef,stroke:#059669,stroke-width:2px,color:#1a2332
+    classDef llm fill:#eaf2ff,stroke:#2563eb,stroke-width:2px,color:#1a2332
+    classDef bubble fill:#f3edff,stroke:#7c3aed,stroke-width:2px,color:#1a2332
+    classDef user fill:#fff,stroke:#475569,stroke-width:1.5px,color:#1a2332
+    </div>
+  </div>
+
+  <h3>Sample of what Jessica receives from declare_constitution</h3>
+  <pre class="code"><span class="comment"># For 氣虛質 (Qi Deficiency):</span>
+{
+  <span class="keyword">"constitution_zh"</span>: <span class="string">"氣虛質"</span>,
+  <span class="keyword">"constitution_en"</span>: <span class="string">"Qi Deficiency"</span>,
+  <span class="keyword">"score"</span>: 7,
+  <span class="keyword">"is_mixed"</span>: true,
+  <span class="keyword">"secondary_zh"</span>: <span class="string">"陽虛質"</span>,
+  <span class="keyword">"distribution"</span>: [
+    {<span class="keyword">"constitution_zh"</span>: <span class="string">"氣虛質"</span>, <span class="keyword">"percent"</span>: 60},
+    {<span class="keyword">"constitution_zh"</span>: <span class="string">"陽虛質"</span>, <span class="keyword">"percent"</span>: 40}
+  ],
+  <span class="keyword">"recommendations"</span>: {
+    <span class="keyword">"diet"</span>: [<span class="string">"黨參"</span>, <span class="string">"黃芪"</span>, <span class="string">"山藥"</span>, <span class="string">"紅棗"</span>, <span class="string">"雞肉"</span>, <span class="string">"牛肉"</span>, <span class="string">"糯米"</span>],
+    <span class="keyword">"lifestyle"</span>: [<span class="string">"10pm 前瞓覺"</span>, <span class="string">"中午小休"</span>, <span class="string">"避免過度操勞"</span>],
+    <span class="keyword">"exercise"</span>: [<span class="string">"慢走"</span>, <span class="string">"八段錦"</span>, <span class="string">"太極"</span>],
+    <span class="keyword">"avoid"</span>: [<span class="string">"生冷食物"</span>, <span class="string">"凍飲"</span>, <span class="string">"熬夜"</span>, <span class="string">"過度劇烈運動"</span>],
+    <span class="keyword">"seek_help_if"</span>: [<span class="string">"疲倦持續 >2 週唔好轉"</span>, <span class="string">"容易暈眩"</span>, <span class="string">"心悸氣促"</span>],
+    <span class="keyword">"secondary_diet"</span>: [<span class="string">"羊肉"</span>, <span class="string">"韭菜"</span>, <span class="string">"桂圓"</span>, <span class="string">"生薑"</span>],
+    <span class="keyword">"secondary_avoid"</span>: [<span class="string">"生冷飲品"</span>, <span class="string">"凍水果"</span>, <span class="string">"雪糕"</span>, <span class="string">"西瓜"</span>]
+  },
+  <span class="keyword">"evidence_sources"</span>: {
+    <span class="keyword">"quiz"</span>: {<span class="keyword">"q1"</span>: <span class="string">"A"</span>, <span class="keyword">"q2"</span>: <span class="string">"A"</span>, <span class="keyword">"q3"</span>: <span class="string">"A"</span>, <span class="keyword">"q4"</span>: <span class="string">"A"</span>, <span class="keyword">"q5"</span>: <span class="string">"B"</span>},
+    <span class="keyword">"vision"</span>: [<span class="string">"淡"</span>, <span class="string">"齒痕"</span>],
+    <span class="keyword">"complaint"</span>: <span class="string">"成日好攰，瞓得唔好"</span>
+  }
+}</pre>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="dify">
+  <h2><span class="step-num">08</span>Dify Mirror — Same Logic, Visual Graph</h2>
+  <p class="section-lede">
+    The Dify advanced-chat workflow at <code>dify/jessica-tcm-sales.yml</code> mirrors this exact agent path as a visual node graph with conversation_variables for state.
+  </p>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    Start([Start node]):::entry
+    Classify[Classify intent<br/>SOS / FAQ / Sales / Casual]:::layer
+    Start --> Classify
+
+    Classify -- SOS --> SOS[SOS LLM<br/>999 + 撒瑪利亞會]:::sosbox
+    Classify -- FAQ --> FAQKB[Knowledge retrieval<br/>TCM cards Qdrant]:::layer
+    Classify -- Casual --> Casual[Casual LLM]:::layer
+    Classify -- Sales --> Router[sales_router<br/>if-else on current_step]:::router
+
+    FAQKB --> FAQLLM[FAQ Cantonese answer]:::layer
+    SOS --> Answer
+    FAQLLM --> Answer
+    Casual --> Answer
+
+    Router -- empty --> S1[1. 招呼]:::greet
+    Router -- complaint --> S2[2. 探病情]:::diag
+    Router -- tongue_req --> S3[3. 請影脷]:::diag
+    Router -- tongue_done --> S4[4. 分析脷象]:::diag
+    Router -- q1 --> S5[5. Q1 疲勞]:::diag
+    Router -- q2 --> S6[6. Q2 寒熱]:::diag
+    Router -- q3 --> S7[7. Q3 睡眠]:::diag
+    Router -- q4 --> S8[8. Q4 消化]:::diag
+    Router -- q5 --> S9[9. Q5 情緒]:::diag
+    Router -- diagnosis --> S10[10. 宣布體質]:::diag
+    Router -- caring --> S11[11. 關心過渡]:::diag
+    Router -- product --> S12[12. 介紹產品+相]:::prod
+    Router -- clinic --> S13[13. 配對診所]:::clinic
+    Router -- booking_slot --> S14[14. 提時段]:::clinic
+    Router -- booking_confirm --> S15[15. 確認預約]:::clinic
+    Router -- else --> Done[ELSE done LLM]:::layer
+
+    S1 --> A1[assigner: step=complaint]:::state
+    S2 --> A2[assigner: step=tongue_req]:::state
+    S3 --> A3[assigner: step=tongue_done]:::state
+    S4 --> A4[assigner: step=q1]:::state
+    S5 --> A5[assigner: step=q2]:::state
+    S6 --> A6[assigner: step=q3]:::state
+    S7 --> A7[assigner: step=q4]:::state
+    S8 --> A8[assigner: step=q5]:::state
+    S9 --> A9[assigner: step=diagnosis]:::state
+    S10 --> A10[assigner: step=caring]:::state
+    S11 --> A11[assigner: step=product]:::state
+    S12 --> A12[assigner: step=clinic]:::state
+    S13 --> A13[assigner: step=booking_slot]:::state
+    S14 --> A14[assigner: step=booking_confirm]:::state
+    S15 --> A15[assigner: step=done]:::state
+
+    A1 --> Answer[Answer node]:::out
+    A2 --> Answer
+    A3 --> Answer
+    A4 --> Answer
+    A5 --> Answer
+    A6 --> Answer
+    A7 --> Answer
+    A8 --> Answer
+    A9 --> Answer
+    A10 --> Answer
+    A11 --> Answer
+    A12 --> Answer
+    A13 --> Answer
+    A14 --> Answer
+    A15 --> Answer
+    Done --> Answer
+
+    classDef entry fill:#eaf2ff,stroke:#2563eb,stroke-width:2px,color:#1a2332
+    classDef router fill:#fff0e5,stroke:#ea580c,stroke-width:2px,color:#1a2332
+    classDef layer fill:#e6f5ef,stroke:#059669,stroke-width:1.5px,color:#1a2332
+    classDef state fill:#eef2f7,stroke:#475569,stroke-width:1px,color:#1a2332
+    classDef sosbox fill:#fde8e8,stroke:#dc2626,stroke-width:2px,color:#1a2332
+    classDef greet fill:#eaf2ff,stroke:#2563eb,stroke-width:2px,color:#1a2332
+    classDef diag fill:#e6f5ef,stroke:#059669,stroke-width:2px,color:#1a2332
+    classDef prod fill:#fff0e5,stroke:#ea580c,stroke-width:2px,color:#1a2332
+    classDef clinic fill:#f3edff,stroke:#7c3aed,stroke-width:2px,color:#1a2332
+    classDef out fill:#f3edff,stroke:#7c3aed,stroke-width:2px,color:#1a2332
+    </div>
+  </div>
+
+  <h3>Mapping: Code state machine ↔ Dify graph</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Concept</th>
+        <th>In dr-baba-agent (Python)</th>
+        <th>In Dify DSL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>State</td>
+        <td><code>sales_state</code> SQLite row keyed by <code>user_id</code></td>
+        <td><code>conversation_variables</code> (current_phase, current_step, q1_letter…)</td>
+      </tr>
+      <tr>
+        <td>Phase routing</td>
+        <td>LLM prompt rules + tool gates</td>
+        <td><code>if-else</code> node with case-on-current_step</td>
+      </tr>
+      <tr>
+        <td>State mutation</td>
+        <td>Tool internal (<code>_update_sales_state</code>)</td>
+        <td><code>assigner</code> nodes (over-write current_step)</td>
+      </tr>
+      <tr>
+        <td>Tool calls (e.g. analyze_tongue)</td>
+        <td>Python function in <code>src/tools/sales.py</code></td>
+        <td>Custom HTTP tool pointing to <code>/api/dify-tools/*</code> (TODO)</td>
+      </tr>
+      <tr>
+        <td>Vision cascade</td>
+        <td>3-tier (Anthropic → Groq → OpenAI)</td>
+        <td>Single vision node (lossy)</td>
+      </tr>
+      <tr>
+        <td>Pacing rules</td>
+        <td>Prompt section + tool gates</td>
+        <td>LLM node system prompts (per-step) + state preconditions</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <p>
+    <strong>Live deployment:</strong>
+    <a href="https://dr-baba-agent.onrender.com/tcm-wellness/" target="_blank">dr-baba-agent.onrender.com/tcm-wellness/</a>
+    · Admin logs: <a href="https://dr-baba-agent.onrender.com/tcm-wellness/admin#logs" target="_blank">/tcm-wellness/admin#logs</a>
+    · Doctor hub: <a href="https://dr-baba-agent.onrender.com/doctor" target="_blank">/doctor</a>
+  </p>
+  <p>
+    Companion docs:
+    <a href="tcm-jessica-flow-map.html">tcm-jessica-flow-map.html</a> (node-by-node trace)
+    · <a href="proactive-follow-up-system.html">proactive-follow-up-system.html</a>
+    · <a href="media-rag-pipeline.html">media-rag-pipeline.html</a>
+  </p>
+  <p>Last updated 2026-04-30 · commit <code>44077a0</code></p>
+</footer>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: {
+      curve: 'basis',
+      htmlLabels: true,
+      useMaxWidth: true
+    },
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", sans-serif'
+  });
+</script>
+</body>
+</html>

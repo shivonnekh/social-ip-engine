@@ -1,0 +1,137 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_acupressure_energy_stress",
+      "domain": "1_acupressure",
+      "category": "1.2_energy_stress",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "提神減壓穴位：精神、社交焦慮、口氣",
+      "objective": "提供針對精神不振、社交焦慮、口氣、麻將提神等都市人常見需求的穴位方法",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "提神穴位",
+        "精神唔好穴位",
+        "唔精神穴位",
+        "合谷穴提神",
+        "開會想精神",
+        "麻將提神",
+        "打麻雀唔攰",
+        "減壓穴位",
+        "舒壓穴位",
+        "社交焦慮穴位",
+        "膻中穴",
+        "三姑六婆穴位",
+        "過年減壓",
+        "口氣穴位",
+        "口臭穴位",
+        "大陵穴口氣",
+        "心跳快穴位",
+        "心悸穴位",
+        "咖啡飲多手震",
+        "內關穴",
+        "湧泉穴",
+        "太衝穴",
+        "腳底穴位",
+        "放鬆穴位",
+        "養生穴位",
+        "好攰",
+        "冇精神",
+        "好眼瞓",
+        "好大壓力",
+        "好緊張",
+        "有口氣",
+        "口臭",
+        "心跳快",
+        "手震",
+        "好煩",
+        "stress",
+        "焦慮",
+        "想relax"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "以下係幾個都市人日常最實用嘅提神同減壓穴位：\n\n【提神：合谷穴】\n位置：手背虎口（拇指同食指之間）最高點\n功效：疏通氣血，提振精神，改善面部氣色\n按法：用另一手拇指強力按壓2分鐘，換手重複\n適合：開會前提神、麻將提神、久坐後精神散漫\n💡 合谷穴係中醫最常用嘅萬能穴位之一\n\n【社交焦慮：膻中穴】\n位置：兩乳頭連線中點，胸骨中央\n功效：開胸理氣、疏肝解鬱，緩解胸口鬱悶\n按法：用中指按壓，每次1-2分鐘，配合深呼吸\n適合：見到「三姑六婆」前、重要場合前緊張\nTCM原理：膻中穴係氣會，肝氣鬱結時胸口會有壓迫感，按呢個穴可疏通\n\n【口氣：大陵穴 ＋ 合谷穴組合】\n位置：大陵穴在手腕橫紋中央\n功效：大陵穴清心火，合谷穴清胃熱；兩穴合用針對消化道引起的口氣\nTCM原理：中醫認為口氣多由心火旺或胃熱引起\n按法：兩穴輪流各按2分鐘\n⚠️ 口氣嚴重或持續請同時檢查牙齒及腸胃健康\n\n【心跳快/手震（飲咖啡太多）：內關穴】\n位置：手腕內側橫紋上方2寸，兩筋之間\n功效：寧心安神，緩解心悸、手震\n按法：拇指強力按壓，每次2分鐘\n適合：咖啡因攝取過多後心跳加速或輕微手震\n⚠️ 心跳持續不規律請就醫排除心臟問題\n\n【全身放鬆：湧泉穴 ＋ 太衝穴】\n位置：\n• 湧泉穴：腳底前1/3凹陷處（腳心）\n• 太衝穴：腳背大拇趾同二趾之間，足骨縫隙\n功效：湧泉穴引氣下行安神；太衝穴疏肝理氣、平靜情緒\n按法：睡前各按2-3分鐘，有助入睡",
+      "supporting_points": [
+        "穴位按摩係安全、低風險的日常保健工具",
+        "提神穴位唔能取代充足睡眠，長期精神不振需排查原因",
+        "合谷穴孕婦禁按",
+        "口氣如持續嚴重，建議同時檢查牙周健康同腸胃",
+        "太衝穴平時按有點酸痛係正常，代表肝氣有鬱結"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你係主要想提神、舒壓，定係改善口氣呢？",
+      "media": [
+        {
+          "id": "video_taichong_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/taichong.mp4",
+          "caption": "太衝穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_neiguan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/neiguan.mp4",
+          "caption": "內關穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_hegu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/hegu.mp4",
+          "caption": "合谷穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_daling_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/daling.mp4",
+          "caption": "大陵穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_yongquan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yongquan.mp4",
+          "caption": "湧泉穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_danzhong_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/danzhong.mp4",
+          "caption": "膻中穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "根據用戶具體需求選取對應穴位段落，提醒合谷穴孕婦禁忌",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "心跳持續不規律或嚴重焦慮症狀建議就醫"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_pain",
+        "tcm_sleep_insomnia",
+        "tcm_urban_lifestyle"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "針灸學（人民衛生出版社）"
+      ]
+    }
+  }
+}

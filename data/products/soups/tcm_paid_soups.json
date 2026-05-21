@@ -1,0 +1,227 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_paid_soups",
+      "card_type": "Product",
+      "domain": "7_food_therapy",
+      "category": "7.5_paid_soups",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-19",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "is_product": true,
+      "product_type": "soup",
+      "evidence_level": "Traditional Practice — Care Plus 心宜中醫 product line",
+      "research_note": "10 ready-made medicinal soups sold by Care Plus 心宜中醫 (Sha Tin / Ma On Shan). Pricing range HK$48–HK$120. Order via WhatsApp 85252417448. These are pre-prepared therapeutic soups, distinct from the DIY recipes in tcm_food_therapy_soups and tcm_food_therapy_soups_top100. NEVER present these as recipes users cook themselves — they are products to order."
+    },
+    "overview": {
+      "title": "心宜中醫養生湯水 — 10 款預製功效湯（HK$48–HK$120）",
+      "objective": "提供心宜中醫預製功效湯產品目錄，由 Jessica 根據用戶體質 + 主訴推薦合適款式。客人 WhatsApp 訂購直送。",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "想訂湯",
+        "可以買湯",
+        "你哋有冇湯",
+        "心宜中醫湯",
+        "Care Plus 湯",
+        "預製湯",
+        "成品湯",
+        "唔識煲",
+        "冇時間煲湯",
+        "湯水訂購",
+        "養生湯訂購",
+        "解毒湯",
+        "彭魚鰓",
+        "潤肺湯",
+        "明目湯",
+        "抗病毒湯",
+        "花膠湯",
+        "川芎天麻",
+        "海星止咳",
+        "感冒止咳",
+        "花旗蔘湯"
+      ],
+      "block_conditions": [
+        "user_is_pregnant AND product_contains_blood_activating_herbs"
+      ]
+    },
+    "core_content": {
+      "core_answer": "心宜中醫提供 10 款預製功效湯，由註冊中醫師配方，唔需要自己煲 — WhatsApp 訂購直送。價格由 HK$48 至 HK$120。每款針對特定體質或症狀，建議先傾完先揀啱嘅款式。\n\n═══════════════════════════════\n【心宜中醫湯水價目表】\n═══════════════════════════════\n\n🍲 彭魚鰓解毒湯 — HK$120\n功效：清熱解毒、痘疹未清、手腳濕疹、暗瘡、手足口病、生蛇調理\n體質配對：濕熱、陰虛火旺\n\n🍲 清心潤肺湯 — HK$48\n功效：捱夜失眠、心火盛、流鼻血、口腔潰瘍、皮膚乾燥、乾咳、口乾口苦\n體質配對：陰虛、心火盛\n\n🍲 清肝明目湯 — HK$68\n功效：眼睛乾澀、流眼水、舒緩眼睛疲勞、滋補肝腎\n體質配對：肝腎陰虛\n\n🍲 抗病毒湯 — HK$88\n功效：增強免疫力、抗病毒、抗疲勞、化痰止咳、健脾胃、促進術後康復\n體質配對：氣虛、平和（病後恢復）\n\n🍲 花膠響螺片湯 — HK$48\n功效：健脾補腎、滋陰養顏、調節荷爾蒙、提高免疫力\n體質配對：陰虛、氣血兩虛\n\n🍲 川芎白芷天麻湯 — HK$48\n功效：頭痛頭暈、驅風活血、行氣止痛、健脾醒腦\n體質配對：血瘀、氣鬱\n\n🍲 海星止咳湯 — HK$58\n功效：止咳潤肺、化痰、袪痰火核、扁桃腺發炎、喉嚨痛、聲沙\n體質配對：陰虛、痰熱\n\n🍲 感冒止咳湯 — HK$58\n功效：傷風感冒、喉嚨痛、止咳化痰、預防流感\n體質配對：急性外感（所有體質）\n\n🍲 止咳潤肺湯 — HK$98\n功效：新咳久咳、感冒未清、氣管敏感、痰結氣喘\n體質配對：陰虛、痰濕\n\n🍲 花旗蔘湯 — HK$48\n功效：口乾口苦、心火盛、喉嚨痛、失眠、腸胃濕熱\n體質配對：陰虛、濕熱\n\n═══════════════════════════════\n【訂購方法】\n═══════════════════════════════\n\nWhatsApp 心宜中醫客服 → 揀款 → 確認 → 直送\n\n孕婦、哺乳期、慢性病患者下單前請先諮詢中醫師。\n\n⚠️ 並非藥物 — 嚴重症狀（持續 >2 週、發高燒、急性出血）必須搵中醫師或西醫面診。",
+      "products": [
+        {
+          "product_id": "soup_pengyu_jiedu",
+          "name": "彭魚鰓解毒湯",
+          "price_hkd": 120,
+          "price_display": "HK$120",
+          "indications": ["痘疹未清", "手腳濕疹", "暗瘡", "手足口病", "生蛇調理", "清熱解毒"],
+          "constitution_match": ["濕熱", "陰虛火旺"],
+          "complaint_keywords": ["痘", "暗瘡", "暗創", "濕疹", "皮膚", "生蛇", "手足口", "解毒", "熱毒", "痘痘"],
+          "contraindications": ["孕婦慎用", "脾胃虛寒者少飲"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E5%BD%AD%E9%AD%9A%E9%B0%93%E8%A7%A3%E6%AF%92%E6%B9%AF%20HK%24120%E3%80%91",
+          "pitch_template": "你呢類{constitution}體質，加埋{complaint}嘅情況，呢款{name}就啱晒 — {key_benefit}。{price_display}，WhatsApp 直送。"
+        },
+        {
+          "product_id": "soup_qingxin_runfei",
+          "name": "清心潤肺湯",
+          "price_hkd": 48,
+          "price_display": "HK$48",
+          "indications": ["捱夜失眠", "心火盛", "流鼻血", "口腔潰瘍", "皮膚乾燥", "乾咳", "口乾口苦"],
+          "constitution_match": ["陰虛", "心火盛"],
+          "complaint_keywords": ["失眠", "捱夜", "心火", "流鼻血", "鼻血", "口腔潰瘍", "痱滋", "皮膚乾", "乾咳", "口乾", "口苦"],
+          "contraindications": ["脾胃虛寒者慎"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E6%B8%85%E5%BF%83%E6%BD%A4%E8%82%BA%E6%B9%AF%20HK%2448%E3%80%91",
+          "pitch_template": "{constitution}體質配{complaint}，呢款{name}入口清潤，幫到你降心火安神。{price_display}，平嘢試一次。"
+        },
+        {
+          "product_id": "soup_qinggan_mingmu",
+          "name": "清肝明目湯",
+          "price_hkd": 68,
+          "price_display": "HK$68",
+          "indications": ["眼睛乾澀", "流眼水", "舒緩眼睛疲勞", "滋補肝腎"],
+          "constitution_match": ["肝腎陰虛", "陰虛"],
+          "complaint_keywords": ["眼乾", "眼澀", "眼疲勞", "流眼水", "視力", "對住屏幕", "睇電腦", "睇手機", "肝腎"],
+          "contraindications": ["脾胃虛寒者慎"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E6%B8%85%E8%82%9D%E6%98%8E%E7%9B%AE%E6%B9%AF%20HK%2468%E3%80%91",
+          "pitch_template": "成日對住電腦/手機嘅人{constitution}體質特別啱呢款{name}，滋肝腎降眼火。{price_display}。"
+        },
+        {
+          "product_id": "soup_kang_bingdu",
+          "name": "抗病毒湯",
+          "price_hkd": 88,
+          "price_display": "HK$88",
+          "indications": ["增強免疫力", "抗病毒", "抗疲勞", "化痰止咳", "健脾胃", "促進術後康復"],
+          "constitution_match": ["氣虛", "平和"],
+          "complaint_keywords": ["免疫力", "易感冒", "病後", "術後", "康復", "疲勞", "易攰", "抵抗力", "抗病毒"],
+          "contraindications": ["急性感冒發燒期忌", "閉門留寇"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E6%8A%97%E7%97%85%E6%AF%92%E6%B9%AF%20HK%2488%E3%80%91",
+          "pitch_template": "{constitution}體質容易抵抗力低，呢款{name}補氣健脾增免疫，病後恢復期最啱。{price_display}。"
+        },
+        {
+          "product_id": "soup_huajiao_xiangluo",
+          "name": "花膠響螺片湯",
+          "price_hkd": 48,
+          "price_display": "HK$48",
+          "indications": ["健脾補腎", "滋陰養顏", "調節荷爾蒙", "提高免疫力"],
+          "constitution_match": ["陰虛", "氣血兩虛"],
+          "complaint_keywords": ["養顏", "皮膚乾", "荷爾蒙", "月經不調", "更年期", "補腎", "美容", "氣血"],
+          "contraindications": ["外感未清者忌", "脾胃虛寒少飲"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E8%8A%B1%E8%86%A0%E9%9F%BF%E8%9E%BA%E7%89%87%E6%B9%AF%20HK%2448%E3%80%91",
+          "pitch_template": "{constitution}體質想滋陰養顏調荷爾蒙，呢款{name}花膠補腎、響螺養陰，最啱女士。{price_display}。"
+        },
+        {
+          "product_id": "soup_chuanxiong_tianma",
+          "name": "川芎白芷天麻湯",
+          "price_hkd": 48,
+          "price_display": "HK$48",
+          "indications": ["頭痛", "頭暈", "驅風活血", "行氣止痛", "健脾醒腦"],
+          "constitution_match": ["血瘀", "氣鬱"],
+          "complaint_keywords": ["頭痛", "頭暈", "偏頭痛", "頭痛欲裂", "腦攰", "醒腦", "頭脹"],
+          "contraindications": ["⚠️ 孕婦忌（活血藥）", "陰虛火旺慎"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E5%B7%9D%E8%8A%8E%E7%99%BD%E8%8A%B7%E5%A4%A9%E9%BA%BB%E6%B9%AF%20HK%2448%E3%80%91",
+          "pitch_template": "{complaint}係{constitution}體質典型症狀，呢款{name}川芎天麻驅風活血止頭痛。{price_display}。注意：孕婦唔可以飲。"
+        },
+        {
+          "product_id": "soup_haixing_zhike",
+          "name": "海星止咳湯",
+          "price_hkd": 58,
+          "price_display": "HK$58",
+          "indications": ["止咳潤肺", "化痰", "袪痰火核", "扁桃腺發炎", "喉嚨痛", "聲沙"],
+          "constitution_match": ["陰虛", "痰熱"],
+          "complaint_keywords": ["咳", "止咳", "化痰", "扁桃腺", "喉嚨痛", "聲沙", "喉嚨", "痰火"],
+          "contraindications": ["寒咳（白色稀痰）忌", "孕婦慎"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E6%B5%B7%E6%98%9F%E6%AD%A2%E5%92%B3%E6%B9%AF%20HK%2458%E3%80%91",
+          "pitch_template": "聲沙、痰火、喉嚨痛{constitution}類型，呢款{name}潤肺化痰，唱K講嘢多嘅人都啱。{price_display}。"
+        },
+        {
+          "product_id": "soup_ganmao_zhike",
+          "name": "感冒止咳湯",
+          "price_hkd": 58,
+          "price_display": "HK$58",
+          "indications": ["傷風感冒", "喉嚨痛", "止咳化痰", "預防流感"],
+          "constitution_match": ["any"],
+          "complaint_keywords": ["感冒", "傷風", "流感", "鼻塞", "流鼻水", "咳嗽", "預防感冒"],
+          "contraindications": ["孕婦先諮詢中醫"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E6%84%9F%E5%86%92%E6%AD%A2%E5%92%B3%E6%B9%AF%20HK%2458%E3%80%91",
+          "pitch_template": "急性感冒/流感初期，呢款{name}最啱即飲，傷風喉嚨痛止咳化痰一次過搞掂。{price_display}。"
+        },
+        {
+          "product_id": "soup_zhike_runfei",
+          "name": "止咳潤肺湯",
+          "price_hkd": 98,
+          "price_display": "HK$98",
+          "indications": ["新咳久咳", "感冒未清", "氣管敏感", "痰結氣喘"],
+          "constitution_match": ["陰虛", "痰濕"],
+          "complaint_keywords": ["久咳", "氣管敏感", "氣喘", "痰", "咳唔好", "感冒未清", "鼻敏感"],
+          "contraindications": ["脾虛大便溏稀者忌"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E6%AD%A2%E5%92%B3%E6%BD%A4%E8%82%BA%E6%B9%AF%20HK%2498%E3%80%91",
+          "pitch_template": "久咳唔斷尾、氣管敏感呢類{constitution}情況，呢款{name}強力潤肺平喘，連飲幾日就見效。{price_display}。"
+        },
+        {
+          "product_id": "soup_huaqi_shen",
+          "name": "花旗蔘湯",
+          "price_hkd": 48,
+          "price_display": "HK$48",
+          "indications": ["口乾口苦", "心火盛", "喉嚨痛", "失眠", "腸胃濕熱"],
+          "constitution_match": ["陰虛", "濕熱"],
+          "complaint_keywords": ["口乾", "口苦", "心火", "失眠", "捱夜", "腸胃濕熱", "花旗蔘", "西洋蔘"],
+          "contraindications": ["脾胃虛寒者忌", "感冒期忌"],
+          "image_url": "PLACEHOLDER_TO_BE_REPLACED",
+          "purchase_method": "whatsapp",
+          "purchase_url": "https://wa.me/85252417448?text=%E6%83%B3%E8%A8%82%E3%80%90%E8%8A%B1%E6%97%97%E8%94%98%E6%B9%AF%20HK%2448%E3%80%91",
+          "pitch_template": "{constitution}體質口乾失眠捱夜，呢款{name}花旗蔘清補唔上火，最啱日夜顛倒嘅你。{price_display}。"
+        }
+      ],
+      "supporting_points": [
+        "心宜中醫 10 款預製湯產品 — 由註冊中醫師配方，pre-cooked 直送，唔需要自己煲",
+        "價格 HK$48 至 HK$120，最平 5 款都係 HK$48（清心潤肺、花膠響螺、川芎天麻、花旗蔘、感冒止咳）",
+        "推薦邏輯：根據用戶體質 + 主訴匹配 1 款最啱嘅；如果有皮膚問題可以配搭藥膏",
+        "孕婦特別注意：彭魚鰓解毒湯、川芎白芷天麻湯（活血）、海星止咳湯都唔啱飲",
+        "WhatsApp 訂購：tap 連結 → 預填款式 → 確認直送",
+        "急性嚴重症狀（高燒、出血、持續 >2 週）必須面診中醫師或西醫，唔好淨係靠湯水"
+      ],
+      "evidence_level": "Traditional Practice — Care Plus 心宜中醫 product line",
+      "next_best_question": "睇咗個產品list，邊一款最啱你而家嘅情況？或者我可以根據你體質同主訴幫你揀一款最合適嘅 🌿"
+    },
+    "execution_logic": {
+      "recommended_action": "Pitch this card ONLY after declare_constitution. The agent must call recommend_paid_item(constitution, complaints, product_type='soup') to get matched products — do not let the LLM pick freely. Maximum 1 soup pitched per turn. Always include price + WhatsApp deep link.",
+      "approval_level": "Level B (Review)",
+      "post_action_trigger": "After soup pitched, wait 1-2 caring turns before pitching ointment (if applicable) or proposing clinic booking. Never bundle pitch + booking in same turn.",
+      "escalation_trigger": "If user has acute severe symptoms (high fever, breathing difficulty, persistent bleeding) → DO NOT pitch product. Redirect to 中醫師面診 or 急症室."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_paid_ointments",
+        "tcm_constitution_assessment",
+        "tcm_food_therapy_soups",
+        "tcm_food_therapy_soups_top100",
+        "tcm_pregnancy_safety"
+      ],
+      "sources": [
+        "Care Plus 心宜中醫 product menu (provided by clinic 2026-05-19)",
+        "Pricing verified: HK$48–HK$120 per soup",
+        "Order channel: WhatsApp 85252417448"
+      ]
+    }
+  }
+}

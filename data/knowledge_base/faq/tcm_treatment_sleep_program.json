@@ -1,0 +1,108 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_sleep_program",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.7_sleep_program",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Frontiers 2025 SR/MA + WHO 2003 (insufficient) + HKU Med",
+      "research_note": "Frontiers 2025 SR/MA with TSA (PMC12074954, n=46 RCTs, 3,811 patients) shows benefit on PSQI vs no treatment; effect vs sham smaller. Effectiveness correlates with session count + duration. WHO 2003 lists insomnia as second-tier (further proof needed). HKU Med 5 證型 framework. Care Plus has no dedicated sleep page in sitemap."
+    },
+    "overview": {
+      "title": "睡眠調理療程介紹：5 個失眠證型、針灸+中藥組合、典型 12 次療程（Frontiers SR + HKU Med）",
+      "objective": "完整介紹中醫睡眠調理療程 — HKU Medical School 5 個失眠證型框架（心脾兩虛/肝火擾心/痰熱擾心/心腎不交/心膽氣虛）、Frontiers 2025 SR/MA 認可嘅針灸方案、典型 12 次療程設計、何時應該優先西醫評估",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "失眠",
+        "睡眠調理",
+        "睡眠調理療程",
+        "中醫失眠",
+        "針灸失眠",
+        "中藥失眠",
+        "失眠針灸",
+        "失眠中藥",
+        "失眠療程",
+        "失眠療程幾錢",
+        "失眠療程次數",
+        "失眠幾耐見效",
+        "瞓唔著",
+        "瞓唔好",
+        "易醒",
+        "多夢",
+        "早醒",
+        "難入睡",
+        "睡眠質素差",
+        "心脾兩虛",
+        "肝火擾心",
+        "痰熱擾心",
+        "心腎不交",
+        "心膽氣虛",
+        "四神聰",
+        "神門",
+        "三陰交",
+        "耳穴安眠",
+        "更年期失眠",
+        "壓力失眠",
+        "焦慮失眠",
+        "insomnia TCM",
+        "Care Plus 失眠"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫治失眠採用辨證論治 — 唔係「失眠就針同一條穴」。Frontiers 2025 SR/MA（PMC12074954，46 RCTs，3,811 患者）顯示針灸對 PSQI（睡眠質量指數）有改善，效果同治療次數同時長正相關。WHO 2003 將失眠列為第二級認可（療效已顯示，需進一步證明）。\n\n【香港大學醫學院《失眠治療》5 個證型框架】\n\n📍 1. 心脾兩虛 — 易疲勞 + 瞓唔好\n• 症狀：入睡困難、易醒、夢多、心悸、健忘、面色淡、食慾不振\n• 治法：補益心脾、養血安神\n• 中藥代表方：歸脾湯\n• 食療對應：蓮子百合瘦肉湯（洪慧雯中醫師）\n\n📍 2. 肝火擾心 — 壓力大 + 暴躁失眠\n• 症狀：難入睡、多夢、煩躁易怒、口苦、面紅、目赤、頭痛\n• 治法：清肝瀉火、安神\n• 中藥代表方：龍膽瀉肝湯\n• 食療對應：菊花茶 + 玫瑰花茶（疏肝）\n\n📍 3. 痰熱擾心 — 體胖 + 痰多 + 多夢\n• 症狀：睡不安、夢多、頭重、口黏、痰多、舌苔黃膩\n• 治法：化痰清熱、安神\n• 中藥代表方：黃連溫膽湯\n\n📍 4. 心腎不交 — 更年期/中老年常見\n• 症狀：心煩、口乾、失眠、夜汗、潮熱、腰膝酸軟\n• 治法：滋陰降火、交通心腎\n• 中藥代表方：天王補心丹、六味地黃丸\n• 食療對應：玉竹沙參圓肉湯（潘健燊中醫師）\n\n📍 5. 心膽氣虛 — 易驚 + 多夢\n• 症狀：易醒、易驚醒、夢多、心悸、容易害怕、面色淡\n• 治法：益氣鎮驚、安神定志\n• 中藥代表方：安神定志丸\n• 食療對應：酸棗仁百合茯神湯（洪慧雯中醫師）\n\n【常用針灸穴位（HKU Medical School verbatim）】\n• 「四神聰配湧泉」— 安神鎮靜\n• 「神門配三陰交」— 養血安神\n• 「耳穴貼安眠區」— 持續刺激\n\n【HKU 分階段治療策略】\n• 突發性失眠：「重鎮安神」— 急用礦物類藥（牡蠣、磁石）+ 針灸\n• 慢性失眠：「調養氣血」+ 長期規劃 — 配合周期療程\n\n【典型療程設計】\n• Frontiers 2025 SR 共識：至少 12 次（最少門檻）\n• 常見方案：3×/週 × 3 週（=9 次）— 多數研究顯示不足\n• 推薦方案：2×/週 × 6–8 週（=12–16 次）— 證據支持\n• 重症方案：12–42 次跨 4–24 週（依據 PMC3156618 評論）\n• 中藥配合：每日服用 4–8 週\n• 同步生活調整：必要嘅輔助手段\n\n【適合中醫睡眠調理 vs 應該優先西醫】\n✅ 中醫適合：\n• 慢性原發性失眠（>3 個月）\n• 壓力相關失眠\n• 更年期失眠\n• 西醫已排除嚴重病因（甲狀腺、抑鬱症急性期、阻塞性睡眠呼吸暫停）\n• 想減少安眠藥依賴\n⚠️ 必須先西醫評估：\n• 嚴重抑鬱症 + 自殺意念 — 必須精神科\n• 阻塞性睡眠呼吸暫停（OSA）症狀（鼻鼾、白天嗜睡、見證屏氣）— 需要 polysomnography\n• 突然嚴重失眠 + 體重明顯改變 + 心悸 — 排除甲亢\n• 創傷後失眠 — 需要心理治療\n\n【副作用】\n• 標準針灸副作用（暫時瘀斑、輕微疲倦）\n• 中藥：個別過敏、消化不適\n• 罕見：治療後反常激動感（個別人出現）\n• 第 1–2 週可能因身體調整暫時加重 — 屬正常反應，多數第 3 週改善\n\n【生活調整（必要配合）】\n• 固定作息（同一時間瞓覺起身）\n• 睡前 1 小時無電子屏幕（藍光抑制褪黑激素）\n• 中午後唔飲咖啡、奶茶、能量飲品\n• 治療當晚避免酒精（影響針效）\n• 保持睡眠日記 — 評估治療效果\n• 房間黑暗、安靜、涼快（18–22°C 最理想）\n\n【後注意】\n• 治療後當日早瞓\n• 飲足夠溫水排「氣」\n• 唔好過度興奮活動\n• 失眠唔係一朝一夕治得好 — 至少 4 週耐性評估\n\n【點揀中醫師】\n✅ 必查：CMC 註冊中醫師\n✅ 內科 / 神經科 / 心理相關背景優先\n✅ 良好醫師：先排除器質性病因（甲狀腺、抑鬱、OSA）、唔強推睡前服中藥、有西醫合作網絡\n❌ 警號：保證「3 次根治」、唔詳細問診、強推預付套餐、忽視生活調整建議\n\n【HK 監管】\n睡眠調理療程屬中醫內科範疇，必須 CMC 註冊中醫師執行。\n\n【關於 Care Plus 心宜中醫】\nCare Plus（沙田馬鞍山）未見專屬「睡眠調理療程」網頁，但失眠常透過中醫內科綜合療程處理。具體療程設計、價錢請直接聯絡 Care Plus 了解。\n\n失眠唔係「食一兩劑藥就好」 — 至少 12 次療程 + 4–8 週耐性，先見真實改善。生活調整係 50% 嘅工作 🌿",
+      "supporting_points": [
+        "Frontiers 2025 SR/MA（n=46 RCTs，3,811 患者）支持針灸對 PSQI 有改善 — 效果同治療次數正相關",
+        "HKU Medical School 5 證型框架：心脾兩虛 / 肝火擾心 / 痰熱擾心 / 心腎不交 / 心膽氣虛 — 唔同證型治法不同",
+        "HKU 常用穴位 verbatim：四神聰配湧泉；神門配三陰交；耳穴貼安眠區",
+        "至少 12 次療程係 Frontiers SR 共識門檻 — 9 次方案（3×/週×3 週）多數研究顯示不足",
+        "急性失眠用「重鎮安神」+ 針灸；慢性失眠配「調養氣血」長期規劃（HKU）",
+        "突發嚴重失眠 + 體重變化 + 心悸 = 排除甲亢；伴自殺意念 = 必須精神科；鼻鼾 + 白天嗜睡 = 排除 OSA",
+        "生活調整佔 50% 工作 — 固定作息、睡前無屏幕、午後忌咖啡、保持睡眠日記",
+        "治療第 1–2 週可能暫時加重（正常調整反應）— 第 3 週改善"
+      ],
+      "evidence_level": "Frontiers 2025 SR/MA + WHO 2003 + HKU Medical School + HK Clinical Practice",
+      "next_best_question": "你嘅失眠係邊類？難入睡 / 易醒 / 早醒 / 多夢？日間易疲勞 / 心煩 / 潮熱？我可以根據 HKU 5 證型框架，同你講解最啱嘅治法同預期療程 🌿",
+      "media": [
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "Educate using HKU 5-pattern framework + Frontiers 2025 evidence. Always cover: (1) which 證型 suits user's symptoms, (2) Frontiers-cited minimum 12 sessions, (3) ALWAYS rule out OSA/depression/thyroid first if red flags, (4) lifestyle adjustment is 50% of the work, (5) Care Plus general direction.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user mentions specific symptoms → fetch tcm_sleep_insomnia + relevant constitution / soup card.",
+      "escalation_trigger": "MANDATORY: if user reports suicidal ideation → STOP, redirect to mental-health emergency hotline IMMEDIATELY. If snoring + daytime sleepiness → recommend OSA workup FIRST. If sudden weight change + palpitations → recommend thyroid workup."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_sleep_insomnia",
+        "tcm_food_therapy_soups",
+        "tcm_constitution_assessment",
+        "tcm_red_flags"
+      ],
+      "sources": [
+        "Frontiers in Neurology 2025 — Acupuncture for chronic insomnia SR/MA + TSA (PMC12074954): https://www.frontiersin.org/journals/neurology/articles/10.3389/fneur.2025.1541276/full",
+        "PMC3156618 — Acupuncture for insomnia review (older): https://pmc.ncbi.nlm.nih.gov/articles/PMC3156618/",
+        "WHO 2003 Acupuncture: Review and Analysis (insomnia listed as second-tier): https://chiro.org/acupuncture/FULL/Acupuncture_WHO_2003.pdf",
+        "港大醫學院《中醫藥如何治療失眠》(2022): https://www.med.hku.hk/zh-hk/media/knowledge-exchange/newspaper-columns/2022/feb/chinese-medicine-treatment-for-insomnia",
+        "洪慧雯（Jackie）中醫師（德善堂）— Cosmopolitan HK《Sleep Better Soup》: https://www.cosmopolitan.com.hk/cosmobody/sleep-better-soup",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫（沙田馬鞍山）: https://careplustcm.com/"
+      ]
+    }
+  }
+}

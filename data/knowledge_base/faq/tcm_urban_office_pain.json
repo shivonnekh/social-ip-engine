@@ -1,0 +1,116 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_urban_office_pain",
+      "domain": "9_urban_health",
+      "category": "9.2_office_pain",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "都市上班族健康：肩頸腰背、眼疲勞、久坐傷害",
+      "objective": "針對辦公室工作者的常見健康問題（肩頸腰背痛、眼疲勞、久坐、姿勢）提供中醫分析和實用自我保健方法",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "上班族健康",
+        "辦公室健康",
+        "打電腦肩頸",
+        "辦公室肩頸痛",
+        "久坐問題",
+        "久坐腰痛",
+        "坐太耐",
+        "腰背痛中醫",
+        "腰痛中醫",
+        "電腦眼疲勞",
+        "看螢幕眼乾",
+        "螢幕族護眼",
+        "上班族疲勞",
+        "工作壓力大",
+        "打工仔養生",
+        "辦公室養生",
+        "坐姿影響健康",
+        "坐姿中醫",
+        "工作到好攰",
+        "下班後點恢復",
+        "氣血郁結",
+        "上班族氣滯",
+        "肌肉繃緊",
+        "拉筋中醫",
+        "伸展中醫",
+        "坐到腰痛",
+        "坐到頸痛",
+        "對眼好攰",
+        "OT好攰",
+        "返工好攰",
+        "WFH腰痛",
+        "背脊痛",
+        "條腰好痛",
+        "neck pain",
+        "back pain",
+        "eye strain",
+        "office health"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫認為「久坐傷肉、久視傷血」——辦公室工作是現代氣血鬱結的主要原因。\n\n【久坐的主要中醫損傷】\n• 氣血流通受阻：長時間靜坐，下肢氣血不暢\n• 脾胃功能減弱：「脾主肌肉」，久坐傷脾，消化變差\n• 腎精損耗：長期腰背無支撐，腎氣受損\n• 肝血消耗：「久視傷血」，盯螢幕傷肝血→眼乾眼酸\n\n【辦公室肩頸痛 — 四穴按摩】\n（詳細穴位位置見 tcm_acupressure_pain 卡）\n肩外俞 ＋ 中府 ＋ 風池 ＋ 百勞\n按摩時機：工作1-2小時後做5分鐘，比止痛貼藥更治本\n\n【5分鐘辦公室護肩頸操】\n洪醫師推介嘅即時舒緩：\n1. 頭部前後左右緩慢旋轉：放鬆頸椎（唔要大圈快速旋轉）\n2. 聳肩→放鬆 × 10次：釋放肩膀氣血\n3. 雙手交扣向上拉伸：打開胸腔、拉伸脊柱\n4. 坐姿扭腰（左右各10次）：疏通腰部氣血\n\n【護眼：跪坐胃經法】\n（見 tcm_acupressure_pain 詳細說明）\n對著螢幕2小時後，跪坐（日本坐姿）2-3分鐘，刺激足陽明胃經，恢復眼部氣血\n⚠️ 膝關節問題者改用眼部穴位按摩（四白穴、睛明穴）\n\n【腰痛：分類處理】\n• 急性腰扭傷：先冰敷（24小時內），後熱敷；配合委中穴（膝後窩）按壓\n• 慢性腰酸（腎虛型）：腰膝酸軟、夜尿多→補腎食療（黑豆、核桃）\n• 腰肌勞損：配合拉伸同理療，必要時求醫\n⚠️ 腰痛伴隨下肢麻痺、無力，可能係椎間盤問題，請西醫評估\n\n【下班後恢復三寶】\n1. 熱水泡腳10分鐘：引氣下行，全身放鬆\n2. 湧泉穴按摩：消除下肢疲勞\n3. 早睡：「子時膽經當令」，錯過就難完全恢復",
+      "supporting_points": [
+        "辦公室肩頸痛如持續超過1個月建議職業治療師或中醫師評估",
+        "腰痛伴麻痺無力是警號，需西醫影像檢查排除椎間盤問題",
+        "長時間靜坐最佳對策是每小時起身5分鐘，超過一切補救手段",
+        "眼睛問題如持續乾澀、視力下降，請眼科就診",
+        "中醫強調「預防」：每日小動作比發病後治療更有效"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你主要係肩頸痛、腰背痛，還是眼睛疲勞問題？",
+      "media": [
+        {
+          "id": "video_sibai_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sibai.mp4",
+          "caption": "四白穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_yongquan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yongquan.mp4",
+          "caption": "湧泉穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_jianwaishu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/jianwaishu.mp4",
+          "caption": "肩外俞穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "根據用戶的具體問題（肩/腰/眼）提供對應的穴位和保健方法",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "腰痛伴下肢麻痺無力，或肩頸痛伴頭痛、嘔吐，請就醫"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_pain",
+        "tcm_fatigue_qi_deficiency",
+        "tcm_urban_lifestyle"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "黃帝內經 — 五勞所傷",
+        "針灸學（人民衛生出版社）"
+      ]
+    }
+  }
+}

@@ -1,0 +1,468 @@
+# TCM Sales Flow Configuration — CarePlus 心宜中醫
+#
+# All patient-facing scripts MUST be HK Cantonese 口語 (per CLAUDE.md §1).
+# Never hardcode Chinese text in Python — it belongs here (CLAUDE.md §3.3).
+#
+# Real clinic data scraped from https://careplustcm.com/location
+# Doctor: 洪煊宜 Jessica — 註冊中醫師｜皮膚科｜痛症｜婦科｜針灸
+#
+# Flow: Greeting → Doctor intro + photo → Tongue request → Tongue analysis
+#       → Q1 (fatigue) → Q2 (thermal) → Constitution result
+#       → Product pitch → Close A (district) → Close B (clinic info)
+#       → Close C (booking date) → Close D (confirmed)
+
+sales_flow:
+  default_entry: true            # Auto-enter TCM sales flow on every first message
+  # Widened 2026-04-23 — refusal/quit words must exit gracefully, not be
+  # blindly stuffed into the current step's field (observed bug: user said
+  # "不要" at close_a_district and the bot replied "咁啱啊，不要好近我哋診所").
+  # Follow-up (Step 2): replace the whole state machine with an LLM agent
+  # + tools so intent classification is end-to-end, not a keyword list.
+  escape_keywords:
+    - 問症
+    - 跳過
+    - QNA
+    - 不要
+    - 唔要
+    - 唔好
+    - 唔使
+    - 算啦
+    - 算咗
+    - 取消
+    - 停
+    - 離開
+    - 退出
+    - 走
+    - "no"
+    - "no thanks"
+    - "stop"
+    - "cancel"
+    - "quit"
+    - "exit"
+  language: cantonese
+
+  doctor:
+    name_zh: 洪醫師               # Casual 口語 — full name 洪煊宜 Jessica
+    name_full_zh: 洪煊宜 Jessica
+    photo_url: /static/sales/hong_doctor.jpg
+
+  clinic_brand:
+    name_zh: 心宜中醫
+    name_en: Care Plus TCM
+    booking_url: https://careplustcm.com/booking
+    instagram: https://www.instagram.com/careplustcm
+
+# ── Step sequence ──────────────────────────────────────────────────────
+# Each step has: id, action, next (or null=end), and optional script(_template).
+# flow_engine.advance() consumes these and returns the next patient-facing reply.
+
+steps:
+  - id: step_1_greeting
+    action: send_text
+    image_ref: doctor_photo        # Bundled with text → one WhatsApp bubble
+    script_template: |
+      你好 🌿 我係 {doctor_name_full_zh}，{clinic_brand_zh}嘅註冊中醫師 👩‍⚕️
+      請問你邊度唔舒服？
+    await: text_answer             # Wait for user to describe symptom
+    retry_script: 同我講講你邊度唔舒服就得，例如「頭痛」、「成日攰」之類 🙏
+    next: step_3_ask_tongue
+
+  - id: step_3_ask_tongue
+    action: send_text
+    script: |
+      收到，多謝你分享 🙏
+      中醫講究「望聞問切」，可唔可以影張條脷嘅相俾我睇睇？ 👅
+    await: image_attachment
+    retry_script: 我仲未收到相片喎，方便再影一次？ 🙏
+    next: step_4_tongue_analysis
+
+  - id: step_4_tongue_analysis
+    action: analyze_tongue
+    script_template: |
+      睇到你條脷 {tongue_summary} ，
+      可能有少少「{suspected_signals}」嘅傾向。
+    next: step_5_question_1
+
+  - id: step_5_question_1
+    action: send_text
+    script: |
+      我想問你 5 條問題，幫你分析下體質 🌿（一條一條問，逐條答就得）
+
+      第一題：平時你係咪容易覺得攰、冇力？
+      A. 係，好容易攰
+      B. 中等，有時會
+      C. 唔會，成日好精神
+    await: text_answer
+    next: step_6_question_2
+
+  - id: step_6_question_2
+    action: send_text
+    script: |
+      第二題：你平時係手腳凍、定容易口乾熱氣？
+
+      A. 手腳凍、怕冷
+      B. 唔凍唔熱，中間
+      C. 容易口乾、熱氣
+    await: text_answer
+    next: step_7_constitution_result
+
+  - id: step_7_constitution_result
+    action: declare_constitution
+    script_template: |
+      根據你條脷同答案，你嘅體質傾向係：
+
+      ✨ {constitution_zh}（{constitution_en}）
+
+      特徵：{characteristics}
+
+      ⚠️ 呢個只係初步傾向，唔係正式診斷。
+      正式診斷需要中醫師面診 🙏
+    next: step_8_product
+
+  - id: step_8_product
+    action: send_text
+    image_ref: product_photo        # Bundled so the patient sees one branded bubble
+    script_template: |
+      我哋推薦一款 {product_name}，
+      唔論咩體質都可以試下，幫身體補返啲根基 ✨
+
+      {product_url}
+
+      想了解多啲，或者想見醫師面診，繼續同我講 ❤️
+    next: close_a_district
+
+  - id: close_a_district
+    action: send_text
+    script: |
+      你住邊區呀？我幫你搵最方便嘅安排 📍
+    await: text_answer
+    next: close_b_clinic
+
+  - id: close_b_clinic
+    action: match_clinic
+    script_template: |
+      {travel_hint}
+
+      🏥 {clinic_name}（{clinic_brand_en}）
+      📍 {clinic_address}
+      ☎️ {clinic_phone}
+      🕒 {clinic_hours}
+    next: close_c_booking_date
+
+  - id: close_c_booking_date
+    action: propose_booking
+    script_template: |
+      我可以幫你排 {proposed_date}（星期{weekday}）{proposed_time} 睇{doctor_name_zh}，得唔得？
+
+      回覆「確認」即刻訂位，
+      或者話我知你想改第幾點鐘。
+    await: confirmation_or_alternative
+    next: close_d_confirmed
+
+  - id: close_d_confirmed
+    action: save_booking
+    script_template: |
+      搞掂！已為你預約 ✅
+
+      🏥 {clinic_name}
+      👩‍⚕️ {doctor_name_full_zh}
+      📅 {proposed_date}（星期{weekday}）{proposed_time}
+      📍 {clinic_address}
+      ☎️ {clinic_phone}
+
+      到時見 🌿
+      網上改期/取消：{booking_url}
+    next: null
+
+# ── Product (Maca) ─────────────────────────────────────────────────────
+
+product:
+  name: Dr. Jessica 極致黑G瑪卡
+  url: https://www.drgracie.com.tw/products/dr-gracie%E6%A5%B5%E8%87%B4%E9%BB%91g%E7%91%AA%E5%8D%A1-30%E5%8C%85-%E7%9B%92-%EF%BD%9C%E8%A8%B1%E8%97%8D%E6%96%B9%E5%8D%9A%E5%A3%AB%E8%A6%AA%E8%87%AA%E7%A0%94%E7%99%BC
+  description: 單盒喚醒組，15 日份量，幫身體喚醒動能 ✨
+  photo_url: /static/sales/maca_product.jpg
+
+# ── 9 TCM constitution types ──────────────────────────────────────────
+# Matcher in src/sales/constitution_matcher.py combines:
+#   - tongue_findings (detected by vision)
+#   - q1 answer (A/B/C for fatigue)
+#   - q2 answer (A/B/C for thermal)
+# Dominant type = highest cumulative score across the three signals.
+
+constitution_mapping:
+  # NOTE 2026-04-29: extended from 2 questions (Q1+Q2) to 5 (+Q3 sleep,
+  # Q4 digestion, Q5 emotional/stress) per user feedback #3 — '兩條問題
+  # 嘅準確性亦都唔夠'. Each constitution now has 5 weight maps that
+  # contribute to the final score. Tongue signals also expanded to
+  # 30+ extended tags (see TONGUE_PROMPT in src/tools/sales.py).
+  #
+  # Q3 letters: A = poor sleep / dreams / wakings, B = average, C = deep restful sleep
+  # Q4 letters: A = bloating / loose stool / weak appetite, B = average, C = constipation / dry / heaty
+  # Q5 letters: A = anxious / tense / depressed, B = average, C = calm / steady
+  平和質:
+    en: Balanced
+    characteristics: 精神飽滿、體態適中、面色紅潤、睡眠好
+    # Keep this narrow — '平和' should require strict match of the ideal
+    # signal set (淡紅 + 薄白苔 only). Any other deviation pushes scoring
+    # toward another constitution.
+    tongue_signals: [淡紅, 薄白苔]
+    q1_weight: {C: 2}
+    q2_weight: {B: 2}
+    q3_weight: {C: 2}            # deep restful sleep
+    q4_weight: {B: 2}            # normal digestion
+    q5_weight: {C: 2}            # calm steady mood
+    recommendations:
+      diet: [五穀雜糧, 季節性蔬果, 適量魚肉, 豆類]
+      lifestyle: [早瞓早起, 心境平和, 維持規律作息]
+      exercise: [太極, 八段錦, 慢跑, 散步]
+      avoid: [暴飲暴食, 長期久坐, 熬夜]
+      seek_help_if: [持續身體不適超過 2 週, 出現新症狀]
+  氣虛質:
+    en: Qi Deficiency
+    characteristics: 容易攰、氣短、講嘢聲細
+    tongue_signals: [淡, 淡白, 齒痕, 邊有齒痕, 瘦薄, 瘦]
+    q1_weight: {A: 3, B: 1}      # tired
+    q2_weight: {B: 1}
+    q3_weight: {A: 2, B: 1}      # poor / light sleep, easy waking
+    q4_weight: {A: 2, B: 1}      # bloating / loose stool / weak appetite
+    q5_weight: {B: 1}
+    recommendations:
+      diet: [黨參, 黃芪, 山藥, 紅棗, 雞肉, 牛肉, 糯米]
+      lifestyle: [10pm 前瞓覺, 中午小休, 避免過度操勞]
+      exercise: [慢走, 八段錦, 太極]
+      avoid: [生冷食物, 凍飲, 熬夜, 過度劇烈運動]
+      seek_help_if: [疲倦持續 >2 週唔好轉, 容易暈眩, 心悸氣促]
+  陽虛質:
+    en: Yang Deficiency
+    characteristics: 手腳凍、怕冷、精神差
+    tongue_signals: [淡, 淡白, 胖, 胖大, 濕, 水滑, 滑苔]
+    q1_weight: {A: 2, B: 1}
+    q2_weight: {A: 3}            # cold-sensitive
+    q3_weight: {C: 1, A: 1}      # often heavy sleep, sometimes wakes from cold
+    q4_weight: {A: 2}            # weak digestion / loose
+    q5_weight: {B: 1}
+    recommendations:
+      diet: [羊肉, 韭菜, 桂圓, 生薑, 桂枝紅茶, 核桃]
+      lifestyle: [保暖手腳腰部, 多曬太陽, 早瞓]
+      exercise: [八段錦, 戶外散步, 太極]
+      avoid: [生冷飲品, 凍水果, 雪糕, 西瓜, 蟹]
+      seek_help_if: [手腳冰冷影響睡眠, 怕冷加劇, 經常腹瀉]
+  陰虛質:
+    en: Yin Deficiency
+    characteristics: 口乾、手足心熱、失眠
+    tongue_signals: [紅, 深紅, 絳, 少苔, 剝苔, 鏡面, 無苔, 裂紋, 中央裂, 縱裂, 燥, 燥苔, 紅邊, 邊紅尖紅]
+    q1_weight: {B: 1, C: 1}
+    q2_weight: {C: 3}            # heaty / dry mouth
+    q3_weight: {A: 3}            # classic 陰虛 — insomnia, dreams, wakings
+    q4_weight: {C: 2}            # constipation / dry stool
+    q5_weight: {A: 1, B: 1}
+    recommendations:
+      diet: [雪耳, 百合, 銀耳, 麥冬, 沙參, 鴨肉, 雪梨, 蜂蜜]
+      lifestyle: [早瞓避免熬夜, 室內加濕, 心境平靜]
+      exercise: [太極, 瑜伽, 散步]
+      avoid: [辛辣, 燒烤, 油炸, 咖啡, 酒, 紅肉過多]
+      seek_help_if: [長期失眠超過 1 個月, 口乾舌燥嚴重, 心悸盜汗]
+  痰濕質:
+    en: Phlegm-Damp
+    characteristics: 身重、油脂多、痰多
+    tongue_signals: [胖, 胖大, 膩, 膩苔, 厚膩, 厚白, 厚白苔, 齒痕, 邊有齒痕, 痰]
+    q1_weight: {A: 1, B: 1}
+    q2_weight: {B: 2}
+    q3_weight: {A: 1}            # heavy / sluggish sleep
+    q4_weight: {A: 2}            # bloating / sluggish digestion
+    q5_weight: {B: 1}
+    recommendations:
+      diet: [薏米, 紅豆, 冬瓜, 茯苓, 山藥, 陳皮, 白蘿蔔]
+      lifestyle: [控制體重, 少食多餐, 早瞓, 居住通風]
+      exercise: [慢跑, 游泳, 跳繩, 出汗運動]
+      avoid: [油膩, 甜食, 凍飲, 過量水果, 奶製品]
+      seek_help_if: [體重持續上升, 痰多氣喘, 胸悶心悸]
+  濕熱質:
+    en: Damp-Heat
+    characteristics: 面油、暗瘡、口臭
+    tongue_signals: [紅, 深紅, 黃苔, 薄黃苔, 黃膩苔, 厚膩, 膩苔]
+    q1_weight: {B: 1}
+    q2_weight: {C: 2}            # heaty
+    q3_weight: {A: 1, B: 1}      # restless or normal
+    q4_weight: {C: 2}            # constipation / heaty digestion
+    q5_weight: {A: 2}            # irritable / tense
+    recommendations:
+      diet: [苦瓜, 綠豆, 薏米, 西瓜, 雪梨, 五花茶, 冬瓜]
+      lifestyle: [早瞓, 心境平和, 居住通風乾爽]
+      exercise: [游泳, 慢跑, 瑜伽]
+      avoid: [辛辣, 燒烤, 油炸, 酒, 牛羊肉, 榴蓮]
+      seek_help_if: [暗瘡反覆唔退, 口臭嚴重, 大便不暢]
+  血瘀質:
+    en: Blood Stasis
+    characteristics: 面色暗、易瘀斑、經痛
+    tongue_signals: [紫, 瘀紫, 瘀斑, 瘀點, 瘀]
+    q1_weight: {B: 1}
+    q2_weight: {A: 1, C: 1}
+    q3_weight: {A: 1}            # often disturbed sleep
+    q4_weight: {B: 1}
+    q5_weight: {A: 1, B: 1}
+    recommendations:
+      diet: [山楂, 黑豆, 玫瑰花茶, 三七, 紅花茶, 黑木耳]
+      lifestyle: [多走動, 避免久坐, 保持心情舒暢]
+      exercise: [慢跑, 太極, 八段錦, 拉筋]
+      avoid: [寒涼食物, 久坐不動, 過度疲勞]
+      seek_help_if: [經痛持續加劇, 易瘀斑面積擴大, 胸悶刺痛]
+  氣鬱質:
+    en: Qi Stagnation
+    characteristics: 情緒低、易憂慮、胸悶
+    # 氣鬱 tongue is often grossly normal (淡紅/薄白苔) but with subtle
+    # edge signals — red edges or 尖紅 from chronic emotional tension.
+    tongue_signals: [淡紅, 薄白苔, 紅邊, 邊紅尖紅, 尖]
+    q1_weight: {A: 2}
+    q2_weight: {B: 1}
+    q3_weight: {A: 2}            # difficulty falling asleep, busy mind
+    q4_weight: {A: 1, B: 1}      # sometimes nervous-stomach bloating
+    q5_weight: {A: 3}            # dominant — anxious / depressive
+    recommendations:
+      diet: [玫瑰花茶, 茉莉花茶, 陳皮, 佛手, 柑橘, 合歡花]
+      lifestyle: [多戶外活動, 與人傾訴, 培養興趣]
+      exercise: [慢跑, 太極, 戶外瑜伽, 行山]
+      avoid: [長期獨處, 思慮過度, 暴飲暴食]
+      seek_help_if: [情緒低落超過 2 週, 失眠胸悶持續, 食欲明顯下降]
+  特稟質:
+    en: Special (Allergic)
+    characteristics: 易過敏、哮喘、鼻敏感
+    # 特稟 is purely Q-driven — no reliable tongue signal.
+    tongue_signals: []
+    q1_weight: {}
+    q2_weight: {}
+    q3_weight: {}
+    q4_weight: {}
+    q5_weight: {}
+    recommendations:
+      diet: [黨參, 黃芪, 山藥, 紅棗 (避免已知致敏原)]
+      lifestyle: [環境清潔, 規律作息, 避開致敏原]
+      exercise: [慢走, 八段錦, 戶外緩和運動]
+      avoid: [已知致敏原, 海鮮 (如有過敏), 辛辣, 灰塵環境]
+      seek_help_if: [過敏發作頻密, 呼吸困難, 蕁麻疹反覆]
+
+# ── Clinic list ───────────────────────────────────────────────────────
+# Real data scraped from https://careplustcm.com/location (2026-04-23).
+# ONE clinic only — 心宜中醫 at 馬鞍山 新港城中心.
+# opening_hours values: "HH:MM-HH:MM" for open days, "closed" for closed.
+
+clinic_list:
+  - id: careplus_main
+    name_zh: 心宜中醫（沙田）
+    name_brand_en: Care Plus TCM
+    district: 沙田
+    address: 沙田乙明邨明信樓地下43號地舖
+    phone: 2647 6566
+    email: info@careplustcm.com
+    booking_url: https://careplustcm.com/booking
+    mtr_hint: 沙田圍站A出口，步行約2分鐘
+    # Split-shift hours — primary range used for slot proposals; afternoon
+    # range surfaces in the display so user sees full schedule.
+    opening_hours:
+      mon: "09:30-14:00|15:30-19:30"
+      tue: "09:30-14:00|15:30-19:30"
+      wed: "09:30-14:00|15:30-19:30"
+      thu: "09:30-14:00|15:30-19:30"
+      fri: "09:30-14:00|15:30-19:30"
+      sat: "09:30-14:00|15:30-18:00"
+      sun: "09:30-14:00|15:30-18:00"
+
+  - id: careplus_maanshan
+    name_zh: 心宜中醫（馬鞍山欣安）
+    name_brand_en: Care Plus TCM
+    district: 馬鞍山
+    address: 馬鞍山欣安商場二期一樓113號舖
+    phone: 2633 5668
+    email: info@careplustcm.com
+    booking_url: https://careplustcm.com/booking
+    mtr_hint: 恆安站B出口，步行約3分鐘
+    # Closed Wed + Sun (per careplustcm.com/location)
+    opening_hours:
+      mon: "09:30-14:00|15:30-19:30"
+      tue: "09:30-14:00|15:30-19:30"
+      wed: "closed"
+      thu: "09:30-14:00|15:30-19:30"
+      fri: "09:30-14:00|15:30-19:30"
+      sat: "09:30-14:00|15:30-18:00"
+      sun: "closed"
+
+# ── District adjacency (2-branch routing, 2026-04-24) ─────────────────
+# Format: user_district → [preferred clinic districts, in order]
+# match_clinic tries exact first, then walks this list for first available.
+#
+# Heuristic: 沙田 serves the wider East Rail + 九龍 + 港島 catchment; 馬鞍山
+# serves its own pocket + 烏溪沙 / 西貢 / 將軍澳-ish (Tuen Ma Line east).
+
+district_adjacency:
+  # Exact matches (handled by exact-match tier, but listed for completeness)
+  沙田: []
+  馬鞍山: []
+
+  # 沙田 catchment — East Rail corridor + 九龍 + 港島
+  大圍:   [沙田]
+  火炭:   [沙田]
+  大埔:   [沙田]
+  粉嶺:   [沙田]
+  上水:   [沙田]
+  九龍塘: [沙田]
+  旺角:   [沙田]
+  尖沙咀: [沙田]
+  佐敦:   [沙田]
+  油麻地: [沙田]
+  美孚:   [沙田]
+  荔枝角: [沙田]
+  黃大仙: [沙田]
+  鑽石山: [沙田]
+  中環:   [沙田]
+  銅鑼灣: [沙田]
+  北角:   [沙田]
+  太古:   [沙田]
+  鰂魚涌: [沙田]
+  西灣河: [沙田]
+  筲箕灣: [沙田]
+  灣仔:   [沙田]
+  金鐘:   [沙田]
+  上環:   [沙田]
+  堅尼地城: [沙田]
+  香港仔: [沙田]
+  黃竹坑: [沙田]
+
+  # 馬鞍山 catchment — 烏溪沙 + 港鐵屯馬線東段
+  烏溪沙: [馬鞍山]
+  西貢:   [馬鞍山, 沙田]
+  將軍澳: [馬鞍山, 沙田]
+  坑口:   [馬鞍山, 沙田]
+  寶琳:   [馬鞍山, 沙田]
+
+  # 新界西 — either works; default 沙田 first (more direct Tuen Ma Line)
+  元朗:   [沙田, 馬鞍山]
+  屯門:   [沙田, 馬鞍山]
+  天水圍: [沙田, 馬鞍山]
+  荃灣:   [沙田, 馬鞍山]
+  葵芳:   [沙田, 馬鞍山]
+  青衣:   [沙田, 馬鞍山]
+
+  # 九龍東
+  觀塘:   [沙田, 馬鞍山]
+  牛頭角: [沙田, 馬鞍山]
+  九龍灣: [沙田, 馬鞍山]
+  彩虹:   [沙田, 馬鞍山]
+  藍田:   [沙田, 馬鞍山]
+
+# ── Fallback scripts ──────────────────────────────────────────────────
+
+fallback:
+  unclear_answer: 唔好意思唔太明白，可唔可以用 A / B / C 回答？ 🙏
+  image_not_received: 我仲未收到相片喎，方便再影一次？ 📸
+  clinic_not_found: 我哋嘅診所喺馬鞍山新港城，好近港鐵站 🚇
+  opening_hours_stale: 呢個時間表可能已經過時，請先致電分店確認 ☎️
+  booking_conflict: 呢個時段未得空，揀另一個時間好唔好？
+  escape_to_qna: 好呀，你想問咩都可以 😊
+
+# ── Safety disclaimers (CLAUDE.md §5 — zero tolerance) ───────────────
+
+disclaimers:
+  constitution_is_directional: 以下只係初步傾向，唔係正式診斷 🙏
+  not_medical_advice: 呢啲係健康養生建議，唔係醫療建議
+  see_doctor_if_severe: 如果有嚴重徵狀請即時求醫 ☎️
+  product_not_rx: 呢個係食療補品，唔係藥物，唔代替正規治療

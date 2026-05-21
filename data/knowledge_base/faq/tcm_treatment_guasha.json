@@ -1,0 +1,90 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_guasha",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.4_guasha",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Limited RCT + HK Clinical Sources",
+      "research_note": "Limited RCT evidence — short-term neck pain RCT (Spine-Health summary) + ResearchGate 2019 SR for spine/shoulder MSK pain. HK technique + 痧痕 colour interpretation from 尚和堂 + FWD HK. Care Plus has no dedicated guasha page. Case report PubMed 22863649 documents anterior-neck guasha causing transient aphonia."
+    },
+    "overview": {
+      "title": "刮痧療程介紹：適合症狀、操作方法、痧痕解讀、禁忌（HK 註冊中醫師資料）",
+      "objective": "完整介紹刮痧作為臨床療程 — 適合嘅症狀、操作步驟、痧痕顏色點解讀、絕對 vs 相對禁忌、HK 安全注意事項",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "刮痧",
+        "刮痧療程",
+        "刮痧適合咩症狀",
+        "刮痧功效",
+        "刮痧點做",
+        "刮痧痛唔痛",
+        "刮痧痧痕",
+        "痧痕顏色",
+        "刮痧瘀血",
+        "刮痧禁忌",
+        "孕婦刮痧",
+        "經期刮痧",
+        "刮痧頸",
+        "刮痧肩",
+        "刮痧背",
+        "刮痧感冒",
+        "刮痧發燒",
+        "刮痧中暑",
+        "刮痧後注意",
+        "刮痧可以洗澡",
+        "面部刮痧",
+        "gua sha",
+        "gua sha therapy",
+        "Care Plus 刮痧"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "刮痧用刮板邊緣（牛角、玉、不銹鋼）配合刮痧油，循經絡單向刮拭皮膚，藉「出痧」（痧斑）反映體內氣血狀態。對短期頸痛有 RCT 支持（Spine-Health 評論）；對脊柱、肩部肌骨痛有系統評價支持（ResearchGate 2019 SR）。傳統用於外感初起、中暑、發熱（缺乏強 RCT 支持）。\n\n【操作步驟（尚和堂 + FWD HK）】\n1. 清潔治療部位皮膚\n2. 塗刮痧油（潤滑+減少摩擦）\n3. 刮板與皮膚成 45°–90° 角\n4. 由上至下、由內至外、單向循經絡刮拭（唔來回）\n5. 每處刮 15–25 下，至「出痧」止\n6. 治療總時長 5–15 分鐘\n7. 用毛巾覆蓋治療部位保暖\n\n【痧痕顏色解讀（FWD HK 中醫師資料 verbatim）】\n• 微紅 → 正常或輕症（健康人或輕微邪氣）\n• 紫紅 → 瘀熱（氣機不通、炎症）\n• 紫黑 → 氣血瘀滯重 / 痛症長期 / 病重\n⚠️ 痧痕越深唔等於越「好」 — 反映體質同病情，唔係療效指標\n\n【適應症（多種來源）】\n• 中度證據（RCT/SR）\n  - 短期頸痛緩解\n  - 脊柱、肩部肌骨痛\n• 傳統適應（弱 RCT 支持）\n  - 外感初起：發熱、惡寒、頭痛、肌肉酸痛\n  - 中暑\n  - 疲勞、肌肉緊張\n  - 感冒/流感症狀\n\n【典型療程】\n• 痧斑必須完全消退（一般 5–7 日）先可以再刮同一部位\n• 每位 1×/週標準\n• 系列 3–6 次治療\n\n【禁忌（FWD HK + 尚和堂 + 案例文獻）】\n❌ 絕對禁忌\n• 出血性疾病（血友病）/ 凝血障礙\n• 抗凝藥用緊（華法林）\n• 治療部位皮膚破損、感染、曬傷、皮疹\n• HIV / 免疫力低下（重複用具感染風險）\n• 近期面部美容操作（Botox/Filler <2 週 — 防止移位）\n• 心腦血管病急性期\n• 危急症狀、極度虛弱\n• 過勞、過飢\n• 骨折初期\n❌ 相對禁忌（中醫師判斷）\n• 孕婦：腹部、腰骶部禁刮\n• 月經期：避免活血部位\n• 濕疹、銀屑病、玫瑰痤瘡（Koebner 反應、皮疹擴大）\n• 老人皮膚脆弱\n• ⚠️ 頸前三角區/頸動脈上方：絕對避免（PubMed 22863649 案例：刮頸前致會厭水腫、暫時失聲）\n\n【副作用】\n• 預期：點狀瘀斑/瘀血（痧）— 2–7 日消退\n• 罕見併發症：\n  - 皮膚炎（刮痧油過敏）\n  - 燒傷（配熱性精油時）\n  - 血尿（罕見）\n  - 局部感染\n  - 嚴重案例：抗凝藥患者腦內出血、需要植皮（Healthline / Medical News Today 案例文獻）\n\n【刮痧後注意】\n• 24 小時內避免：陽光直接照射、熱水浴、飲酒\n• 治療部位保持覆蓋保暖\n• 多飲溫水排痧氣\n• 痧斑完全消退前唔好再刮同一部位\n• 預期：痧痕 2–7 日消退\n\n【點揀中醫師】\n✅ 必查：CMC 註冊中醫師（cmchk.org.hk）\n✅ 留意：刮板消毒（建議一次性或專人專用）、刮痧油成分（過敏者注意）\n✅ 良好醫師：先問診、刮前評估皮膚、控制力度、定期檢查痧痕反應\n❌ 警號：刮頸前三角區/頸動脈上方、刮力度極重至皮破、強推大量療程\n\n【關於面部刮痧】\n美容用面部刮痧（用較柔軟工具如玉石/砭石滾輪）唔係傳統治療性刮痧 — 力度極輕、唔出痧、目的係促進局部循環。屬美容護理範疇，唔屬本卡討論治療性刮痧。\n\n【HK 監管】\n刮痧屬於中醫執業範疇，必須由 CMC 註冊中醫師執行（中醫藥條例）。\n\n【HK 參考價（HKBU 中醫藥服務 2025-04-01）】\n• 刮痧單獨療程：HK$100\n（私營診所價錢有差異。Care Plus 心宜中醫位於沙田馬鞍山，未見專屬刮痧網頁，可包括在綜合療程內 — 詳情請聯絡 Care Plus）\n\n刮痧係「快速洩邪」嘅技術 — 但「越深紅越好」係誤解 🌿",
+      "supporting_points": [
+        "刮痧 = 中醫執業範疇，必須由 CMC 註冊中醫師執行",
+        "RCT 支持短期頸痛緩解（Spine-Health）+ 脊柱肩部 MSK 痛系統評價支持（ResearchGate 2019 SR）；傳統用於外感初起、中暑、發熱",
+        "操作要點（尚和堂）：刮板與皮膚 45°–90° 角，由上至下、由內至外、單向循經絡，唔來回",
+        "痧痕顏色解讀（FWD HK）：微紅=正常、紫紅=瘀熱、紫黑=氣血瘀滯重；越深唔等於越好",
+        "⚠️ 頸前三角區/頸動脈上方絕對禁刮（PubMed 22863649 案例：致會厭水腫、暫時失聲）",
+        "孕婦腹部/腰骶部禁刮；經期避活血部位；濕疹/銀屑病/玫瑰痤瘡因 Koebner 反應禁",
+        "痧斑必須完全消退（5–7 日）先可以再刮同一部位",
+        "刮痧後 24 小時避免熱水浴、飲酒、陽光直射；治療部位保持覆蓋保暖"
+      ],
+      "evidence_level": "Limited RCT + Traditional Practice + HK Clinical Sources",
+      "next_best_question": "你係想用刮痧處理咩問題？頸肩痛、感冒初起、定係中暑/疲勞？我可以同你講解預期反應、痧痕消退時間同安全注意 🌿"
+    },
+    "execution_logic": {
+      "recommended_action": "Educate on guasha technique + 痧痕 colour interpretation. CRITICAL: warn about anterior neck (PubMed 22863649 case). Always cover: (1) condition match, (2) 痧 fade time (5–7 days), (3) absolute contraindications (anticoagulation, broken skin, pregnancy abdomen), (4) Koebner-prone skin conditions, (5) HKBU reference price + Care Plus general direction.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If 感冒/外感 → fetch tcm_cold_flu_prevention. If 肩頸 → fetch tcm_urban_office_pain.",
+      "escalation_trigger": "If user is on anticoagulation, has bleeding disorder, has Koebner-prone skin condition, or asks about anterior neck guasha → MUST advise against / refer to registered TCM doctor."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_treatment_cupping",
+        "tcm_cold_flu_prevention",
+        "tcm_urban_office_pain",
+        "tcm_pregnancy_safety"
+      ],
+      "sources": [
+        "PubMed 22863649 — Aphonia after Anterior Neck Guasha case report: https://pubmed.ncbi.nlm.nih.gov/22863649/",
+        "ResearchGate 2019 — Gua Sha for musculoskeletal pain SR (spine/shoulder)",
+        "尚和堂中醫《中醫刮痧療法》(accessed 2026-05-04): https://www.empeacetcm.com/中醫刮痧療法/",
+        "FWD 香港《刮痧療法》: https://www.fwd.com.hk/zh/blog/health/scrapping-therapy/",
+        "HKBU TCM Service & Charges (2025-04-01): https://www.hkbucm.com/?page_id=4327&lang=en",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫（沙田馬鞍山）: https://careplustcm.com/"
+      ]
+    }
+  }
+}

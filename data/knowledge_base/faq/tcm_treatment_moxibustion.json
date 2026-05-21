@@ -1,0 +1,100 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_moxibustion",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.2_moxibustion",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Cochrane (breech) + Traditional Practice + HK clinical sources",
+      "research_note": "Cochrane CD003928.pub4 supports moxibustion for breech presentation. Other indications cite 尚和堂中醫、博愛中醫 + traditional TCM literature. HK fire-safety regulations constrain combustion methods (BMC 2025 qualitative study). Care Plus has /treatment/moxibustion page (sitemap-confirmed, content unread)."
+    },
+    "overview": {
+      "title": "艾灸療程介紹：5 種類型、適合人士、禁忌、HK 火警條例下嘅實際操作",
+      "objective": "完整介紹艾灸作為臨床療程 — 5 種主要類型（直接灸/隔物灸/溫針灸/艾條懸灸/艾灸盒）、Cochrane 認可嘅胎位不正治療、寒症虛症適應症、禁忌、HK 因火警條例多用無煙艾或遠紅外替代",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "艾灸",
+        "艾灸功效",
+        "艾灸係咩",
+        "艾灸點做",
+        "艾灸過程",
+        "艾灸適合咩人",
+        "艾灸禁忌",
+        "孕婦艾灸",
+        "胎位不正艾灸",
+        "三伏灸",
+        "三九灸",
+        "天灸",
+        "隔薑灸",
+        "隔蒜灸",
+        "溫針灸",
+        "直接灸",
+        "雷火灸",
+        "艾條懸灸",
+        "艾灸盒",
+        "無煙艾條",
+        "遠紅外灸",
+        "艾灸週幾次",
+        "艾灸幾錢",
+        "艾灸寒症",
+        "艾灸虛寒",
+        "艾灸去濕",
+        "艾灸暖宮",
+        "艾灸經痛",
+        "艾灸關節痛",
+        "艾灸腰痛",
+        "moxibustion",
+        "Care Plus 艾灸"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "艾灸係燃燒艾葉（艾蒿）製成嘅艾條/艾絨，藉熱力刺激穴位，溫經散寒、行氣通絡。屬於針灸科其中一個技術，註冊中醫師範疇。Cochrane CD003928.pub4（13 個 RCT，n=2,181）支持艾灸對「胎位不正（breech）」嘅治療效果（配合常規護理 vs 單用常規護理或假治療）。\n\n【5 種主要艾灸類型（尚和堂中醫師資料）】\n1️⃣ 直接灸 — 艾炷直接放皮膚\n  • 包括化膿灸/瘢痕灸（傳統）、無瘢痕灸\n  • ⚠️ HK 規範化執業已基本不採用瘢痕灸（燒傷風險）\n2️⃣ 隔物灸 — 艾炷下墊一層中藥隔離\n  • 隔薑灸：薑片 2–3mm，3–7 壯/穴 — 溫陽補虛，胃寒嘔吐\n  • 隔蒜灸：早期癰瘡、傳統淋巴結核\n  • 隔鹽灸：腹中陰寒、瀉痢\n3️⃣ 溫針灸 — 針身上裝艾球，熱力沿針傳入\n  • 適合：痹症（關節痛、寒濕痛）\n4️⃣ 艾條懸灸 — 艾條離皮膚 2–3cm\n  • 雷火灸：較粗艾條，每穴 10–15 分鐘\n  • 一般艾條：每穴 15–20 分鐘\n5️⃣ 艾灸盒 — 艾段放入木盒固定，家用方便\n\n【Cochrane 認可適應症】\n✅ 胎位不正（breech）：1×/日 × 30 分鐘 × ≥10 日，使用無煙艾條（Cochrane 共識方案）\n  • 通常 34 週後開始介入\n\n【傳統 TCM 適應症（博愛中醫）】\n• 溫經散寒：手腳冰冷、虛寒體質、寒性經痛、暖宮（不孕症輔助）\n• 補虛升陽：陽虛、脾胃虛弱、慢性疲勞、自汗\n• 行氣通絡：關節酸痛、風濕痛、痹症\n• 溫胃止痛：胃寒、消化不良、腹痛、寒性泄瀉\n• 寒咳：寒性咳嗽、哮喘\n\n【HK 季節性灸法】\n• 三伏灸：夏至後三個庚日，3 次（間隔 7–10 日）— 「冬病夏治」\n• 三九灸：冬至後三個九日，3 次 — 補陽防寒病\n\n【典型療程】\n• 胎位不正：1×/日 × 30 分鐘 × 10 日（Cochrane 方案）\n• 一般痹症：2–3×/週 × 4–6 週\n• 三伏灸/三九灸：3 次/週期\n\n【單次過程】\n• 望聞問切，選穴定位\n• 點燃艾條/艾炷，置於穴位上方或墊物上\n• 每穴 15–20 分鐘，根據局部皮膚紅度調節\n• 治療總時長 30–60 分鐘\n• 起灸後局部會有溫熱感持續 30–60 分鐘\n\n【禁忌（系統評價 PMC4058265：43 例燒傷案例分析）】\n❌ 絕對禁忌\n• 高熱、急性炎症期\n• 皮膚有破損、潰瘍、皮疹處\n• 惡性腫瘤局部直接施灸\n• 感覺神經缺失人士（嬰幼兒、糖尿病神經病變、中風後感覺障礙）— 燒傷風險高\n❌ 相對禁忌（中醫師判斷）\n• 孕婦：腰骶部、下腹部禁灸；BL67（至陰穴）34 週後可用於胎位不正治療\n• 哮喘/COPD：艾煙觸發 — 必須用無煙艾或遠紅外替代\n• 高血壓未控制\n• 過勞、過飢、過飽、酒醉\n• 月經期間（陳述慎用，部分中醫師會避開）\n• 面部、大血管、黏膜：直接灸禁\n• 關節部位：直接灸禁\n• 神經密集區：直接灸禁\n\n【副作用】\n• 燒傷（最常記錄 AE，43 例文獻）— 兒童、感覺障礙患者風險最高\n• 過敏（艾煙）\n• 煙霧引起嗽嗽、喉嚨刺激\n• 局部色素沉著\n• 罕見：基底細胞癌（長期同一部位）、孕期胎兒不適（個案報告）\n\n【後注意事項】\n• 局部皮膚 30–60 分鐘溫熱屬正常\n• 細水泡可自行吸收；大水泡（>1cm）需消毒引流\n• 治療後 2 小時內避免冷水接觸治療部位\n• 治療後保持房間通風（散煙）\n\n【HK 重要實況：火警條例】\n根據 BMC Complementary Medicine 2025 質性研究（HK 中醫師訪談），HK 大廈火警條例同煙霧探測器嚴重限制傳統燃艾治療：\n• 多數私營中醫診所改用無煙艾條（成分壓縮+碳化處理）\n• 或改用遠紅外灸儀（無煙無火，溫度可控）\n• 直接灸/化膿灸已基本退出 HK 規範化執業（燒傷風險 + 瘢痕後遺）\n\n【HK 監管】\n艾灸屬於「中醫藥執業」範疇，必須由香港中醫藥管理委員會（CMC）註冊中醫師執行（中醫藥條例）。\n\n【關於 Care Plus 心宜中醫】\nCare Plus（沙田馬鞍山）有提供艾灸專科服務頁面（careplustcm.com/treatment/moxibustion）。具體療程設計、次數、價錢請直接聯絡 Care Plus 了解。\n\n艾灸「溫補」效果係其他療法難以替代 — 但燒傷風險真實存在，必須由註冊中醫師執行 🌿",
+      "supporting_points": [
+        "艾灸 = 針灸科其中一個技術，必須由香港中醫藥管理委員會註冊中醫師執行",
+        "Cochrane CD003928.pub4 確認艾灸對胎位不正（breech）有效（13 個 RCT，n=2,181）— 通常 34 週後開始，1×/日 × 10 日方案",
+        "5 種類型：直接灸 / 隔物灸 / 溫針灸 / 艾條懸灸 / 艾灸盒（尚和堂中醫資料）",
+        "燒傷係最常記錄嘅副作用（PMC4058265：43 例案例）— 兒童、糖尿病神經病變、感覺障礙患者風險最高",
+        "孕婦艾灸：腰骶部、下腹部禁灸；BL67（至陰穴）34 週後可用於胎位不正",
+        "HK 大廈火警條例同煙霧探測器限制傳統燃艾 — 多數診所改用無煙艾條或遠紅外灸儀（BMC 2025）",
+        "三伏灸（夏至後）+ 三九灸（冬至後）係 HK 常見季節性療程，每週期 3 次",
+        "直接灸 / 化膿灸 / 瘢痕灸已基本退出 HK 規範化執業（燒傷風險 + 瘢痕後遺）"
+      ],
+      "evidence_level": "Cochrane (breech) + Traditional Practice + HK Clinical Sources",
+      "next_best_question": "你係想了解邊類艾灸？胎位不正、虛寒體質溫補、暖宮經痛、關節痛、定係三伏/三九灸？我可以同你講解該情況嘅典型療程同注意事項 🌿"
+    },
+    "execution_logic": {
+      "recommended_action": "Educate user on moxibustion types + indications. Always mention: (1) Cochrane breech evidence if pregnancy-related, (2) HK fire-code reality (smokeless moxa is the norm), (3) burn-risk contraindications (especially for diabetic neuropathy / sensory loss), (4) Care Plus has moxibustion service page — direct user there for protocol specifics.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If pregnancy/breech → fetch tcm_pregnancy_safety + emphasise BL67 specifically requires registered TCM doctor. If asthma/COPD mentioned → emphasise smokeless options.",
+      "escalation_trigger": "If user has diabetic neuropathy / stroke sensory loss / known sensory deficit → recommend skipping moxibustion or only with extreme practitioner caution."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_acupuncture",
+        "tcm_treatment_cupping",
+        "tcm_pregnancy_safety",
+        "tcm_dampness_removal",
+        "tcm_fatigue_qi_deficiency",
+        "tcm_womens_menstrual",
+        "tcm_constitution_assessment"
+      ],
+      "sources": [
+        "Cochrane CD003928.pub4 — Cephalic version by moxibustion for breech presentation (Coyle 2023): https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD003928.pub4/full",
+        "PMC4058265 — Safety of moxibustion: a systematic review of case reports: https://pmc.ncbi.nlm.nih.gov/articles/PMC4058265/",
+        "BMC Complementary Medicine and Therapies (2025) — HK moxibustion regulatory barriers qualitative study: https://link.springer.com/article/10.1186/s12906-025-05136-x",
+        "尚和堂中醫《中醫艾灸療法》(accessed 2026-05-04): https://www.empeacetcm.com/中醫艾灸療法/",
+        "博愛中醫《艾灸療法》: https://cms.pokoi.org.hk/treatment_06",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "Care Plus TCM 心宜中醫《艾灸》(sitemap-confirmed page, 沙田馬鞍山): https://careplustcm.com/treatment/moxibustion"
+      ]
+    }
+  }
+}

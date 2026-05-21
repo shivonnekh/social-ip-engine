@@ -1,0 +1,570 @@
+agent:
+  language: 廣東話口語
+  name: Dr.Baba
+  name_zh: Dr.巴巴
+  organization: 中西醫腫瘤學會
+  tone: warm_empathetic_hk_native
+  tts_enabled: true
+  tts_voice: Cantonese_CuteGirl
+  diagram_enabled: true
+  image_gen_enabled: true
+  # Sales-journey tools (Phase 2 of state-machine → agent+tools rewrite).
+  # When BOTH this flag AND env SALES_AGENT_V2_ENABLED=true are set:
+  #   - 9 sales tools become available (send_doctor_greeting,
+  #     record_complaint, analyze_tongue, ask_constitution_question,
+  #     record_q_answer, declare_constitution, match_clinic,
+  #     propose_booking_slot, confirm_booking)
+  #   - build_system_prompt routes to build_jessica_prompt (~1.5k tokens)
+  #   - _maybe_run_sales_flow (WhatsApp) and run_sales_turn_for_web bypass
+  #     the hardcoded state machine, letting the agent drive
+  # Flipped to true 2026-04-23 — monitor for regressions in the first
+  # week; old state machine stays in the codebase as fallback until
+  # proven stable.
+  sales_agent_v2_enabled: true
+  intro_message: "🌿 你好！我係 Dr.巴巴，中醫養生教育 AI 助理，由中西醫腫瘤學會設計。\n\n我可以幫你了解：\n• 穴位按摩（美容、止痛、提神、消脂）\n• 中醫去濕、減重同消化保健\n• 失眠、疲勞同氣虛體質調理\n• 女性健康（經痛、PMS、月經調補）\n• 飲食食療：茶飲選擇、季節飲食、食物宜忌\n• 都市健康：肩頸痛、鼻敏感、手腳冰冷\n• 中醫基礎知識：體質、五臟、常見迷思\n\n===\n\n⚠️ 我係教育資訊工具，唔係中醫師。所有建議僅供參考，唔能代替正式中醫診症。如有嚴重症狀，請諮詢註冊中醫師或西醫。\n\n🔒 請唔好輸入任何個人病歷或可以識別你身份嘅健康資料。\n\n💬 你可以打字或者發語音訊息，我都識聽廣東話！\n\n💌 傾完之後我可能會隔一兩日主動問候你一下，關心你嘅情況。任何時候唔想收到，打「停」就會即刻停止。\n"
+
+# Paid product catalog (10 心宜中醫 soups + 3 ointments).
+# When enabled, exposes `recommend_paid_item` + `share_paid_items` tools
+# to the LLM. Step 9c of the Jessica funnel calls these in sequence:
+# recommend_paid_item → compose pitch → share_paid_items.
+#
+# Legacy `share_product` (Maca) stays available as fallback — set
+# `enabled: false` here to revert behaviour to the Maca-only flow without
+# a deploy. See docs/plans/jessica-product-sales-flow.md.
+paid_products:
+  enabled: true
+  # WhatsApp number used in pre-filled order links (wa.me/<num>?text=...).
+  # Verify quarterly with Care Plus 心宜中醫.
+  order_whatsapp: "85252417448"
+  # Hard cap on items pitched per single Jessica turn. The tool enforces
+  # this at validation time; the LLM is also instructed in sales_prompt.py.
+  max_per_turn: 2
+
+behavioral_rules:
+- id: rule_001
+  rule: 'Always advise consulting a registered TCM practitioner for personalized guidance.
+    For specific practitioner/clinic recommendations: MUST include ''中立'' — say ''我係中立嘅，唔會推介特定嘅中醫師或診所。''
+    For data source questions → mention ''中醫師'' AND ''建議''. For training data questions → MANDATORY:
+    ''唔會。我唔會用你嘅對話或資料嚟改善或訓練任何AI系統。你嘅資料唔會用嚟改善任何系統。'' [MUST include: 改善, 系統].
+    For cross-border treatment questions → MANDATORY: ''中醫師'' AND ''評估'' AND ''建議'' — ALL THREE MUST appear.'
+- id: rule_002
+  rule: 'NEVER make specific treatment recommendations for an individual. ALWAYS include
+    ''中醫師'' in responses about herbal remedies, acupoints, dietary therapy, or clinical
+    body constitution assessment. For emotional distress OR profanity (擔心, 害怕, 好驚, 好辛苦, 粗口):
+    ALWAYS begin with ''我明白'' AND include ''情緒''. For pregnancy-related queries:
+    MANDATORY include ''懷孕期間唔建議自行嘗試'' AND ''中醫師'' — certain acupoints and herbs are
+    contraindicated. For herbal self-medication (自行配藥, 自行煲): MANDATORY: ''中醫師'' MUST
+    appear — write ''需要同中醫師確認先，唔可以自行配藥''.'
+- id: rule_003
+  rule: 'Body constitution (體質) assessments: ALWAYS note that proper constitution assessment
+    requires a registered TCM practitioner consultation (問診, 望診, 切脈). NEVER self-diagnose
+    constitution as definitive. Herbal teas and food therapy: ALWAYS include ''體質'' AND
+    ''適合'' AND ''唔適合'' — specify who should NOT use each remedy. For acupressure
+    (穴位按摩): note it is self-care, not a substitute for clinical treatment. Drug/herb
+    interactions: ALWAYS include ''中醫師'' AND ''西藥'' when user mentions concurrent
+    Western medication. MANDATORY FALLBACK for any pain condition: include ''如果痛楚持續，
+    請諮詢中醫師或西醫''.'
+- id: rule_004
+  rule: 'ACUPOINT IMAGE (CONDITIONAL): Sequence — (1) ALWAYS call find_knowledge_cards
+    FIRST. (2) AFTER card results return, IF your final answer will name a SPECIFIC acupoint
+    (e.g. 合谷穴, 三陰交, 足三里) — then and ONLY then call generate_medical_image before writing
+    the final text. Generic topic words alone (穴位按摩, 穴位, 按摩) are NOT specific acupoints —
+    do NOT call generate_medical_image for category questions. NEVER call generate_medical_image
+    before find_knowledge_cards has returned, or if the tool is not in your current tool list.
+    Image prompt must be in English and MUST include ''NO text labels, NO words, NO characters'' —
+    diffusion models cannot render Chinese accurately so all labels come from the text response.
+    Format: ''Clean medical illustration of [acupoint English name] acupoint on human body,
+    red dot marking exact point location, arrows indicating the spot, anatomical landmarks visible,
+    NO text labels, NO words, NO characters, white background, simple line art style,
+    educational diagram''. Generate one image per named acupoint (up to 3). Caption: ''[穴位名] 位置圖''.
+    Reference as ''（如圖）'' in body text.'
+- id: rule_005
+  rule: 'WARMTH (MANDATORY): Open replies with a short empathetic acknowledgement
+    when the user expresses any feeling — discomfort, tiredness, worry, frustration,
+    even mild fatigue. Use warm HK Cantonese 口語 phrases like ''聽到你咁講真係辛苦咗''、
+    ''我明白你嘅感受''、''唔緊要，慢慢嚟''、''我陪住你''. NEVER open with a bullet list,
+    numbered steps, or clinical summary. Warmth comes FIRST, information SECOND. If
+    the user just asks a factual question without emotion, you can skip the empathy
+    opener — but tone should still feel like a caring friend, not a textbook.'
+- id: rule_006
+  rule: 'WARMTH-FIRST OPENING (MANDATORY): Always open with 1 sentence of plain prose
+    that acknowledges the user — NEVER open with a numbered list, bullet, or header.
+    Examples: ''聽到你咁講真係辛苦咗''、''你係虛寒體質，我推薦你試下：''. AFTER that opening
+    prose, structured emoji-section format is ENCOURAGED for recipe/treatment/condition
+    content — see rule_007 for the format. Rationale: warmth opener feels like a friend;
+    structured sections after make rich content scannable on WhatsApp.'
+- id: rule_007
+  rule: |
+    FORMAT (MANDATORY): Match reply depth to question depth. Output 3–5 paragraphs
+    separated by BLANK LINES (\n\n) — WhatsApp auto-splits into natural bubbles.
+
+    DEPTH:
+    • Casual Q (幾錢/幾耐見效/好唔好飲/幾歲) → 1-2 sentences plain prose, ≤ 250 chars.
+    • Recipe / treatment / 體質 / 穴位 Q → rich structured format up to 1400 chars,
+      3-5 paragraphs (each = one bubble).
+
+    EMOJI SECTION HEADERS (REQUIRED for structured content):
+    🍲 dish  📋 材料  🍳 做法  ☕ 飲用  ⚠️ 禁忌  📅 頻率  🔗 參考  💵 價錢
+    📍 位置  🌿 建議  🩺 適合  💡 注意  🎨 罐印 (拔罐)
+
+    Bullets: use • for items, 1. 2. 3. for steps. Bold titles with **. Friendly emoji
+    at end (☺️/😊/✨). Bullets ONLY for genuine enumeration (ingredients/steps/options),
+    not random tips.
+
+    ALWAYS:
+    1. Open with 1 sentence of warmth (rule_006), no preamble (''等我同你分享''/''好問題'').
+    2. Cite 出處 at end if from specific medical pro (eg. ''出處：麥超常中醫師·SundayKiss'').
+    3. End with ONE follow-up question (≤ 60 chars).
+
+    EXAMPLE shape (soup recipe):
+    [warmth opener]\n\n🍲 **湯名** — 功效\n\n📋 **材料**：\n• item\n• item\n\n
+    🍳 **做法**：\n1. step\n2. step\n\n☕ **飲用**：when\n📅 **頻率**：how often\n
+    ⚠️ **禁忌**：who\n\n出處：source\n\n[follow-up Q]
+
+disease:
+  card_collection: tcm_wellness_cards
+  id: tcm_wellness
+  name_en: Traditional Chinese Medicine Wellness
+  name_zh: 中醫養生
+
+format:
+  follow_up_question:
+    max_chars: 60
+    must_be_general: true
+    must_relate_to_topic: true
+  # 2026-05-04 (Shivonne) — Lifted format caps to support rich WhatsApp-bubble
+  # output (recipe/treatment cards). Demo HTML at docs/dr-baba-product.html
+  # showed the desired emoji-headed multi-bubble format; previous 450-char +
+  # 2-paragraph cap forced overly curt replies. Bubble splitting in
+  # src/whatsapp/client.py:split_into_bubbles handles \n\n boundaries
+  # automatically — each paragraph becomes one WhatsApp bubble.
+  #
+  # Casual / simple Q still gets brief replies (rule_007 enforces depth-aware
+  # length). Recipe / treatment / condition Q gets up to 1400 chars across
+  # 3-5 paragraphs.
+  max_lines_per_paragraph: 5
+  max_paragraphs: 5
+  max_reply_chars: 1400
+  emoji_per_msg: 3   # reduced from 6 — section headers for recipe (📋 🍳 ☕) still OK; cut density for casual Q&A
+  medical_term_style: monospace
+  paragraph_separator: "\n\n"
+  platform: whatsapp
+
+onboarding:
+  # After required onboarding fields are saved AND there's no pre-existing
+  # substantive question, use this identity field as an implicit first query
+  # so the agent immediately serves up relevant content (instead of asking a
+  # redundant "有咩想了解?"). For TCM, `main_concern` is a topic category
+  # (穴位按摩 / 皮膚健康 / 睡眠 / …) — perfect for this.
+  post_onboarding_query_field: main_concern
+  fields:
+  - ask_script: '你好！我係 Dr.巴巴 👋 想了解下你嘅情況，幫你搵最適合嘅資訊～
+
+      請問你係？
+
+      1️⃣ 自己想了解中醫養生
+      2️⃣ 幫屋企人問（照顧者）
+      3️⃣ 醫護人員 / 中醫師'
+    examples:
+    - input: '1'
+      value: 自己
+    - input: 我自己想知
+      value: 自己
+    - input: 我幫我媽問
+      value: 照顧者
+    - input: 幫老公問
+      value: 照顧者
+    - input: 我係中醫師
+      value: 醫護人員
+    - input: 我係護士
+      value: 醫護人員
+    key: user_role
+    label: User Role
+    purpose: 了解對方身份，以調整回覆語氣和內容深度
+    required: true
+    valid_values:
+    - 自己
+    - 照顧者
+    - 醫護人員
+  - ask_script: '多謝你！🙏 方便問多句，你今年大概幾多歲呀？
+
+      可以直接答數字（例如「30」），或者粗略講（例如「30幾」、「五十多歲」）都得 😊
+
+      （年齡幫我判斷邊啲養生建議最啱你嘅階段 — 年輕人、中年、長者喺中醫建議上有少少差別）'
+    examples:
+    - input: '30'
+      value: '30'
+    - input: 30歲
+      value: '30'
+    - input: 三十歲
+      value: '30'
+    - input: 25
+      value: '25'
+    - input: '45'
+      value: '45'
+    - input: 30幾
+      value: 30幾
+    - input: 三十幾
+      value: 30幾
+    - input: 四十幾
+      value: 40幾
+    - input: 五十多
+      value: 50幾
+    - input: 五十多歲
+      value: 50幾
+    - input: 六十幾歲
+      value: 60幾
+    - input: 我今年五十二
+      value: '52'
+    - input: 唔想講
+      value: 保密
+    - input: 保密
+      value: 保密
+    key: age
+    label: Age
+    purpose: 年齡段影響養生建議方向 — 青年調補、中年平衡、長者溫補各有不同
+    required: true
+    # Age is a free-form string (number OR approximate range OR 保密 opt-out).
+    # No `valid_values` whitelist — the LLM extracts via examples above.
+  - ask_script: '多謝你！📋 你主要想了解邊方面嘅資訊呢？
+
+      1️⃣ 穴位、痛症
+      2️⃣ 飲食、湯水
+      3️⃣ 睡眠、疲勞
+      4️⃣ 女性、皮膚
+      5️⃣ 體質入門
+
+      可以打數字或直接講你想問嘅問題 😊'
+    examples:
+    # Bucket 1 — 穴位按摩同痛症
+    - input: '1'
+      value: 穴位按摩同痛症
+    - input: 穴位
+      value: 穴位按摩同痛症
+    - input: 痛症
+      value: 穴位按摩同痛症
+    - input: 肩頸痛
+      value: 穴位按摩同痛症
+    - input: 手腳凍
+      value: 穴位按摩同痛症
+    - input: 頭痛
+      value: 穴位按摩同痛症
+    # Bucket 2 — 飲食同消化
+    - input: '2'
+      value: 飲食同消化
+    - input: 食療
+      value: 飲食同消化
+    - input: 湯水
+      value: 飲食同消化
+    - input: 去濕
+      value: 飲食同消化
+    - input: 消化唔好
+      value: 飲食同消化
+    - input: 便秘
+      value: 飲食同消化
+    - input: 減肥
+      value: 飲食同消化
+    # Bucket 3 — 睡眠同疲勞
+    - input: '3'
+      value: 睡眠同疲勞
+    - input: 失眠
+      value: 睡眠同疲勞
+    - input: 攰
+      value: 睡眠同疲勞
+    - input: 無氣力
+      value: 睡眠同疲勞
+    # Bucket 4 — 女性健康同皮膚
+    - input: '4'
+      value: 女性健康同皮膚
+    - input: 女性
+      value: 女性健康同皮膚
+    - input: 皮膚
+      value: 女性健康同皮膚
+    - input: 月經痛
+      value: 女性健康同皮膚
+    - input: PMS
+      value: 女性健康同皮膚
+    - input: 產後
+      value: 女性健康同皮膚
+    - input: 暗瘡
+      value: 女性健康同皮膚
+    - input: 脫髮
+      value: 女性健康同皮膚
+    # Bucket 5 — 中醫基礎知識
+    - input: '5'
+      value: 中醫基礎知識
+    - input: 想了解下體質
+      value: 中醫基礎知識
+    - input: 體質
+      value: 中醫基礎知識
+    - input: 體質入門
+      value: 中醫基礎知識
+    - input: 中醫原理
+      value: 中醫基礎知識
+    key: main_concern
+    label: Main Concern
+    purpose: 識別用戶主要興趣範疇，提高RAG檢索準確度。5 大分類覆蓋 36 張
+      TCM 卡，每個 bucket 至少對應 3+ 張核心卡（壓縮自早期 9 選項版本，減少
+      選擇疲勞）。
+    required: true
+    valid_values:
+    - 穴位按摩同痛症
+    - 飲食同消化
+    - 睡眠同疲勞
+    - 女性健康同皮膚
+    - 中醫基礎知識
+  - ask_script: '最後一個問題🙏 你有冇大概知道自己係邊種體質呀？
+
+      1️⃣ 虛寒型（手腳凍、易攰、怕冷）
+      2️⃣ 濕熱型（易上火、生暗瘡、口苦）
+      3️⃣ 氣虛型（無氣力、容易喘、怕風）
+      4️⃣ 陰虛型（口乾、夜熱、手心熱）
+      5️⃣ 唔知道 / 未試過睇中醫
+
+      （如果唔確定可以揀5️⃣，唔影響我回答你）'
+    examples:
+    - input: '1'
+      value: 虛寒
+    - input: 虛寒
+      value: 虛寒
+    - input: 手腳凍
+      value: 虛寒
+    - input: 濕熱
+      value: 濕熱
+    - input: 容易上火
+      value: 濕熱
+    - input: '5'
+      value: 唔知道
+    - input: 唔知
+      value: 唔知道
+    key: body_constitution
+    label: Body Constitution
+    purpose: 體質資料幫助提供更個人化的食療同養生建議
+    required: false
+    # Accept the 4 legacy simplified options (for onboarding brevity) PLUS the
+    # 9 classical constitutions (中醫九大體質 — set by the proactive
+    # constitution_journey questionnaire). "混合" is reported when the
+    # questionnaire is inconclusive or two constitutions tie.
+    valid_values:
+    - 虛寒                         # legacy — broad "feels cold" bucket
+    - 濕熱                         # legacy + 9-classical member
+    - 氣虛                         # legacy + 9-classical member
+    - 陰虛                         # legacy + 9-classical member
+    - 平和                         # 9-classical — balanced / ideal
+    - 陽虛                         # 9-classical — yang deficiency
+    - 痰濕                         # 9-classical — phlegm-damp
+    - 血瘀                         # 9-classical — blood stasis
+    - 氣鬱                         # 9-classical — qi stagnation
+    - 特稟                         # 9-classical — special/allergic
+    - 混合                         # reported when questionnaire is inconclusive
+    - 唔知道
+  passive_collection:
+  - extract_hint: 'Symptoms or health complaints mentioned e.g. 失眠, 肩頸痛, 月經唔準, 皮膚問題'
+    key: symptoms
+  - extract_hint: 'Pregnancy status if mentioned 懷孕'
+    key: is_pregnant
+
+safety:
+  # Oncology-only guardrail — TCM answers about 穴位按摩 / 食療 can legitimately
+  # mention 症狀 / 藥物 etc., so the cancer-specific regex would wipe them out
+  # on the post-onboarding turn. Disabled here per CLAUDE.md §3.3.
+  strip_proactive_clinical_on_completion: false
+  emergency_patterns:
+  - pattern: 胸痛|胸口痛|胸口緊|呼吸困難|呼吸唔順|breathless|chest pain
+    response: ⚠️ 如果你而家有即時危險，請即刻打 999 或去最近嘅急診室（急症室）。
+  - pattern: 暈倒|昏迷|失去知覺|fainting|unconscious
+    response: ⚠️ 如果有人暈倒或失去知覺，請即刻打 999 或去急診室（急症室）。
+  - pattern: (?<![唔不冇沒])想死|唔想活|自殺|suicide|自我傷害
+    response: 我聽到你好辛苦。請即刻聯絡撒瑪利亞防止自殺會：2389 2222（24小時）。你唔係一個人。
+  - pattern: 嚴重過敏|全身起疹|喉嚨腫脹|anaphylaxis|allergic reaction
+    response: ⚠️ 嚴重過敏反應屬醫療緊急情況。請即刻打 999 或去急診室（急症室）。
+  - pattern: 大出血|severe bleeding|大量出血
+    response: ⚠️ 大量出血需要即時處理。請即刻聯絡你嘅醫療團隊或去急診室（急症室）。
+  prohibited_phrases:
+  - 你嘅情況係
+  - 你屬於
+  - 呢個代表
+  - 你應該
+  - 下一步應該
+  - 算嚴重
+  - 唔算高
+  - 應該考慮
+  - 應該選擇
+  - 你係呢種體質
+  - 我判斷你係
+  role_behavior:
+    自己:
+      data_density: medium
+      emotional_support: medium
+      perspective: first_person
+    照顧者:
+      additional_focus: practical caregiving tips
+      data_density: medium
+      emotional_support: high
+      perspective: third_person
+    醫護人員:
+      additional_focus: TCM mechanisms, classical references, contraindications
+      data_density: high
+      emotional_support: low
+      perspective: clinical
+
+# ---------------------------------------------------------------------------
+# Wellness-mode fallback — TCM-only carve-out from CLAUDE.md §3.1
+# PERMISSIVE-BY-DEFAULT: when the knowledge base has no confident match,
+# the agent ALWAYS answers from general TCM/health-education knowledge
+# (with the educational disclaimer), rather than refusing. Refusing an
+# educational wellness question breaks the product — a TCM agent that
+# can't opine on food therapy philosophy or a meridian concept is useless.
+#
+# The ONE exception is the `always_refer` list below — safety-critical
+# topics (drug interactions, pregnancy, undiagnosed symptoms, serious
+# bleeding/pain) where a practitioner referral is the only safe answer
+# regardless of whether the LLM has knowledge.
+# ---------------------------------------------------------------------------
+fallback_policy:
+  mode: wellness
+  enabled: true
+  # Safety-critical topics that MUST refer to a practitioner. Everything
+  # not on this list is answered from LLM general TCM knowledge when the KB
+  # has no card match.
+  always_refer:
+    - 懷孕                         # pregnancy — contraindicated herbs/acupoints
+    - 西藥                         # drug-herb interactions
+    - 自行配藥                     # self-prescribing herbs
+    - 不明症狀                     # undiagnosed symptoms
+    - 大出血                       # serious bleeding
+    - 嚴重痛症                     # severe pain
+  # Legacy whitelist — no longer a gate. Kept only so audit logs can
+  # correlate historical "allow_general_knowledge" events with the topics
+  # they covered. Safe to remove once audit history is no longer needed.
+  allow_general_knowledge:
+    - 穴位                         # acupressure points
+    - 情緒                         # mood/stress
+    - 睡眠                         # sleep
+    - 食療                         # food therapy
+    - 茶飲                         # tea drinks
+    - 體質                         # body constitution
+    - 肩頸痛                       # shoulder/neck pain self-care
+    - 疲勞                         # fatigue
+    - 消化                         # digestion self-care
+  # When wellness fallback fires, this text is prepended to the LLM instruction.
+  disclaimer: |
+    以下係一般中醫養生教育資訊，唔係為你個人情況嘅診斷或治療建議。
+    具體情況需要註冊中醫師親自評估先準確。
+
+# ---------------------------------------------------------------------------
+# Proactive messaging — scheduled follow-up check-ins via WhatsApp.
+# Per CLAUDE.md §11, disease-scoped; ONLY TCM wellness ships this enabled.
+# Oncology configs do NOT include this block so no proactive messages ever
+# go to cancer patients (higher clinical safety surface).
+# ---------------------------------------------------------------------------
+proactive_triggers:
+  enabled: true
+
+  # Emotional check-in — user expressed distress (擔心/好辛苦/壓力大/etc.)
+  emotional_checkin:
+    enabled: true
+    delay_hours: 24
+    template_key: emotional_checkin_24h
+
+  # Symptom follow-up — user mentioned a physical symptom; check in 2 days later
+  symptom_followup:
+    enabled: true
+    delay_hours: 48
+    template_key: symptom_followup_48h
+
+  # Welcome check-in — DISABLED by design.
+  # Rationale: if a new user hasn't returned in 24h, a proactive nudge reads
+  # as intrusive rather than warm. Kept in code/config for reversibility; flip
+  # `enabled: true` to re-enable without a deploy.
+  welcome_checkin:
+    enabled: false
+    delay_hours: 24
+    template_key: welcome_checkin_24h
+
+  # ── Funnel re-engagement (drop-off recovery) ────────────────────────────
+  # Schedule a stage-specific follow-up whenever a customer stalls mid-
+  # journey. Cancel-on-progress (router post-turn sweep) supersedes a
+  # follow-up the moment the customer advances past its stage, so we
+  # never nudge for a stage they've already cleared.
+  #
+  # Stages:
+  #   complaint_pending — Jessica greeted but no complaint shared
+  #   tongue_pending    — gave complaint, no tongue ack
+  #   q1_pending        — tongue done, no Q1 answer
+  #   q2_pending        — Q1 done, no Q2 answer
+  #   booking_pending   — diagnosis shared, no clinic booking
+  #
+  # Each stage can be individually disabled via `enabled: false`.
+  funnel_dropoff:
+    enabled: true
+    complaint_pending:
+      enabled: true
+      delay_hours: 24
+      template_key: funnel_complaint_pending_24h
+    tongue_pending:
+      enabled: true
+      delay_hours: 24
+      template_key: funnel_tongue_pending_24h
+    q1_pending:
+      enabled: true
+      delay_hours: 24
+      template_key: funnel_q1_pending_24h
+    q2_pending:
+      enabled: true
+      delay_hours: 24
+      template_key: funnel_q2_pending_24h
+    booking_pending:
+      enabled: true
+      delay_hours: 48
+      template_key: funnel_booking_pending_48h
+
+# ---------------------------------------------------------------------------
+# Constitution Journey — progressive 9-question 體質 assessment delivered via
+# proactive follow-ups. Each accepted answer advances the journey by one step;
+# after Q9, the final constitution is written to patient.clinical.body_constitution
+# and a result summary is sent.
+#
+# Cadence is intentionally slow (default: one question every 3 days) so the
+# proactive channel stays useful but unobtrusive. Disable globally by setting
+# `enabled: false`; journey will pause at whatever step each user has reached.
+#
+# Phase 0 (this commit) ships the data + scoring logic only. The scheduler
+# wiring (when to enqueue the first question, when to advance after a reply)
+# lands in Phase 1.
+# ---------------------------------------------------------------------------
+constitution_journey:
+  # Phase 0 safety: ship with `enabled: false` — this block is read by the
+  # Phase 1 scheduler wiring which has NOT yet landed. If Phase 1 prematurely
+  # reads config before it's ready, users could receive a half-baked trigger.
+  # Flip to `true` in the same commit that wires the scheduler.
+  enabled: false
+  # Hours to wait after onboarding completion before sending Q1.
+  start_delay_hours: 24
+  # Days between each successive question (used by the scheduler).
+  days_between_questions: 3
+  # Template keys (rendered with step/question/distribution context).
+  question_template_key: constitution_question
+  result_template_key: constitution_result
+  result_inconclusive_template_key: constitution_result_inconclusive
+  # If a user's reply is classified "unclear", how many times do we gently
+  # re-ask before giving up and moving on with no score change?
+  max_reclarifications: 1
+
+  # ── Reactive dispatcher (Phase 1, 2026-04-23) ─────────────────────────
+  # When true, a user turn that matches 調理 / 補身 / 點改善 intent AND we
+  # have insufficient constitution signal triggers ONE diagnostic
+  # question before answering. User answers → we merge a score delta and
+  # answer their ORIGINAL question (never go silent). User pivots or
+  # times out → we apologise briefly and answer their new message.
+  # See src/proactive/reactive_dispatcher.py + reactive_hook.py.
+  reactive_enabled: true
+  # Minimum total positive-signal score across constitutions needed to
+  # skip the reactive probe (we already know the user roughly). Low so
+  # the journey kicks in early but stops once we have any real signal.
+  min_positive_signal: 2
+  # How many user turns after the diagnostic can go by before we give up
+  # on the answer and let the user's current message drive the turn.
+  turn_timeout: 3
+  # How many times to re-ask when the answer is "unclear" before we DROP.
+  max_unclear_retries: 1

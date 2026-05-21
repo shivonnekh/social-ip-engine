@@ -1,0 +1,106 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_sleep_insomnia",
+      "domain": "5_sleep_energy",
+      "category": "5.1_sleep",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "中醫失眠：原因分析、安神食療與穴位",
+      "objective": "從中醫角度解釋失眠成因（心脾兩虛、陰虛火旺、肝鬱）並提供安神食療和穴位方案",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "失眠中醫",
+        "中醫失眠",
+        "睡唔著",
+        "睡眠差",
+        "入睡難",
+        "入夜困難",
+        "瞓唔著",
+        "訓唔著",
+        "半夜醒",
+        "早醒",
+        "醒得太早",
+        "多夢",
+        "多夢驚醒",
+        "淺眠",
+        "精神不足",
+        "夜裡易醒",
+        "失眠原因中醫",
+        "安神食物",
+        "安神食療",
+        "助眠食物",
+        "失眠茶",
+        "酸棗仁",
+        "洋甘菊茶",
+        "百合",
+        "蓮子",
+        "助眠穴位",
+        "神門穴",
+        "湧泉穴助眠",
+        "失眠體質",
+        "心脾兩虛",
+        "陰虛火旺失眠",
+        "肝鬱失眠",
+        "壓力失眠",
+        "思慮太多睡唔著"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫將失眠視為「神不守舍」——心神不安，難以安眠。成因因人而異，需按體質調理。\n\n【失眠主要中醫類型】\n\n1. 心脾兩虛型（最常見）\n   特徵：難以入睡、多夢、心悸、面色偏白、食慾差\n   成因：思慮過度、勞心勞力耗損心脾之血\n   食療：紅棗蓮子百合糖水、桂圓紅棗茶\n\n2. 陰虛火旺型\n   特徵：半夜或凌晨醒來難以再睡、手腳心熱、口乾\n   成因：腎陰不足，虛火上炎擾心\n   食療：百合蓮子糖水（去蓮心）、桑葚茶、石斛水\n\n3. 肝鬱型（壓力型）\n   特徵：睡前腦袋停唔到、多夢、胸口鬱悶\n   成因：情緒鬱結、肝氣不疏\n   食療：玫瑰花茶、合歡花茶、陳皮蜂蜜水\n\n4. 心腎不交型\n   特徵：心煩無法入睡、腰酸、夜尿多\n   成因：腎水不能上濟心火\n   食療：酸棗仁茶（睡前）、蓮子心泡水（清心火）\n\n【安神助眠食療推介】\n• 酸棗仁茶：最廣泛使用的中藥安神品，磨粉或煮水，睡前1小時飲\n• 洋甘菊茶：西方草本 + 中醫認可，性平，安神舒緩，適合壓力型失眠\n• 百合蓮子糖水：補心安神，甜品形式易接受\n• 桂圓蓮子紅棗水：心脾兩虛型最佳，但濕熱體質少用\n\n【助眠穴位】\n• 神門穴：手腕橫紋，小指一側凹陷處——安神定志，睡前按壓2分鐘\n• 湧泉穴 + 太衝穴：睡前各按2分鐘，引氣下行，令大腦安靜\n\n【睡眠衛生（TCM + 現代結合）】\n• 晚上11時前睡覺：子時（晚11-凌晨1時）係膽經當令，錯過影響膽氣恢復\n• 睡前1小時避免手機：光線抑制褪黑素\n• 睡前熱水泡腳：促進氣血向下，有助安神",
+      "supporting_points": [
+        "長期失眠（超過3個月）建議就醫，排除心理或睡眠障礙問題",
+        "安眠藥有依賴性，中醫調理可作輔助但效果需時",
+        "酸棗仁安全性高，但個別人士可能敏感，如有不適停用",
+        "睡眠問題多與情緒、壓力相關，身心兼治效果更好",
+        "蓮子心性寒，陽虛體質少用"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你係入睡難、容易半夜醒，還是睡前腦袋停不了？",
+      "media": [
+        {
+          "id": "video_taichong_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/taichong.mp4",
+          "caption": "太衝穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_yongquan_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yongquan.mp4",
+          "caption": "湧泉穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "詢問失眠類型（入睡難/早醒/多夢），再對應中醫類型給食療建議",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "長期失眠影響日常功能，或伴隨焦慮抑鬱症狀，建議心理或精神科評估"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_fatigue_qi_deficiency",
+        "tcm_food_therapy_teas",
+        "tcm_acupressure_energy_stress"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "中醫內科學 — 不寐篇（人民衛生出版社）",
+        "神農本草經 — 酸棗仁條目"
+      ]
+    }
+  }
+}

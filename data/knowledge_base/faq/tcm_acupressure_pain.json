@@ -1,0 +1,149 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_acupressure_pain",
+      "domain": "1_acupressure",
+      "category": "1.3_pain",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "止痛穴位：肩頸、經痛、眼疲勞",
+      "objective": "提供針對常見痛症的穴位按摩方法，包括肩頸痛、經痛、眼疲勞，適合都市人日常自我保健",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "肩頸痛穴位",
+        "肩頸穴位",
+        "肩膊痛",
+        "頸痛穴位",
+        "頸梗穴位",
+        "肩外俞穴",
+        "中府穴",
+        "風池穴",
+        "百勞穴",
+        "上班族肩頸",
+        "打電腦肩頸",
+        "經痛穴位",
+        "月經痛穴位",
+        "舒緩經痛",
+        "地機穴",
+        "三陰交",
+        "眼疲勞穴位",
+        "眼乾穴位",
+        "眼痛穴位",
+        "屏幕眼疲勞",
+        "睇電話眼攰",
+        "跪坐護眼",
+        "腰痛穴位",
+        "頭痛穴位",
+        "合谷穴止痛",
+        "按穴位止痛",
+        "止痛穴位",
+        "痛症穴位",
+        "膊頭痛",
+        "膊頭緊",
+        "頸梗",
+        "落枕",
+        "瞓厲頸",
+        "眼攰",
+        "眼乾",
+        "對眼好攰",
+        "M痛穴位",
+        "成日頭痛",
+        "牙痛",
+        "背脊痛",
+        "shoulder pain",
+        "period pain"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "穴位按摩對緩解日常輕度痛症有良好效果，但係輔助工具——持續或嚴重痛楚仍需就醫。\n\n【肩頸痛：四穴組合】\n現代人長期使用電腦，肩頸氣血瘀滯係最常見問題。以下四個穴位一起按效果更好：\n• 肩外俞穴：肩胛骨內上角，肩頸交界位\n• 中府穴：鎖骨外側下方，胸前第一肋間\n• 風池穴：後腦枕骨下方，兩條大筋之間凹陷\n• 百勞穴：大椎穴上方2寸，旁開1寸\n按法：每穴按壓30秒至1分鐘，力度以酸脹為準，工作間隔可做\n\n【經痛：地機穴（或三陰交）】\n位置：\n• 地機穴：小腿內側，膝關節下方4寸\n• 三陰交：足踝內側上方3寸\n功效：活血通經，緩解下腹痙攣性疼痛\n按法：月經來前3天開始，每日按壓兩穴各2分鐘；月經期間可持續\n💡 洪醫師推薦：教男友/伴侶學呢個穴位，比叫人飲暖水更實際有效\n⚠️ 懷孕婦女禁按三陰交——有可能誘發宮縮\n\n【眼疲勞：跪坐護胃經法】\n洪醫師特別推介：睇大量螢幕後，坐在地上雙腿向後跪坐（日本坐法），保持2-3分鐘\nTCM原理：跪坐拉伸足陽明胃經，胃經循行經過眼部，拉伸後眼部氣血得以疏通\n適合：辦公室、睇書後眼乾眼澀\n⚠️ 膝關節有問題人士唔適合\n\n【合谷穴 — 萬能止痛穴】\n位置：手背，拇指與食指之間虎口最高點\n功效：頭痛、牙痛、面部不適均有效；亦可提神、疏肝氣\n按法：用另一手拇指強力按壓，每次2分鐘\n⚠️ 懷孕婦女禁按合谷穴",
+      "supporting_points": [
+        "痛症按摩力度要適中，以「酸脹感」為準，唔係越痛越有效",
+        "持續性或劇烈痛楚請先就醫排除嚴重問題，唔應自行按穴代替求醫",
+        "經痛嚴重者（影響日常生活）建議睇中醫師調理體質，唔係淨靠按穴",
+        "肩頸痛如伴隨麻痺、無力感，可能係頸椎問題，請西醫評估",
+        "懷孕婦女：三陰交、合谷穴屬禁忌穴位，必須避免"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你係肩頸痛、經痛定係眼疲勞想了解多少少？",
+      "media": [
+        {
+          "id": "video_zhongfu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/zhongfu.mp4",
+          "caption": "中府穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_hegu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/hegu.mp4",
+          "caption": "合谷穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_diji_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/diji.mp4",
+          "caption": "地機穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_bailao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/bailao.mp4",
+          "caption": "百勞穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_jianwaishu_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/jianwaishu.mp4",
+          "caption": "肩外俞穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_fengchi_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/fengchi.mp4",
+          "caption": "風池穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "根據用戶具體痛症選取對應段落，重點提醒懷孕禁忌同持續痛楚需就醫",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "如痛楚持續超過1週、伴隨麻痺/無力感，建議及早就醫排除器質性問題"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_beauty",
+        "tcm_womens_menstrual",
+        "tcm_urban_office_pain"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "針灸學（人民衛生出版社）",
+        "黃帝內經 — 經絡穴位理論"
+      ]
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_skin_acne_complexion",
+      "domain": "3_skin_beauty",
+      "category": "3.1_acne_complexion",
+      "card_type": "Wellness",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-03-31",
+      "version": 1,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "Traditional Practice"
+    },
+    "overview": {
+      "title": "中醫皮膚護理：暗瘡、膚色、面部診斷",
+      "objective": "解釋中醫對暗瘡、膚色問題的理解，包括面部診斷（臉部對應臟腑）和體質關係，提供初步自我保健建議",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "暗瘡中醫",
+        "中醫暗瘡",
+        "生暗瘡原因",
+        "面部暗瘡對應",
+        "臉部臟腑對應",
+        "額頭暗瘡",
+        "下巴暗瘡",
+        "面頰暗瘡",
+        "鼻樑暗瘡",
+        "面部地圖",
+        "暗瘡地圖",
+        "中醫改善膚色",
+        "膚色暗沉中醫",
+        "面黃中醫",
+        "皮膚差中醫",
+        "去暗瘡方法",
+        "暗瘡體質",
+        "皮膚體質",
+        "中醫皮膚",
+        "皮膚護理中醫",
+        "中醫美容",
+        "內調皮膚",
+        "皮膚內調",
+        "食療改善皮膚",
+        "生暗瘡",
+        "爆瘡",
+        "生痘痘",
+        "面油多",
+        "塊面好油",
+        "面色差",
+        "面黃黃",
+        "下巴生瘡",
+        "額頭生瘡",
+        "acne",
+        "pimple",
+        "skin care",
+        "皮膚好差"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "中醫認為皮膚係「外在表現內在狀態」——面色、暗瘡位置、膚質都係身體內部失調嘅訊號。\n\n【暗瘡面部地圖（臉部診斷）】\n中醫根據暗瘡位置推斷可能嘅臟腑問題：\n• 額頭：心火旺，壓力大、睡眠不足\n• 鼻樑/鼻頭：脾胃問題，消化不佳\n• 面頰（兩側）：肺熱或大腸問題；亦可能係外部刺激（手機、枕頭）\n• 下巴：腎虛或婦科問題（女性月經前下巴生暗瘡係常見徵兆）\n• 嘴巴周圍：脾胃或大腸功能失調\n⚠️ 呢啲係中醫診斷參考，唔係確診——具體原因需要中醫師問診睇舌脈\n\n【暗瘡體質分析】\n常見兩種：\n1. 濕熱型：暗瘡紅腫、有膿頭、面油多、口乾口苦\n   → 清熱利濕，避免煎炸、辛辣\n2. 血熱型：暗瘡紅、痕癢感、月經前加重\n   → 清熱涼血，多食蔬果、白木耳、薏米\n\n【改善膚色的TCM方法】\n面色偏黃/暗啞成因多為氣血不足、脾胃虛弱：\n• 食療：多食健脾食物（薏米、淮山、南瓜、紅蘿蔔）\n• 穴位：陽白穴（眉上1寸）亮眼提色；顴髎穴改善兩頰膚色\n• 生活：每晚11時前睡覺（子時肝膽代謝旺盛，早睡助養肝血）\n\n【中醫美容三大原則】\n1. 由內調外：皮膚問題多從脾胃、肝、腎入手\n2. 配合穴位：外治法輔助內調\n3. 避免「洗面太過」：過度清潔破壞皮膚油脂平衡，中醫更強調「潤燥」",
+      "supporting_points": [
+        "暗瘡面部地圖係參考，唔係確診，具體體質需由中醫師判斷",
+        "嚴重暗瘡（囊腫型、廣泛紅腫）建議及早就診，唔應單靠食療",
+        "中醫美容重視「內調」，見效較慢但治標治本",
+        "皮膚敏感/玫瑰痤瘡係另一層問題，需與普通暗瘡區分",
+        "睡眠質素係皮膚健康最大影響因素之一，早睡比任何護膚品都有效"
+      ],
+      "evidence_level": "Traditional Practice",
+      "next_best_question": "你暗瘡主要係哪個位置？係月經前會加重嗎？",
+      "media": [
+        {
+          "id": "video_yangbai_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/yangbai.mp4",
+          "caption": "陽白穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        },
+        {
+          "id": "video_quanliao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/quanliao.mp4",
+          "caption": "顴髎穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "先問暗瘡位置和類型，再根據面部地圖提供對應建議，強調需中醫師確診",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": null,
+      "escalation_trigger": "囊腫性暗瘡、滿面廣泛紅腫、或影響心理健康，建議就診皮膚科或中醫師"
+    },
+    "references": {
+      "related_cards": [
+        "tcm_acupressure_beauty",
+        "tcm_food_therapy_seasonal",
+        "tcm_education_concepts"
+      ],
+      "sources": [
+        "洪煊宜中醫師 @babyj_jessica 臨床教學內容（2024-2025）",
+        "中醫診斷學（廣州中醫藥大學）",
+        "黃帝內經 — 五臟外候"
+      ]
+    }
+  }
+}

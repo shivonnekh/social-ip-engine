@@ -1,0 +1,140 @@
+{
+  "knowledge_card": {
+    "metadata": {
+      "card_id": "tcm_treatment_acupuncture",
+      "card_type": "Wellness",
+      "domain": "4_clinical_treatments",
+      "category": "4.1_acupuncture",
+      "visibility": "Customer-safe",
+      "owner": "DrBaba",
+      "last_updated": "2026-05-04",
+      "version": 2,
+      "applies_to": "tcm_wellness",
+      "evidence_level": "WHO 2003 + Cochrane SR + NCCIH",
+      "research_note": "Indications grounded in WHO 2003 Acupuncture: Review and Analysis of Reports on Controlled Clinical Trials + NCCIH endorsements. Session counts cite Cochrane CD007854.pub3 (dysmenorrhea), PMC3156618 (insomnia), PMC6604345 (chronic pain). Adverse-event rates from PMC8422480 prospective SR. HK reference prices from HKBU TCM Service & Charges (2025-04-01)."
+    },
+    "overview": {
+      "title": "針灸療程介紹：適合人士、療程設計、過程體驗、療效預期、禁忌（WHO + Cochrane 認可）",
+      "objective": "完整介紹針灸作為臨床療程嘅運作 — 包括 WHO 2003 認可嘅治療範疇、Cochrane 系統評價支持嘅療程次數、單次過程、感受、療效時間、禁忌人群、選擇中醫師注意事項",
+      "patient_profile": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "針灸",
+        "針灸療程",
+        "針灸介紹",
+        "針灸係咩",
+        "針灸點做",
+        "針灸過程",
+        "針灸感覺",
+        "針灸痛唔痛",
+        "針灸有效嗎",
+        "針灸幾耐見效",
+        "針灸幾錢",
+        "針灸次數",
+        "針灸週幾次",
+        "針灸療程要幾耐",
+        "針灸做幾多次",
+        "我啱唔啱針灸",
+        "邊個人啱針灸",
+        "針灸適合咩人",
+        "針灸禁忌",
+        "邊類人唔可以針灸",
+        "孕婦可唔可以針灸",
+        "經期可唔可以針灸",
+        "暈針",
+        "針灸副作用",
+        "針灸後注意",
+        "針灸後唔可以做咩",
+        "針灸搵邊個",
+        "針灸點揀中醫",
+        "針灸醫師",
+        "針灸頭痛",
+        "針灸失眠",
+        "針灸經痛",
+        "針灸肩頸痛",
+        "針灸腰痛",
+        "針灸面癱",
+        "針灸坐骨神經痛",
+        "針灸消化",
+        "針灸戒煙",
+        "針灸減肥",
+        "針灸有冇科學根據",
+        "WHO 針灸",
+        "電針",
+        "電針療法",
+        "頭皮針",
+        "耳針",
+        "耳穴",
+        "acupuncture",
+        "TCM acupuncture",
+        "針灸點解有效"
+      ],
+      "block_conditions": []
+    },
+    "core_content": {
+      "core_answer": "針灸係中醫嘅核心臨床療法之一。世衛組織（WHO）1979 年正式認可，2003 年發表《針灸對照臨床試驗報告分析》確認對 100+ 種症狀有療效（WHO 2003）。美國國家補充與整合健康中心（NCCIH）亦獨立認可背痛、頸痛、膝關節炎、術後疼痛、偏頭痛預防、緊張性頭痛、化療嘔吐等多項適應症（NCCIH 2026）。\n\n【WHO 2003 認可嘅針灸適應症（部分節錄）】\n• 痛症：頭痛、偏頭痛、頸痛、腰痛、坐骨神經痛、五十肩（肩周炎）、網球肘、膝痛、術後痛、牙痛\n• 婦科：原發性經痛（dysmenorrhea, primary）、引產、孕期嘔吐\n• 消化：胃痛（消化性潰瘍、慢性胃炎）、化療嘔吐\n• 神經：中風、面痛\n• 其他：高血壓、原發性低血壓、過敏性鼻炎、抑鬱症、類風濕關節炎、急性扭傷、白血球減少\n\n【NCCIH 額外認可嘅適應症（2026）】\n• 慢性背頸痛、膝關節炎、術後痛、偏頭痛預防、緊張性頭痛\n• 芳香化酶抑制劑相關關節痛（乳癌患者）\n• 季節性過敏、壓力型尿失禁\n• 化療相關噁心嘔吐、纖維肌痛\n\n【適合針灸嘅人士（5 大類）】\n1️⃣ 痛症 — 肩頸腰背痛、坐骨神經痛、五十肩、頭痛、經痛\n2️⃣ 神經系統 — 面癱（黃金期：發病 2 週內針灸效果最佳）、中風後遺症、失眠、焦慮抑鬱輔助\n3️⃣ 婦科 — 月經失調、原發性經痛、PMS、更年期、不孕症輔助（與 IVF 配合）\n4️⃣ 消化 — 慢性胃炎、IBS、便秘、化療嘔吐\n5️⃣ 其他 — 過敏性鼻炎、戒煙輔助、體重管理（必須配合飲食運動）、美容（美顏針，見另張卡）\n\n【療程設計（依據 Cochrane 同主要 SR）】\n• 急性痛症（急性腰扭傷）：常 1–3 次見效，根據 PMC6604345 慢性痛 RCT 評論，慢性痛通常 6–8 次評估反應，≥10 次穩定\n• 原發性經痛：Cochrane CD007854.pub3 — 9 次跨 3 個月經週期（每週期 3 次）\n• 失眠：PMC3156618 評論 — 至少 12 次；常見方案 3×/週 × 3 週 或 2×/週 × 6–8 週\n• HK 一般臨床指引（Bowtie + JP Health 2024）：「患病初期或中期建議每週 2–3 次；康復後逐漸隔疏，每月 1–2 次保養」\n\n【單次針灸過程】\n1. 望聞問切（首診 30–45 分鐘，覆診 15–20 分鐘）\n2. 確定治療方案 — 選穴、定針法\n3. 落針 — 用一次性無菌針（直徑 0.18–0.30mm，比抽血針幼 5 倍）\n4. 留針 — 15–30 分鐘（部分配合電針儀做電療）\n5. 起針 — 全部針取出，按壓針孔 3–5 秒\n6. 留診休息 5–10 分鐘\n\n【針灸感覺】\n• 落針一刻：大部分人感覺輕微「𤆌」一下\n• 留針時：常有「酸、麻、脹、重」感覺 — 中醫稱為「得氣」，係療效關鍵指標\n• 唔應該感覺：劇烈刺痛、燒灼感 — 如有要立即告訴醫師調整\n\n【副作用發生率（基於 PMC8422480 系統評價）】\n• 輕微 AE：6.7–15%（前瞻性 SR）\n  - 針處疼痛 1.1–2.9%\n  - 出血/瘀血 2.1–6.1%\n  - 嗜睡、暫時頭暈\n• 嚴重 AE：每 10,000 次治療 0.04–0.08\n  - 氣胸（深針肺尖部位 — 罕見但嚴重）\n  - 心血管 / 迷走神經反應\n  - 感染、蛛網膜下出血\n\n【禁忌人士（依據 WHO 針灸基礎培訓與安全指南 + 系統評價）】\n❌ 相對禁忌（需中醫師評估）\n• 出血性疾病（血友病、血小板極低）— 出血風險\n• 抗凝藥物（華法林）：根據 PMC5481786 評論，若中醫師有經驗，針灸並非絕對禁忌；必須告知用藥\n• 嚴重心臟病、植入心臟起搏器 — 部分穴位避免；電針絕對禁用\n• 皮膚有感染、潰瘍、紋身嘅穴位\n• 孕婦：避免合谷（LI4）、三陰交（SP6）、崑崙（BL60）、至陰（BL67）、下腹部穴位（37 週前）— 根據 PMC6918516 系統評價，雖然 15 個 RCT 未見客觀傷害，但目前證據不足以推薦常規使用「禁針穴」\n• 月經期：避免活血穴位（中醫師判斷）\n• 飯前極餓、剛飯飽、酒醉、極度疲勞 — 易暈針\n\n【針灸後注意事項】\n• 起針後 2 小時內避免：洗冷水、游水、劇烈運動、飲冷飲\n• 當日避免：飲酒、桑拿、大量出汗\n• 部分人會有：輕微疲倦感（休息 1–2 小時恢復）、針孔小瘀（3–7 日消退）\n• 多飲溫水、清淡飲食 — 增強療效\n\n【點揀中醫師（重要）】\n✅ 必查：香港中醫藥管理委員會（CMC）註冊中醫師 — 可上 cmchk.org.hk 查冊\n✅ 留意：診所環境清潔、用一次性針具（包裝即場拆開）、有專屬治療床\n✅ 良好醫師會：先詳細問診、解釋治療計劃、定期評估療效、唔強推大量療程\n❌ 警號：唔問診直接落針、針具非一次性、強推預付套餐、承諾「保證根治」\n\n【HK 參考價（HKBU 中醫藥服務 2025-04-01）】\n• 針灸專科診金 + 針灸：HK$350–500 起（首診）\n• 加針：每多一個部位 HK$100\n• 耳針：HK$100\n（私營中醫診所價錢有差異，請聯絡相關診所了解。Care Plus 心宜中醫位於沙田馬鞍山，提供針灸相關專科服務 — 詳情請直接聯絡 Care Plus）\n\n針灸係「治標+治本」嘅平衡 — 即時緩解症狀同時調理體質。配合中藥同生活調整效果更持久 🌿",
+      "supporting_points": [
+        "WHO 2003 已正式認可針灸對 100+ 種症狀有療效，唔係玄學 — 係有國際醫學認可嘅療法",
+        "現代針具係一次性無菌不銹鋼針，極幼（0.18–0.30mm）— 大部分人感覺比抽血輕微",
+        "「得氣感」（酸麻脹重）係療效關鍵 — 唔等於痛；如感覺劇痛要即時告訴醫師",
+        "孕婦針灸需要中醫師專業判斷穴位 — WHO 培訓指引明確列出忌針穴位（合谷、三陰交、崑崙、至陰、下腹部）",
+        "副作用發生率（PMC8422480 SR）：輕微 AE 6.7–15%（針處小痛、出血為主），嚴重 AE 每 10,000 次治療 0.04–0.08 — 須由註冊中醫師執行確保安全",
+        "針灸結合中藥、推拿、艾灸、拔罐效果更全面 — 中醫師會根據體質設計組合療程",
+        "電針係針灸 + 微電流刺激，加強療效 — 適合痛症同肌肉問題；裝心臟起搏器人士絕對禁用",
+        "服薄血藥（華法林）並非絕對禁忌（PMC5481786）— 但必須告知中醫師調整針法"
+      ],
+      "evidence_level": "WHO 2003 Recognition + Cochrane SR + NCCIH + Modern Clinical Studies",
+      "next_best_question": "你係想針對邊類問題做針灸？例如肩頸痛、失眠、經痛、消化、面癱 — 我可以根據 WHO 同 Cochrane 評論，同你講解預期療程同次數 🌿",
+      "media": [
+        {
+          "id": "video_sanyinjiao_demo",
+          "type": "video",
+          "url": "/static/acupoint_videos/sanyinjiao.mp4",
+          "caption": "三陰交穴按摩示範",
+          "context": "Show when explaining how to massage this acupoint"
+        }
+      ]
+    },
+    "execution_logic": {
+      "recommended_action": "Educate user on acupuncture as a clinical service grounded in WHO 2003 + Cochrane evidence. Always cover: (1) which WHO-listed conditions it suits, (2) Cochrane-cited course length where available (dysmenorrhea: 9 sessions × 3 cycles; insomnia: ≥12 sessions), (3) what to expect during a session, (4) contraindications, (5) HKBU reference price + 'Care Plus 心宜中醫具體價錢請直接聯絡'. AVOID quoting Care Plus's own session counts — we don't have them.",
+      "approval_level": "Level A (Auto)",
+      "post_action_trigger": "If user mentions pregnancy → fetch tcm_pregnancy_safety FIRST. If user mentions specific condition → fetch matching education card (pain → tcm_urban_office_pain; insomnia → tcm_sleep_insomnia; menstrual → tcm_womens_menstrual).",
+      "escalation_trigger": "If user reports red-flag symptoms (sudden severe headache, sudden weakness/numbness, heavy bleeding, breathing difficulty) → recommend immediate medical attention before discussing acupuncture."
+    },
+    "references": {
+      "related_cards": [
+        "tcm_treatment_moxibustion",
+        "tcm_treatment_cupping",
+        "tcm_treatment_guasha",
+        "tcm_treatment_cosmetic_acupuncture",
+        "tcm_treatment_menstrual_program",
+        "tcm_treatment_sleep_program",
+        "tcm_treatment_shoulder_neck",
+        "tcm_treatment_slimming_program",
+        "tcm_urban_office_pain",
+        "tcm_headache_migraine",
+        "tcm_sleep_insomnia",
+        "tcm_womens_menstrual",
+        "tcm_pregnancy_safety",
+        "tcm_constitution_assessment"
+      ],
+      "sources": [
+        "WHO 2003 Acupuncture: Review and Analysis of Reports on Controlled Clinical Trials: https://chiro.org/acupuncture/FULL/Acupuncture_WHO_2003.pdf",
+        "WHO 2008 Standard Acupuncture Point Locations in the Western Pacific Region",
+        "NCCIH (National Center for Complementary and Integrative Health) — Acupuncture: Effectiveness and Safety: https://www.nccih.nih.gov/health/acupuncture-effectiveness-and-safety",
+        "Cochrane CD007854.pub3 — Acupuncture for dysmenorrhoea (2016): https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD007854.pub3/pdf/full",
+        "PMC8422480 — Acupuncture adverse events prospective SR: https://pmc.ncbi.nlm.nih.gov/articles/PMC8422480/",
+        "PMC6918516 — Forbidden points pregnancy systematic review: https://pmc.ncbi.nlm.nih.gov/articles/PMC6918516/",
+        "PMC5481786 — Acupuncture and warfarin/anticoagulation review: https://pmc.ncbi.nlm.nih.gov/articles/PMC5481786/",
+        "PMC6604345 — Acupuncture treatment schedule for chronic pain RCTs (Smith 2018): https://pmc.ncbi.nlm.nih.gov/articles/PMC6604345/",
+        "PMC3156618 — Acupuncture for insomnia review: https://pmc.ncbi.nlm.nih.gov/articles/PMC3156618/",
+        "香港中醫藥管理委員會 (CMC): https://www.cmchk.org.hk/cmp/eng/",
+        "HK Chinese Medicine Regulatory Office (CMRO): https://www.cmro.gov.hk/html/eng/overview_of_regulation/regulation_of_cmp.html",
+        "HKBU TCM Service & Charges (2025-04-01): https://www.hkbucm.com/?page_id=4327&lang=en",
+        "Bowtie & JP Health 針灸時間及次數指引: https://www.bowtiejphealth.com/blog/acupuncture-time-and-frequency",
+        "Care Plus TCM 心宜中醫（沙田馬鞍山）: https://careplustcm.com/"
+      ]
+    }
+  }
+}
