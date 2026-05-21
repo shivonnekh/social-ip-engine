@@ -611,12 +611,18 @@ async def _send_bubbles(
     media_to_send = media_to_send or []
 
     # Group media by the bubble index they should appear after.
+    # Defensive: only accept absolute http(s) URLs — relative paths
+    # (e.g. 'data/media/...') would be unfetchable by ChatDaddy.
     media_by_idx: dict[int, list[str]] = {}
     for m in media_to_send:
         url = (m.get("url") or "").strip()
-        if not url:
+        if not url or not url.startswith(("http://", "https://")):
+            logger.info("[WA] skip non-absolute media URL: %r", url[:80])
             continue
-        idx = int(m.get("after_bubble_idx") or 0)
+        try:
+            idx = int(m.get("after_bubble_idx") or 0)
+        except (TypeError, ValueError):
+            idx = 0
         media_by_idx.setdefault(idx, []).append(url)
 
     for i, bubble in enumerate(bubbles):

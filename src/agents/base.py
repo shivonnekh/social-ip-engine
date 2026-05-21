@@ -167,5 +167,7 @@ class WriterOutput(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     bubbles: list[str] = Field(min_length=1)
-    media_to_send: list[dict[str, str]] = Field(default_factory=list)
-    # `media_to_send` items: {"url": "...", "after_bubble_idx": "0"}
+    # Loose typing — LLM tends to write {"after_bubble_idx": 0} as int.
+    # Router normalises to str before sending.
+    media_to_send: list[dict[str, Any]] = Field(default_factory=list)
+    # `media_to_send` items: {"url": "...", "after_bubble_idx": 0}

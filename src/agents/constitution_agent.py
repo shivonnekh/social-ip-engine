@@ -29,6 +29,7 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -217,12 +218,16 @@ class ConstitutionAgent:
                 user_notes=inp.user.notes,
                 max_results=2,
             )
+            base_url = os.environ.get(
+                "PUBLIC_BASE_URL", "https://tcm-jessica.onrender.com"
+            ).rstrip("/")
             recs_payload = [
                 {
                     "product_id": pm.product.product_id,
                     "name": pm.product.name,
                     "price_hkd": pm.product.price_hkd,
-                    "image_url": pm.product.image_url,
+                    # Absolute URL so ChatDaddy can fetch + send the image.
+                    "image_url": _absolutize(pm.product.image_url, base_url),
                     "purchase_url": pm.product.purchase_url,
                     "match_reasons": list(pm.match_reasons),
                 }
@@ -484,6 +489,26 @@ def _build_payload_ask_mcq(q_idx: int) -> dict[str, Any]:
         ],
         "writer_hint": f"問第 {q_idx + 1} / {MAX_MCQ} 條題，俾用戶揀 A/B/C/D。",
     }
+
+
+def _absolutize(url: str, base: str) -> str:
+    """Turn a relative product image path into an absolute URL.
+
+    - Already http(s) → unchanged.
+    - Starts with '/' → prefixed with base.
+    - 'data/media/...' or 'media/...' → routed to '/media/...' on base.
+    """
+    if not url:
+        return ""
+    if url.startswith(("http://", "https://")):
+        return url
+    if url.startswith("data/media/"):
+        return f"{base}/media/{url[len('data/media/'):]}"
+    if url.startswith("/"):
+        return f"{base}{url}"
+    if url.startswith("media/"):
+        return f"{base}/{url}"
+    return f"{base}/{url}"
 
 
 def _build_payload_declare(
