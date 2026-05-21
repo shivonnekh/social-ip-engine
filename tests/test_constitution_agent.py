@@ -166,7 +166,7 @@ async def test_phase4_declares_after_all_mcqs(agent: ConstitutionAgent) -> None:
         phone="+85291234567",
         temp_state={
             "constitution_tongue_findings": {"is_tongue_photo": True, "colour": "pale"},
-            "constitution_mcq_index": MAX_MCQ + 1,  # past the last Q
+            "constitution_mcq_index": MAX_MCQ + 1,
             "constitution_mcq_answers": answers,
         },
     )
@@ -174,13 +174,16 @@ async def test_phase4_declares_after_all_mcqs(agent: ConstitutionAgent) -> None:
     out, _ = await agent.run(inp)
 
     assert out.payload["phase"] == "declaring"
-    # Total: 陽虛 3+2 + ... → 陽虛 dominates
     assert out.payload["constitution"] == Constitution.YANGXU.value
-    # User state should also flip
     assert out.suggested_user_state_diff["constitution"] == Constitution.YANGXU.value
     assert out.suggested_user_state_diff["status"] == UserStatus.CONSTITUTION_DONE.value
-    # Card reference logged
     assert "tcm_constitution_assessment" in out.cards_used
+    # FREE-first: declaration payload must carry free_recipes list (may
+    # be empty if KB has no match) and must NOT carry paid soup
+    # recommendations or products_pitched_append.
+    assert "free_recipes" in out.payload
+    assert "soup_recommendations" not in out.payload
+    assert "products_pitched_append" not in out.suggested_user_state_diff
 
 
 # ── Scoring unit tests ───────────────────────────────────────────────

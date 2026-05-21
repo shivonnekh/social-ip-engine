@@ -225,6 +225,23 @@ def _rule_overrides(
             ),
         )
 
+    # User has finished constitution + now shows buying interest →
+    # NOW pitch paid products (Sales). Constitution itself does FREE
+    # recipes; Sales kicks in when user signals they want convenience.
+    if (
+        user.status == UserStatus.CONSTITUTION_DONE
+        and _wants_to_buy(user_message)
+    ):
+        return PlannerDecision(
+            specialists=[SpecialistName.SALES],
+            mode="solo",
+            reasoning="rule: constitution_done + buying intent → sales pitch",
+            notes_for_writer=(
+                "用戶之前做完體質評估，而家表達咗想了解付費產品。可以正式介紹"
+                "預製湯水 / 藥膏。"
+            ),
+        )
+
     # First-touch BUT user already mentioned a symptom in their opening
     # message → compact intro PLUS Constitution Agent on the same turn,
     # so we don't ask "what's bothering you?" after the user already
@@ -276,6 +293,22 @@ def _wants_free_or_diy(text: str) -> bool:
     if not text:
         return False
     return any(kw in text for kw in _FREE_DIY_KEYWORDS)
+
+
+# Buying-intent signals — when user post-diagnosis says any of these,
+# they're ready for paid pitch. Order doesn't matter.
+_BUYING_INTENT_KEYWORDS = (
+    "想試", "想试", "好啊", "想要", "點買", "点买", "幾錢", "几钱", "價錢", "价钱",
+    "點訂", "点订", "落單", "落单", "預訂", "预订", "想睇", "詳細", "详细",
+    "邊度買", "边度买", "送上門", "送上门", "包郵", "包邮", "方便啲",
+    "我要", "賣嘅", "卖的", "你哋有咩賣", "你们有什么卖",
+)
+
+
+def _wants_to_buy(text: str) -> bool:
+    if not text:
+        return False
+    return any(kw in text for kw in _BUYING_INTENT_KEYWORDS)
 
 
 # -------------------------------------------------------------------

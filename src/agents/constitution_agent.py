@@ -42,6 +42,8 @@ from src.agents.base import (
     SpecialistOutput,
 )
 from src.crm.models import Constitution, UserStatus
+from src.tools.kb_index import KBIndex
+from src.tools.kb_search import KBSearch
 from src.tools.product_catalog import ProductCatalog
 
 logger = logging.getLogger("agents.constitution")
@@ -137,11 +139,14 @@ class ConstitutionAgent:
         *,
         client: LLMClient | None = None,
         catalog: ProductCatalog | None = None,
+        kb_index: KBIndex | None = None,
         vision_model: str = DEFAULT_MODEL,
         max_vision_tokens: int = 400,
     ) -> None:
         self._client = client
         self._catalog = catalog or ProductCatalog()
+        self._kb = kb_index or KBIndex.load()
+        self._kb_search = KBSearch(self._kb)
         self._vision_model = vision_model
         self._max_vision_tokens = max_vision_tokens
 
@@ -164,6 +169,7 @@ class ConstitutionAgent:
             return _wrap(payload, suggested_diff, cards_used, tools_called), usage_total
 
         # ── PHASE 2: media present, run vision (if not done) ────────
+        just_analyzed = False
         if not findings and inp.media_urls:
             findings, vision_usage = await self._analyze_tongue(inp.media_urls)
             tools_called.append(
@@ -184,7 +190,9 @@ class ConstitutionAgent:
                 payload = _build_payload_ask_tongue(retry=True)
                 return _wrap(payload, suggested_diff, cards_used, tools_called), usage_total
 
-            # Fall through to PHASE 3 — ask first MCQ this same turn.
+            just_analyzed = True
+            # Fall through to PHASE 3 — ask first MCQ same turn, but
+            # share the preliminary tongue read along with it.
 
         # User just answered the previous MCQ (if any).
         # We expect user_message to be an option label (A/B/C/D) or
@@ -201,61 +209,35 @@ class ConstitutionAgent:
                 ts[_TS_MCQ_ANS] = mcq_answers
                 suggested_diff["temp_state"] = ts
 
-        # ── PHASE 4: all MCQs answered → declare ────────────────────
+        # ── PHASE 4: all MCQs answered → declare (FREE-FIRST) ───────
         if len(mcq_answers) >= MAX_MCQ:
             constitution = _score_constitution(findings or {}, mcq_answers)
             cards_used.append("tcm_constitution_assessment")
 
-            # Same-turn product recommendation — fetch top 2 soups
-            # matching the just-declared constitution so the Writer can
-            # diagnose + recommend in one breath. (Sales Agent still
-            # owns deeper pitches in follow-up turns.)
-            soup_recs = self._catalog.match_products(
-                constitution=constitution.value,
-                pain_points=list(inp.user.pain_points),
-                already_pitched=list(inp.user.products_pitched),
-                user_tags=list(inp.user.tags),
-                user_notes=inp.user.notes,
-                max_results=2,
-            )
-            base_url = os.environ.get(
-                "PUBLIC_BASE_URL", "https://tcm-jessica.onrender.com"
-            ).rstrip("/")
-            recs_payload = [
-                {
-                    "product_id": pm.product.product_id,
-                    "name": pm.product.name,
-                    "price_hkd": pm.product.price_hkd,
-                    # Absolute URL so ChatDaddy can fetch + send the image.
-                    "image_url": _absolutize(pm.product.image_url, base_url),
-                    "purchase_url": pm.product.purchase_url,
-                    "match_reasons": list(pm.match_reasons),
-                }
-                for pm in soup_recs
-            ]
+            # Primary: free KB recipes matching constitution. Paid pitch
+            # waits for an explicit interest signal on a future turn —
+            # Planner routes to Sales then.
+            free_recipes = self._search_free_recipes(constitution)
+            for hit in free_recipes:
+                if hit["card_id"] not in cards_used:
+                    cards_used.append(hit["card_id"])
             tools_called.append(
                 {
-                    "name": "ProductCatalog.match_products",
-                    "args": {"constitution": constitution.value, "max_results": 2},
+                    "name": "KBSearch.free_recipes",
+                    "args": {"constitution": constitution.value},
                     "result": {
-                        "count": len(recs_payload),
-                        "ids": [r["product_id"] for r in recs_payload],
+                        "count": len(free_recipes),
+                        "cards": [r["card_id"] for r in free_recipes],
                     },
                 }
             )
 
             payload = _build_payload_declare(
-                constitution, findings or {}, soup_recommendations=recs_payload
+                constitution, findings or {}, free_recipes=free_recipes
             )
 
             suggested_diff["constitution"] = constitution.value
             suggested_diff["status"] = UserStatus.CONSTITUTION_DONE.value
-            # Mark recommended IDs as pitched so Sales doesn't re-pitch them next turn.
-            if recs_payload:
-                suggested_diff["products_pitched_append"] = [
-                    r["product_id"] for r in recs_payload
-                ]
-            # Clear MCQ tracking but keep tongue findings for audit.
             ts[_TS_MCQ_IDX] = MAX_MCQ
             suggested_diff["temp_state"] = ts
 
@@ -265,8 +247,43 @@ class ConstitutionAgent:
         next_q_idx = len(mcq_answers)  # advance based on recorded count
         ts[_TS_MCQ_IDX] = next_q_idx + 1
         suggested_diff["temp_state"] = ts
-        payload = _build_payload_ask_mcq(next_q_idx)
+        payload = _build_payload_ask_mcq(
+            next_q_idx,
+            share_tongue_findings=just_analyzed,
+            tongue_findings=findings,
+        )
         return _wrap(payload, suggested_diff, cards_used, tools_called), usage_total
+
+    # -----------------------------------------------------------------
+    # KB lookup for free recipes
+    # -----------------------------------------------------------------
+
+    def _search_free_recipes(
+        self, constitution: Constitution
+    ) -> list[dict[str, Any]]:
+        """Find 2-3 free home-cooking recipes from KB matching constitution."""
+        queries = [
+            f"{constitution.value} 湯水",
+            f"{constitution.value} 食療",
+        ]
+        seen: set[str] = set()
+        out: list[dict[str, Any]] = []
+        for q in queries:
+            for hit in self._kb_search.search(q, top_k=3, min_score=3.0):
+                if hit.card.card_id in seen:
+                    continue
+                seen.add(hit.card.card_id)
+                out.append(
+                    {
+                        "card_id": hit.card.card_id,
+                        "title": hit.card.title,
+                        "excerpt": hit.card.short_excerpt,
+                        "next_best_question": hit.card.next_best_question or "",
+                    }
+                )
+                if len(out) >= 3:
+                    return out
+        return out
 
     # ─────────────────────────────────────────────────────────────
     # Tongue vision
@@ -477,9 +494,14 @@ def _build_payload_ask_tongue(retry: bool = False) -> dict[str, Any]:
     }
 
 
-def _build_payload_ask_mcq(q_idx: int) -> dict[str, Any]:
+def _build_payload_ask_mcq(
+    q_idx: int,
+    *,
+    share_tongue_findings: bool = False,
+    tongue_findings: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     q = MCQS[q_idx]
-    return {
+    payload = {
         "phase": "asking_mcq",
         "q_index": q_idx,
         "q_total": MAX_MCQ,
@@ -489,6 +511,17 @@ def _build_payload_ask_mcq(q_idx: int) -> dict[str, Any]:
         ],
         "writer_hint": f"問第 {q_idx + 1} / {MAX_MCQ} 條題，俾用戶揀 A/B/C/D。",
     }
+    # On the first MCQ right after vision analysis, share a preliminary
+    # tongue reading first, THEN ask the first question.
+    if share_tongue_findings and tongue_findings:
+        payload["share_tongue_first"] = True
+        payload["tongue_findings"] = tongue_findings
+        payload["writer_hint"] = (
+            "Bubble 1-2: 用 1-2 句講脷相觀察 (顏色、苔、形態) + 1 句初步方向 "
+            "(例 「初步睇起來氣虛偏向」)。"
+            f"Bubble 3+: 然後話「我再問你幾條題確認」，問第 {q_idx + 1} / {MAX_MCQ} 條題。"
+        )
+    return payload
 
 
 def _absolutize(url: str, base: str) -> str:
@@ -515,21 +548,24 @@ def _build_payload_declare(
     constitution: Constitution,
     findings: dict[str, Any],
     *,
-    soup_recommendations: list[dict[str, Any]] | None = None,
+    free_recipes: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    recs = soup_recommendations or []
-    rec_summary = (
-        " + ".join(f"{r['name']} (${r['price_hkd']})" for r in recs) if recs else "(無)"
-    )
+    recipes = free_recipes or []
+    recipe_titles = [r.get("title", "")[:30] for r in recipes]
     return {
         "phase": "declaring",
         "constitution": constitution.value,
         "tongue_findings": findings,
-        "soup_recommendations": recs,
+        "free_recipes": recipes,
+        # NO paid soup_recommendations here. We do FREE-first, paid is
+        # a follow-up only if user shows interest. Soft hook only.
         "writer_hint": (
-            f"宣告體質「{constitution.value}」(2-3 句講特徵)，"
-            f"然後同 turn 直接推介 {len(recs)} 款啱嘅湯水：{rec_summary}。"
-            f"每款用 1 個 bubble，講價錢 + 1 句點解啱佢。"
+            f"宣告體質「{constitution.value}」 (1-2 句講特徵)。"
+            f"然後推介呢幾款免費家用食譜：{recipe_titles or '(KB hit 唔到 — 留空 free_recipes 唔好作)'}。"
+            "風格：教育、非銷售；列 2-3 款湯水名 + 一句總體飲法 / 注意事項。"
+            "最後一個 bubble 可以好輕咁提一句:「如果想試方便啲嘅，我哋都有預製"
+            "湯水送上門」— 但唔好 push、唔好講價錢、唔好叫佢買。等用戶有興趣"
+            "再問先 pitch。"
         ),
     }
 
