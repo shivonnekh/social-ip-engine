@@ -149,6 +149,30 @@ class CRMRepoPG:
     # Appointments
     # ---------------------------------------------------------------
 
+    async def delete_all_for_phone(self, phone: str) -> dict[str, int]:
+        """Wipe everything for one phone. Returns counts deleted."""
+        async with self._pool.acquire() as conn:
+            msg_count = await conn.fetchval(
+                "SELECT COUNT(*) FROM messages WHERE phone = $1", phone
+            )
+            appt_count = await conn.fetchval(
+                "SELECT COUNT(*) FROM appointments WHERE phone = $1", phone
+            )
+            user_count = await conn.fetchval(
+                "SELECT COUNT(*) FROM users WHERE phone = $1", phone
+            )
+            async with conn.transaction():
+                await conn.execute("DELETE FROM users WHERE phone = $1", phone)
+                await conn.execute("DELETE FROM messages WHERE phone = $1", phone)
+                await conn.execute(
+                    "DELETE FROM appointments WHERE phone = $1", phone
+                )
+        return {
+            "users": user_count or 0,
+            "messages": msg_count or 0,
+            "appointments": appt_count or 0,
+        }
+
     async def add_appointment(self, phone: str, appt: AppointmentRecord) -> None:
         async with self._pool.acquire() as conn:
             await conn.execute(

@@ -167,6 +167,32 @@ class CRMRepo:
     # Appointments
     # ---------------------------------------------------------------
 
+    async def delete_all_for_phone(self, phone: str) -> dict[str, int]:
+        """Wipe everything for one phone. Returns counts deleted."""
+        async with self._db.execute(
+            "SELECT COUNT(*) FROM messages WHERE phone = ?", (phone,)
+        ) as cur:
+            row = await cur.fetchone()
+            msg_count = row[0] if row else 0
+        async with self._db.execute(
+            "SELECT COUNT(*) FROM appointments WHERE phone = ?", (phone,)
+        ) as cur:
+            row = await cur.fetchone()
+            appt_count = row[0] if row else 0
+        async with self._db.execute(
+            "SELECT COUNT(*) FROM users WHERE phone = ?", (phone,)
+        ) as cur:
+            row = await cur.fetchone()
+            user_count = row[0] if row else 0
+
+        # FK ON DELETE CASCADE handles messages + appointments automatically.
+        await self._db.execute("DELETE FROM users WHERE phone = ?", (phone,))
+        # But ensure no orphans if FKs are off.
+        await self._db.execute("DELETE FROM messages WHERE phone = ?", (phone,))
+        await self._db.execute("DELETE FROM appointments WHERE phone = ?", (phone,))
+        await self._db.commit()
+        return {"users": user_count, "messages": msg_count, "appointments": appt_count}
+
     async def add_appointment(self, phone: str, appt: AppointmentRecord) -> None:
         await self._db.execute(
             """

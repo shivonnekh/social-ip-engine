@@ -363,6 +363,24 @@ async def _process_turn(
     fragment_ids = fragment_ids or []
     attachments = attachments or []
 
+    # ---- RESTART keyword (wipes all CRM for this phone) ---------------
+    if _is_restart_command(merged_text):
+        pipeline = _get_pipeline()
+        if pipeline is not None:
+            try:
+                counts = await pipeline._crm.delete_all_for_phone(phone)  # noqa: SLF001
+                logger.info("[RESTART] wiped phone=%s counts=%s", phone, counts)
+            except Exception:
+                logger.exception("[RESTART] wipe failed for %s", phone)
+        try:
+            await client.send_long_message(
+                account_id, chat_id,
+                "已清除你嘅資料 🌿 我哋重新開始啦，發 hi 我幫你 onboard 返。",
+            )
+        except Exception:
+            logger.exception("[RESTART] confirmation send failed for %s", phone)
+        return
+
     # ---- Blocklist (last gate before pipeline) -----------------------
     decision = blocklist.decide(phone)
     if decision.blocked:
@@ -440,6 +458,24 @@ async def _process_turn(
             bubbles=bubbles,
             media_to_send=media_to_send,
         )
+
+
+# Tokens that trigger a full CRM wipe for the sender (case-insensitive).
+_RESTART_TOKENS = {
+    "restart", "reset",
+    "重新開始", "重新开始", "重置", "重新嚟過", "重新嚟过",
+    "/reset", "/restart",
+}
+
+
+def _is_restart_command(text: str) -> bool:
+    if not text:
+        return False
+    t = text.strip()
+    if t.lower() in _RESTART_TOKENS:
+        return True
+    # Tolerate punctuation / surrounding whitespace
+    return t.lower() in _RESTART_TOKENS
 
 
 def _extract_media_urls(attachments: list[dict]) -> list[str]:
