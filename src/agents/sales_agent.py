@@ -345,7 +345,9 @@ class SalesAgent:
             soups = ordered
         else:
             soups = sorted(soups, key=lambda p: p.price_hkd or 999)
-        soups = soups[:6]  # keep manageable; user can ask for more
+        # User explicitly asked for the full list — show all 10. Their
+        # intent is at peak; cutting short forces another round of
+        # friction. Writer can group / pace bubbles however it wants.
 
         products = [_product_dict_simple(p) for p in soups]
         offers = _collect_offers(
@@ -363,10 +365,12 @@ class SalesAgent:
             },
             "writer_hint": (
                 "用戶又問湯水 — 之前已經睇過免費食譜，依家係時候 pitch 付費。"
-                "**必須**列晒呢 " + str(len(products)) + " 款 (名 + 價錢 + 1 句功效)，"
-                "每款 1 bubble + 圖。最尾一個 bubble 問:「想要邊款？同我講你嘅"
-                "選擇 + 收件地址，我幫你跟進。」絕對唔好提任何 WhatsApp 號碼，"
-                "唔好叫客自己問客服。"
+                f"**必須**列晒全部 {len(products)} 款 (名 + 價錢 + 1 句功效)，"
+                "每款 1 bubble + 圖。"
+                "Writer 嘅 bubble cap (5 個) 唔適用 — 列產品 list 嗰陣"
+                "係 catalog browsing scenario，可以每個 bubble 包 2-3 款，"
+                "或者全部開晒。最尾一個 bubble 問:「想要邊款？同我講你嘅選擇 + "
+                "收件地址，我幫你跟進。」絕對唔好提任何 WhatsApp 號碼。"
             ),
             "writer_must_not_say": [
                 "WhatsApp 我哋", "+852 5241 7448", "wa.me",
