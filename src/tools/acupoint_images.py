@@ -26,7 +26,8 @@ DEFAULT_INDEX_PATH = (
 class AcupointImage:
     zh: str          # canonical name (e.g. 天容穴)
     aliases: tuple[str, ...]
-    image_path: str  # e.g. data/media/acupoints/tianrong.jpg
+    image_path: str  # e.g. data/media/acupoints/tianrong.jpg ("" if no image)
+    video_path: str = ""  # e.g. data/media/acupoint_videos/tianrong.mp4 ("" if none)
 
 
 class AcupointImageMap:

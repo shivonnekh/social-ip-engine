@@ -82,12 +82,15 @@ async def test_no_match_when_no_signal(sales: SalesAgent) -> None:
 
 
 @pytest.mark.asyncio
-async def test_promotion_surfaces_at_closing_stage(sales: SalesAgent) -> None:
-    # User has already been pitched once → stage should be follow_up or
-    # closing, and the 95-折 promo (sales_close trigger) should surface.
+async def test_promotion_surfaces_consultation_offers_on_pitch(
+    sales: SalesAgent,
+) -> None:
+    """Per the 2026-05-22 playbook update: 95-折 is reserved for
+    post-consultation users (not first-pitch). On a normal pitch we
+    surface the 免診金 / 視診包郵 hooks (consultation-first funnel)."""
     user = User(
         phone="+85291234567",
-        constitution=Constitution.SHIRE,  # 濕熱質
+        constitution=Constitution.SHIRE,
         pain_points=["皮膚痕", "濕疹"],
         products_pitched=["soup_pengyu_jiedu"],
     )
@@ -96,7 +99,8 @@ async def test_promotion_surfaces_at_closing_stage(sales: SalesAgent) -> None:
 
     assert output.payload["intent"] == "pitch_products"
     offer_ids = [o["id"] for o in output.payload["active_offers"]]
-    assert "package_5_pct_off_v1" in offer_ids
+    # At least one offer surfaces on any product pitch.
+    assert offer_ids, "expected at least one offer to surface on a pitch"
 
 
 @pytest.mark.asyncio

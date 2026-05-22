@@ -46,6 +46,7 @@ from src.llm import LLMClient
 
 from src.agents.base import SpecialistInput, SpecialistName, SpecialistOutput
 from src.crm.models import Promotion
+from src.tools.pitch_playbook import PitchPlaybook
 from src.tools.product_catalog import ProductCatalog, ProductMatch
 from src.tools.promotions import PromotionsLoader
 
@@ -90,12 +91,18 @@ class SalesAgent:
         client: LLMClient | None = None,
         catalog: ProductCatalog | None = None,
         promotions: PromotionsLoader | None = None,
+        playbook: PitchPlaybook | None = None,
         model: str = DEFAULT_MODEL,
         max_tokens: int = 500,
     ) -> None:
         self._client = client
         self._catalog = catalog or ProductCatalog()
         self._promotions = promotions or PromotionsLoader()
+        try:
+            self._playbook = playbook or PitchPlaybook()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("PitchPlaybook unavailable: %s", exc)
+            self._playbook = None
         self._model = model
         self._max_tokens = max_tokens
 
@@ -113,6 +120,17 @@ class SalesAgent:
                 self._where_to_buy_output(user, inp.user_message),
                 _no_llm_usage(),
             )
+
+        # Playbook category match — if message hits a clear category
+        # (skin/cough/eye/etc.), surface ONLY those products + the
+        # category angle. Beats generic catalog match.
+        if self._playbook is not None:
+            cats = self._playbook.match_categories(inp.user_message, limit=1)
+            if cats:
+                return (
+                    self._playbook_output(user, cats[0], inp.user_message),
+                    _no_llm_usage(),
+                )
 
         # Detect ointment intent — user explicitly asks about creams /
         # 藥膏 / 塗. Hard-code surface all 3 ointments with images.
@@ -315,6 +333,109 @@ class SalesAgent:
             tools_called=tools_log,
         )
 
+    def _playbook_output(
+        self, user: Any, category: Any, user_message: str
+    ) -> SpecialistOutput:
+        """Category-targeted pitch driven by data/promotions/pitch_playbook.json.
+
+        Picks only the products in the category's soup_ids + ointment_ids
+        (typically 1-3), uses the category's '方向' angle in the writer
+        hint, and ends with the safety + consultation backstop.
+
+        Honours contraindications (e.g. pregnant → no 川芎/活血) by
+        reusing ProductCatalog scoring for the safety filter.
+        """
+        ids = list(category.soup_ids) + list(category.ointment_ids)
+        all_p = {p.product_id: p for p in self._catalog.all_products}
+
+        # Safety filter — use ProductCatalog.match_products to get the
+        # full contraindication-checked candidate list, then intersect
+        # with our playbook ids.
+        safe_match = self._catalog.match_products(
+            constitution=user.constitution.value if user.constitution else None,
+            pain_points=list(user.pain_points),
+            already_pitched=[],
+            user_tags=list(user.tags),
+            user_notes=user.notes,
+            max_results=20,
+            min_score=0.0,
+        )
+        # match_products already drops contraindicated products. Build a
+        # safe-id set; if it's empty (no signal) fall back to raw catalog
+        # but still apply the same contraindication rules.
+        safe_ids = {pm.product.product_id for pm in safe_match}
+        if not safe_ids:
+            # Manual filter for tags-based contraindications (pregnancy)
+            tags_lc = " ".join((user.tags or []) + [user.notes or ""]).lower()
+            is_pregnant = any(t in tags_lc for t in ("pregnant", "懷孕", "怀孕", "孕婦", "孕妇"))
+            for p in all_p.values():
+                contras = " ".join(p.contraindications or []).lower()
+                if is_pregnant and ("孕" in contras or "活血" in contras or "blood-act" in contras):
+                    continue
+                safe_ids.add(p.product_id)
+
+        chosen = [
+            _product_dict_simple(all_p[pid])
+            for pid in ids
+            if pid in all_p and pid in safe_ids
+        ]
+        if not chosen:
+            # Fallback to no-match if catalog drift breaks the playbook
+            return self._no_match_output(user, [
+                {"name": "PitchPlaybook.match", "args": {"key": category.key},
+                 "result": {"error": "no matching products in catalog"}}
+            ])
+
+        playbook = self._playbook
+        offers = _collect_offers(
+            self._promotions,
+            ["sales_pitch", "ointment_pitch", "soup_pitch", "consultation_backstop"],
+        )
+        payload = {
+            "intent": "pitch_products",
+            "products_to_pitch": chosen,
+            "active_offers": offers,
+            "stage": f"playbook_pitch:{category.key}",
+            "playbook_safety": playbook.safety_disclaimer if playbook else "",
+            "playbook_backstop": playbook.consultation_backstop if playbook else "",
+            "playbook_category_key": category.key,
+            "playbook_category_angle": category.pitch_angle,
+            "writer_hint": (
+                f"用戶嘅情況落入「{category.key}」 category。\n"
+                f"Bubble 1 (安全話術): 「{playbook.safety_disclaimer if playbook else ''}」\n"
+                f"Bubble 2: 講「如果你主要係 {category.pitch_angle}，可以了解：」\n"
+                "之後 bubbles: 列 products_to_pitch 入面每款"
+                " (名 + 價錢 + 「方向：…」框架)，每款 1 bubble + 圖。\n"
+                f"倒數第二 bubble: 「{playbook.consultation_backstop if playbook else ''}」\n"
+                "最後一 bubble: 「想要邊款？或者要我幫你預約視診？同我講聲」\n\n"
+                "嚴格遵守：用「方向：」「適合想了解...嘅方向」軟性語；唔講"
+                "「你應該買」、「治療」、「療效」、「包好」、「完全治好」"
+                "等斷言。"
+            ),
+            "writer_must_not_say": [
+                "你應該買", "治療", "保證療效", "包好", "完全治好",
+                "WhatsApp 我哋", "+852 5241 7448", "wa.me",
+            ],
+        }
+        return SpecialistOutput(
+            specialist=SpecialistName.SALES,
+            payload=payload,
+            suggested_user_state_diff={
+                "products_pitched_append": [p["product_id"] for p in chosen]
+            },
+            cards_used=[],
+            tools_called=[
+                {
+                    "name": "PitchPlaybook.match",
+                    "args": {"query": user_message[:80]},
+                    "result": {
+                        "category": category.key,
+                        "products": [p["product_id"] for p in chosen],
+                    },
+                }
+            ],
+        )
+
     def _soups_output(self, user: Any) -> SpecialistOutput:
         """Surface paid soup catalog when user shows repeat interest.
 
@@ -403,19 +524,36 @@ class SalesAgent:
         ]
         products = [_product_dict_simple(p) for p in ointments]
         offers = _collect_offers(
-            self._promotions, ["ointment_pitch", "sales_pitch"]
+            self._promotions,
+            ["ointment_pitch", "sales_pitch", "consultation_backstop"],
         )
+        playbook = self._playbook
+        safety = playbook.safety_disclaimer if playbook else ""
+        backstop = playbook.consultation_backstop if playbook else ""
         payload = {
             "intent": "pitch_products",
             "products_to_pitch": products,
             "active_offers": offers,
             "stage": "ointment_pitch",
+            "playbook_safety": safety,
+            "playbook_backstop": backstop,
             "writer_hint": (
-                "用戶問藥膏。**必須**列晒呢 3 款 (名 + 價錢 + 1 句用途)，"
-                "每款 1 bubble + 圖。最尾問用戶「要唔要試其中一款？"
-                "想要邊款講聲我聽，我幫你跟進。」絕對唔好叫用戶 WhatsApp"
-                "去任何號碼 — 用戶已經喺呢個對話度 chat 緊。"
+                "用戶問藥膏。\n"
+                "Bubble 1 (open with 安全話術): 「" + safety + "」\n"
+                "Bubble 2-4: 列我哋 3 款藥膏，**每款 1 bubble + 圖**：\n"
+                "  · 茶樹綠豆濕敏膏 $90 — 方向：濕敏、皮膚泛紅、敏感護理\n"
+                "  · 蛋黃油乳液 $120 — 方向：皮膚乾燥、修護、日常滋潤\n"
+                "  · 止痕濕疹膏 $180 — 方向：痕癢、濕疹反覆、需要重點護理\n"
+                "Bubble 5 (consultation backstop): 「" + backstop + "」\n"
+                "Bubble 6: 問用戶「想要邊款？同我講你嘅選擇 + 收件地址我幫"
+                "你跟進。」唔好叫客 WhatsApp 任何外部號碼。\n\n"
+                "規矩：用「方向：」「適合想了解...嘅人」呢類軟性語，"
+                "絕對唔講「你應該買」或者「治療」「療效」等斷言。"
             ),
+            "writer_must_not_say": [
+                "你應該買", "治療", "保證療效", "包好",
+                "WhatsApp 我哋", "+852 5241 7448", "wa.me",
+            ],
         }
         return SpecialistOutput(
             specialist=SpecialistName.SALES,
@@ -474,25 +612,44 @@ class SalesAgent:
                     chosen.append(_product_dict_simple(pm.product))
 
         offers = _collect_offers(
-            self._promotions, ["sales_pitch", "sales_close"]
+            self._promotions,
+            ["sales_pitch", "sales_close", "consultation_backstop"],
         )
+        playbook = self._playbook
+        # Detect category from user message + pain_points to add focused
+        # pitch angle if available.
+        category_angle = ""
+        if playbook:
+            text_blob = f"{user_message} {' '.join(user.pain_points or [])}"
+            cats = playbook.match_categories(text_blob, limit=1)
+            if cats:
+                category_angle = cats[0].pitch_angle
         payload = {
             "intent": "where_to_buy",
             "products_to_pitch": chosen,
             "active_offers": offers,
             "stage": "where_to_buy",
+            "playbook_safety": playbook.safety_disclaimer if playbook else "",
+            "playbook_backstop": playbook.consultation_backstop if playbook else "",
+            "playbook_category_angle": category_angle,
             "catalog_facts": {
                 "total_paid_soups": 10,
                 "total_ointments": 3,
                 "made_by": "Care Plus 心宜中醫",
             },
             "writer_hint": (
-                "用戶問點買 / 想要產品。**必須**列晒 products_to_pitch 入面每"
-                "款 (名 + 價錢 HK$)，每款 1 個 bubble，並且每款都要附返"
-                "image_url 落 media_to_send。最尾加一個 bubble 問用戶「想要"
-                "邊款？同我講你嘅選擇 + 收件地址，我會幫你跟進 order。」"
-                "**絕對唔好**叫客 WhatsApp 任何號碼 — 用戶已經喺呢個 WhatsApp"
-                "對話度，叫佢去同一個地方完全係 nonsense。"
+                "用戶問點買 / 想要產品。\n"
+                f"Bubble 1: 安全話術「{playbook.safety_disclaimer if playbook else ''}」\n"
+                + (f"Bubble 2: 用戶睇起來係 {category_angle} 方向\n" if category_angle else "")
+                + "之後 bubbles: 列每個 products_to_pitch 入面嘅產品 "
+                "(名 + 價錢 + 「方向：...」框架)，每款 1 bubble + image_url\n"
+                "倒數第二 bubble: 「"
+                + (playbook.consultation_backstop if playbook else "")
+                + "」\n"
+                "最後一 bubble: 「想要邊款？同我講你嘅選擇 + 收件地址我幫你跟"
+                "進。」**絕對唔好**叫客 WhatsApp 任何外部號碼。\n\n"
+                "規矩：用「方向：xxx」框架，唔好用「你應該買」「治療」「療效」"
+                "「包好」呢類斷言。"
             ),
             "writer_must_not_say": [
                 "我哋冇新產品",
@@ -503,6 +660,7 @@ class SalesAgent:
                 "WhatsApp 我哋",
                 "+852 5241 7448",
                 "wa.me",
+                "你應該買", "保證療效", "包好你", "完全治好",
             ],
         }
         return SpecialistOutput(

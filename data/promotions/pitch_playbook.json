@@ -1,0 +1,69 @@
+{
+  "_meta": {
+    "description": "Care Plus sales playbook. Sales Agent uses this to (a) classify user condition into a category, (b) pick the right product set, (c) frame the pitch with safe '方向' language and a consultation backstop.",
+    "last_updated": "2026-05-22"
+  },
+  "_global_rules": {
+    "tone": "informational, non-prescriptive. 用「可以了解…嘅方向」唔好用「你應該買」。",
+    "safety_disclaimer": "呢個只係一般產品資訊，未等於中醫師個人診斷。",
+    "consultation_backstop": "唔肯定就先約 視診 / 到店，由中醫師幫你判斷後再配 — 比較穩陣。"
+  },
+  "categories": [
+    {
+      "key": "skin",
+      "keywords": ["皮膚", "痕癢", "癢", "濕疹", "暗瘡", "痘", "敏感", "紅疹"],
+      "soups": ["soup_pengyu_jiedu"],
+      "ointments": ["ointment_chashu_lvdou", "ointment_zhihen_shizhen"],
+      "pitch_angle": "適合想了解清熱解毒、皮膚痘疹、濕疹、暗瘡方向嘅人"
+    },
+    {
+      "key": "insomnia_dryness",
+      "keywords": ["失眠", "瞓唔到", "心火", "口乾", "口苦", "捱夜", "喉嚨"],
+      "soups": ["soup_qingxin_runfei", "soup_huaqi_shen"],
+      "ointments": [],
+      "pitch_angle": "適合捱夜、口乾口苦、心火盛、喉嚨不適方向"
+    },
+    {
+      "key": "eye",
+      "keywords": ["眼乾", "眼攰", "眼睛", "眼疲勞", "用眼"],
+      "soups": ["soup_qinggan_mingmu"],
+      "ointments": [],
+      "pitch_angle": "適合長時間用眼、眼睛乾澀、疲勞方向"
+    },
+    {
+      "key": "immunity",
+      "keywords": ["免疫", "抗病毒", "抗疲勞", "病後", "術後", "化療", "電療"],
+      "soups": ["soup_kang_bingdu"],
+      "ointments": [],
+      "pitch_angle": "適合想了解增強免疫、抗疲勞、術後調理方向"
+    },
+    {
+      "key": "kidney_beauty",
+      "keywords": ["補腎", "養顏", "滋陰", "荷爾蒙", "更年期", "腎虛"],
+      "soups": ["soup_huajiao_xiangluo"],
+      "ointments": [],
+      "pitch_angle": "適合滋陰養顏、健脾補腎、調節狀態方向"
+    },
+    {
+      "key": "headache",
+      "keywords": ["頭痛", "頭暈", "偏頭痛"],
+      "soups": ["soup_chuanxiong_tianma"],
+      "ointments": [],
+      "pitch_angle": "適合頭痛頭暈、驅風活血、醒腦方向"
+    },
+    {
+      "key": "cough_throat",
+      "keywords": ["咳", "喉嚨痛", "痰", "感冒", "傷風", "氣管", "鼻塞"],
+      "soups": ["soup_haixing_zhike", "soup_ganmao_zhike", "soup_zhike_runfei"],
+      "ointments": [],
+      "pitch_angle": "按新咳、久咳、感冒未清、氣管敏感分流"
+    },
+    {
+      "key": "dry_skin_general",
+      "keywords": ["皮膚乾", "乾燥", "修護"],
+      "soups": [],
+      "ointments": ["ointment_danhuang_lotion"],
+      "pitch_angle": "適合皮膚乾燥、修護、日常滋潤方向"
+    }
+  ]
+}

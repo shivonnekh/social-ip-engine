@@ -1,7 +1,8 @@
 {
   "_meta": {
-    "description": "Declarative active offers. Each offer has trigger_stages (list) — Sales/Appointment/Constitution agents query these and surface the offers at multiple touchpoints, not just at 'close' time.",
-    "last_updated": "2026-05-21",
+    "description": "Declarative active offers tagged with strategic role. Sales/Appointment/Constitution agents query these and surface the offers at multiple touchpoints.",
+    "last_updated": "2026-05-22",
+    "funnel_strategy": "Layer 1 (hook): 免診金 / 視診 to acquire — never lead with soup. Layer 2: classify need. Layer 3: soft 方向 product mention. Layer 4: if unsure → consult. Layer 5: post-consult → 療程 95 折.",
     "stages": {
       "sales_pitch": "Sales is actively pitching any product (soup or ointment)",
       "ointment_pitch": "Sales is specifically pitching ointments",
@@ -10,7 +11,9 @@
       "constitution_close": "Constitution Agent just declared a 體質",
       "appointment_offer": "Appointment Agent mentioning booking options",
       "appointment_mode_choice": "User picking in-person vs online",
-      "appointment_close": "Appointment about to confirm slot"
+      "appointment_close": "Appointment about to confirm slot",
+      "consultation_backstop": "End of any product pitch — push user to consult if unsure",
+      "post_consultation": "User has done a consultation (online video or in-person)"
     }
   },
   "offers": [
@@ -18,17 +21,19 @@
       "id": "free_consult_fee_v1",
       "title_zh": "診所睇症免診金",
       "description_zh": "首次來診所睇症免診金（HK$200 減免）。視診同到診都可以用。",
-      "applies_to": ["appointment", "online_consultation"],
+      "role": "entry_hook",
+      "positioning": "唔知自己適合飲咩？先俾中醫師睇一睇 — 第一次免診金。",
+      "applies_to": ["appointment", "online_consultation", "consultation_backstop"],
       "trigger_stages": [
         "appointment_offer", "appointment_close",
-        "constitution_close", "sales_pitch", "ointment_pitch"
+        "constitution_close", "sales_pitch", "ointment_pitch",
+        "consultation_backstop"
       ],
       "free_item": "consultation_fee",
       "discount_pct": null,
       "expires_at": null,
       "eligibility": {
         "first_time_only": true,
-        "min_age": null,
         "requires_constitution_done": false
       },
       "copy_for_writer": "首次嚟診所或者視診可以免診金（省 HK$200）"
@@ -37,17 +42,19 @@
       "id": "online_consult_free_shipping_v1",
       "title_zh": "網上視診（包郵）",
       "description_zh": "唔方便嚟診所？可以揀網上視診，藥同湯水會直送上門，免運費。",
-      "applies_to": ["online_consultation", "product_pitch"],
+      "role": "primary_conversion",
+      "positioning": "不用出門，中醫師了解情況後，安排湯水 / 藥膏送到屋企 — 最啱 WhatsApp 客。",
+      "applies_to": ["online_consultation", "product_pitch", "consultation_backstop"],
       "trigger_stages": [
         "appointment_offer", "appointment_mode_choice",
-        "constitution_close", "sales_pitch"
+        "constitution_close", "sales_pitch", "ointment_pitch", "soup_pitch",
+        "consultation_backstop"
       ],
       "free_item": "shipping",
       "discount_pct": null,
       "expires_at": null,
       "eligibility": {
         "first_time_only": false,
-        "min_age": null,
         "requires_constitution_done": false
       },
       "copy_for_writer": "嚟唔到診所？可以網上視診 + 包郵送藥同湯水"
@@ -56,20 +63,22 @@
       "id": "package_5_pct_off_v1",
       "title_zh": "購買療程95折",
       "description_zh": "整套療程（藥膏 / 湯水 / 針灸組合）95 折優惠。",
-      "applies_to": ["product_pitch", "package_pitch"],
+      "role": "upsell_post_consultation",
+      "positioning": "中醫師評估後需要持續調理時推 — 唔好喺 onboarding 階段推。",
+      "applies_to": ["product_pitch", "package_pitch", "post_consultation"],
       "trigger_stages": [
-        "sales_close", "ointment_pitch", "soup_pitch", "sales_pitch"
+        "post_consultation", "sales_close"
       ],
       "free_item": null,
       "discount_pct": 0.05,
       "expires_at": null,
       "eligibility": {
         "first_time_only": false,
-        "min_age": null,
         "requires_constitution_done": false,
-        "min_basket_items": 2
+        "min_basket_items": 2,
+        "min_user_status": "constitution_done"
       },
-      "copy_for_writer": "買成套療程 (2 件或以上) 有 95 折"
+      "copy_for_writer": "如果中醫師建議持續調理，買成套療程有 95 折"
     }
   ]
 }
