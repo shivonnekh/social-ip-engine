@@ -92,6 +92,9 @@ class FAQAgent:
         if _wants_recipes(inp.user_message):
             recipes = self._pick_recipes_for_user(inp.user)
             if recipes:
+                ts = dict(inp.user.temp_state)
+                shown_before = int(ts.get("faq_recipes_shown_count", 0))
+                ts["faq_recipes_shown_count"] = shown_before + 1
                 payload = {
                     "answer_facts": [],
                     "named_recipes": [recipe_to_dict(r) for r in recipes],
@@ -101,17 +104,20 @@ class FAQAgent:
                     ),
                     "no_match": False,
                     "intent": "list_recipes",
+                    "is_repeat_recipe_ask": shown_before > 0,
                 }
                 return SpecialistOutput(
                     specialist=SpecialistName.FAQ,
                     payload=payload,
                     cards_used=list({r.source_card for r in recipes}),
+                    suggested_user_state_diff={"temp_state": ts},
                     tools_called=[
                         {
                             "name": "RecipeExtractor.pick",
                             "args": {
                                 "constitution": inp.user.constitution.value
                                 if inp.user.constitution else None,
+                                "shown_before_count": shown_before,
                             },
                             "result": {
                                 "count": len(recipes),

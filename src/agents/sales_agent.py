@@ -122,6 +122,15 @@ class SalesAgent:
                 _no_llm_usage(),
             )
 
+        # Detect "show me soups" repeat — user already saw free recipes
+        # and is asking again. Planner has routed here on purpose; surface
+        # all 10 paid soups with images.
+        if _wants_soups_local(inp.user_message):
+            return (
+                self._soups_output(user),
+                _no_llm_usage(),
+            )
+
         candidates = self._catalog.match_products(
             constitution=user.constitution.value if user.constitution else None,
             pain_points=list(user.pain_points),
@@ -306,6 +315,82 @@ class SalesAgent:
             tools_called=tools_log,
         )
 
+    def _soups_output(self, user: Any) -> SpecialistOutput:
+        """Surface paid soup catalog when user shows repeat interest.
+
+        Picks top 5 soups matching user constitution / pain_points if
+        we know them; otherwise lists the full 10 in price-ascending
+        order so the user sees the spread.
+        """
+        soups = [
+            p for p in self._catalog.all_products if p.product_type == "soup"
+        ]
+        # Try to personalise; fall back to broad
+        candidates = self._catalog.match_products(
+            constitution=user.constitution.value if user.constitution else None,
+            pain_points=list(user.pain_points),
+            already_pitched=[],
+            user_tags=list(user.tags),
+            user_notes=user.notes,
+            max_results=10,
+            min_score=0.0,
+        )
+        if candidates:
+            ordered = [pm.product for pm in candidates if pm.product.product_type == "soup"]
+            seen = {p.product_id for p in ordered}
+            for s in sorted(soups, key=lambda p: p.price_hkd or 999):
+                if s.product_id not in seen:
+                    ordered.append(s)
+                    seen.add(s.product_id)
+            soups = ordered
+        else:
+            soups = sorted(soups, key=lambda p: p.price_hkd or 999)
+        soups = soups[:6]  # keep manageable; user can ask for more
+
+        products = [_product_dict_simple(p) for p in soups]
+        offers = _collect_offers(
+            self._promotions, ["soup_pitch", "sales_pitch", "sales_close"]
+        )
+        payload = {
+            "intent": "pitch_products",
+            "products_to_pitch": products,
+            "active_offers": offers,
+            "stage": "soup_pitch",
+            "catalog_facts": {
+                "total_paid_soups": 10,
+                "shown_now": len(products),
+                "made_by": "Care Plus 心宜中醫",
+            },
+            "writer_hint": (
+                "用戶又問湯水 — 之前已經睇過免費食譜，依家係時候 pitch 付費。"
+                "**必須**列晒呢 " + str(len(products)) + " 款 (名 + 價錢 + 1 句功效)，"
+                "每款 1 bubble + 圖。最尾一個 bubble 問:「想要邊款？同我講你嘅"
+                "選擇 + 收件地址，我幫你跟進。」絕對唔好提任何 WhatsApp 號碼，"
+                "唔好叫客自己問客服。"
+            ),
+            "writer_must_not_say": [
+                "WhatsApp 我哋", "+852 5241 7448", "wa.me",
+                "市售產品", "唔係我哋自己做",
+            ],
+        }
+        return SpecialistOutput(
+            specialist=SpecialistName.SALES,
+            payload=payload,
+            suggested_user_state_diff={
+                "products_pitched_append": [p["product_id"] for p in products]
+            },
+            cards_used=[],
+            tools_called=[
+                {
+                    "name": "Sales.soups_pitch",
+                    "args": {
+                        "constitution": user.constitution.value if user.constitution else None,
+                    },
+                    "result": {"count": len(products), "ids": [p["product_id"] for p in products]},
+                }
+            ],
+        )
+
     def _ointments_output(self, user: Any) -> SpecialistOutput:
         """Hard-coded surface of all 3 ointments. Bypasses scoring —
         user explicitly asked for topicals."""
@@ -469,6 +554,18 @@ def _wants_ointment_local(text: str) -> bool:
     if not text:
         return False
     return any(kw in text for kw in _OINTMENT_KEYWORDS_LOCAL)
+
+
+_SOUP_KEYWORDS_LOCAL = (
+    "湯水", "汤水", "邊款湯", "有咩湯", "有什麼湯", "有什么汤",
+    "推介湯", "推荐汤", "湯水推介", "湯水推薦",
+)
+
+
+def _wants_soups_local(text: str) -> bool:
+    if not text:
+        return False
+    return any(kw in text for kw in _SOUP_KEYWORDS_LOCAL)
 
 
 def _collect_offers(

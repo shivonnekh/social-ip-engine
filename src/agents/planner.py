@@ -225,6 +225,22 @@ def _rule_overrides(
             ),
         )
 
+    # FUNNEL: user asks for soups again after we've already shown free
+    # recipes once → pivot to paid pitch. They've sampled the free menu,
+    # now it's time to upsell.
+    shown_count = int((user.temp_state or {}).get("faq_recipes_shown_count", 0))
+    if _wants_soup_list(user_message) and shown_count >= 1:
+        return PlannerDecision(
+            specialists=[SpecialistName.SALES],
+            mode="solo",
+            reasoning=f"rule: repeat soup ask (shown {shown_count}x) → pivot to paid",
+            notes_for_writer=(
+                "用戶上次已經睇過免費食譜，依家又問湯水 — 直接列我哋 10 款預製"
+                "湯水：價錢 + 圖片 + 1 句功效。最後問「想要邊款，我幫你跟進」。"
+                "唔好再次推免費食譜。"
+            ),
+        )
+
     # User has finished constitution + now shows buying interest →
     # NOW pitch paid products (Sales). Constitution itself does FREE
     # recipes; Sales kicks in when user signals they want convenience.
@@ -353,6 +369,20 @@ def _wants_free_or_diy(text: str) -> bool:
     if not text:
         return False
     return any(kw in text for kw in _FREE_DIY_KEYWORDS)
+
+
+# General "what soups do you have" intent (broader than free/DIY).
+_SOUP_LIST_KEYWORDS = (
+    "湯水", "汤水", "有咩湯", "有什麼湯", "有什么汤", "有咩飲",
+    "邊款湯", "哪款汤", "推介湯", "推荐汤", "湯水推介",
+    "什麼湯水", "什么汤水", "汤水推荐",
+)
+
+
+def _wants_soup_list(text: str) -> bool:
+    if not text:
+        return False
+    return any(kw in text for kw in _SOUP_LIST_KEYWORDS)
 
 
 # Buying-intent signals — when user post-diagnosis says any of these,

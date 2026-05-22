@@ -37,6 +37,50 @@ These are currently handled separately per project, or ChatDaddy history is skip
 
 ---
 
+## Where accountId and chatId Come From
+
+> ⚠️ **Important for implementation:** `accountId` and `chatId` are NOT config values. You do not ask the user for them. You do not hardcode them. They arrive automatically inside every ChatDaddy webhook payload and are extracted at parse time.
+
+Every ChatDaddy webhook body looks like this:
+
+```json
+{
+  "event": "message-insert",
+  "data": [{
+    "id": "msg_abc123",
+    "accountId": "acc_xyz789",
+    "chatId": "85291234567@s.whatsapp.net",
+    "text": "你好",
+    "fromMe": false,
+    "timestamp": 1716345600
+  }]
+}
+```
+
+You extract them once when the webhook arrives:
+
+```python
+# Python
+msg = parse_webhook(request.json())   # your existing webhook parser
+account_id = msg.account_id           # ← comes from data[0].accountId
+chat_id = msg.chat_id                 # ← comes from data[0].chatId
+```
+
+```typescript
+// TypeScript
+const msg = parseWebhook(req.body)
+const accountId = msg.accountId       // ← comes from data[0].accountId
+const chatId = msg.chatId             // ← comes from data[0].chatId
+```
+
+Then you pass them into `enrich_webhook()` — no other source needed.
+
+**What `chatId` looks like:**
+- DM (1-on-1): `85291234567@s.whatsapp.net` — the user's phone number + suffix
+- Group chat: `120363xxxxxxxxxx@g.us` — group JID, not a phone number
+
+---
+
 ## ChatDaddy History API
 
 **Endpoint:** `GET https://api.chatdaddy.tech/im/messages/{accountId}/{chatId}`
@@ -50,11 +94,7 @@ These are currently handled separately per project, or ChatDaddy history is skip
 | `fromMe` | bool | Filter: only user messages or only bot messages |
 | `fetchFromPlatform` | bool | If true, fetch from WhatsApp source if not in ChatDaddy DB |
 
-**Available from webhook payload:**  
-- `accountId` → `msg.account_id`  
-- `chatId` → `msg.chat_id` (e.g. `85291234567@s.whatsapp.net`)
-
-Both are present in every webhook. No extra lookup needed.
+Both `accountId` and `chatId` are extracted from the webhook payload (see section above). No extra lookup or config needed.
 
 ---
 

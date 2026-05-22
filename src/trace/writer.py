@@ -47,7 +47,17 @@ class TraceWriter:
             pattern = f"*/{_safe_phone(phone)}/*.json"
         else:
             pattern = "*/*/*.json"
-        paths = sorted(self._root.glob(pattern), reverse=True)
+        # Sort by file mtime (write time) — turn_id is a random hex
+        # prefix, so lexical sort gives shuffle within a date/phone.
+        try:
+            paths = sorted(
+                self._root.glob(pattern),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+            )
+        except OSError:
+            # Fallback if a file vanished between glob and stat
+            paths = sorted(self._root.glob(pattern), reverse=True)
         return paths[:limit]
 
     def _path_for(self, bundle: TraceBundle) -> Path:
