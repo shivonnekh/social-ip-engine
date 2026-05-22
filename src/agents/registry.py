@@ -15,6 +15,7 @@ from src.agents.faq_agent import FAQAgent
 from src.agents.greeting_agent import GreetingAgent
 from src.agents.sales_agent import SalesAgent
 from src.llm import LLMClient
+from src.tools.kb_search import KBSearch
 
 
 class SpecialistProtocol(Protocol):
@@ -25,11 +26,15 @@ class SpecialistProtocol(Protocol):
 
 def build_specialist_registry(
     client: LLMClient,
+    *,
+    kb_search: KBSearch | None = None,
 ) -> dict[SpecialistName, SpecialistProtocol]:
     return {
         SpecialistName.GREETING: GreetingAgent(client),
-        SpecialistName.FAQ: FAQAgent(client=client),
+        SpecialistName.FAQ: FAQAgent(client=client, kb_search=kb_search),
         SpecialistName.SALES: SalesAgent(client=client),
-        SpecialistName.CONSTITUTION: ConstitutionAgent(client=client),
+        SpecialistName.CONSTITUTION: ConstitutionAgent(
+            client=client, kb_search=kb_search
+        ),
         SpecialistName.APPOINTMENT: AppointmentAgent(),
     }

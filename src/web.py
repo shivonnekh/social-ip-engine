@@ -31,6 +31,11 @@ from src.agents.registry import build_specialist_registry
 from src.crm.repo_factory import open_crm_repo, resolve_database_url
 from src.llm import LLMClient
 from src.orchestrator.pipeline import JessicaPipeline
+from src.tools.embedder import Embedder
+from src.tools.kb_index import KBIndex
+from src.tools.kb_indexer import index_kb
+from src.tools.kb_search import KBSearch
+from src.tools.vector_store import VectorStore
 from src.trace.writer import TraceWriter
 from src.whatsapp import client as wa_client
 from src.whatsapp.router import router as whatsapp_router
@@ -60,7 +65,35 @@ async def lifespan(app: FastAPI):
     trace_writer = TraceWriter(TRACE_DIR)
 
     client = LLMClient()  # OpenAI under the hood, picks up OPENAI_API_KEY
-    specialists = build_specialist_registry(client)
+
+    # ---- Vector KB (hybrid search) ----
+    # If DATABASE_URL is Postgres, mount pgvector + embedder + run
+    # idempotent index on startup. Skip cleanly if anything fails.
+    vector_store = None
+    embedder = None
+    kb_index = KBIndex.load()
+    if DB_URL.startswith(("postgres://", "postgresql://")):
+        try:
+            vector_store = await VectorStore.connect(DB_URL)
+            embedder = Embedder()
+            stats = await index_kb(kb=kb_index, store=vector_store, embedder=embedder)
+            logger.info("vector KB ready: %s", stats)
+        except Exception as exc:  # noqa: BLE001
+            logger.exception("vector KB init failed (%s) — falling back to keyword-only", exc)
+            vector_store = None
+            embedder = None
+    else:
+        logger.info("DB is SQLite — vector search disabled (keyword-only)")
+
+    app.state.kb_search = KBSearch(
+        kb_index, vector_store=vector_store, embedder=embedder
+    )
+    app.state.vector_store = vector_store
+    app.state.embedder = embedder
+
+    specialists = build_specialist_registry(
+        client, kb_search=app.state.kb_search
+    )
     pipeline = JessicaPipeline(
         crm=crm,
         trace_writer=trace_writer,
@@ -104,6 +137,11 @@ async def lifespan(app: FastAPI):
             task.cancel()
         await wa_client.close()
         await crm.close()
+        if vector_store is not None:
+            try:
+                await vector_store.close()
+            except Exception:  # noqa: BLE001
+                pass
 
 
 app = FastAPI(title="TCM-Jessica", version="0.1.0", lifespan=lifespan)

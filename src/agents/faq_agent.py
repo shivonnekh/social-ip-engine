@@ -72,12 +72,15 @@ class FAQAgent:
         self,
         *,
         kb_index: KBIndex | None = None,
+        kb_search: KBSearch | None = None,
         client: LLMClient | None = None,
         model: str = DEFAULT_MODEL,
         max_tokens: int = 600,
     ) -> None:
-        self._kb = kb_index or KBIndex.load()
-        self._search = KBSearch(self._kb)
+        self._kb = kb_index or (kb_search._index if kb_search else KBIndex.load())  # noqa: SLF001
+        # If a shared KBSearch is provided (with vector store), use it for
+        # hybrid semantic fallback. Otherwise stay keyword-only.
+        self._search = kb_search or KBSearch(self._kb)
         self._recipes = RecipeExtractor()
         self._client = client
         self._model = model
@@ -118,7 +121,16 @@ class FAQAgent:
                     ],
                 ), {"model": "no_llm_recipes", "input_tokens": 0, "output_tokens": 0}
 
-        hits = self._search.search(inp.user_message, top_k=3, min_score=3.0)
+        # Async hybrid search (keyword first, semantic fallback). If the
+        # KBSearch lacks vector_store/embedder, this falls back to
+        # keyword automatically.
+        try:
+            hits = await self._search.search_async(
+                inp.user_message, top_k=3, min_score=2.5
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("search_async failed (%s); falling back to sync keyword", exc)
+            hits = self._search.search(inp.user_message, top_k=3, min_score=2.5)
 
         if not hits:
             output = SpecialistOutput(

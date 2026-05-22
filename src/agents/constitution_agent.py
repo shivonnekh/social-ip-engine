@@ -142,13 +142,14 @@ class ConstitutionAgent:
         client: LLMClient | None = None,
         catalog: ProductCatalog | None = None,
         kb_index: KBIndex | None = None,
+        kb_search: KBSearch | None = None,
         vision_model: str = DEFAULT_MODEL,
         max_vision_tokens: int = 400,
     ) -> None:
         self._client = client
         self._catalog = catalog or ProductCatalog()
-        self._kb = kb_index or KBIndex.load()
-        self._kb_search = KBSearch(self._kb)
+        self._kb = kb_index or (kb_search._index if kb_search else KBIndex.load())  # noqa: SLF001
+        self._kb_search = kb_search or KBSearch(self._kb)
         self._recipes = RecipeExtractor()
         self._promotions = PromotionsLoader()
         self._vision_model = vision_model
