@@ -12,11 +12,29 @@ from __future__ import annotations
 
 import html
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
+
+HKT = timezone(timedelta(hours=8))
+
+
+def _to_hkt(iso_utc: str) -> str:
+    """Convert a UTC ISO timestamp string to 'YYYY-MM-DD HH:MM:SS HKT'."""
+    if not iso_utc:
+        return ""
+    s = iso_utc.replace("Z", "")
+    try:
+        dt = datetime.fromisoformat(s)
+    except ValueError:
+        return iso_utc[:19].replace("T", " ")
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    hkt = dt.astimezone(HKT)
+    return hkt.strftime("%Y-%m-%d %H:%M:%S")
 
 from src.agents import (
     appointment_agent,
@@ -313,7 +331,7 @@ async def traces_list(request: Request, phone: str | None = None) -> HTMLRespons
             data = json.loads(p.read_text(encoding="utf-8"))
         except Exception:  # noqa: BLE001
             continue
-        ts = (data.get("received_at") or "")[:19].replace("T", " ")
+        ts = _to_hkt(data.get("received_at") or "")
         phone_v = data.get("phone", "?")
         user_msg = (data.get("user_message") or "")[:60]
         specs = ", ".join(
@@ -346,7 +364,7 @@ async def traces_list(request: Request, phone: str | None = None) -> HTMLRespons
     <div class="card">
       <table>
         <thead><tr>
-          <th>turn_id</th><th>at</th><th>phone</th><th>message</th>
+          <th>turn_id</th><th>at (HKT)</th><th>phone</th><th>message</th>
           <th>specialists</th><th>bubbles</th><th>latency</th><th>path</th>
         </tr></thead>
         <tbody>{''.join(rows) or '<tr><td colspan="8" style="text-align:center;color:var(--muted);">(no traces yet)</td></tr>'}</tbody>
@@ -371,7 +389,7 @@ async def trace_detail(request: Request, turn_id: str) -> HTMLResponse:
 
 def _render_trace_detail(d: dict[str, Any], turn_id: str) -> str:
     # ── Header / CRM
-    received = (d.get("received_at") or "")[:19].replace("T", " ")
+    received = _to_hkt(d.get("received_at") or "")
     user_msg = d.get("user_message") or ""
     crm = d.get("crm_snapshot") or {}
     crm_kv = "\n".join(
@@ -507,7 +525,7 @@ def _render_trace_detail(d: dict[str, Any], turn_id: str) -> str:
     return f"""
     <a href="/admin/traces" style="font-size:0.9rem;">← all traces</a>
     <h1>Turn <code>{html.escape(turn_id)}</code></h1>
-    <div class="sub">{html.escape(received)} · {html.escape(str(d.get('phone','?')))} · {d.get('total_latency_ms',0)} ms total</div>
+    <div class="sub">{html.escape(received)} HKT · {html.escape(str(d.get('phone','?')))} · {d.get('total_latency_ms',0)} ms total</div>
     {fatal_html}
 
     <div class="card">
