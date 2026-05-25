@@ -281,3 +281,127 @@ def _followup_fallback(products: list[dict]) -> list[str]:
             "飲完感覺點？有咩唔舒服或者想了解嘅，隨時同我講 😊",
         ]
     return ["嗨！上次買嘅嘢有冇用到呀？🌿 有咩感覺或者問題，隨時搵我！"]
+
+
+# ---------------------------------------------------------------------------
+# Solar term tip composer
+# ---------------------------------------------------------------------------
+
+
+async def compose_solar_term_tip(
+    llm: object,
+    user: "User",
+    term_name_zh: str,
+    term_focus_zh: str,
+    term_tip_zh: str,
+    organ_zh: str,
+) -> list[str]:
+    """Generate a 節氣養生 tip for the current solar term. 1-2 HK Canto bubbles."""
+    constitution = user.constitution.value if user.constitution else "unknown"
+
+    system_prompt = """\
+你係 Jessica，心宜中醫 Care Plus 嘅中醫健康顧問。
+今日係香港嘅一個重要節氣，你主動向用戶分享一條節氣養生 tip。
+
+⚠️ 規則：
+- 唔好問 follow-up 問題
+- 唔好提任何價錢或產品名稱
+- 全部用香港廣東話口語（唔好書面語）
+- 1-2 條訊息，每條唔超過 150 個字
+- 語氣親切自然，像朋友傳知識咁
+
+輸出格式（JSON only）：
+{"bubbles": ["第一條訊息", "第二條訊息（可選）"]}
+"""
+
+    user_prompt = f"""今日節氣：{term_name_zh}
+養生重點：{term_focus_zh}（對應臟腑：{organ_zh}）
+中醫建議：{term_tip_zh}
+用戶體質：{constitution}
+
+根據以上節氣資料，寫 1-2 條廣東話養生訊息俾用戶，要提一下今日係{term_name_zh}同埋中醫上可以做咩。如果用戶有特定體質，可以輕輕個人化。"""
+
+    try:
+        response = await llm.messages.create(
+            model="gpt-4o-mini",
+            max_tokens=300,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = response.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = re.sub(r"^```[a-z]*\n?", "", raw)
+            raw = re.sub(r"\n?```$", "", raw)
+        data = json.loads(raw)
+        bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Solar term compose failed (%s) — fallback", type(exc).__name__)
+        return [f"今日係{term_name_zh} 🌿 {term_tip_zh[:100]}"]
+
+    cleaned = [b[:BUBBLE_MAX] for b in bubbles[:MAX_BUBBLES] if b and not _PRICE_RE.search(b)]
+    return cleaned if cleaned else [f"今日係{term_name_zh} 🌿 {term_tip_zh[:100]}"]
+
+
+# ---------------------------------------------------------------------------
+# Constitution recheck composer
+# ---------------------------------------------------------------------------
+
+
+async def compose_constitution_recheck(
+    llm: object,
+    user: "User",
+) -> list[str]:
+    """Generate a gentle 3-month constitution re-assessment nudge. 1-2 bubbles."""
+    constitution = user.constitution.value if user.constitution else "unknown"
+
+    system_prompt = """\
+你係 Jessica，心宜中醫 Care Plus 嘅中醫健康顧問。
+你主動聯絡一位之前做過體質評估嘅用戶，提醒佢體質係會變嘅，建議佢定期重新評估。
+
+⚠️ 規則：
+- 唔好賣嘢，呢次係純粹關心
+- 唔好提價錢
+- 廣東話口語
+- 1-2 條訊息，每條唔超過 150 個字
+- 溫暖輕鬆，唔好太正式
+
+輸出格式（JSON only）：
+{"bubbles": ["第一條訊息", "第二條訊息（可選）"]}
+"""
+
+    user_prompt = f"""用戶上次評估體質係：{constitution}
+距今已大約 3 個月。
+
+請寫 1-2 條廣東話訊息，溫柔提醒用戶：
+- 中醫體質唔係固定嘅，會隨季節、壓力、飲食變化
+- 可以重新評估睇下有冇改善
+- 可以傳一張舌頭相俾你，或者重新回答幾條問題
+
+語氣要輕鬆，像朋友關心咁，唔好太像推銷或提醒。"""
+
+    try:
+        response = await llm.messages.create(
+            model="gpt-4o-mini",
+            max_tokens=300,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = response.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = re.sub(r"^```[a-z]*\n?", "", raw)
+            raw = re.sub(r"\n?```$", "", raw)
+        data = json.loads(raw)
+        bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Constitution recheck compose failed (%s) — fallback", type(exc).__name__)
+        return _constitution_recheck_fallback(constitution)
+
+    cleaned = [b[:BUBBLE_MAX] for b in bubbles[:MAX_BUBBLES] if b and not _PRICE_RE.search(b)]
+    return cleaned if cleaned else _constitution_recheck_fallback(constitution)
+
+
+def _constitution_recheck_fallback(constitution: str) -> list[str]:
+    return [
+        f"嗨！上次你評估係{constitution}體質，已經過咗幾個月喇 🌿",
+        "體質係會變嘅，特別係換季後。有時間嘅話可以傳張舌頭相俾我，睇下而家體質點？😊",
+    ]

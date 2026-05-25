@@ -251,6 +251,39 @@ class CRMRepoPG:
                 iso_week,
             )
 
+    async def list_phones_for_constitution_recheck(
+        self,
+        recheck_cutoff: str,
+        activity_cutoff: str,
+        limit: int = 5000,
+    ) -> list[str]:
+        """Phones with a known constitution that haven't been rechecked recently."""
+        async with self._pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT u.phone
+                FROM users u
+                WHERE u.status NOT IN ('churned', 'opted_out')
+                  AND u.constitution != 'unknown'
+                  AND u.phone NOT IN (
+                      SELECT phone FROM user_broadcasts
+                      WHERE condition_code = 'constitution_recheck'
+                        AND sent_at > $1
+                  )
+                  AND NOT EXISTS (
+                      SELECT 1 FROM messages m
+                      WHERE m.phone = u.phone
+                        AND m.at > $2
+                  )
+                ORDER BY u.updated_at ASC
+                LIMIT $3
+                """,
+                recheck_cutoff,
+                activity_cutoff,
+                limit,
+            )
+        return [row["phone"] for row in rows]
+
     async def list_phones_for_purchase_followup(
         self,
         activity_cutoff: str,

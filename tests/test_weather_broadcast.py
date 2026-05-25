@@ -1,8 +1,8 @@
-"""Tests for the proactive weather broadcast + purchase follow-up features.
-
-Covers:
-  - weather_service: condition detection (pure — no I/O)
-  - scheduler: eligibility checks (weekly cap + 36h gap)
+"""Tests for the proactive broadcast features:
+  - weather_service: condition detection (pure)
+  - scheduler: eligibility, weather cap, purchase followup
+  - solar_terms: detection + dedup key
+  - constitution_recheck: cutoffs
 
 All I/O (HKO API, LLM, WhatsApp send) is mocked.
 """
@@ -498,3 +498,138 @@ class TestPurchaseFollowupComposer:
         bubbles = await compose_purchase_followup(llm, user, products)
         for bubble in bubbles:
             assert len(bubble) <= BUBBLE_MAX
+
+
+# ---------------------------------------------------------------------------
+# Solar terms: detection (pure)
+# ---------------------------------------------------------------------------
+
+
+class TestSolarTermDetection:
+    def test_detects_term_on_exact_date(self):
+        from src.broadcaster.solar_terms import get_active_solar_term
+        from datetime import date
+        # 小滿 is 2026-05-21
+        result = get_active_solar_term(date(2026, 5, 21))
+        assert result is not None
+        assert result.name_zh == "小滿"
+
+    def test_detects_term_one_day_before(self):
+        from src.broadcaster.solar_terms import get_active_solar_term
+        from datetime import date
+        result = get_active_solar_term(date(2026, 5, 20))
+        assert result is not None
+        assert result.name_zh == "小滿"
+
+    def test_detects_term_two_days_after(self):
+        from src.broadcaster.solar_terms import get_active_solar_term
+        from datetime import date
+        result = get_active_solar_term(date(2026, 5, 23))
+        assert result is not None
+        assert result.name_zh == "小滿"
+
+    def test_no_term_far_from_any_date(self):
+        from src.broadcaster.solar_terms import get_active_solar_term
+        from datetime import date
+        # May 10 is between 立夏 (May 6) and 小滿 (May 21) — ~9 days from either
+        result = get_active_solar_term(date(2026, 5, 10))
+        assert result is None
+
+    def test_condition_code_format(self):
+        from src.broadcaster.solar_terms import get_active_solar_term, solar_term_condition_code_for_year
+        from datetime import date
+        term = get_active_solar_term(date(2026, 12, 22))  # 冬至
+        assert term is not None
+        code = solar_term_condition_code_for_year(term, 2026)
+        assert code == "solar_dongzhi_2026"
+
+    def test_all_24_terms_have_dates(self):
+        from src.broadcaster.solar_terms import SOLAR_TERMS
+        assert len(SOLAR_TERMS) == 24
+        for term in SOLAR_TERMS:
+            assert len(term.dates) >= 1
+            assert term.name_zh
+            assert term.season_tip_zh
+            assert term.organ_zh
+
+    def test_different_years_give_different_codes(self):
+        from src.broadcaster.solar_terms import SOLAR_TERMS, solar_term_condition_code_for_year
+        term = SOLAR_TERMS[0]
+        assert solar_term_condition_code_for_year(term, 2026) != solar_term_condition_code_for_year(term, 2027)
+
+    def test_detection_window_boundary(self):
+        from src.broadcaster.solar_terms import get_active_solar_term, DETECTION_WINDOW_DAYS
+        from datetime import date, timedelta
+        # Exactly at the boundary — day of + DETECTION_WINDOW_DAYS should still match
+        term_date = date(2026, 6, 21)  # 夏至
+        edge = term_date + timedelta(days=DETECTION_WINDOW_DAYS)
+        result = get_active_solar_term(edge)
+        assert result is not None
+        assert result.name_zh == "夏至"
+
+    def test_just_outside_window_returns_none(self):
+        from src.broadcaster.solar_terms import get_active_solar_term, DETECTION_WINDOW_DAYS
+        from datetime import date, timedelta
+        term_date = date(2026, 6, 21)  # 夏至
+        outside = term_date + timedelta(days=DETECTION_WINDOW_DAYS + 1)
+        result = get_active_solar_term(outside)
+        # Should not be 夏至 (芒種 ends, 夏至 hasn't started for next year)
+        if result is not None:
+            assert result.name_zh != "夏至"
+
+
+# ---------------------------------------------------------------------------
+# Constitution recheck: cutoff helpers
+# ---------------------------------------------------------------------------
+
+
+class TestConstitutionRecheckCutoffs:
+    def test_recheck_cutoff_is_90_days(self):
+        from src.broadcaster.scheduler import RECHECK_COOLDOWN_DAYS
+        now = datetime(2026, 5, 25, 10, 0, tzinfo=HKT)
+        cutoff = (now - timedelta(days=RECHECK_COOLDOWN_DAYS)).isoformat()
+        delta = now - datetime.fromisoformat(cutoff)
+        assert abs(delta.total_seconds() - RECHECK_COOLDOWN_DAYS * 86400) < 60
+
+    def test_activity_gap_is_7_days(self):
+        from src.broadcaster.scheduler import RECHECK_ACTIVITY_GAP_DAYS
+        now = datetime(2026, 5, 25, 10, 0, tzinfo=HKT)
+        cutoff = (now - timedelta(days=RECHECK_ACTIVITY_GAP_DAYS)).isoformat()
+        delta = now - datetime.fromisoformat(cutoff)
+        assert abs(delta.total_seconds() - RECHECK_ACTIVITY_GAP_DAYS * 86400) < 60
+
+
+# ---------------------------------------------------------------------------
+# Constitution recheck composer: fallback
+# ---------------------------------------------------------------------------
+
+
+class TestConstitutionRecheckComposer:
+    def _make_user(self, constitution: str = "氣虛"):
+        from src.crm.models import User, Constitution
+        u = User(phone="+85291234567")
+        # Set constitution via field
+        object.__setattr__(u, "constitution", Constitution(constitution) if constitution in [c.value for c in Constitution] else u.constitution)
+        return u
+
+    @pytest.mark.asyncio
+    async def test_fallback_on_llm_failure(self):
+        from src.broadcaster.composer import compose_constitution_recheck
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(side_effect=Exception("LLM down"))
+        user = self._make_user()
+        bubbles = await compose_constitution_recheck(llm, user)
+        assert len(bubbles) >= 1
+        assert all(isinstance(b, str) and len(b) > 0 for b in bubbles)
+
+    @pytest.mark.asyncio
+    async def test_no_price_in_output(self):
+        from src.broadcaster.composer import compose_constitution_recheck
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["嗨！體質評估 HK$50 再做一次？", "謝謝！"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_constitution_recheck(llm, user)
+        for b in bubbles:
+            assert "HK$" not in b

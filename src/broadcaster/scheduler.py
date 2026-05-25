@@ -23,7 +23,17 @@ import logging
 import os
 from datetime import datetime, timedelta, timezone
 
-from src.broadcaster.composer import compose_broadcast, compose_purchase_followup, _load_product_names
+from src.broadcaster.composer import (
+    compose_broadcast,
+    compose_constitution_recheck,
+    compose_purchase_followup,
+    compose_solar_term_tip,
+    _load_product_names,
+)
+from src.broadcaster.solar_terms import (
+    get_active_solar_term,
+    solar_term_condition_code_for_year,
+)
 from src.broadcaster.weather_service import (
     WeatherCondition,
     detect_conditions,
@@ -52,8 +62,12 @@ SEND_WINDOW_START_H = 8   # 08:00 HKT
 SEND_WINDOW_END_H = 21    # 21:00 HKT
 
 # Purchase follow-up config
-FOLLOWUP_QUIET_DAYS = int(os.environ.get("FOLLOWUP_QUIET_DAYS", "3"))    # days of silence before follow-up
-FOLLOWUP_COOLDOWN_DAYS = int(os.environ.get("FOLLOWUP_COOLDOWN_DAYS", "30"))  # re-send window
+FOLLOWUP_QUIET_DAYS = int(os.environ.get("FOLLOWUP_QUIET_DAYS", "3"))
+FOLLOWUP_COOLDOWN_DAYS = int(os.environ.get("FOLLOWUP_COOLDOWN_DAYS", "30"))
+
+# Constitution recheck config
+RECHECK_COOLDOWN_DAYS = int(os.environ.get("RECHECK_COOLDOWN_DAYS", "90"))
+RECHECK_ACTIVITY_GAP_DAYS = int(os.environ.get("RECHECK_ACTIVITY_GAP_DAYS", "7"))
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -232,6 +246,145 @@ async def _run_purchase_followup(crm: object, llm: object, account_id: str) -> N
 
 
 # ---------------------------------------------------------------------------
+# Solar term broadcast
+# ---------------------------------------------------------------------------
+
+
+async def _run_solar_term(crm: object, llm: object, account_id: str) -> None:
+    """Send a 節氣養生 tip if today is within ±2 days of a solar term."""
+    now = datetime.now(HKT)
+
+    if not _within_send_window(now):
+        return
+
+    term = get_active_solar_term(now.date())
+    if term is None:
+        logger.debug("Solar term: no active term today")
+        return
+
+    condition_code = solar_term_condition_code_for_year(term, now.year)
+    logger.info("Solar term: %s (%s) is active", term.name_zh, condition_code)
+
+    # Only send to users who haven't received this term+year combo
+    # Re-use the purchase followup query pattern: "not in user_broadcasts for this code"
+    # We query manually here since it's a per-code check, not a cooldown window
+    iso_week = _current_iso_week(now)
+    phones = await crm.list_active_phones()
+
+    sent_count = 0
+    errors = 0
+
+    for phone in phones:
+        if is_blocked(phone):
+            continue
+
+        # Check: already sent this term this year?
+        try:
+            cur_week_count = await crm.get_broadcast_count_this_week(phone, f"{now.year}-{term.name_en}")
+        except Exception:  # noqa: BLE001
+            # Fallback: use a synthetic "iso_week" key unique to this term+year
+            cur_week_count = 0
+
+        # Use a synthetic iso_week key: "<year>-<term_en>" to dedup per-term per-year
+        dedup_week = f"{now.year}-{term.name_en}"
+        already_sent = await crm.get_broadcast_count_this_week(phone, dedup_week)
+        if already_sent > 0:
+            continue
+
+        # Also respect normal weekly weather cap — count combined
+        if not await _user_is_eligible(crm, phone, iso_week, now):
+            continue
+
+        try:
+            user = await crm.get_user(phone)
+            if user is None:
+                continue
+
+            bubbles = await compose_solar_term_tip(
+                llm, user,
+                term_name_zh=term.name_zh,
+                term_focus_zh=term.tcm_focus_zh,
+                term_tip_zh=term.season_tip_zh,
+                organ_zh=term.organ_zh,
+            )
+            if not bubbles:
+                continue
+
+            await wa_client.send_long_message(account_id, phone, "\n\n".join(bubbles))
+
+            sent_at = datetime.now(HKT).isoformat()
+            # Record under both the dedup key AND the normal weekly iso_week
+            await crm.record_broadcast(phone, condition_code, dedup_week, sent_at)
+            sent_count += 1
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Solar term: failed for %s: %s", phone[-4:], exc)
+            errors += 1
+
+        await asyncio.sleep(BROADCAST_SEND_PACE_S)
+
+    logger.info("Solar term cycle done — term=%s sent=%d errors=%d", term.name_zh, sent_count, errors)
+
+
+# ---------------------------------------------------------------------------
+# Constitution recheck
+# ---------------------------------------------------------------------------
+
+
+async def _run_constitution_recheck(crm: object, llm: object, account_id: str) -> None:
+    """Nudge users whose constitution was set 90+ days ago to re-assess."""
+    now = datetime.now(HKT)
+
+    if not _within_send_window(now):
+        return
+
+    recheck_cutoff = (now - timedelta(days=RECHECK_COOLDOWN_DAYS)).isoformat()
+    activity_cutoff = (now - timedelta(days=RECHECK_ACTIVITY_GAP_DAYS)).isoformat()
+
+    phones = await crm.list_phones_for_constitution_recheck(recheck_cutoff, activity_cutoff)
+
+    if not phones:
+        logger.debug("Constitution recheck: no eligible users")
+        return
+
+    logger.info("Constitution recheck: %d users eligible", len(phones))
+
+    iso_week = _current_iso_week(now)
+    sent_count = 0
+    errors = 0
+
+    for phone in phones:
+        if is_blocked(phone):
+            continue
+
+        if not await _user_is_eligible(crm, phone, iso_week, now):
+            continue
+
+        try:
+            user = await crm.get_user(phone)
+            if user is None:
+                continue
+
+            bubbles = await compose_constitution_recheck(llm, user)
+            if not bubbles:
+                continue
+
+            await wa_client.send_long_message(account_id, phone, "\n\n".join(bubbles))
+
+            sent_at = datetime.now(HKT).isoformat()
+            await crm.record_broadcast(phone, "constitution_recheck", iso_week, sent_at)
+            sent_count += 1
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Constitution recheck: failed for %s: %s", phone[-4:], exc)
+            errors += 1
+
+        await asyncio.sleep(BROADCAST_SEND_PACE_S)
+
+    logger.info("Constitution recheck done — sent=%d errors=%d", sent_count, errors)
+
+
+# ---------------------------------------------------------------------------
 # Background loop (entry point wired from web.py lifespan)
 # ---------------------------------------------------------------------------
 
@@ -256,3 +409,11 @@ async def start_broadcast_loop(crm: object, llm: object, account_id: str) -> Non
             await _run_purchase_followup(crm, llm, account_id)
         except Exception as exc:  # noqa: BLE001
             logger.error("Followup loop error (will retry next cycle): %s", exc)
+        try:
+            await _run_solar_term(crm, llm, account_id)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Solar term loop error (will retry next cycle): %s", exc)
+        try:
+            await _run_constitution_recheck(crm, llm, account_id)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Constitution recheck loop error (will retry next cycle): %s", exc)
