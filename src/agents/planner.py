@@ -36,7 +36,7 @@ from src.agents.base import (
     SpecialistName,
     render_specialist_menu_zh,
 )
-from src.agents.sales_agent import _is_purchase_confirmation
+from src.agents.sales_agent import _ORDER_RE
 from src.crm.models import Constitution, User, UserStatus
 from src.tools import prompt_overrides
 
@@ -182,6 +182,20 @@ def _rule_overrides(
 ) -> PlannerDecision | None:
     """Skip the LLM for routes where the answer is obvious."""
 
+    # wa.me pre-filled order message: 「想訂【product HK$price】」
+    # This arrives when the user clicks the purchase link in Jessica's chat.
+    # Route to Sales immediately — it will parse the product and collect address.
+    if _ORDER_RE.search(user_message):
+        return PlannerDecision(
+            specialists=[SpecialistName.SALES],
+            mode="solo",
+            reasoning="rule: wa.me order message detected → confirm order + collect address",
+            notes_for_writer=(
+                "用戶係透過購買連結落單。Sales Agent 已經識別產品同定咗 CRM。"
+                "唔好再 pitch，唔好再介紹產品 — 依照 writer_hint 確認訂單 + 問收件資料。"
+            ),
+        )
+
     # Tongue photo → constitution is mandatory
     if media_urls:
         if user.status in (UserStatus.NEW, UserStatus.QUALIFIED):
@@ -224,21 +238,6 @@ def _rule_overrides(
             specialists=[SpecialistName.CASUAL],
             mode="solo",
             reasoning="rule: repeat 'hi' / returning user — casual not onboarding",
-        )
-
-    # User confirms they've placed an order ("我訂咗" / "買咗" etc.)
-    # → Sales Agent detects this and records the purchase in CRM.
-    # Must fire before "where to buy" / "wants to buy" rules so past-tense
-    # "落單咗" doesn't accidentally trigger a new pitch.
-    if _is_purchase_confirmation(user_message) and user.products_pitched:
-        return PlannerDecision(
-            specialists=[SpecialistName.SALES],
-            mode="solo",
-            reasoning="rule: user confirmed purchase → record + warm follow-up",
-            notes_for_writer=(
-                "用戶話已經落單！唔好再 pitch，唔好再講價錢。"
-                "溫暖祝賀，提提飲法保存，邀請佢飲完分享感受。"
-            ),
         )
 
     # User explicitly wants free / DIY content → KB lookup, NOT Sales.

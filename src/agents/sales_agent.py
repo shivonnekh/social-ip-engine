@@ -40,6 +40,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 from typing import Any
 
 from src.llm import LLMClient
@@ -112,9 +113,20 @@ class SalesAgent:
     ) -> tuple[SpecialistOutput, dict[str, Any]]:
         user = inp.user
 
-        # Detect purchase confirmation ("我訂咗" / "買咗" etc.) FIRST.
-        # When user confirms they ordered, record it in CRM + respond warmly.
-        # Must check before "where to buy" so "落單咗" doesn't re-trigger a pitch.
+        # Detect purchase order message FIRST — highest priority.
+        # When user clicks the wa.me purchase link, they send exactly:
+        #   「想訂【彭魚鰓解毒湯 HK$120】」
+        # This arrives at Jessica's number. Parse it, confirm the order,
+        # update CRM, ask for delivery address.
+        parsed_order = _parse_order_message(inp.user_message, self._catalog)
+        if parsed_order is not None:
+            return (
+                self._order_received_output(user, parsed_order),
+                _no_llm_usage(),
+            )
+
+        # Detect past-tense purchase confirmation ("我訂咗" / "買咗") as a
+        # secondary fallback — user may have ordered out-of-band or via voice.
         if _is_purchase_confirmation(inp.user_message) and user.products_pitched:
             return (
                 self._purchase_confirmed_output(user),
@@ -522,7 +534,7 @@ class SalesAgent:
                 + (playbook.consultation_backstop if playbook else "")
                 + "」\n"
                 f"Bubble {len(products)+3} (CTA): 問「想試邊款？同我講你嘅"
-                "選擇 + 收件地址，我幫你跟進。訂完記得話我知呀 😊」\n"
+                "選擇 + 收件地址，我幫你跟進。」\n"
                 "唔好提 WhatsApp 號碼，唔好倒晒 10 款 — focus 呢 3 款。"
             ),
             "writer_must_not_say": [
@@ -600,6 +612,70 @@ class SalesAgent:
                     "name": "Sales.ointments_lookup",
                     "args": {},
                     "result": {"count": len(products)},
+                }
+            ],
+        )
+
+    def _order_received_output(
+        self, user: Any, order: "OrderParsed"
+    ) -> SpecialistOutput:
+        """User sent the wa.me pre-filled order message — we know exactly what they ordered.
+
+        Records the purchase in CRM and composes an acknowledgment + delivery
+        address collection. This is the primary purchase confirmation path.
+        """
+        needs_address = not (user.location or user.district)
+
+        writer_hint = (
+            f"用戶剛剛訂咗：{order.product_name}（HK${order.price_hkd}）。\n"
+            "Bubble 1: 溫暖確認收到訂單，講一句產品名 + 感謝（例如「好嘢！"
+            f"收到你嘅{order.product_name}訂單 🎉」）。\n"
+        )
+        if needs_address:
+            writer_hint += (
+                "Bubble 2: 問收件地址（全名 + 地址 + 電話）。\n"
+                "例如：「方便俾我收件人全名、送貨地址同聯絡電話嗎？"
+                "我幫你跟診所安排 🙏」\n"
+            )
+        else:
+            writer_hint += (
+                f"Bubble 2: 話知道地區係 {user.district or user.location}，"
+                "問埋全名同電話確認。\n"
+            )
+        writer_hint += (
+            "Bubble 3（可選）：輕輕提一句保存方法或飲法，一句就夠，唔好太長。\n"
+            "唔好再 pitch 其他產品，唔好提價錢，呢轉係確認訂單。"
+        )
+
+        payload = {
+            "intent": "order_received",
+            "ordered_product_id": order.product_id,
+            "ordered_product_name": order.product_name,
+            "price_hkd": order.price_hkd,
+            "needs_delivery_address": needs_address,
+            "stage": "post_purchase",
+            "writer_hint": writer_hint,
+        }
+        return SpecialistOutput(
+            specialist=SpecialistName.SALES,
+            payload=payload,
+            suggested_user_state_diff={
+                "status": "bought",
+                "products_purchased_append": [order.product_id] if order.product_id else [],
+            },
+            cards_used=[],
+            tools_called=[
+                {
+                    "name": "Sales.order_received",
+                    "args": {
+                        "raw_message": order.raw_text,
+                        "product_name": order.product_name,
+                        "product_id": order.product_id,
+                    },
+                    "result": {
+                        "status_set": "bought",
+                        "needs_address": needs_address,
+                    },
                 }
             ],
         )
@@ -728,7 +804,7 @@ class SalesAgent:
                 + (playbook.consultation_backstop if playbook else "")
                 + "」\n"
                 "最後一 bubble: 「想要邊款？同我講你嘅選擇 + 收件地址我幫你跟"
-                "進。訂完記得話我知呀 😊」**絕對唔好**叫客 WhatsApp 任何外部號碼。\n\n"
+                "進。」**絕對唔好**叫客 WhatsApp 任何外部號碼。\n\n"
                 "規矩：用「方向：xxx」框架，唔好用「你應該買」「治療」「療效」"
                 "「包好」呢類斷言。"
             ),
@@ -779,6 +855,64 @@ _WHERE_TO_BUY_KEYWORDS = (
     "點樣買", "點樣訂", "WhatsApp", "whatsapp", "連結", "link",
     "係咪你哋", "你哋自己", "你哋出", "你哋整",  # "Is it your own product?"
 )
+
+
+# ---------------------------------------------------------------------------
+# Order message parser
+# ---------------------------------------------------------------------------
+
+# wa.me pre-filled order format: 想訂【<name> HK$<price>】
+_ORDER_RE = re.compile(r"想訂【([^】]+)\s+HK\$(\d+)】")
+
+
+class OrderParsed:
+    """Parsed result from a wa.me order message."""
+
+    __slots__ = ("raw_text", "product_name", "price_hkd", "product_id")
+
+    def __init__(
+        self,
+        raw_text: str,
+        product_name: str,
+        price_hkd: int,
+        product_id: str | None,
+    ) -> None:
+        self.raw_text = raw_text
+        self.product_name = product_name
+        self.price_hkd = price_hkd
+        self.product_id = product_id
+
+
+def _parse_order_message(text: str, catalog: Any) -> "OrderParsed | None":
+    """If ``text`` is a wa.me pre-filled order message, parse and return it.
+
+    Matches: 「想訂【彭魚鰓解毒湯 HK$120】」
+    Looks up the product ID by name from the catalog (best-effort, None if
+    not found — we still record the order even without a known ID).
+    Returns None if the text does not match the order format.
+    """
+    if not text:
+        return None
+    m = _ORDER_RE.search(text)
+    if not m:
+        return None
+
+    product_name = m.group(1).strip()
+    price_hkd = int(m.group(2))
+
+    # Look up product ID by name (case-insensitive partial match)
+    product_id: str | None = None
+    for prod in catalog.all_products:
+        if product_name in prod.name or prod.name in product_name:
+            product_id = prod.product_id
+            break
+
+    return OrderParsed(
+        raw_text=text,
+        product_name=product_name,
+        price_hkd=price_hkd,
+        product_id=product_id,
+    )
 
 
 def _wants_where_to_buy(text: str) -> bool:

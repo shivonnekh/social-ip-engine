@@ -5,7 +5,11 @@ from __future__ import annotations
 import pytest
 
 from src.agents.base import SpecialistInput, SpecialistName
-from src.agents.sales_agent import SalesAgent, _is_purchase_confirmation
+from src.agents.sales_agent import (
+    SalesAgent,
+    _is_purchase_confirmation,
+    _parse_order_message,
+)
 from src.crm.models import Constitution, User
 
 
@@ -215,6 +219,74 @@ async def test_purchase_confirmation_skipped_when_no_pitched(
 
     # No pitch + no products → no_match (not purchase_confirmed)
     assert output.payload["intent"] != "purchase_confirmed"
+
+
+# ---------------------------------------------------------------------------
+# wa.me order message detection + parsing
+# ---------------------------------------------------------------------------
+
+
+def test_parse_order_message_valid(sales: SalesAgent) -> None:
+    """Standard wa.me pre-filled order message is parsed correctly."""
+    catalog = sales._catalog
+    result = _parse_order_message("想訂【彭魚鰓解毒湯 HK$120】", catalog)
+    assert result is not None
+    assert result.product_name == "彭魚鰓解毒湯"
+    assert result.price_hkd == 120
+    assert result.product_id is not None  # should match catalog
+
+
+def test_parse_order_message_unknown_product(sales: SalesAgent) -> None:
+    """Order message with unknown product name — still parses, product_id is None."""
+    catalog = sales._catalog
+    result = _parse_order_message("想訂【神秘靚湯 HK$999】", catalog)
+    assert result is not None
+    assert result.product_name == "神秘靚湯"
+    assert result.price_hkd == 999
+    assert result.product_id is None  # not in catalog
+
+
+def test_parse_order_message_invalid(sales: SalesAgent) -> None:
+    """Regular messages do NOT match order format."""
+    catalog = sales._catalog
+    for text in ["我想訂湯", "幾錢？", "我訂咗", "", "hello"]:
+        assert _parse_order_message(text, catalog) is None, f"False positive for: {text!r}"
+
+
+@pytest.mark.asyncio
+async def test_order_received_sets_status_bought(sales: SalesAgent) -> None:
+    """wa.me order message → status=bought + products_purchased recorded."""
+    user = User(phone="+85291234567", constitution=Constitution.SHIRE)
+    inp = SpecialistInput(user=user, user_message="想訂【彭魚鰓解毒湯 HK$120】")
+    output, _usage = await sales.run(inp)
+
+    assert output.payload["intent"] == "order_received"
+    assert output.payload["ordered_product_name"] == "彭魚鰓解毒湯"
+    diff = output.suggested_user_state_diff
+    assert diff.get("status") == "bought"
+    assert diff.get("products_purchased_append")
+
+
+@pytest.mark.asyncio
+async def test_order_received_asks_address_when_unknown(sales: SalesAgent) -> None:
+    """User with no location → payload flags needs_delivery_address=True."""
+    user = User(phone="+85291234567")  # no location/district
+    inp = SpecialistInput(user=user, user_message="想訂【清心潤肺湯 HK$48】")
+    output, _usage = await sales.run(inp)
+
+    assert output.payload["intent"] == "order_received"
+    assert output.payload["needs_delivery_address"] is True
+    assert "address" in output.payload["writer_hint"].lower() or "地址" in output.payload["writer_hint"]
+
+
+@pytest.mark.asyncio
+async def test_order_received_skips_address_when_known(sales: SalesAgent) -> None:
+    """User with known district → payload flags needs_delivery_address=False."""
+    user = User(phone="+85291234567", district="旺角")
+    inp = SpecialistInput(user=user, user_message="想訂【清肝明目湯 HK$68】")
+    output, _usage = await sales.run(inp)
+
+    assert output.payload["needs_delivery_address"] is False
 
 
 @pytest.mark.asyncio
