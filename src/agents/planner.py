@@ -419,6 +419,25 @@ def _rule_overrides(
             ),
         )
 
+    # 症狀記憶 — fire only if no other rule matched, and user has history
+    # showing a recurring symptom we haven't explicitly addressed this session.
+    if user.conversation_history:
+        from src.agents.symptom_memory import detect_recurring_symptom  # noqa: PLC0415
+        recurring = detect_recurring_symptom(user)
+        if recurring is not None:
+            return PlannerDecision(
+                specialists=[SpecialistName.CASUAL, SpecialistName.FAQ],
+                mode="parallel",
+                reasoning=f"rule: recurring symptom '{recurring}' detected in history",
+                notes_for_writer=(
+                    f"【症狀記憶】用戶最近多次提到「{recurring}」。\n"
+                    f"Writer 嘅任務：溫柔地提到「你最近好似幾次都有提到 {recurring}」，\n"
+                    f"問下係咪一直有呢個困擾，然後提供相關中醫養生建議。\n"
+                    f"FAQ Agent 會搜尋相關 KB 內容，用嚟豐富回答。\n"
+                    f"唔好突然推銷產品 — 呢次係關心同了解。"
+                ),
+            )
+
     return None
 
 
