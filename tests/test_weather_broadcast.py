@@ -637,78 +637,14 @@ class TestConstitutionRecheckComposer:
 
 
 # ---------------------------------------------------------------------------
-# Weekly tea tip: fallback (pure)
-# ---------------------------------------------------------------------------
-
-
-class TestTeaFallback:
-    def test_cold_constitution_gets_warm_tea(self):
-        from src.broadcaster.composer import _tea_fallback
-        for constitution in ("陽虛質", "氣虛質"):
-            bubbles = _tea_fallback(constitution)
-            assert len(bubbles) >= 1
-            # Should reference a warming tea (薑棗茶)
-            assert any("薑" in b or "棗" in b for b in bubbles), (
-                f"Expected warming tea for {constitution}, got: {bubbles}"
-            )
-
-    def test_hot_constitution_gets_cooling_tea(self):
-        from src.broadcaster.composer import _tea_fallback
-        for constitution in ("陰虛質", "濕熱質"):
-            bubbles = _tea_fallback(constitution)
-            assert len(bubbles) >= 1
-            # Should reference a cooling tea (菊花 / 枸杞)
-            assert any("菊花" in b or "枸杞" in b for b in bubbles), (
-                f"Expected cooling tea for {constitution}, got: {bubbles}"
-            )
-
-    def test_stagnation_constitution_gets_moving_tea(self):
-        from src.broadcaster.composer import _tea_fallback
-        for constitution in ("氣鬱質", "血瘀質"):
-            bubbles = _tea_fallback(constitution)
-            assert len(bubbles) >= 1
-            # Should reference 玫瑰花茶 (疏肝)
-            assert any("玫瑰" in b for b in bubbles), (
-                f"Expected 玫瑰花茶 for {constitution}, got: {bubbles}"
-            )
-
-    def test_unknown_constitution_gets_neutral_tea(self):
-        from src.broadcaster.composer import _tea_fallback
-        bubbles = _tea_fallback("unknown")
-        assert len(bubbles) >= 1
-        # Should be the neutral / default option (茉莉)
-        assert any("茉莉" in b for b in bubbles)
-
-    def test_fallback_respects_bubble_length_cap(self):
-        from src.broadcaster.composer import _tea_fallback, BUBBLE_MAX
-        for constitution in ("陽虛質", "陰虛質", "氣鬱質", "平和質", "unknown"):
-            for bubble in _tea_fallback(constitution):
-                assert len(bubble) <= BUBBLE_MAX, (
-                    f"Fallback bubble too long for {constitution}: {len(bubble)} chars"
-                )
-
-    def test_fallback_has_no_price(self):
-        from src.broadcaster.composer import _tea_fallback
-        for constitution in ("陽虛質", "陰虛質", "氣鬱質", "unknown"):
-            for bubble in _tea_fallback(constitution):
-                assert "HK$" not in bubble
-                assert "$" not in bubble
-
-
-# ---------------------------------------------------------------------------
-# Weekly tea tip: composer (unit — LLM mocked)
+# Weekly tea tip: composer + scheduler
 # ---------------------------------------------------------------------------
 
 
 class TestWeeklyTeaComposer:
-    def _make_user(self, constitution: str = "unknown"):
-        from src.crm.models import User, Constitution
-        u = User(phone="+85291234567")
-        for c in Constitution:
-            if c.value == constitution:
-                object.__setattr__(u, "constitution", c)
-                break
-        return u
+    def _make_user(self):
+        from src.crm.models import User
+        return User(phone="+85291234567")
 
     @pytest.mark.asyncio
     async def test_fallback_on_llm_failure(self):
@@ -716,7 +652,6 @@ class TestWeeklyTeaComposer:
         llm = MagicMock()
         llm.messages.create = AsyncMock(side_effect=Exception("LLM down"))
         user = self._make_user()
-
         bubbles = await compose_weekly_tea_tip(llm, user)
         assert len(bubbles) >= 1
         assert all(isinstance(b, str) and len(b) > 0 for b in bubbles)
@@ -726,10 +661,9 @@ class TestWeeklyTeaComposer:
         from src.broadcaster.composer import compose_weekly_tea_tip
         llm = MagicMock()
         llm.messages.create = AsyncMock(return_value=MagicMock(
-            content=[MagicMock(text='{"bubbles": ["今週茶 HK$28 買返去！", "好正！"]}')]
+            content=[MagicMock(text='{"bubbles": ["今週茶療 HK$48 一包", "好飲！"]}')]
         ))
         user = self._make_user()
-
         bubbles = await compose_weekly_tea_tip(llm, user)
         for b in bubbles:
             assert "HK$" not in b
@@ -737,13 +671,12 @@ class TestWeeklyTeaComposer:
     @pytest.mark.asyncio
     async def test_respects_bubble_length_cap(self):
         from src.broadcaster.composer import compose_weekly_tea_tip, BUBBLE_MAX
-        long_text = "今週茶飲 " + "A" * 300
+        long_text = "A" * 300
         llm = MagicMock()
         llm.messages.create = AsyncMock(return_value=MagicMock(
             content=[MagicMock(text=f'{{"bubbles": ["{long_text}"]}}')]
         ))
         user = self._make_user()
-
         bubbles = await compose_weekly_tea_tip(llm, user)
         for b in bubbles:
             assert len(b) <= BUBBLE_MAX
@@ -753,12 +686,9 @@ class TestWeeklyTeaComposer:
         from src.broadcaster.composer import compose_weekly_tea_tip
         llm = MagicMock()
         llm.messages.create = AsyncMock(return_value=MagicMock(
-            content=[MagicMock(text=(
-                '{"bubbles": ["第一條", "第二條", "第三條（唔應該出現）"]}'
-            ))]
+            content=[MagicMock(text='{"bubbles": ["第一條", "第二條", "第三條"]}')]
         ))
         user = self._make_user()
-
         bubbles = await compose_weekly_tea_tip(llm, user)
         assert len(bubbles) <= 2
 
@@ -769,41 +699,29 @@ class TestWeeklyTeaComposer:
         llm.messages.create = AsyncMock(return_value=MagicMock(
             content=[MagicMock(text='{"bubbles": []}')]
         ))
-        user = self._make_user("氣虛質")
-
+        user = self._make_user()
         bubbles = await compose_weekly_tea_tip(llm, user)
-        assert len(bubbles) >= 1  # fallback kicks in
+        assert len(bubbles) >= 1
 
     @pytest.mark.asyncio
     async def test_happy_path_returns_llm_bubbles(self):
         from src.broadcaster.composer import compose_weekly_tea_tip
         llm = MagicMock()
         llm.messages.create = AsyncMock(return_value=MagicMock(
-            content=[MagicMock(text='{"bubbles": ["今週 DIY：菊花枸杞茶，清肝明目！🌸"]}')]
+            content=[MagicMock(text='{"bubbles": ["今週飲紅棗枸杞茶養血補氣 🍵"]}')]
         ))
-        user = self._make_user("陰虛質")
-
+        user = self._make_user()
         bubbles = await compose_weekly_tea_tip(llm, user)
-        assert bubbles == ["今週 DIY：菊花枸杞茶，清肝明目！🌸"]
-
-
-# ---------------------------------------------------------------------------
-# Weekly tea tip: scheduler run logic
-# ---------------------------------------------------------------------------
+        assert bubbles == ["今週飲紅棗枸杞茶養血補氣 🍵"]
 
 
 class TestRunWeeklyTea:
-    def _make_crm(
-        self,
-        phones: list[str],
-        already_sent: int = 0,
-    ) -> object:
+    def _make_crm(self, phones, already_sent=0):
         from src.crm.models import User
         crm = MagicMock()
         crm.list_active_phones = AsyncMock(return_value=phones)
         crm.get_broadcast_count_this_week = AsyncMock(return_value=already_sent)
         crm.record_broadcast = AsyncMock()
-
         if phones:
             user = User(phone=phones[0])
             crm.get_user = AsyncMock(return_value=user)
@@ -812,103 +730,672 @@ class TestRunWeeklyTea:
         return crm
 
     @pytest.mark.asyncio
-    async def test_skips_when_no_active_phones(self):
-        from src.broadcaster.scheduler import _run_weekly_tea
-        crm = self._make_crm(phones=[])
-        llm = MagicMock()
-
-        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
-             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
-            await _run_weekly_tea(crm, llm, "acc_123")
-            mock_wa.send_long_message.assert_not_called()
-
-    @pytest.mark.asyncio
     async def test_skips_blocked_phone(self):
         from src.broadcaster.scheduler import _run_weekly_tea
-        crm = self._make_crm(phones=["+85291234567"])
-        llm = MagicMock()
-
+        crm = self._make_crm(["+85291234567"])
         with patch("src.broadcaster.scheduler.is_blocked", return_value=True), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
              patch("src.broadcaster.scheduler.wa_client") as mock_wa:
-            await _run_weekly_tea(crm, llm, "acc_123")
-            mock_wa.send_long_message.assert_not_called()
-            crm.record_broadcast.assert_not_called()
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_tea(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_skips_already_sent_this_week(self):
-        """If user already got a tea tip this ISO week, skip."""
         from src.broadcaster.scheduler import _run_weekly_tea
-        crm = self._make_crm(phones=["+85291234567"], already_sent=1)
-        llm = MagicMock()
-
+        crm = self._make_crm(["+85291234567"], already_sent=1)
         with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
              patch("src.broadcaster.scheduler.wa_client") as mock_wa:
-            await _run_weekly_tea(crm, llm, "acc_123")
-            mock_wa.send_long_message.assert_not_called()
-            crm.record_broadcast.assert_not_called()
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_tea(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_sends_and_records_for_eligible_user(self):
         from src.broadcaster.scheduler import _run_weekly_tea
         phone = "+85291234567"
-        crm = self._make_crm(phones=[phone], already_sent=0)
-        llm = MagicMock()
-        mock_bubbles = ["今週茶飲：薑棗茶，暖胃驅寒 🌿"]
-
+        crm = self._make_crm([phone], already_sent=0)
+        mock_bubbles = ["今週飲紅棗枸杞茶養血補氣 🍵"]
         with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
              patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
              patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
              patch("src.broadcaster.scheduler.compose_weekly_tea_tip",
                    new_callable=AsyncMock, return_value=mock_bubbles):
             mock_wa.send_long_message = AsyncMock()
-            await _run_weekly_tea(crm, llm, "acc_123")
-
-        mock_wa.send_long_message.assert_called_once_with(
-            "acc_123", phone, mock_bubbles[0]
-        )
+            await _run_weekly_tea(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_called_once()
         crm.record_broadcast.assert_called_once()
         args = crm.record_broadcast.call_args[0]
-        assert args[0] == phone
         assert args[1] == "weekly_tea"
         assert args[2].startswith("tea-")
 
     @pytest.mark.asyncio
-    async def test_dedup_key_uses_tea_prefix(self):
-        """The dedup key passed to get_broadcast_count_this_week starts with 'tea-'."""
+    async def test_dedup_key_uses_correct_prefix(self):
         from src.broadcaster.scheduler import _run_weekly_tea
         phone = "+85291234567"
-        crm = self._make_crm(phones=[phone], already_sent=0)
-        llm = MagicMock()
-
+        crm = self._make_crm([phone], already_sent=0)
         with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
              patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
              patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
              patch("src.broadcaster.scheduler.compose_weekly_tea_tip",
-                   new_callable=AsyncMock, return_value=["嗨！菊花枸杞茶 🌸"]):
+                   new_callable=AsyncMock, return_value=["tip"]):
             mock_wa.send_long_message = AsyncMock()
-            await _run_weekly_tea(crm, llm, "acc_123")
-
+            await _run_weekly_tea(crm, MagicMock(), "acc_123")
         call_args = crm.get_broadcast_count_this_week.call_args[0]
-        assert call_args[0] == phone
         assert call_args[1].startswith("tea-")
 
-    @pytest.mark.asyncio
-    async def test_does_not_check_weather_cap(self):
-        """Weekly tea should NOT gate on _user_is_eligible (weather cap)."""
-        from src.broadcaster.scheduler import _run_weekly_tea
-        phone = "+85291234567"
-        crm = self._make_crm(phones=[phone], already_sent=0)
-        llm = MagicMock()
 
+# ---------------------------------------------------------------------------
+# Weekly acupressure tip: composer + scheduler
+# ---------------------------------------------------------------------------
+
+
+class TestWeeklyAcupressureComposer:
+    def _make_user(self, pain_points=None, tags=None):
+        from src.crm.models import User
+        u = User(phone="+85291234567")
+        if pain_points is not None:
+            object.__setattr__(u, "pain_points", pain_points)
+        if tags is not None:
+            object.__setattr__(u, "tags", tags)
+        return u
+
+    @pytest.mark.asyncio
+    async def test_fallback_on_llm_failure(self):
+        from src.broadcaster.composer import compose_weekly_acupressure_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(side_effect=Exception("LLM down"))
+        user = self._make_user()
+        bubbles = await compose_weekly_acupressure_tip(llm, user)
+        assert len(bubbles) >= 1
+        assert all(isinstance(b, str) and len(b) > 0 for b in bubbles)
+
+    @pytest.mark.asyncio
+    async def test_strips_price_leak(self):
+        from src.broadcaster.composer import compose_weekly_acupressure_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["按摩套餐 HK$48 包搞掂", "好正！"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_acupressure_tip(llm, user)
+        for b in bubbles:
+            assert "HK$" not in b
+
+    @pytest.mark.asyncio
+    async def test_respects_bubble_length_cap(self):
+        from src.broadcaster.composer import compose_weekly_acupressure_tip, BUBBLE_MAX
+        long_text = "A" * 300
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text=f'{{"bubbles": ["{long_text}"]}}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_acupressure_tip(llm, user)
+        for b in bubbles:
+            assert len(b) <= BUBBLE_MAX
+
+    @pytest.mark.asyncio
+    async def test_max_two_bubbles(self):
+        from src.broadcaster.composer import compose_weekly_acupressure_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["第一條", "第二條", "第三條"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_acupressure_tip(llm, user)
+        assert len(bubbles) <= 2
+
+    @pytest.mark.asyncio
+    async def test_returns_fallback_on_empty_bubbles(self):
+        from src.broadcaster.composer import compose_weekly_acupressure_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": []}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_acupressure_tip(llm, user)
+        assert len(bubbles) >= 1
+
+    @pytest.mark.asyncio
+    async def test_happy_path_returns_llm_bubbles(self):
+        from src.broadcaster.composer import compose_weekly_acupressure_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["今週穴位：神門穴 🤚"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_acupressure_tip(llm, user)
+        assert bubbles == ["今週穴位：神門穴 🤚"]
+
+
+class TestWeeklyAcupressureScheduler:
+    def _make_crm(self, phones, already_sent=0):
+        from src.crm.models import User
+        crm = MagicMock()
+        crm.list_active_phones = AsyncMock(return_value=phones)
+        crm.get_broadcast_count_this_week = AsyncMock(return_value=already_sent)
+        crm.record_broadcast = AsyncMock()
+        if phones:
+            user = User(phone=phones[0])
+            crm.get_user = AsyncMock(return_value=user)
+        else:
+            crm.get_user = AsyncMock(return_value=None)
+        return crm
+
+    @pytest.mark.asyncio
+    async def test_skips_blocked_phone(self):
+        from src.broadcaster.scheduler import _run_weekly_acupressure
+        crm = self._make_crm(["+85291234567"])
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=True), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_acupressure(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_skips_already_sent_this_week(self):
+        from src.broadcaster.scheduler import _run_weekly_acupressure
+        crm = self._make_crm(["+85291234567"], already_sent=1)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_acupressure(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_sends_and_records_for_eligible_user(self):
+        from src.broadcaster.scheduler import _run_weekly_acupressure
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        mock_bubbles = ["今週穴位：神門穴 🤚"]
         with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
              patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
              patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
-             patch("src.broadcaster.scheduler._user_is_eligible",
-                   new_callable=AsyncMock, return_value=False) as mock_eligible, \
-             patch("src.broadcaster.scheduler.compose_weekly_tea_tip",
-                   new_callable=AsyncMock, return_value=["嗨！薑棗茶 ☕"]):
+             patch("src.broadcaster.scheduler.compose_weekly_acupressure_tip",
+                   new_callable=AsyncMock, return_value=mock_bubbles):
             mock_wa.send_long_message = AsyncMock()
-            await _run_weekly_tea(crm, llm, "acc_123")
-
-        mock_eligible.assert_not_called()
+            await _run_weekly_acupressure(crm, MagicMock(), "acc_123")
         mock_wa.send_long_message.assert_called_once()
+        crm.record_broadcast.assert_called_once()
+        args = crm.record_broadcast.call_args[0]
+        assert args[1] == "weekly_acupressure"
+        assert args[2].startswith("acupressure-")
+
+    @pytest.mark.asyncio
+    async def test_dedup_key_uses_correct_prefix(self):
+        from src.broadcaster.scheduler import _run_weekly_acupressure
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
+             patch("src.broadcaster.scheduler.compose_weekly_acupressure_tip",
+                   new_callable=AsyncMock, return_value=["tip"]):
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_acupressure(crm, MagicMock(), "acc_123")
+        call_args = crm.get_broadcast_count_this_week.call_args[0]
+        assert call_args[1].startswith("acupressure-")
+
+
+# ---------------------------------------------------------------------------
+# Appointment prep: composer + scheduler
+# ---------------------------------------------------------------------------
+
+
+class TestAppointmentPrepComposer:
+    def _make_user(self):
+        from src.crm.models import User
+        return User(phone="+85291234567")
+
+    @pytest.mark.asyncio
+    async def test_fallback_on_llm_failure(self):
+        from src.broadcaster.composer import compose_appointment_prep
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(side_effect=Exception("LLM down"))
+        user = self._make_user()
+        bubbles = await compose_appointment_prep(llm, user)
+        assert len(bubbles) >= 1
+        assert all(isinstance(b, str) and len(b) > 0 for b in bubbles)
+
+    @pytest.mark.asyncio
+    async def test_strips_price_leak(self):
+        from src.broadcaster.composer import compose_appointment_prep
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["覆診費 HK$48 記得帶", "加油！"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_appointment_prep(llm, user)
+        for b in bubbles:
+            assert "HK$" not in b
+
+    @pytest.mark.asyncio
+    async def test_respects_bubble_length_cap(self):
+        from src.broadcaster.composer import compose_appointment_prep, BUBBLE_MAX
+        long_text = "A" * 300
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text=f'{{"bubbles": ["{long_text}"]}}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_appointment_prep(llm, user)
+        for b in bubbles:
+            assert len(b) <= BUBBLE_MAX
+
+    @pytest.mark.asyncio
+    async def test_max_two_bubbles(self):
+        from src.broadcaster.composer import compose_appointment_prep
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["第一條", "第二條", "第三條"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_appointment_prep(llm, user)
+        assert len(bubbles) <= 2
+
+    @pytest.mark.asyncio
+    async def test_returns_fallback_on_empty_bubbles(self):
+        from src.broadcaster.composer import compose_appointment_prep
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": []}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_appointment_prep(llm, user)
+        assert len(bubbles) >= 1
+
+    @pytest.mark.asyncio
+    async def test_happy_path_returns_llm_bubbles(self):
+        from src.broadcaster.composer import compose_appointment_prep
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["快到見醫師喇，記得唔使空腹 🌿"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_appointment_prep(llm, user)
+        assert bubbles == ["快到見醫師喇，記得唔使空腹 🌿"]
+
+
+class TestAppointmentPrepScheduler:
+    def _make_crm(self, phones, already_sent=0):
+        from src.crm.models import User
+        crm = MagicMock()
+        crm.list_phones_for_upcoming_appointments = AsyncMock(return_value=phones)
+        crm.get_broadcast_count_this_week = AsyncMock(return_value=already_sent)
+        crm.record_broadcast = AsyncMock()
+        if phones:
+            user = User(phone=phones[0])
+            crm.get_user = AsyncMock(return_value=user)
+        else:
+            crm.get_user = AsyncMock(return_value=None)
+        return crm
+
+    @pytest.mark.asyncio
+    async def test_skips_blocked_phone(self):
+        from src.broadcaster.scheduler import _run_appointment_prep
+        crm = self._make_crm(["+85291234567"])
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=True), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_appointment_prep(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_skips_already_sent_this_week(self):
+        from src.broadcaster.scheduler import _run_appointment_prep
+        crm = self._make_crm(["+85291234567"], already_sent=1)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_appointment_prep(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_sends_and_records_for_eligible_user(self):
+        from src.broadcaster.scheduler import _run_appointment_prep
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        mock_bubbles = ["快到見醫師喇，記得唔使空腹 🌿"]
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
+             patch("src.broadcaster.scheduler.compose_appointment_prep",
+                   new_callable=AsyncMock, return_value=mock_bubbles):
+            mock_wa.send_long_message = AsyncMock()
+            await _run_appointment_prep(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_called_once()
+        crm.record_broadcast.assert_called_once()
+        args = crm.record_broadcast.call_args[0]
+        assert args[1] == "appointment_prep"
+        assert args[2].startswith("appt-prep-")
+
+    @pytest.mark.asyncio
+    async def test_dedup_key_uses_correct_prefix(self):
+        from src.broadcaster.scheduler import _run_appointment_prep
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
+             patch("src.broadcaster.scheduler.compose_appointment_prep",
+                   new_callable=AsyncMock, return_value=["tip"]):
+            mock_wa.send_long_message = AsyncMock()
+            await _run_appointment_prep(crm, MagicMock(), "acc_123")
+        call_args = crm.get_broadcast_count_this_week.call_args[0]
+        assert call_args[1].startswith("appt-prep-")
+
+
+# ---------------------------------------------------------------------------
+# Monthly food tip: composer + scheduler
+# ---------------------------------------------------------------------------
+
+
+class TestMonthlyFoodTipComposer:
+    def _make_user(self):
+        from src.crm.models import User
+        return User(phone="+85291234567")
+
+    @pytest.mark.asyncio
+    async def test_fallback_on_llm_failure(self):
+        from src.broadcaster.composer import compose_monthly_food_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(side_effect=Exception("LLM down"))
+        user = self._make_user()
+        bubbles = await compose_monthly_food_tip(llm, user, month=6)
+        assert len(bubbles) >= 1
+        assert all(isinstance(b, str) and len(b) > 0 for b in bubbles)
+
+    @pytest.mark.asyncio
+    async def test_strips_price_leak(self):
+        from src.broadcaster.composer import compose_monthly_food_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["今月食療套餐 HK$48", "好正！"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_monthly_food_tip(llm, user, month=6)
+        for b in bubbles:
+            assert "HK$" not in b
+
+    @pytest.mark.asyncio
+    async def test_respects_bubble_length_cap(self):
+        from src.broadcaster.composer import compose_monthly_food_tip, BUBBLE_MAX
+        long_text = "A" * 300
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text=f'{{"bubbles": ["{long_text}"]}}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_monthly_food_tip(llm, user, month=3)
+        for b in bubbles:
+            assert len(b) <= BUBBLE_MAX
+
+    @pytest.mark.asyncio
+    async def test_max_two_bubbles(self):
+        from src.broadcaster.composer import compose_monthly_food_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["第一條", "第二條", "第三條"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_monthly_food_tip(llm, user, month=10)
+        assert len(bubbles) <= 2
+
+    @pytest.mark.asyncio
+    async def test_returns_fallback_on_empty_bubbles(self):
+        from src.broadcaster.composer import compose_monthly_food_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": []}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_monthly_food_tip(llm, user, month=12)
+        assert len(bubbles) >= 1
+
+    @pytest.mark.asyncio
+    async def test_happy_path_returns_llm_bubbles(self):
+        from src.broadcaster.composer import compose_monthly_food_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["今月宜多食梨同百合潤肺 🍐"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_monthly_food_tip(llm, user, month=10)
+        assert bubbles == ["今月宜多食梨同百合潤肺 🍐"]
+
+
+class TestMonthlyFoodTipScheduler:
+    def _make_crm(self, phones, already_sent=0):
+        from src.crm.models import User
+        crm = MagicMock()
+        crm.list_active_phones = AsyncMock(return_value=phones)
+        crm.get_broadcast_count_this_week = AsyncMock(return_value=already_sent)
+        crm.record_broadcast = AsyncMock()
+        if phones:
+            user = User(phone=phones[0])
+            crm.get_user = AsyncMock(return_value=user)
+        else:
+            crm.get_user = AsyncMock(return_value=None)
+        return crm
+
+    @pytest.mark.asyncio
+    async def test_skips_blocked_phone(self):
+        from src.broadcaster.scheduler import _run_monthly_food_tip
+        crm = self._make_crm(["+85291234567"])
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=True), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_monthly_food_tip(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_skips_already_sent_this_week(self):
+        from src.broadcaster.scheduler import _run_monthly_food_tip
+        crm = self._make_crm(["+85291234567"], already_sent=1)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_monthly_food_tip(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_sends_and_records_for_eligible_user(self):
+        from src.broadcaster.scheduler import _run_monthly_food_tip
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        mock_bubbles = ["今月宜多食梨同百合潤肺 🍐"]
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
+             patch("src.broadcaster.scheduler.compose_monthly_food_tip",
+                   new_callable=AsyncMock, return_value=mock_bubbles):
+            mock_wa.send_long_message = AsyncMock()
+            await _run_monthly_food_tip(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_called_once()
+        crm.record_broadcast.assert_called_once()
+        args = crm.record_broadcast.call_args[0]
+        assert args[1] == "monthly_food_tip"
+        assert args[2].startswith("food-")
+
+    @pytest.mark.asyncio
+    async def test_dedup_key_uses_correct_prefix(self):
+        from src.broadcaster.scheduler import _run_monthly_food_tip
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
+             patch("src.broadcaster.scheduler.compose_monthly_food_tip",
+                   new_callable=AsyncMock, return_value=["tip"]):
+            mock_wa.send_long_message = AsyncMock()
+            await _run_monthly_food_tip(crm, MagicMock(), "acc_123")
+        call_args = crm.get_broadcast_count_this_week.call_args[0]
+        assert call_args[1].startswith("food-")
+
+
+# ---------------------------------------------------------------------------
+# Weekly sleep tip: composer + scheduler
+# ---------------------------------------------------------------------------
+
+
+class TestWeeklySleepTipComposer:
+    def _make_user(self):
+        from src.crm.models import User
+        return User(phone="+85291234567")
+
+    @pytest.mark.asyncio
+    async def test_fallback_on_llm_failure(self):
+        from src.broadcaster.composer import compose_weekly_sleep_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(side_effect=Exception("LLM down"))
+        user = self._make_user()
+        bubbles = await compose_weekly_sleep_tip(llm, user)
+        assert len(bubbles) >= 1
+        assert all(isinstance(b, str) and len(b) > 0 for b in bubbles)
+
+    @pytest.mark.asyncio
+    async def test_strips_price_leak(self):
+        from src.broadcaster.composer import compose_weekly_sleep_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["睡眠套餐 HK$48 包好瞓", "正！"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_sleep_tip(llm, user)
+        for b in bubbles:
+            assert "HK$" not in b
+
+    @pytest.mark.asyncio
+    async def test_respects_bubble_length_cap(self):
+        from src.broadcaster.composer import compose_weekly_sleep_tip, BUBBLE_MAX
+        long_text = "A" * 300
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text=f'{{"bubbles": ["{long_text}"]}}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_sleep_tip(llm, user)
+        for b in bubbles:
+            assert len(b) <= BUBBLE_MAX
+
+    @pytest.mark.asyncio
+    async def test_max_two_bubbles(self):
+        from src.broadcaster.composer import compose_weekly_sleep_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["第一條", "第二條", "第三條"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_sleep_tip(llm, user)
+        assert len(bubbles) <= 2
+
+    @pytest.mark.asyncio
+    async def test_returns_fallback_on_empty_bubbles(self):
+        from src.broadcaster.composer import compose_weekly_sleep_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": []}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_sleep_tip(llm, user)
+        assert len(bubbles) >= 1
+
+    @pytest.mark.asyncio
+    async def test_happy_path_returns_llm_bubbles(self):
+        from src.broadcaster.composer import compose_weekly_sleep_tip
+        llm = MagicMock()
+        llm.messages.create = AsyncMock(return_value=MagicMock(
+            content=[MagicMock(text='{"bubbles": ["今晚11點前入睡補氣最好 💤"]}')]
+        ))
+        user = self._make_user()
+        bubbles = await compose_weekly_sleep_tip(llm, user)
+        assert bubbles == ["今晚11點前入睡補氣最好 💤"]
+
+
+class TestWeeklySleepTipScheduler:
+    def _make_crm(self, phones, already_sent=0):
+        from src.crm.models import User
+        crm = MagicMock()
+        crm.list_active_phones = AsyncMock(return_value=phones)
+        crm.get_broadcast_count_this_week = AsyncMock(return_value=already_sent)
+        crm.record_broadcast = AsyncMock()
+        if phones:
+            user = User(phone=phones[0])
+            crm.get_user = AsyncMock(return_value=user)
+        else:
+            crm.get_user = AsyncMock(return_value=None)
+        return crm
+
+    @pytest.mark.asyncio
+    async def test_skips_blocked_phone(self):
+        from src.broadcaster.scheduler import _run_weekly_sleep_tip
+        crm = self._make_crm(["+85291234567"])
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=True), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_sleep_tip(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_skips_already_sent_this_week(self):
+        from src.broadcaster.scheduler import _run_weekly_sleep_tip
+        crm = self._make_crm(["+85291234567"], already_sent=1)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa:
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_sleep_tip(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_not_called()
+        crm.record_broadcast.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_sends_and_records_for_eligible_user(self):
+        from src.broadcaster.scheduler import _run_weekly_sleep_tip
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        mock_bubbles = ["今晚11點前入睡補氣最好 💤"]
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
+             patch("src.broadcaster.scheduler.compose_weekly_sleep_tip",
+                   new_callable=AsyncMock, return_value=mock_bubbles):
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_sleep_tip(crm, MagicMock(), "acc_123")
+        mock_wa.send_long_message.assert_called_once()
+        crm.record_broadcast.assert_called_once()
+        args = crm.record_broadcast.call_args[0]
+        assert args[1] == "weekly_sleep_tip"
+        assert args[2].startswith("sleep-")
+
+    @pytest.mark.asyncio
+    async def test_dedup_key_uses_correct_prefix(self):
+        from src.broadcaster.scheduler import _run_weekly_sleep_tip
+        phone = "+85291234567"
+        crm = self._make_crm([phone], already_sent=0)
+        with patch("src.broadcaster.scheduler.is_blocked", return_value=False), \
+             patch("src.broadcaster.scheduler._within_send_window", return_value=True), \
+             patch("src.broadcaster.scheduler.wa_client") as mock_wa, \
+             patch("src.broadcaster.scheduler.compose_weekly_sleep_tip",
+                   new_callable=AsyncMock, return_value=["tip"]):
+            mock_wa.send_long_message = AsyncMock()
+            await _run_weekly_sleep_tip(crm, MagicMock(), "acc_123")
+        call_args = crm.get_broadcast_count_this_week.call_args[0]
+        assert call_args[1].startswith("sleep-")

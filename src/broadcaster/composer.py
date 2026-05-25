@@ -36,16 +36,28 @@ HKT = timezone(timedelta(hours=8))
 BUBBLE_MAX = 150   # hard cap per bubble for broadcasts (tighter than normal)
 MAX_BUBBLES = 2
 
-_CARD_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "knowledge_base" / "faq"
+_KB_ROOT = Path(__file__).resolve().parent.parent.parent / "data" / "knowledge_base"
+_CARD_DIR = _KB_ROOT / "faq"
 _SPRING_SUMMER_CARD = _CARD_DIR / "tcm_seasonal_spring_summer.json"
 _AUTUMN_WINTER_CARD = _CARD_DIR / "tcm_seasonal_autumn_winter.json"
 _PRODUCT_CATALOG = (
     Path(__file__).resolve().parent.parent.parent / "data" / "products" / "product_catalog.json"
 )
-_TEA_CARD = (
-    Path(__file__).resolve().parent.parent.parent
-    / "data" / "knowledge_base" / "soups" / "tcm_food_therapy_teas.json"
-)
+
+# Weekly tea tip card
+_TEA_CARD = _KB_ROOT / "soups" / "tcm_food_therapy_teas.json"
+
+# Weekly acupressure tip cards
+_ACUPRESSURE_PAIN_CARD = _CARD_DIR / "tcm_acupressure_pain.json"
+_ACUPRESSURE_ENERGY_STRESS_CARD = _CARD_DIR / "tcm_acupressure_energy_stress.json"
+_ACUPRESSURE_BEAUTY_CARD = _CARD_DIR / "tcm_acupressure_beauty.json"
+_ACUPRESSURE_WEIGHT_CARD = _CARD_DIR / "tcm_acupressure_weight_slim.json"
+
+# Monthly food tip card
+_FOOD_THERAPY_SEASONAL_CARD = _KB_ROOT / "soups" / "tcm_food_therapy_seasonal.json"
+
+# Weekly sleep tip card
+_SLEEP_INSOMNIA_CARD = _CARD_DIR / "tcm_sleep_insomnia.json"
 
 # Regex guard — reject any bubble that leaks prices
 _PRICE_RE = re.compile(r"HK\$\d+|\$\d+|港幣\s*\d+|價錢|售價")
@@ -412,61 +424,111 @@ def _constitution_recheck_fallback(constitution: str) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# Tea card loader
+# Card loader helpers (new features)
 # ---------------------------------------------------------------------------
 
 
-def _load_tea_card() -> str:
-    """Return truncated core_answer from the tea therapy card."""
+def _load_kb_card(path: Path) -> str:
+    """Return truncated core_answer from a knowledge card JSON. Max 800 chars."""
     try:
-        raw = json.loads(_TEA_CARD.read_text(encoding="utf-8"))
+        raw = json.loads(path.read_text(encoding="utf-8"))
         answer: str = raw["knowledge_card"]["core_content"]["core_answer"]
-        # Slightly more than season card — tea content is dense, constitutions need context
-        return answer[:1000]
+        return answer[:800]
     except Exception as exc:  # noqa: BLE001
-        logger.warning("Could not load tea card: %s", exc)
+        logger.warning("Could not load KB card %s: %s", path.name, exc)
         return ""
 
 
+def _load_tea_card() -> str:
+    """Return truncated tea card content."""
+    return _load_kb_card(_TEA_CARD)
+
+
+def _load_acupressure_card(category: str) -> str:
+    """Return acupressure KB card content for the given category."""
+    card_map = {
+        "pain": _ACUPRESSURE_PAIN_CARD,
+        "energy_stress": _ACUPRESSURE_ENERGY_STRESS_CARD,
+        "beauty": _ACUPRESSURE_BEAUTY_CARD,
+        "weight": _ACUPRESSURE_WEIGHT_CARD,
+    }
+    path = card_map.get(category, _ACUPRESSURE_ENERGY_STRESS_CARD)
+    return _load_kb_card(path)
+
+
+def _pick_acupressure_category(user: "User") -> str:
+    """Choose acupressure category based on user pain_points and tags."""
+    pain_points = [p.lower() for p in (user.pain_points or [])]
+    tags = [t.lower() for t in (user.tags or [])]
+    combined = pain_points + tags
+
+    pain_keywords = {"頭痛", "肩頸", "腰痛", "痛"}
+    if any(kw in combined for kw in pain_keywords):
+        return "pain"
+
+    energy_keywords = {"失眠", "壓力", "焦慮", "唔夠瞓"}
+    if any(kw in combined for kw in energy_keywords):
+        return "energy_stress"
+
+    beauty_keywords = {"皮膚", "暗瘡", "美容"}
+    if any(kw in combined for kw in beauty_keywords):
+        return "beauty"
+
+    weight_keywords = {"肥", "減重", "消腫"}
+    if any(kw in combined for kw in weight_keywords):
+        return "weight"
+
+    return "energy_stress"
+
+
+def _load_food_seasonal_card() -> str:
+    """Return truncated seasonal food therapy card content."""
+    return _load_kb_card(_FOOD_THERAPY_SEASONAL_CARD)
+
+
+def _load_sleep_card() -> str:
+    """Return truncated sleep insomnia card content."""
+    return _load_kb_card(_SLEEP_INSOMNIA_CARD)
+
+
+def _month_to_season_zh(month: int) -> str:
+    """Map month to TCM season name in Chinese."""
+    if 3 <= month <= 5:
+        return "春季"
+    if 6 <= month <= 8:
+        return "夏季"
+    if month == 9:
+        return "長夏"
+    if 10 <= month <= 11:
+        return "秋季"
+    return "冬季"
+
+
 # ---------------------------------------------------------------------------
-# Weekly DIY tea tip composer
+# Weekly tea tip composer
 # ---------------------------------------------------------------------------
 
-# Constitutions grouped by TCM thermal nature for fallback selection
-_COLD_CONSTITUTIONS = frozenset({"陽虛質", "氣虛質"})
-_HOT_CONSTITUTIONS = frozenset({"陰虛質", "濕熱質"})
-_STAGNATION_CONSTITUTIONS = frozenset({"氣鬱質", "血瘀質"})
 
+async def compose_weekly_tea_tip(llm: object, user: "User") -> list[str]:
+    """Generate 1-2 HK Canto bubbles for the weekly tea tip broadcast.
 
-async def compose_weekly_tea_tip(
-    llm: object,
-    user: "User",
-) -> list[str]:
-    """Generate a weekly DIY tea recipe tip personalised by constitution.
-
-    1-2 HK Canto bubbles. Includes a simple at-home recipe (ingredients +
-    brew method). No product pitch, no prices, no follow-up questions.
-
-    Returns:
-        1-2 bubble strings. Falls back to a constitution-matched generic
-        recipe if the LLM call fails or produces garbage.
+    Personalised to user constitution. Falls back to a safe generic tip.
     """
     constitution = user.constitution.value if user.constitution else "unknown"
     tea_knowledge = _load_tea_card()
 
     system_prompt = """\
 你係 Jessica，心宜中醫 Care Plus 嘅中醫健康顧問。
-今日你主動向用戶分享今週嘅 DIY 茶飲配方，俾佢喺屋企自己整，保養身體。
+今日你主動向用戶分享一條每週茶療養生 tip。
 
-⚠️ 絕對規則（唔可以違反）：
+⚠️ 重要規則（絕對唔可以違反）：
 - 唔好問 follow-up 問題
-- 唔好自我介紹（唔好講「我係 Jessica」）
-- 唔好提任何具體付費產品名稱、價錢或售價
-- 呢個係 DIY 家用茶方——食材係超市/藥材店買到嘅，唔係推銷任何嘢
+- 唔好自我介紹（唔好講「我係Jessica」）
+- 唔好提任何具體產品名稱、價錢或售價
+- 唔好下任何醫療診斷
 - 全部用香港廣東話口語（唔好用書面語或普通話）
 - 控制在 1-2 條訊息，每條唔超過 150 個字
-- 語氣溫暖輕鬆，像朋友分享生活小知識咁
-- 必須提供一個簡單嘅茶飲配方（食材 + 泡法）
+- 語氣溫暖、親切，像朋友分享知識咁自然
 
 輸出格式（JSON only，唔好有其他文字）：
 {"bubbles": ["第一條訊息", "第二條訊息（可選）"]}
@@ -474,15 +536,12 @@ async def compose_weekly_tea_tip(
 
     user_prompt = f"""用戶體質：{constitution}
 
-茶飲養生參考資料（部分節錄，用嚟啟發配方選擇，唔好逐字抄）：
+茶療養生參考（部分節錄，用嚟啟發 tip，唔好逐字抄）：
 {tea_knowledge}
 
-請根據用戶體質，推薦一款今週可以自己整嘅 DIY 茶飲配方。包括：
-1. 茶飲名稱（1-2 種材料就夠，唔好太複雜）
-2. 點樣整（水溫 / 分量 / 泡法，一兩句話）
-3. 對呢個體質嘅好處（一句話）
-
-記住：唔好問問題、唔好賣嘢、淨係分享一個溫暖實用嘅家用 tip 就夠。"""
+根據用戶體質同以上茶療知識，寫 1-2 條溫暖嘅廣東話養生訊息。
+提醒用戶今週可以飲邊款茶、點飲、對佢體質有咩好處。
+記住：唔好問問題、唔好賣嘢、淨係送一個實用茶療 tip 就夠。"""
 
     try:
         response = await llm.messages.create(
@@ -492,14 +551,11 @@ async def compose_weekly_tea_tip(
             messages=[{"role": "user", "content": user_prompt}],
         )
         raw = response.content[0].text.strip()
-
         if raw.startswith("```"):
             raw = re.sub(r"^```[a-z]*\n?", "", raw)
             raw = re.sub(r"\n?```$", "", raw)
-
         data = json.loads(raw)
         bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
-
     except Exception as exc:  # noqa: BLE001
         logger.warning(
             "Weekly tea compose failed (%s): %s — using fallback",
@@ -510,35 +566,366 @@ async def compose_weekly_tea_tip(
     if not bubbles:
         return _tea_fallback(constitution)
 
-    cleaned: list[str] = []
-    for bubble in bubbles[:MAX_BUBBLES]:
-        if _PRICE_RE.search(bubble):
-            logger.warning("Tea bubble contains price — stripping: %s", bubble)
-            continue
-        cleaned.append(bubble[:BUBBLE_MAX])
-
+    cleaned = [b[:BUBBLE_MAX] for b in bubbles[:MAX_BUBBLES] if b and not _PRICE_RE.search(b)]
     return cleaned if cleaned else _tea_fallback(constitution)
 
 
 def _tea_fallback(constitution: str) -> list[str]:
-    """Constitution-matched fallback tea tips when LLM is unavailable."""
-    if constitution in _COLD_CONSTITUTIONS:
-        return [
-            "今週茶飲 ☕ 薑棗茶：生薑兩片 + 紅棗三粒，熱水焗 10 分鐘。"
-            "暖胃驅寒，氣虛 / 陽虛體質最適合，早上飲最好 🌿",
-        ]
-    if constitution in _HOT_CONSTITUTIONS:
-        return [
-            "今週茶飲 🌸 菊花枸杞茶：菊花五朵 + 枸杞一小把，"
-            "85 度水焗 5 分鐘。清肝明目，陰虛 / 濕熱體質恩物 ✨",
-        ]
-    if constitution in _STAGNATION_CONSTITUTIONS:
-        return [
-            "今週茶飲 🌹 玫瑰花茶：玫瑰花五六朵，85 度水焗五分鐘。"
-            "疏肝解鬱、舒緩壓力，氣鬱 / 血瘀體質特別適合 💕",
-        ]
-    # Default — 平和質 or unknown
+    """Safe generic tea tip fallback."""
+    tips: dict[str, list[str]] = {
+        "氣虛質": ["今週試下飲紅棗桂圓茶 🍵 補氣暖身，對氣虛體質特別好！"],
+        "陽虛質": ["天氣唔穩定，陽虛體質記得飲杯薑棗茶暖身 🫖 驅寒效果好好！"],
+        "陰虛質": ["陰虛體質今週可以飲麥冬菊花茶 🌸 滋陰降火，解決口乾問題。"],
+        "痰濕質": ["痰濕體質今週飲荷葉薏米水 🌿 祛濕化痰，幫你排走體內濕氣！"],
+        "濕熱質": ["濕熱體質今週飲菊花蜂蜜水 🌼 清熱解毒，舒緩煩躁感。"],
+        "血瘀質": ["血瘀體質今週試下飲玫瑰花茶 🌹 活血化瘀，幫助血液循環！"],
+        "氣鬱質": ["氣鬱體質今週飲佛手柑茶 🌿 疏肝解鬱，令心情輕鬆啲 😊"],
+        "特稟質": ["特稟體質今週飲太子參紅棗茶 🍵 提升免疫力，減少過敏反應。"],
+        "平和質": ["恭喜你係平和體質！今週飲枸杞菊花茶 🌼 日常保健，保持健康平衡。"],
+    }
+    default = ["今週養生茶 tip：飲杯紅棗枸杞茶 🍵 補氣養血，簡單又有效！"]
+    return tips.get(constitution, default)
+
+
+# ---------------------------------------------------------------------------
+# Weekly acupressure tip composer
+# ---------------------------------------------------------------------------
+
+
+async def compose_weekly_acupressure_tip(llm: object, user: "User") -> list[str]:
+    """Generate 1-2 HK Canto bubbles with a weekly acupressure tip.
+
+    Picks the most relevant acupressure card based on user pain_points + tags.
+    Falls back to a safe hardcoded tip if LLM fails.
+    """
+    constitution = user.constitution.value if user.constitution else "unknown"
+    category = _pick_acupressure_category(user)
+    acupressure_knowledge = _load_acupressure_card(category)
+
+    system_prompt = """\
+你係 Jessica，心宜中醫 Care Plus 嘅中醫健康顧問。
+今日你主動向用戶分享一條每週穴位按摩 tip。
+
+⚠️ 重要規則（絕對唔可以違反）：
+- 唔好問 follow-up 問題
+- 唔好自我介紹（唔好講「我係Jessica」）
+- 唔好提任何具體產品名稱、價錢或售價
+- 唔好下任何醫療診斷
+- 全部用香港廣東話口語（唔好用書面語或普通話）
+- 控制在 1-2 條訊息，每條唔超過 150 個字
+- 語氣溫暖、親切，像朋友分享知識咁自然
+- 必須提及一個具體穴位名、位置、按壓方法同功效
+
+輸出格式（JSON only，唔好有其他文字）：
+{"bubbles": ["第一條訊息", "第二條訊息（可選）"]}
+"""
+
+    user_prompt = f"""用戶體質：{constitution}
+
+穴位養生參考（部分節錄，用嚟啟發 tip，唔好逐字抄）：
+{acupressure_knowledge}
+
+根據用戶體質同以上穴位知識，寫 1-2 條溫暖嘅廣東話養生訊息俾用戶。
+提醒佢今週可以按邊個穴位、點樣按（位置 + 力度 + 時間）、有咩好處。
+記住：唔好問問題、唔好賣嘢，淨係送一個實用穴位 tip 就夠。"""
+
+    try:
+        response = await llm.messages.create(
+            model="gpt-4o-mini",
+            max_tokens=300,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = response.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = re.sub(r"^```[a-z]*\n?", "", raw)
+            raw = re.sub(r"\n?```$", "", raw)
+        data = json.loads(raw)
+        bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "Weekly acupressure compose failed (%s): %s — using fallback",
+            type(exc).__name__, exc,
+        )
+        return _acupressure_fallback(category)
+
+    if not bubbles:
+        return _acupressure_fallback(category)
+
+    cleaned = [b[:BUBBLE_MAX] for b in bubbles[:MAX_BUBBLES] if b and not _PRICE_RE.search(b)]
+    return cleaned if cleaned else _acupressure_fallback(category)
+
+
+def _acupressure_fallback(category: str) -> list[str]:
+    """Safe hardcoded acupressure tip fallback by category."""
+    tips: dict[str, list[str]] = {
+        "pain": ["今週穴位：合谷穴 👋 喺虎口位置，用拇指按壓 1 分鐘，有助緩解頭痛同肩頸痛！"],
+        "energy_stress": ["今週穴位：神門穴 🤚 喺手腕內側橫紋尺側，輕輕按壓 1 分鐘，安神助眠、舒緩壓力。"],
+        "beauty": ["今週穴位：足三里 🦵 喺膝蓋下四橫指、脛骨外側，每日按壓 1 分鐘，補氣養顏 ✨"],
+        "weight": ["今週穴位：豐隆穴 🦵 喺小腿外側中點，每日按壓 1 分鐘，化痰祛濕助消脂！"],
+    }
+    default = ["今週穴位：神門穴 🤚 喺手腕內側橫紋尺側，輕輕按壓 1 分鐘，安神助眠。"]
+    return tips.get(category, default)
+
+
+# ---------------------------------------------------------------------------
+# Appointment prep composer
+# ---------------------------------------------------------------------------
+
+
+async def compose_appointment_prep(llm: object, user: "User") -> list[str]:
+    """Generate a warm pre-appointment care message. 1-2 HK Canto bubbles.
+
+    Reminds the user about their upcoming clinic visit, constitution, pain
+    points, and one practical prep tip.
+    """
+    constitution = user.constitution.value if user.constitution else "未知"
+    pain_points_str = "、".join(user.pain_points[:3]) if user.pain_points else "暫無記錄"
+
+    system_prompt = """\
+你係 Jessica，心宜中醫 Care Plus 嘅中醫健康顧問。
+今日你主動提醒一位即將去診所覆診嘅用戶，作出溫馨提示。
+
+⚠️ 重要規則（絕對唔可以違反）：
+- 唔好問 follow-up 問題
+- 唔好自我介紹（唔好講「我係Jessica」）
+- 唔好提任何具體產品名稱、價錢或售價
+- 唔好下任何醫療診斷
+- 全部用香港廣東話口語（唔好用書面語或普通話）
+- 控制在 1-2 條訊息，每條唔超過 150 個字
+- 語氣溫暖鼓勵，像朋友提醒咁自然
+- 唔好講具體時間（我哋唔知確實時間）
+
+輸出格式（JSON only，唔好有其他文字）：
+{"bubbles": ["第一條訊息", "第二條訊息（可選）"]}
+"""
+
+    user_prompt = f"""用戶體質：{constitution}
+用戶主要不適：{pain_points_str}
+
+請寫 1-2 條溫暖廣東話訊息，提醒用戶：
+1. 即將去診所見中醫（唔好講具體時間）
+2. 根據佢體質同不適，提一個實用準備 tip（例如：唔使空腹、可以記錄最近不適情況、如有舌頭相可帶埋）
+3. 語氣鼓勵、輕鬆，唔好太正式
+
+記住：唔好問問題、唔好賣嘢，純粹係朋友式提醒。"""
+
+    try:
+        response = await llm.messages.create(
+            model="gpt-4o-mini",
+            max_tokens=300,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = response.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = re.sub(r"^```[a-z]*\n?", "", raw)
+            raw = re.sub(r"\n?```$", "", raw)
+        data = json.loads(raw)
+        bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "Appointment prep compose failed (%s): %s — using fallback",
+            type(exc).__name__, exc,
+        )
+        return _appointment_prep_fallback(user)
+
+    if not bubbles:
+        return _appointment_prep_fallback(user)
+
+    cleaned = [b[:BUBBLE_MAX] for b in bubbles[:MAX_BUBBLES] if b and not _PRICE_RE.search(b)]
+    return cleaned if cleaned else _appointment_prep_fallback(user)
+
+
+def _appointment_prep_fallback(user: "User") -> list[str]:
+    """Generic fallback for appointment prep."""
+    constitution = user.constitution.value if user.constitution else "未知"
     return [
-        "今週茶飲 🍵 茉莉花茶：茉莉花茶包一包，85 度水焗三分鐘。"
-        "性平提神，大部分體質都啱飲，日頭飲最好 🌿",
+        f"快到見醫師喇！你係{constitution}體質，記得唔使空腹去，可以寫低最近唔舒服嘅情況 📝",
+        "如果有舌頭相都可以帶埋俾醫師參考，祝你覆診順利 🌿",
     ]
+
+
+# ---------------------------------------------------------------------------
+# Monthly food tip composer
+# ---------------------------------------------------------------------------
+
+
+async def compose_monthly_food_tip(llm: object, user: "User", month: int) -> list[str]:
+    """Generate 1-2 HK Canto bubbles with a monthly seasonal food therapy tip.
+
+    Personalised to user constitution and current season.
+    """
+    constitution = user.constitution.value if user.constitution else "unknown"
+    season_zh = _month_to_season_zh(month)
+    food_knowledge = _load_food_seasonal_card()
+
+    system_prompt = """\
+你係 Jessica，心宜中醫 Care Plus 嘅中醫健康顧問。
+今日你主動向用戶分享本月嘅季節食療養生 tip。
+
+⚠️ 重要規則（絕對唔可以違反）：
+- 唔好問 follow-up 問題
+- 唔好自我介紹（唔好講「我係Jessica」）
+- 唔好提任何具體產品名稱、價錢或售價
+- 唔好下任何醫療診斷
+- 全部用香港廣東話口語（唔好用書面語或普通話）
+- 控制在 1-2 條訊息，每條唔超過 150 個字
+- 語氣溫暖、親切，像朋友分享知識咁自然
+
+輸出格式（JSON only，唔好有其他文字）：
+{"bubbles": ["第一條訊息", "第二條訊息（可選）"]}
+"""
+
+    user_prompt = f"""而家係{season_zh}（{month}月），用戶體質：{constitution}
+
+季節食療參考（部分節錄，用嚟啟發 tip，唔好逐字抄）：
+{food_knowledge}
+
+根據用戶體質同{season_zh}特點，寫 1-2 條廣東話食療養生訊息：
+- 提 2-3 種今個月宜多食嘅食物（要符合體質）
+- 提 1-2 種宜少食或避免嘅食物
+- 用中醫角度簡單解釋原因
+
+記住：唔好問問題、唔好賣嘢，淨係分享實用食療知識就夠。"""
+
+    try:
+        response = await llm.messages.create(
+            model="gpt-4o-mini",
+            max_tokens=300,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = response.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = re.sub(r"^```[a-z]*\n?", "", raw)
+            raw = re.sub(r"\n?```$", "", raw)
+        data = json.loads(raw)
+        bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "Monthly food tip compose failed (%s): %s — using fallback",
+            type(exc).__name__, exc,
+        )
+        return _food_tip_fallback(month, constitution)
+
+    if not bubbles:
+        return _food_tip_fallback(month, constitution)
+
+    cleaned = [b[:BUBBLE_MAX] for b in bubbles[:MAX_BUBBLES] if b and not _PRICE_RE.search(b)]
+    return cleaned if cleaned else _food_tip_fallback(month, constitution)
+
+
+def _food_tip_fallback(month: int, constitution: str) -> list[str]:
+    """Generic seasonal food tip fallback."""
+    season_zh = _month_to_season_zh(month)
+
+    # Map broad constitution groups to fallback advice
+    yang_xu_group = {"陽虛質"}
+    yin_xu_group = {"陰虛質"}
+    shi_re_group = {"濕熱質", "痰濕質"}
+
+    if season_zh == "冬季":
+        if constitution in yang_xu_group:
+            return ["冬季陽虛體質宜多食羊肉、核桃、黑芝麻 🌰 溫補腎陽，少食生冷食物！"]
+        return ["冬季宜多食黑豆、核桃、山藥補腎暖身 🍵 少食生冷，保護脾胃陽氣！"]
+
+    if season_zh == "夏季":
+        if constitution in yin_xu_group:
+            return ["夏季陰虛體質宜多食百合、蓮子、綠豆 🌿 滋陰清熱，少食辛辣燒烤！"]
+        if constitution in shi_re_group:
+            return ["夏季濕熱體質宜多食冬瓜、薏米、赤小豆 🌱 祛濕清熱，少食肥膩甜品！"]
+        return ["夏季宜多食冬瓜、苦瓜、綠豆消暑祛濕 🌿 少食煎炸燒烤，保護脾胃！"]
+
+    if season_zh in {"春季"}:
+        return ["春季宜多食春菜、豆芽、枸杞養肝疏肝 🌱 少食辛辣刺激，幫助肝氣舒展！"]
+
+    if season_zh == "秋季":
+        return ["秋季宜多食梨、百合、銀耳潤肺滋陰 🍐 少食辛辣，保持肺部滋潤！"]
+
+    # Late summer / 長夏
+    return ["長夏宜多食山藥、蓮子、薏米健脾祛濕 🌿 少食生冷甜食，保護脾胃功能！"]
+
+
+# ---------------------------------------------------------------------------
+# Weekly sleep tip composer
+# ---------------------------------------------------------------------------
+
+
+async def compose_weekly_sleep_tip(llm: object, user: "User") -> list[str]:
+    """Generate 1-2 HK Canto bubbles with a weekly TCM sleep wellness tip.
+
+    Personalised to user constitution. Falls back to a safe hardcoded tip.
+    """
+    constitution = user.constitution.value if user.constitution else "unknown"
+    sleep_knowledge = _load_sleep_card()
+
+    system_prompt = """\
+你係 Jessica，心宜中醫 Care Plus 嘅中醫健康顧問。
+今日你主動向用戶分享一條每週睡眠養生 tip。
+
+⚠️ 重要規則（絕對唔可以違反）：
+- 唔好問 follow-up 問題
+- 唔好自我介紹（唔好講「我係Jessica」）
+- 唔好提任何具體產品名稱、價錢或售價
+- 唔好下任何醫療診斷
+- 全部用香港廣東話口語（唔好用書面語或普通話）
+- 控制在 1-2 條訊息，每條唔超過 150 個字
+- 語氣溫暖、親切，像朋友分享知識咁自然
+
+輸出格式（JSON only，唔好有其他文字）：
+{"bubbles": ["第一條訊息", "第二條訊息（可選）"]}
+"""
+
+    user_prompt = f"""用戶體質：{constitution}
+
+睡眠養生參考（部分節錄，用嚟啟發 tip，唔好逐字抄）：
+{sleep_knowledge}
+
+根據用戶體質同以上睡眠知識，寫 1-2 條溫暖嘅廣東話睡眠養生訊息。
+提一個具體可以即做嘅 tip（例如：子時前入睡、睡前泡腳、避免睡前用手機、按特定穴位）。
+如果有特定體質，根據體質個人化（例如：腎虛體質補腎安神、肝鬱體質疏肝助眠）。
+記住：唔好問問題、唔好賣嘢，淨係送一個實用睡眠 tip 就夠。"""
+
+    try:
+        response = await llm.messages.create(
+            model="gpt-4o-mini",
+            max_tokens=300,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = response.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = re.sub(r"^```[a-z]*\n?", "", raw)
+            raw = re.sub(r"\n?```$", "", raw)
+        data = json.loads(raw)
+        bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "Weekly sleep tip compose failed (%s): %s — using fallback",
+            type(exc).__name__, exc,
+        )
+        return _sleep_fallback(constitution)
+
+    if not bubbles:
+        return _sleep_fallback(constitution)
+
+    cleaned = [b[:BUBBLE_MAX] for b in bubbles[:MAX_BUBBLES] if b and not _PRICE_RE.search(b)]
+    return cleaned if cleaned else _sleep_fallback(constitution)
+
+
+def _sleep_fallback(constitution: str) -> list[str]:
+    """Safe hardcoded sleep tip fallback by constitution."""
+    tips: dict[str, list[str]] = {
+        "氣虛質": ["氣虛體質宜早瞓，最好子時（晚上11點）前入睡補氣 💤 睡前可按神門穴安神。"],
+        "陽虛質": ["陽虛體質宜睡前用熱水泡腳15分鐘 🦶 加幾片薑，溫陽助眠效果好好！"],
+        "陰虛質": ["陰虛體質睡前唔好用手機 📵 可以喝少少溫牛奶或蜂蜜水，滋陰有助入睡。"],
+        "痰濕質": ["痰濕體質宜早瞓早起，睡前唔好食嘢 🌙 側睡有助排濕，改善睡眠質素。"],
+        "濕熱質": ["濕熱體質睡前避免辛辣食物，可以按太衝穴（腳背拇趾間）舒緩煩躁助眠 💤"],
+        "血瘀質": ["血瘀體質宜睡前按揉足三里穴促進血循環 🦵 保持房間空氣流通，有助深層睡眠。"],
+        "氣鬱質": ["氣鬱體質睡前可以做幾個深呼吸舒展肝氣 🌬️ 或者聽輕柔音樂放鬆心情再入睡。"],
+        "特稟質": ["特稟體質宜保持固定睡眠時間，睡前用溫水洗鼻 💤 減少過敏原影響，幫助安睡。"],
+        "平和質": ["恭喜你係平和體質！保持子時前入睡嘅習慣 🌙 睡前30分鐘遠離手機，睡眠質素更好。"],
+    }
+    default = ["今晚記得早啲瞓 💤 中醫建議子時（晚上11點）前入睡，最能補充元氣，養好身體！"]
+    return tips.get(constitution, default)

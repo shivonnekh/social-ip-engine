@@ -29,6 +29,10 @@ from src.broadcaster.composer import (
     compose_purchase_followup,
     compose_solar_term_tip,
     compose_weekly_tea_tip,
+    compose_weekly_acupressure_tip,
+    compose_appointment_prep,
+    compose_monthly_food_tip,
+    compose_weekly_sleep_tip,
     _load_product_names,
 )
 from src.broadcaster.menstrual_care import run_menstrual_care
@@ -387,17 +391,12 @@ async def _run_constitution_recheck(crm: object, llm: object, account_id: str) -
 
 
 # ---------------------------------------------------------------------------
-# Weekly DIY tea tip broadcast
+# Weekly tea tip broadcast
 # ---------------------------------------------------------------------------
 
 
 async def _run_weekly_tea(crm: object, llm: object, account_id: str) -> None:
-    """Send a weekly DIY tea recipe tip to all active users.
-
-    Dedup key: ``tea-{iso_week}`` — once per ISO week per user.
-    This is a separate channel from the weather cap; it does NOT count
-    against the normal 2x/week weather broadcast limit.
-    """
+    """Send a personalised weekly tea therapy tip to all active users (once per ISO week)."""
     now = datetime.now(HKT)
 
     if not _within_send_window(now):
@@ -408,12 +407,6 @@ async def _run_weekly_tea(crm: object, llm: object, account_id: str) -> None:
 
     phones = await crm.list_active_phones()
 
-    if not phones:
-        logger.debug("Weekly tea: no active users")
-        return
-
-    logger.info("Weekly tea: checking %d users for week %s", len(phones), iso_week)
-
     sent_count = 0
     errors = 0
 
@@ -421,12 +414,7 @@ async def _run_weekly_tea(crm: object, llm: object, account_id: str) -> None:
         if is_blocked(phone):
             continue
 
-        # Once per week per user — independent of weather cap
-        try:
-            already_sent = await crm.get_broadcast_count_this_week(phone, tea_dedup_key)
-        except Exception:  # noqa: BLE001
-            already_sent = 0
-
+        already_sent = await crm.get_broadcast_count_this_week(phone, tea_dedup_key)
         if already_sent > 0:
             continue
 
@@ -440,9 +428,7 @@ async def _run_weekly_tea(crm: object, llm: object, account_id: str) -> None:
                 continue
 
             await wa_client.send_long_message(account_id, phone, "\n\n".join(bubbles))
-
-            sent_at = datetime.now(HKT).isoformat()
-            await crm.record_broadcast(phone, "weekly_tea", tea_dedup_key, sent_at)
+            await crm.record_broadcast(phone, "weekly_tea", tea_dedup_key, datetime.now(HKT).isoformat())
             sent_count += 1
 
         except Exception as exc:  # noqa: BLE001
@@ -451,10 +437,212 @@ async def _run_weekly_tea(crm: object, llm: object, account_id: str) -> None:
 
         await asyncio.sleep(BROADCAST_SEND_PACE_S)
 
-    logger.info(
-        "Weekly tea done — week=%s sent=%d errors=%d",
-        iso_week, sent_count, errors,
-    )
+    logger.info("Weekly tea cycle done — sent=%d errors=%d", sent_count, errors)
+
+
+# ---------------------------------------------------------------------------
+# Weekly acupressure tip broadcast
+# ---------------------------------------------------------------------------
+
+
+async def _run_weekly_acupressure(crm: object, llm: object, account_id: str) -> None:
+    """Send a personalised weekly acupressure tip to all active users (once per ISO week)."""
+    now = datetime.now(HKT)
+
+    if not _within_send_window(now):
+        return
+
+    iso_week = _current_iso_week(now)
+    dedup_key = f"acupressure-{iso_week}"
+
+    phones = await crm.list_active_phones()
+
+    sent_count = 0
+    errors = 0
+
+    for phone in phones:
+        if is_blocked(phone):
+            continue
+
+        already_sent = await crm.get_broadcast_count_this_week(phone, dedup_key)
+        if already_sent > 0:
+            continue
+
+        try:
+            user = await crm.get_user(phone)
+            if user is None:
+                continue
+
+            bubbles = await compose_weekly_acupressure_tip(llm, user)
+            if not bubbles:
+                continue
+
+            await wa_client.send_long_message(account_id, phone, "\n\n".join(bubbles))
+            await crm.record_broadcast(phone, "weekly_acupressure", dedup_key, datetime.now(HKT).isoformat())
+            sent_count += 1
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Weekly acupressure: failed for %s: %s", phone[-4:], exc)
+            errors += 1
+
+        await asyncio.sleep(BROADCAST_SEND_PACE_S)
+
+    logger.info("Weekly acupressure cycle done — sent=%d errors=%d", sent_count, errors)
+
+
+# ---------------------------------------------------------------------------
+# Appointment prep broadcast
+# ---------------------------------------------------------------------------
+
+
+async def _run_appointment_prep(crm: object, llm: object, account_id: str) -> None:
+    """Send appointment prep messages to users with upcoming appointments (within 48h)."""
+    now = datetime.now(HKT)
+
+    if not _within_send_window(now):
+        return
+
+    iso_week = _current_iso_week(now)
+    dedup_key = f"appt-prep-{iso_week}"
+
+    phones = await crm.list_phones_for_upcoming_appointments(within_hours=48)
+
+    if not phones:
+        logger.debug("Appointment prep: no upcoming appointments")
+        return
+
+    logger.info("Appointment prep: %d users with upcoming appointments", len(phones))
+
+    sent_count = 0
+    errors = 0
+
+    for phone in phones:
+        if is_blocked(phone):
+            continue
+
+        already_sent = await crm.get_broadcast_count_this_week(phone, dedup_key)
+        if already_sent > 0:
+            continue
+
+        try:
+            user = await crm.get_user(phone)
+            if user is None:
+                continue
+
+            bubbles = await compose_appointment_prep(llm, user)
+            if not bubbles:
+                continue
+
+            await wa_client.send_long_message(account_id, phone, "\n\n".join(bubbles))
+            await crm.record_broadcast(phone, "appointment_prep", dedup_key, datetime.now(HKT).isoformat())
+            sent_count += 1
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Appointment prep: failed for %s: %s", phone[-4:], exc)
+            errors += 1
+
+        await asyncio.sleep(BROADCAST_SEND_PACE_S)
+
+    logger.info("Appointment prep cycle done — sent=%d errors=%d", sent_count, errors)
+
+
+# ---------------------------------------------------------------------------
+# Monthly food tip broadcast
+# ---------------------------------------------------------------------------
+
+
+async def _run_monthly_food_tip(crm: object, llm: object, account_id: str) -> None:
+    """Send a personalised monthly seasonal food therapy tip to all active users."""
+    now = datetime.now(HKT)
+
+    if not _within_send_window(now):
+        return
+
+    dedup_key = f"food-{now.year}-{now.month:02d}"
+
+    phones = await crm.list_active_phones()
+
+    sent_count = 0
+    errors = 0
+
+    for phone in phones:
+        if is_blocked(phone):
+            continue
+
+        already_sent = await crm.get_broadcast_count_this_week(phone, dedup_key)
+        if already_sent > 0:
+            continue
+
+        try:
+            user = await crm.get_user(phone)
+            if user is None:
+                continue
+
+            bubbles = await compose_monthly_food_tip(llm, user, now.month)
+            if not bubbles:
+                continue
+
+            await wa_client.send_long_message(account_id, phone, "\n\n".join(bubbles))
+            await crm.record_broadcast(phone, "monthly_food_tip", dedup_key, datetime.now(HKT).isoformat())
+            sent_count += 1
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Monthly food tip: failed for %s: %s", phone[-4:], exc)
+            errors += 1
+
+        await asyncio.sleep(BROADCAST_SEND_PACE_S)
+
+    logger.info("Monthly food tip cycle done — sent=%d errors=%d", sent_count, errors)
+
+
+# ---------------------------------------------------------------------------
+# Weekly sleep tip broadcast
+# ---------------------------------------------------------------------------
+
+
+async def _run_weekly_sleep_tip(crm: object, llm: object, account_id: str) -> None:
+    """Send a personalised weekly sleep wellness tip to all active users (once per ISO week)."""
+    now = datetime.now(HKT)
+
+    if not _within_send_window(now):
+        return
+
+    iso_week = _current_iso_week(now)
+    dedup_key = f"sleep-{iso_week}"
+
+    phones = await crm.list_active_phones()
+
+    sent_count = 0
+    errors = 0
+
+    for phone in phones:
+        if is_blocked(phone):
+            continue
+
+        already_sent = await crm.get_broadcast_count_this_week(phone, dedup_key)
+        if already_sent > 0:
+            continue
+
+        try:
+            user = await crm.get_user(phone)
+            if user is None:
+                continue
+
+            bubbles = await compose_weekly_sleep_tip(llm, user)
+            if not bubbles:
+                continue
+
+            await wa_client.send_long_message(account_id, phone, "\n\n".join(bubbles))
+            await crm.record_broadcast(phone, "weekly_sleep_tip", dedup_key, datetime.now(HKT).isoformat())
+            sent_count += 1
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Weekly sleep tip: failed for %s: %s", phone[-4:], exc)
+            errors += 1
+
+        await asyncio.sleep(BROADCAST_SEND_PACE_S)
+
+    logger.info("Weekly sleep tip cycle done — sent=%d errors=%d", sent_count, errors)
 
 
 # ---------------------------------------------------------------------------
@@ -494,6 +682,22 @@ async def start_broadcast_loop(crm: object, llm: object, account_id: str) -> Non
             await _run_weekly_tea(crm, llm, account_id)
         except Exception as exc:  # noqa: BLE001
             logger.error("Weekly tea loop error (will retry next cycle): %s", exc)
+        try:
+            await _run_weekly_acupressure(crm, llm, account_id)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Weekly acupressure loop error (will retry next cycle): %s", exc)
+        try:
+            await _run_appointment_prep(crm, llm, account_id)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Appointment prep loop error (will retry next cycle): %s", exc)
+        try:
+            await _run_monthly_food_tip(crm, llm, account_id)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Monthly food tip loop error (will retry next cycle): %s", exc)
+        try:
+            await _run_weekly_sleep_tip(crm, llm, account_id)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Weekly sleep tip loop error (will retry next cycle): %s", exc)
         try:
             await run_menstrual_care(crm, llm, account_id)
         except Exception as exc:  # noqa: BLE001
