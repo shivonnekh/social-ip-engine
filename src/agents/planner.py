@@ -36,6 +36,7 @@ from src.agents.base import (
     SpecialistName,
     render_specialist_menu_zh,
 )
+from src.agents.emotion import detect_emotion
 from src.agents.sales_agent import _ORDER_RE, _TS_AWAITING_ADDRESS
 from src.crm.models import Constitution, User, UserStatus
 from src.tools import prompt_overrides
@@ -388,6 +389,33 @@ def _rule_overrides(
             notes_for_writer=(
                 "用戶第一句已經講咗症狀。短短自我介紹後，acknowledge 佢嘅問題，"
                 "然後直接問脷相 — 唔好叫佢再講一次唔舒服喺邊。"
+            ),
+        )
+
+    # 情志調理 — user mentions emotional distress → connect to TCM organ mapping.
+    # Fires only when no higher-priority rule matched (e.g. not a product query,
+    # not an appointment ask). Routes CASUAL + FAQ in parallel:
+    #   CASUAL: empathy + warmth
+    #   FAQ: finds KB cards for the affected organ (stress/sleep/urban lifestyle)
+    # notes_for_writer carries the 七情 → 臟腑 frame so Writer can make the
+    # TCM connection feel natural, not preachy.
+    emotion = detect_emotion(user_message)
+    if emotion is not None:
+        probe_str = "、".join(emotion.probe_symptoms[:3])
+        return PlannerDecision(
+            specialists=[SpecialistName.CASUAL, SpecialistName.FAQ],
+            mode="parallel",
+            reasoning=f"rule: emotion detected ({emotion.emotion_zh}) → 七情/{emotion.tcm_emotion} 傷{emotion.organ_zh}",
+            notes_for_writer=(
+                f"【情志調理】用戶表達了「{emotion.emotion_zh}」嘅情緒。\n"
+                f"中醫角度：{emotion.imbalance_zh}。\n"
+                f"Writer 嘅任務：\n"
+                f"1. 先共情（一句就夠，唔好過度）\n"
+                f"2. 輕輕帶出中醫嘅角度：「中醫話{emotion.tcm_emotion}傷{emotion.organ_zh}…」\n"
+                f"3. 探問相關身體症狀：佢有冇試過 {probe_str}？\n"
+                f"4. 如果有症狀確認 → 自然帶出{emotion.soup_angle}嘅養生方向\n"
+                f"5. 唔好硬銷，呢轉係關心，唔係 pitch\n"
+                f"FAQ Agent 會提供相關 KB 內容，Writer 用嚟豐富回答即可。"
             ),
         )
 
