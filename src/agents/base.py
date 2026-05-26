@@ -121,6 +121,13 @@ class PlannerDecision(BaseModel):
         bubbles (e.g. tone, urgency).
       - proactive_hint: optional structured hint indicating a follow-up
         opportunity (e.g. "constitution_done — pitch soup soon").
+      - rephrased_query: normalised HK 廣東話 version of user_message,
+        with mixed-script / typos / filler cleaned up. Specialists use
+        this for LLM calls + KB search to avoid noise. Empty for
+        rule-based fast paths (no rephrase needed).
+      - extracted_pain_points: health complaints surfaced from the user's
+        message. Pipeline appends to user.pain_points so CRM remembers
+        symptoms across turns (e.g. for closing summary + memory).
     """
 
     model_config = ConfigDict(frozen=True)
@@ -130,6 +137,8 @@ class PlannerDecision(BaseModel):
     reasoning: str
     notes_for_writer: str = ""
     proactive_hint: str = ""
+    rephrased_query: str = ""
+    extracted_pain_points: list[str] = Field(default_factory=list)
 
     def has(self, name: SpecialistName) -> bool:
         return name in self.specialists
@@ -150,6 +159,16 @@ class SpecialistInput(BaseModel):
     media_urls: list[str] = Field(default_factory=list)
     planner_notes: str = ""
     co_specialist: SpecialistName | None = None
+    # Planner-normalised HK 廣東話 version of user_message. Specialists
+    # SHOULD prefer this for LLM calls + KB search. Empty when no
+    # rephrasing happened (rule-based fast paths, or LLM declined).
+    # Use the `effective_query` helper to pick the right one.
+    rephrased_query: str = ""
+
+    @property
+    def effective_query(self) -> str:
+        """Return rephrased_query if present, else original user_message."""
+        return self.rephrased_query or self.user_message
 
 
 class SpecialistOutput(BaseModel):

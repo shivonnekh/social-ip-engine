@@ -153,6 +153,18 @@ class JessicaPipeline:
             # 5. Apply suggested CRM diffs from specialists
             user_after = _apply_specialist_diffs(user_for_planner, outputs)
 
+            # 5b. Apply Planner's extracted pain_points (from query understanding).
+            # The Planner does NER on the user message — without this step,
+            # users could discuss symptoms for many turns and CRM would still
+            # show pain_points=[] (causing empty closing summaries).
+            if decision.extracted_pain_points:
+                merged = list(user_after.pain_points)
+                for pp in decision.extracted_pain_points:
+                    if pp and pp not in merged:
+                        merged.append(pp)
+                if merged != list(user_after.pain_points):
+                    user_after = user_after.with_updates(pain_points=merged)
+
             # Defensive media filter — Writer LLM has been observed to
             # hallucinate URLs like 'https://example.com/ointment1.jpg'
             # even when told to copy verbatim. Whitelist outbound media
@@ -270,6 +282,7 @@ class JessicaPipeline:
                         media_urls=media_urls,
                         planner_notes=decision.notes_for_writer,
                         co_specialist=co,
+                        rephrased_query=decision.rephrased_query,
                     )
                 )
             except Exception as exc:  # noqa: BLE001
