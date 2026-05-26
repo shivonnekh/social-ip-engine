@@ -31,6 +31,7 @@ import json
 import logging
 import os
 import re
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -41,7 +42,7 @@ from src.agents.base import (
     SpecialistName,
     SpecialistOutput,
 )
-from src.crm.models import Constitution, UserStatus
+from src.crm.models import Constitution, TongueRecord, UserStatus
 from src.tools import prompt_overrides
 from src.tools.kb_index import KBIndex
 from src.tools.kb_search import KBSearch
@@ -60,6 +61,7 @@ MAX_MCQ = 4
 _TS_FINDINGS = "constitution_tongue_findings"
 _TS_MCQ_IDX = "constitution_mcq_index"
 _TS_MCQ_ANS = "constitution_mcq_answers"
+_TS_PHOTO_URL = "constitution_tongue_photo_url"
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -169,6 +171,9 @@ class ConstitutionAgent:
         findings = ts.get(_TS_FINDINGS)
         mcq_idx = int(ts.get(_TS_MCQ_IDX, 0))
         mcq_answers: list[dict[str, Any]] = list(ts.get(_TS_MCQ_ANS, []))
+        # Remember the photo URL so we can persist a TongueRecord at
+        # declaration time (Bug fix 2026-05-26 — see __doc__ Phase 4).
+        photo_url: str | None = ts.get(_TS_PHOTO_URL)
 
         # ── PHASE 1: no tongue analysis yet, no media this turn ─────
         if not findings and not inp.media_urls:
@@ -196,8 +201,14 @@ class ConstitutionAgent:
                 payload = _build_payload_ask_tongue(retry=True)
                 return _wrap(payload, suggested_diff, cards_used, tools_called), usage_total
 
-            # Valid tongue — persist findings + advance state.
+            # Valid tongue — persist findings + photo URL + advance state.
+            # Photo URL is held in temp_state until declare phase, at which
+            # point we materialise a TongueRecord (so TongueProgress can
+            # compare future uploads). Storing only at declare avoids
+            # half-finished records for users who drop off mid-MCQ.
             ts[_TS_FINDINGS] = findings
+            photo_url = inp.media_urls[0]
+            ts[_TS_PHOTO_URL] = photo_url
             suggested_diff["temp_state"] = ts
 
             just_analyzed = True
@@ -275,7 +286,26 @@ class ConstitutionAgent:
 
             suggested_diff["constitution"] = constitution.value
             suggested_diff["status"] = UserStatus.CONSTITUTION_DONE.value
-            ts[_TS_MCQ_IDX] = MAX_MCQ
+
+            # Materialise a TongueRecord so future re-uploads can route to
+            # TongueProgress (which compares against the last record).
+            # Without this, the planner rule
+            #   `user.constitution != UNKNOWN and len(user.tongue_photos) >= 1`
+            # would never fire because nothing else populates the list.
+            if photo_url:
+                record = _findings_to_tongue_record(
+                    findings or {}, photo_url, constitution
+                )
+                suggested_diff["tongue_photos_append"] = [
+                    record.model_dump(mode="json")
+                ]
+
+            # Reset constitution temp_state so this turn's `declare` cannot
+            # accidentally re-fire on a subsequent turn that gets routed
+            # back here (otherwise mcq_idx + mcq_answers would still satisfy
+            # the Phase 4 entry condition and re-declare on every visit).
+            for key in (_TS_FINDINGS, _TS_MCQ_IDX, _TS_MCQ_ANS, _TS_PHOTO_URL):
+                ts.pop(key, None)
             suggested_diff["temp_state"] = ts
 
             return _wrap(payload, suggested_diff, cards_used, tools_called), usage_total
@@ -688,6 +718,83 @@ def _build_payload_declare(
             "湯水送上門」— 但唔好 push、唔好講價錢。" + offers_hint
         ),
     }
+
+
+# ──────────────────────────────────────────────────────────────────
+# Findings → TongueRecord adapter
+# ──────────────────────────────────────────────────────────────────
+#
+# Constitution agent's vision schema uses English categorical values
+# (colour="pale" / coating="thin_white" / shape="tooth_marks" / ...).
+# TongueRecord uses HK-style Chinese values (脷色=淡紅, 苔色=白, ...).
+# The two were designed independently — this is the translation table.
+
+_COLOUR_MAP: dict[str, str] = {
+    "pale": "淡白",
+    "pink": "淡紅",
+    "red": "紅",
+    "dark_red": "絳",
+    "purple": "紫",
+}
+
+_COATING_COLOUR_MAP: dict[str, str] = {
+    "none": "無苔",
+    "thin_white": "白",
+    "thick_white": "白",
+    "yellow": "黃",
+    "greasy": "黃",       # 厚膩黃 is the common case in HK practice
+    "peeled": "無苔",
+}
+
+_COATING_THICKNESS_MAP: dict[str, str] = {
+    "none": "無苔",
+    "thin_white": "薄",
+    "thick_white": "厚",
+    "yellow": "薄",
+    "greasy": "厚",
+    "peeled": "無苔",
+}
+
+_MOISTURE_MAP: dict[str, str] = {
+    "dry": "燥",
+    "normal": "潤",
+    "wet": "潤",
+}
+
+_BODY_SHAPE_MAP: dict[str, str] = {
+    "thin": "瘦",
+    "normal": "正常",
+    "swollen": "胖",
+    "tooth_marks": "正常",  # tooth_marks is a separate flag, not a shape
+}
+
+
+def _findings_to_tongue_record(
+    findings: dict[str, Any],
+    photo_url: str,
+    constitution: Constitution,
+) -> TongueRecord:
+    """Build a TongueRecord from Constitution agent's vision findings.
+
+    Conservative — unknown categorical values are left blank (empty
+    string) rather than guessed, so the diff agent doesn't treat a
+    speculative value as a "change" on the next comparison.
+    """
+    shape = findings.get("shape", "")
+    coating = findings.get("coating", "")
+    return TongueRecord(
+        photo_url=photo_url,
+        captured_at=datetime.utcnow(),
+        tongue_colour=_COLOUR_MAP.get(findings.get("colour", ""), ""),
+        coating_colour=_COATING_COLOUR_MAP.get(coating, ""),
+        coating_thickness=_COATING_THICKNESS_MAP.get(coating, ""),
+        coating_moisture=_MOISTURE_MAP.get(findings.get("moisture", ""), ""),
+        body_shape=_BODY_SHAPE_MAP.get(shape, ""),
+        teeth_marks=(shape == "tooth_marks"),
+        cracks=False,  # not in current vision schema
+        raw_analysis=str(findings.get("notes", "") or ""),
+        constitution_at_time=constitution.value,
+    )
 
 
 def _neutral_findings(reason: str) -> dict[str, Any]:

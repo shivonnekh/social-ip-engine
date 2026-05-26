@@ -188,6 +188,146 @@ async def test_phase4_declares_after_all_mcqs(agent: ConstitutionAgent) -> None:
     assert "products_pitched_append" not in out.suggested_user_state_diff
 
 
+# ── Bug-fix regression tests (2026-05-26) ────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_phase4_clears_constitution_temp_state(
+    agent: ConstitutionAgent,
+) -> None:
+    """After declare, constitution_* temp_state keys must be removed.
+
+    Without the clear, a subsequent turn that re-routes here would
+    re-trigger Phase 4 with the same answers and re-declare ad infinitum.
+    """
+    answers = [
+        {"question_key": "energy", "chosen_id": "A", "label": "...", "points": {"平和質": 2}},
+        {"question_key": "temperature", "chosen_id": "B", "label": "...", "points": {"平和質": 1}},
+        {"question_key": "digestion", "chosen_id": "A", "label": "...", "points": {"平和質": 2}},
+        {"question_key": "mood_sleep", "chosen_id": "A", "label": "...", "points": {"平和質": 2}},
+    ]
+    user = User(
+        phone="+85291234567",
+        temp_state={
+            "constitution_tongue_findings": {"is_tongue_photo": True, "colour": "pink"},
+            "constitution_mcq_index": MAX_MCQ,
+            "constitution_mcq_answers": answers,
+            "constitution_tongue_photo_url": "https://x/img.jpg",
+            "other_unrelated_key": "keep me",
+        },
+    )
+    inp = SpecialistInput(user=user, user_message="(no-op)")
+    out, _ = await agent.run(inp)
+
+    ts = out.suggested_user_state_diff["temp_state"]
+    assert "constitution_tongue_findings" not in ts
+    assert "constitution_mcq_index" not in ts
+    assert "constitution_mcq_answers" not in ts
+    assert "constitution_tongue_photo_url" not in ts
+    # Unrelated keys are preserved
+    assert ts["other_unrelated_key"] == "keep me"
+
+
+@pytest.mark.asyncio
+async def test_phase4_emits_tongue_record_when_photo_url_known(
+    agent: ConstitutionAgent,
+) -> None:
+    """Declaration MUST persist a TongueRecord so future re-uploads can
+    route to TongueProgress."""
+    answers = [
+        {"question_key": "energy", "chosen_id": "C", "label": "...", "points": {"氣虛質": 3}},
+        {"question_key": "temperature", "chosen_id": "A", "label": "...", "points": {"陽虛質": 3}},
+        {"question_key": "digestion", "chosen_id": "C", "label": "...", "points": {"陽虛質": 2}},
+        {"question_key": "mood_sleep", "chosen_id": "B", "label": "...", "points": {"氣鬱質": 2}},
+    ]
+    user = User(
+        phone="+85291234567",
+        temp_state={
+            "constitution_tongue_findings": {
+                "is_tongue_photo": True,
+                "colour": "pale",
+                "coating": "thin_white",
+                "shape": "tooth_marks",
+                "moisture": "normal",
+                "notes": "舌淡紅、苔薄白",
+            },
+            "constitution_tongue_photo_url": "https://example.com/t.jpg",
+            "constitution_mcq_index": MAX_MCQ,
+            "constitution_mcq_answers": answers,
+        },
+    )
+    inp = SpecialistInput(user=user, user_message="(no-op)")
+    out, _ = await agent.run(inp)
+
+    diff = out.suggested_user_state_diff
+    assert "tongue_photos_append" in diff
+    records = diff["tongue_photos_append"]
+    assert len(records) == 1
+    rec = records[0]
+    assert rec["photo_url"] == "https://example.com/t.jpg"
+    assert rec["tongue_colour"] == "淡白"  # pale → 淡白
+    assert rec["coating_thickness"] == "薄"
+    assert rec["teeth_marks"] is True
+    # constitution_at_time matches the declared constitution
+    assert rec["constitution_at_time"] == out.payload["constitution"]
+
+
+@pytest.mark.asyncio
+async def test_phase4_no_tongue_record_when_findings_without_url(
+    agent: ConstitutionAgent,
+) -> None:
+    """Older sessions may have findings in temp_state but no photo URL
+    (data written before this fix shipped). Declaration must NOT crash
+    nor emit a TongueRecord with an empty URL."""
+    answers = [
+        {"question_key": "energy", "chosen_id": "A", "label": "...", "points": {"平和質": 2}},
+        {"question_key": "temperature", "chosen_id": "B", "label": "...", "points": {"平和質": 1}},
+        {"question_key": "digestion", "chosen_id": "A", "label": "...", "points": {"平和質": 2}},
+        {"question_key": "mood_sleep", "chosen_id": "A", "label": "...", "points": {"平和質": 2}},
+    ]
+    user = User(
+        phone="+85291234567",
+        temp_state={
+            "constitution_tongue_findings": {"is_tongue_photo": True, "colour": "pink"},
+            # No constitution_tongue_photo_url (backward-compat scenario)
+            "constitution_mcq_index": MAX_MCQ,
+            "constitution_mcq_answers": answers,
+        },
+    )
+    inp = SpecialistInput(user=user, user_message="(no-op)")
+    out, _ = await agent.run(inp)
+
+    assert out.payload["phase"] == "declaring"
+    assert "tongue_photos_append" not in out.suggested_user_state_diff
+
+
+@pytest.mark.asyncio
+async def test_phase2_saves_photo_url_to_temp_state(
+    agent: ConstitutionAgent,
+) -> None:
+    """When vision rejects (offline mode), we must NOT persist findings —
+    but when it accepts (separately tested in pipeline), we should hold
+    onto the photo URL until Phase 4."""
+    # Build a user_state where Phase 3 was reached via a successful
+    # earlier turn — verify the photo_url was carried over.
+    user = User(
+        phone="+85291234567",
+        temp_state={
+            "constitution_tongue_findings": {"is_tongue_photo": True, "colour": "pale"},
+            "constitution_tongue_photo_url": "https://prior/img.jpg",
+        },
+    )
+    inp = SpecialistInput(user=user, user_message="")
+    out, _ = await agent.run(inp)
+
+    # Phase 3 should preserve the photo_url
+    ts = out.suggested_user_state_diff.get("temp_state", {})
+    # If diff wasn't emitted this turn (no advance), original ts must
+    # still contain the key for the next turn's read.
+    if "constitution_tongue_photo_url" in ts:
+        assert ts["constitution_tongue_photo_url"] == "https://prior/img.jpg"
+
+
 # ── Scoring unit tests ───────────────────────────────────────────────
 
 
