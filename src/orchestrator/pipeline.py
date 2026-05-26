@@ -157,9 +157,21 @@ class JessicaPipeline:
             # The Planner does NER on the user message — without this step,
             # users could discuss symptoms for many turns and CRM would still
             # show pain_points=[] (causing empty closing summaries).
-            if decision.extracted_pain_points:
+            #
+            # gpt-5.4-mini occasionally omits the field (dry-run trace
+            # 2026-05-26 showed inconsistent extraction). Fall back to the
+            # deterministic keyword detector so a routine "我頭痛" still
+            # gets persisted to CRM even if the LLM didn't tag it.
+            extracted: list[str] = list(decision.extracted_pain_points)
+            if not extracted:
+                from src.agents.acute_pain import detect_health_complaint  # noqa: PLC0415
+                kw = detect_health_complaint(user_message)
+                if kw is not None:
+                    extracted = [kw]
+
+            if extracted:
                 merged = list(user_after.pain_points)
-                for pp in decision.extracted_pain_points:
+                for pp in extracted:
                     if pp and pp not in merged:
                         merged.append(pp)
                 if merged != list(user_after.pain_points):

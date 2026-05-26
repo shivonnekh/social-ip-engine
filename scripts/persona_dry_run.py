@@ -66,9 +66,9 @@ DIALOGUE: list[tuple[str, str, list[str]]] = [
     ("Pricing", "幾錢呀？", []),
     ("Order intent", "我想試下清心潤肺湯", []),
     ("Asks delivery", "點訂？要等幾耐？", []),
-    ("Want appointment", "我都想預約覆診", []),
+    ("Want appointment", "我都想預約網上視診", []),  # online → skip district step
     ("Picks slot", "下星期三下午得唔得？", []),
-    ("Confirms", "OK 三點", []),
+    ("Confirms", "OK 三點 confirm", []),
     ("Thanks", "多謝你 Jessica", []),
     ("Farewell", "好啦拜拜", []),
 ]

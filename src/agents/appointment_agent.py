@@ -41,8 +41,23 @@ logger = logging.getLogger("agents.appointment")
 # temp_state keys (namespaced)
 _TS_MODE = "appointment_mode"            # "in_person" | "online_video"
 _TS_PROPOSED = "appointment_proposed"    # {clinic_id, date, time, mode}
+_TS_MODE_ASK_COUNT = "appointment_mode_ask_count"  # int: how many times we've asked
 
 _VALID_MODES = ("in_person", "online_video")
+
+# Scheduling-intent signals — user is clearly trying to BOOK, not browse.
+# When seen, we treat them as a strong signal to default mode + propose.
+_SCHEDULING_HINT_TOKENS = (
+    "下星期", "下禮拜", "下周", "聽日", "聽朝", "明天", "後日",
+    "點", "時", "上午", "下午", "晚上", "朝早",
+    "得唔得", "可以嗎", "可不可以",
+)
+
+
+def _has_scheduling_intent(text: str) -> bool:
+    if not text:
+        return False
+    return any(tok in text for tok in _SCHEDULING_HINT_TOKENS)
 
 # Map common Cantonese user utterances → mode.
 _MODE_PATTERNS: dict[str, str] = {
@@ -141,19 +156,41 @@ class AppointmentAgent:
 
         # ── PHASE 1: no mode yet ─────────────────────────────────────
         if not mode:
-            offers = [
-                p.model_dump(mode="json")
-                for p in self._promos.for_stage("appointment_mode_choice")
-            ]
-            payload = {
-                "phase": "asking_mode",
-                "available_modes": list(_VALID_MODES),
-                "active_offers": offers,
-                "writer_hint": (
-                    "用戶仲未揀到診定視診，俾佢揀。提到視診包郵嘅優惠。"
-                ),
-            }
-            return _wrap(payload, suggested_diff, tools_called), usage
+            ask_count = int(ts.get(_TS_MODE_ASK_COUNT, 0))
+
+            # Fallback: if user has clear scheduling intent ("下星期三 3 點")
+            # AND we've already asked about mode at least once, default to
+            # in_person rather than loop forever. Dry-run trace 2026-05-26
+            # showed users supplying date/time but never picking a mode,
+            # leaving the agent stuck on asking_mode.
+            if ask_count >= 1 and _has_scheduling_intent(inp.user_message):
+                mode = "in_person"
+                ts[_TS_MODE] = mode
+                # Don't reset ask_count — we still want to flow forward
+                suggested_diff["temp_state"] = ts
+                logger.info(
+                    "appointment: defaulted mode=in_person (ask_count=%d, "
+                    "scheduling intent in %r)",
+                    ask_count, inp.user_message[:50]
+                )
+                # Fall through to subsequent phases (district / propose)
+            else:
+                # Ask, and remember we asked
+                ts[_TS_MODE_ASK_COUNT] = ask_count + 1
+                suggested_diff["temp_state"] = ts
+                offers = [
+                    p.model_dump(mode="json")
+                    for p in self._promos.for_stage("appointment_mode_choice")
+                ]
+                payload = {
+                    "phase": "asking_mode",
+                    "available_modes": list(_VALID_MODES),
+                    "active_offers": offers,
+                    "writer_hint": (
+                        "用戶仲未揀到診定視診，俾佢揀。提到視診包郵嘅優惠。"
+                    ),
+                }
+                return _wrap(payload, suggested_diff, tools_called), usage
 
         # ── PHASE 2: in-person requires district ────────────────────
         if mode == "in_person" and not user_district:
