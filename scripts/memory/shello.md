@@ -80,3 +80,10 @@ Massive day. Started on production bug triage (CRM `list_phones_for_upcoming_app
 - User flags UX issues fast and accurately — listen carefully
 - User runs the company; cost ceiling matters; quality not at all costs
 - Auto-deploy issue not yet resolved — user has the dashboard, I don't
+
+### Post-save addendum — 2026-05-26 late evening
+
+- Prod-down fix `f234fc3` actually failed to deploy too (asyncpg + ALTER TABLE IF NOT EXISTS bug in Python 3.14 runtime — `AttributeError: NoneType has no attribute decode`)
+- Wrote second fix `115805e`: moved PG column migration out of SQL into Python via `information_schema` lookup + conditional ADD COLUMN. Avoids the asyncpg protocol path entirely.
+- Deploy `dep-d8arutjbc2fs73e50rc0` LIVE confirmed working.
+- Lesson: asyncpg 0.31 + Python 3.14 has issues with DDL `IF NOT EXISTS` extensions. Use information_schema lookup instead.
