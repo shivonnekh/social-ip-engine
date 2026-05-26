@@ -36,6 +36,12 @@ from src.tools import prompt_overrides
 logger = logging.getLogger("agents.writer")
 
 MAX_BUBBLES = 5
+# Sales pitches need more headroom: empathy + safety + intro + N products
+# + backstop + CTA can easily reach 7-8 bubbles for a 3-product pitch.
+# When Sales surfaces ≥2 products, we extend the cap so the Writer doesn't
+# silently truncate a product bubble (production bug 2026-05-26: announced
+# "3 款湯水" but only 2 rendered because bubbles[5] got dropped).
+MAX_BUBBLES_PITCH = 8
 
 
 # Conflict resolution — when specialists disagree (e.g. FAQ "no_match"
@@ -225,6 +231,10 @@ Tone calibration (根據 user.status):
   ✗ 任何 mention 產品但冇 attach image_url 落 media_to_send
   ✗ 用 indications 入面冇嘅功效詞（唔可以作）
   ✗ 同時推 3 款以上喺一個 bubble — 一款一個 bubble，唔好擠
+  ✗ 用「方向：」標籤取代「功效：」— 必須用「功效：」 + indications
+  ✗ 宣布 "我幫你揀咗 N 款" 但實際 bubble 少過 N 款（"announced vs rendered" mismatch）
+    — payload.products_to_pitch 有幾多款，bubbles 入面就**必須**有幾多個產品 bubble，
+    每個都附返 image_url。少一個都係 bug。
 - Sales payload intent="no_match" 時，唔代表「冇產品」— 只係冇新產品
   可推。用 order_channel 俾用戶聯絡渠道就 OK。
 - 媒體 (圖片) 由 media_to_send 處理：
@@ -357,6 +367,18 @@ class WriterAgent:
         adaptive_max = self._max_tokens
         if n_products >= 6:
             adaptive_max = max(adaptive_max, 2000)
+        elif n_products >= 2:
+            # 2-3 product pitches need ~1 bubble each + framing — bump
+            # token cap to avoid mid-bubble truncation.
+            adaptive_max = max(adaptive_max, 1800)
+
+        # Adaptive bubble cap — sales pitches with ≥2 products need extra
+        # bubbles for empathy + safety + intro + N products + backstop + CTA.
+        # Without this, MAX_BUBBLES=5 silently dropped a product (the
+        # "announced 3, showed 2" production bug).
+        bubble_cap = (
+            MAX_BUBBLES_PITCH if n_products >= 2 else MAX_BUBBLES
+        )
 
         response = await self._client.messages.create(
             model=self._model,
@@ -375,7 +397,7 @@ class WriterAgent:
             if not bubbles:
                 raise ValueError("empty bubbles")
             output = WriterOutput(
-                bubbles=bubbles[:MAX_BUBBLES],
+                bubbles=bubbles[:bubble_cap],
                 media_to_send=data.get("media_to_send", []),
             )
         except Exception as exc:  # noqa: BLE001
@@ -390,7 +412,7 @@ class WriterAgent:
             if salvaged:
                 logger.info("writer: salvaged %d bubble(s) from truncated JSON", len(salvaged))
                 output = WriterOutput(
-                    bubbles=salvaged[:MAX_BUBBLES],
+                    bubbles=salvaged[:bubble_cap],
                     media_to_send=[],
                 )
             else:
