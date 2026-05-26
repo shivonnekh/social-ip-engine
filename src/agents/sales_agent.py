@@ -442,11 +442,13 @@ class SalesAgent:
                 f"用戶嘅情況落入「{category.key}」 category。\n"
                 f"Bubble 1 (安全話術): 「{playbook.safety_disclaimer if playbook else ''}」\n"
                 f"Bubble 2: 講「如果你主要係 {category.pitch_angle}，可以了解：」\n"
-                "之後 bubbles: 列 products_to_pitch 入面每款"
-                " (名 + 價錢 + 「方向：…」框架)，每款 1 bubble + 圖。\n"
+                "之後 bubbles: 每款產品 1 bubble，**必須跟以下範本**：\n"
+                "  🍲 [name] — [price_display]\n"
+                "  功效：[indications top 3-5，用「、」分隔]\n"
+                "  並 attach image_url 落 media_to_send。\n"
                 f"倒數第二 bubble: 「{playbook.consultation_backstop if playbook else ''}」\n"
                 "最後一 bubble: 「想要邊款？或者要我幫你預約視診？同我講聲」\n\n"
-                "嚴格遵守：用「方向：」「適合想了解...嘅方向」軟性語；唔講"
+                "嚴格遵守：用「功效：」標籤列 indications；唔講"
                 "「你應該買」、「治療」、「療效」、「包好」、「完全治好」"
                 "等斷言。"
             ),
@@ -543,15 +545,21 @@ class SalesAgent:
                 f"用戶想要湯水推介。依家揀咗 {len(products)} 款最啱嘅 "
                 f"(依據: 體質 {constitution_str}、需求 "
                 f"{list(user.pain_points) or '一般調理'})。\n"
-                "Bubble 1 (open): 1 句講「按你嘅情況，我幫你揀咗呢 3 款」。\n"
-                f"Bubble 2-{len(products)+1} (每款 1 bubble): 名 + 價錢 + "
-                "「方向：xxx」(用軟性語，唔好斷言「治療」)。每款附返圖。\n"
+                "Bubble 1 (open): 1 句講「按你嘅情況，我幫你揀咗呢 "
+                f"{len(products)} 款」。\n"
+                f"Bubble 2-{len(products)+1} (每款 1 bubble，**必跟範本**):\n"
+                "  🍲 [name] — [price_display]\n"
+                "  功效：[indications top 3-5，用「、」分隔]\n"
+                "  並 attach image_url 落 media_to_send。\n"
                 f"Bubble {len(products)+2} (backstop): 「"
                 + (playbook.consultation_backstop if playbook else "")
                 + "」\n"
                 f"Bubble {len(products)+3} (CTA): 問「想試邊款？同我講你嘅"
                 "選擇 + 收件地址，我幫你跟進。」\n"
-                "唔好提 WhatsApp 號碼，唔好倒晒 10 款 — focus 呢 3 款。"
+                f"嚴格按 products_to_pitch 嘅順序逐款 mention — **必須**全部 "
+                f"{len(products)} 款都要出（同樣數量嘅 image 落 media_to_send）。"
+                "唔好提 WhatsApp 號碼，唔好倒晒 10 款 — focus 呢 "
+                f"{len(products)} 款。"
             ),
             "writer_must_not_say": [
                 "WhatsApp 我哋", "+852 5241 7448", "wa.me",
@@ -601,14 +609,15 @@ class SalesAgent:
             "writer_hint": (
                 "用戶問藥膏。\n"
                 "Bubble 1 (open with 安全話術): 「" + safety + "」\n"
-                "Bubble 2-4: 列我哋 3 款藥膏，**每款 1 bubble + 圖**：\n"
-                "  · 茶樹綠豆濕敏膏 $90 — 方向：濕敏、皮膚泛紅、敏感護理\n"
-                "  · 蛋黃油乳液 $120 — 方向：皮膚乾燥、修護、日常滋潤\n"
-                "  · 止痕濕疹膏 $180 — 方向：痕癢、濕疹反覆、需要重點護理\n"
+                "Bubble 2-4: 列我哋 3 款藥膏，**每款 1 bubble + image_url 落 "
+                "media_to_send**。**每款必跟以下範本**（功效從 indications 抽）：\n"
+                "  🧴 [name] — [price_display]\n"
+                "  功效：[indications top 3-5，用「、」分隔]\n"
+                "products_to_pitch 入面已有 3 款 — 嚴格全部 mention 晒，唔好漏。\n"
                 "Bubble 5 (consultation backstop): 「" + backstop + "」\n"
                 "Bubble 6: 問用戶「想要邊款？同我講你嘅選擇 + 收件地址我幫"
                 "你跟進。」唔好叫客 WhatsApp 任何外部號碼。\n\n"
-                "規矩：用「方向：」「適合想了解...嘅人」呢類軟性語，"
+                "規矩：用「功效：」標籤列 indications；"
                 "絕對唔講「你應該買」或者「治療」「療效」等斷言。"
             ),
             "writer_must_not_say": [
@@ -906,15 +915,18 @@ class SalesAgent:
                 "用戶問點買 / 想要產品。\n"
                 f"Bubble 1: 安全話術「{playbook.safety_disclaimer if playbook else ''}」\n"
                 + (f"Bubble 2: 用戶睇起來係 {category_angle} 方向\n" if category_angle else "")
-                + "之後 bubbles: 列每個 products_to_pitch 入面嘅產品 "
-                "(名 + 價錢 + 「方向：...」框架)，每款 1 bubble + image_url\n"
+                + "之後 bubbles: 每款產品 1 bubble + image_url 落 media_to_send。\n"
+                "**每款 bubble 必跟以下範本**（功效從 indications 抽 top 3-5）：\n"
+                "  🍲 [name] — [price_display]\n"
+                "  功效：[indications top 3-5，用「、」分隔]\n"
+                "products_to_pitch 入面所有產品都要 mention 晒，唔好漏。\n"
                 "倒數第二 bubble: 「"
                 + (playbook.consultation_backstop if playbook else "")
                 + "」\n"
                 "最後一 bubble: 「想要邊款？同我講你嘅選擇 + 收件地址我幫你跟"
                 "進。」**絕對唔好**叫客 WhatsApp 任何外部號碼。\n\n"
-                "規矩：用「方向：xxx」框架，唔好用「你應該買」「治療」「療效」"
-                "「包好」呢類斷言。"
+                "規矩：用「功效：」標籤列 indications；唔好用「你應該買」「治療」"
+                "「療效」「包好」呢類斷言。"
             ),
             "writer_must_not_say": [
                 "我哋冇新產品",
