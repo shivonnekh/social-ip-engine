@@ -239,20 +239,34 @@ def _rule_overrides(
             reasoning="rule: mid constitution assessment",
         )
 
-    # Empty / extremely short greeting → greeting only (first-touch).
-    # If user has history, route to CASUAL instead.
+    # ── Farewell detection → warm closing summary ──────────────────────
+    # Only fire when the user has prior history (pure first-touch farewell
+    # is pathological; just let Greeting handle it).
     stripped = user_message.strip()
-    if stripped in {"hi", "hello", "你好", "Hi", "HI"}:
+    if user.conversation_history and _is_farewell(stripped):
+        return PlannerDecision(
+            specialists=[SpecialistName.GREETING],
+            mode="solo",
+            reasoning="rule: farewell detected → closing summary",
+            notes_for_writer=_build_closing_notes(user),
+        )
+
+    # ── Simple greeting ─────────────────────────────────────────────────
+    # First-touch → onboarding. Returning → casual + proactive follow-up.
+    if stripped in _SIMPLE_GREETINGS:
         if not user.conversation_history:
             return PlannerDecision(
                 specialists=[SpecialistName.GREETING],
                 mode="solo",
                 reasoning="rule: first-touch greeting",
             )
+        # Returning user — inject proactive CRM context so Writer can
+        # ask a meaningful follow-up question instead of generic "點呀？"
         return PlannerDecision(
             specialists=[SpecialistName.CASUAL],
             mode="solo",
-            reasoning="rule: repeat 'hi' / returning user — casual not onboarding",
+            reasoning="rule: returning user greeting — proactive follow-up",
+            notes_for_writer=_build_returning_hint(user),
         )
 
     # User explicitly wants free / DIY content → KB lookup, NOT Sales.
@@ -439,6 +453,114 @@ def _rule_overrides(
             )
 
     return None
+
+
+# ── Simple greeting token set ───────────────────────────────────────────────
+_SIMPLE_GREETINGS = frozenset({
+    "hi", "Hi", "HI", "hello", "Hello", "hey", "Hey",
+    "你好", "你好啊", "你好呀", "喂", "喂喂", "早", "早晨", "早上好",
+    "下午好", "晚上好", "午安", "晚安",
+})
+
+# ── Farewell keywords ────────────────────────────────────────────────────────
+_FAREWELL_TOKENS = frozenset({
+    "拜拜", "再見", "再见", "bye", "bye bye", "goodbye",
+    "謝謝", "谢谢", "多謝", "多谢", "thx", "thanks", "thank you", "thank u",
+    "唔緊要", "唔使", "夠喇", "夠了", "够了", "知道了", "明白了",
+    "good night", "goodnight", "晚安", "好啦", "好了",
+    "ok", "OK", "okay", "okok",
+})
+
+
+def _is_farewell(text: str) -> bool:
+    """Return True if the message looks like a goodbye / sign-off."""
+    lower = text.lower().strip()
+    # Exact match on the full message
+    if lower in _FAREWELL_TOKENS:
+        return True
+    # For short messages (≤15 chars), check if ANY farewell token is present
+    if len(lower) <= 15:
+        return any(tok in lower for tok in _FAREWELL_TOKENS)
+    return False
+
+
+def _build_closing_notes(user: User) -> str:
+    """Build notes_for_writer for a farewell turn — personalised closing summary."""
+    parts: list[str] = []
+
+    from src.crm.models import Constitution
+    if user.constitution != Constitution.UNKNOWN:
+        parts.append(f"體質：{user.constitution.value}")
+
+    if user.pain_points:
+        parts.append("關注：" + "、".join(user.pain_points[:3]))
+
+    if user.products_purchased:
+        parts.append("已購：" + "、".join(user.products_purchased[:2]))
+
+    if user.notes and len(user.notes) > 10:
+        # Trim to first 80 chars so the prompt doesn't bloat
+        short = user.notes.strip()[:80].rstrip("，。\n")
+        parts.append(f"筆記摘要：{short}…")
+
+    crm_context = "\n   ".join(f"- {p}" for p in parts) if parts else "（未有詳細記錄）"
+
+    return (
+        "【對話結束 — 請生成暖心道別訊息】\n\n"
+        f"用戶 CRM 記錄：\n   {crm_context}\n\n"
+        "Writer 嘅任務（兩至三個 bubble）：\n"
+        "1. 輕鬆溫暖嘅道別（一句，唔好太正式）\n"
+        "2. 簡單總結今次記低咗啲咩（根據以上 CRM 資料，自然地提）\n"
+        "   例：「我幫你記住咗你有失眠同腰痛嘅困擾 📝」\n"
+        "3. 提醒隨時可以返嚟（唔係 CTA，係真心邀請）\n"
+        "4. 可選：一句應景養生 tip（短，輕鬆，唔係 pitch）\n\n"
+        "語氣：像朋友送別，唔好太商業。"
+    )
+
+
+def _build_returning_hint(user: User) -> str:
+    """Build notes_for_writer for a returning-user greeting — proactive follow-up."""
+    from src.crm.models import Constitution
+
+    hooks: list[str] = []
+
+    # Most recent pain point is the most natural thing to follow up on
+    if user.pain_points:
+        hooks.append(f"上次提到：「{user.pain_points[-1]}」")
+
+    # Constitution unlocks personalised lifestyle angle
+    if user.constitution != Constitution.UNKNOWN:
+        hooks.append(f"體質：{user.constitution.value}")
+
+    # Recent purchase — follow up on how it's going
+    if user.products_purchased:
+        hooks.append(f"買過：{user.products_purchased[-1]}")
+
+    # Freeform notes from memory consolidator
+    if user.notes and len(user.notes) > 10:
+        short = user.notes.strip()[:100].rstrip("，。\n")
+        hooks.append(f"記憶摘要：{short}…")
+
+    if not hooks:
+        # No meaningful context yet — just greet warmly
+        return (
+            "用戶打招呼返嚟，但 CRM 未有太多資料。"
+            "Jessica 溫暖地回應，問下今日有咩想傾。"
+        )
+
+    context_str = "\n".join(f"   • {h}" for h in hooks)
+
+    return (
+        "【回頭用戶打招呼 — 請主動跟進】\n\n"
+        f"用戶 CRM 背景：\n{context_str}\n\n"
+        "Writer 嘅任務：\n"
+        "1. 溫暖歡迎（一句）\n"
+        "2. 主動提起之前嘅話題 / 狀況\n"
+        "   例：「你上次話有失眠，最近係咪有好啲？😊」\n"
+        "   或：「飲完上次介紹嘅湯，感覺點樣？」\n"
+        "3. 問一個具體嘅跟進問題（唔係開放式嘅『有咩可以幫你』）\n\n"
+        "語氣：像老朋友重遇，自然地記得佢，唔係 CRM lookup。"
+    )
 
 
 # Lightweight version of greeting_agent._user_has_complaint — kept here

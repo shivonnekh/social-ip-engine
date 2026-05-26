@@ -2,9 +2,22 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from src.agents.base import SpecialistName
-from src.agents.planner import _rule_overrides
-from src.crm.models import User, UserStatus
+from src.agents.planner import (
+    _build_closing_notes,
+    _build_returning_hint,
+    _is_farewell,
+    _rule_overrides,
+)
+from src.crm.models import Constitution, ConversationMessage, User, UserStatus
+
+
+def _user_with_history(**kwargs) -> User:
+    """Helper — user with at least one prior conversation message."""
+    history = [ConversationMessage(role="user", content="上次嚟過", at=datetime.utcnow())]
+    return User(phone="+85291234567", conversation_history=history, **kwargs)
 
 
 def test_tongue_photo_routes_to_constitution() -> None:
@@ -100,3 +113,140 @@ def test_regular_message_is_not_order() -> None:
     # No 【...HK$...】 → not an order message → falls through to LLM
     decision = _rule_overrides(user, "我想訂湯", [])
     assert decision is None
+
+
+# ---------------------------------------------------------------------------
+# Farewell detection — _is_farewell()
+# ---------------------------------------------------------------------------
+
+
+def test_is_farewell_exact_tokens() -> None:
+    for phrase in ("拜拜", "再見", "bye", "多謝", "thx", "好啦", "晚安"):
+        assert _is_farewell(phrase), f"expected farewell: {phrase!r}"
+
+
+def test_is_farewell_case_insensitive() -> None:
+    assert _is_farewell("Bye")
+    assert _is_farewell("BYE")
+    assert _is_farewell("Thanks")
+
+
+def test_is_farewell_in_short_message() -> None:
+    assert _is_farewell("好啦多謝")
+    assert _is_farewell("bye bye!")
+
+
+def test_is_farewell_false_for_long_messages() -> None:
+    # Long messages containing farewell words should NOT trigger
+    long = "我唔係想再見你，我係想問下有咩好嘅湯水推介俾我試下啊"
+    assert not _is_farewell(long)
+
+
+def test_is_farewell_false_for_substantive_content() -> None:
+    assert not _is_farewell("我想知道失眠嘅湯水")
+    assert not _is_farewell("推介湯水俾我")
+    assert not _is_farewell("你好啊我有問題")
+
+
+# ---------------------------------------------------------------------------
+# Farewell rule → closing summary (planner rule)
+# ---------------------------------------------------------------------------
+
+
+def test_farewell_routes_to_greeting_with_closing_notes() -> None:
+    """Returning user says bye → GREETING + closing summary in notes_for_writer."""
+    user = _user_with_history(status=UserStatus.QUALIFIED)
+    decision = _rule_overrides(user, "拜拜", [])
+
+    assert decision is not None
+    assert decision.specialists == [SpecialistName.GREETING]
+    assert "farewell" in decision.reasoning.lower()
+    assert decision.notes_for_writer is not None
+    assert "對話結束" in decision.notes_for_writer
+
+
+def test_farewell_includes_crm_context_in_notes() -> None:
+    """Closing notes reference the user's pain points and constitution."""
+    user = _user_with_history(
+        status=UserStatus.CONSTITUTION_DONE,
+        constitution=Constitution.YANGXU,
+        pain_points=["失眠", "腰痛"],
+    )
+    notes = _build_closing_notes(user)
+
+    assert "陽虛質" in notes
+    assert "失眠" in notes or "腰痛" in notes
+
+
+def test_farewell_not_triggered_for_first_touch() -> None:
+    """First-touch user saying 'bye' has no history — should NOT trigger farewell rule."""
+    user = User(phone="+85291234567", status=UserStatus.NEW)
+    decision = _rule_overrides(user, "bye", [])
+
+    # No history → farewell rule skips; may fall through to LLM or first-touch
+    assert decision is None or decision.specialists != [SpecialistName.GREETING] or \
+        (decision.notes_for_writer is None or "對話結束" not in decision.notes_for_writer)
+
+
+def test_farewell_fires_before_emotion_rule() -> None:
+    """'唔緊要好啦' contains farewell + could be emotional — farewell wins."""
+    user = _user_with_history(status=UserStatus.QUALIFIED)
+    decision = _rule_overrides(user, "唔緊要好啦", [])
+
+    assert decision is not None
+    assert decision.specialists == [SpecialistName.GREETING]
+
+
+# ---------------------------------------------------------------------------
+# Returning user greeting → proactive follow-up
+# ---------------------------------------------------------------------------
+
+
+def test_returning_greeting_includes_proactive_notes() -> None:
+    """Returning user with pain_points says hi → notes_for_writer includes context."""
+    user = _user_with_history(
+        status=UserStatus.QUALIFIED,
+        pain_points=["失眠"],
+    )
+    decision = _rule_overrides(user, "你好", [])
+
+    assert decision is not None
+    assert decision.specialists == [SpecialistName.CASUAL]
+    assert decision.notes_for_writer is not None
+    assert "回頭用戶" in decision.notes_for_writer
+    assert "失眠" in decision.notes_for_writer
+
+
+def test_returning_greeting_references_purchased_product() -> None:
+    """Returning user who bought something → hint mentions the product."""
+    user = _user_with_history(
+        status=UserStatus.BOUGHT,
+        products_purchased=["彭魚鰓解毒湯"],
+    )
+    hint = _build_returning_hint(user)
+    assert "彭魚鰓解毒湯" in hint
+
+
+def test_returning_greeting_references_constitution() -> None:
+    """Returning user with known constitution → hint includes it."""
+    user = _user_with_history(constitution=Constitution.QIXU)
+    hint = _build_returning_hint(user)
+    assert "氣虛質" in hint
+
+
+def test_returning_greeting_no_context_is_gentle() -> None:
+    """Returning user with no CRM context → generic warm greeting, no crash."""
+    user = _user_with_history()  # no pain_points, no constitution, no notes
+    hint = _build_returning_hint(user)
+    assert isinstance(hint, str)
+    assert len(hint) > 0
+
+
+def test_returning_greeting_hi_variations() -> None:
+    """Multiple greeting forms all trigger the returning-user rule."""
+    user = _user_with_history(pain_points=["頭痛"])
+    for greeting in ("hi", "你好", "喂", "早晨", "hello"):
+        decision = _rule_overrides(user, greeting, [])
+        assert decision is not None, f"no decision for greeting {greeting!r}"
+        assert decision.specialists == [SpecialistName.CASUAL], \
+            f"wrong specialist for {greeting!r}: {decision.specialists}"
