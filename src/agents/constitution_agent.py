@@ -188,14 +188,17 @@ class ConstitutionAgent:
             )
             usage_total = vision_usage
 
-            # Persist tongue findings
-            ts[_TS_FINDINGS] = findings
-            suggested_diff["temp_state"] = ts
-
             # Not a tongue photo? Ask again politely.
+            # CRITICAL: do NOT persist findings — otherwise the
+            # mid-constitution Planner rule keeps re-routing back here
+            # forever, trapping the user (see dry-run trace 2026-05-26).
             if not findings.get("is_tongue_photo"):
                 payload = _build_payload_ask_tongue(retry=True)
                 return _wrap(payload, suggested_diff, cards_used, tools_called), usage_total
+
+            # Valid tongue — persist findings + advance state.
+            ts[_TS_FINDINGS] = findings
+            suggested_diff["temp_state"] = ts
 
             just_analyzed = True
             # Fall through to PHASE 3 — ask first MCQ same turn, but

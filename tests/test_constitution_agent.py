@@ -58,8 +58,10 @@ async def test_phase2_offline_returns_not_tongue(
     assert out.payload["retry"] is True
     # Vision attempt logged
     assert any(t["name"] == "claude_vision.analyze_tongue" for t in out.tools_called)
-    # Findings saved to temp_state diff
-    assert "temp_state" in out.suggested_user_state_diff
+    # Rejected-tongue fix (dry-run trace 2026-05-26): findings MUST NOT be
+    # persisted to temp_state when is_tongue_photo=False. Otherwise the
+    # mid-constitution Planner rule keeps re-routing back, trapping users.
+    assert "temp_state" not in out.suggested_user_state_diff
 
 
 # ── Phase 3: ask MCQ after tongue findings stored ────────────────────

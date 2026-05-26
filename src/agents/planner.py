@@ -306,10 +306,15 @@ def _rule_overrides(
             reasoning="rule: pending appointment confirmation",
         )
 
-    # User is mid-constitution flow (already started MCQ) → stay
+    # User is mid-constitution flow (already started MCQ) → stay,
+    # BUT only when the user actually seems to be answering an MCQ.
+    # Otherwise let LLM Planner route freely — prevents the "trapped in
+    # Q4 loop" pathology seen in dry-run trace 2026-05-26 (user asked
+    # 「有咩湯水推介？」mid-flow but rule forced 9 turns of re-asking Q4).
     if (
         user.temp_state.get("constitution_tongue_findings")
         and user.constitution == Constitution.UNKNOWN
+        and _looks_like_mcq_answer(user_message)
     ):
         return PlannerDecision(
             specialists=[SpecialistName.CONSTITUTION],
@@ -567,6 +572,26 @@ def _rule_overrides(
 
 
 # ── Simple greeting token set ───────────────────────────────────────────────
+# MCQ answer detector — used by the mid-constitution rule to decide
+# whether to trap the user in the assessment flow or let them out.
+# Conservative pattern: short message that starts with A/B/C/D (any case).
+import re as _re_mcq
+_MCQ_ANSWER_RE = _re_mcq.compile(r"^\s*[A-Da-d](\b|[\s\.\,。．]|$)")
+
+
+def _looks_like_mcq_answer(text: str) -> bool:
+    """Return True if the message plausibly is an MCQ answer (A/B/C/D)."""
+    if not text:
+        return False
+    stripped = text.strip()
+    # Reject if obviously not an answer (long sentence, has question marks, etc.)
+    if len(stripped) > 30:
+        return False
+    if any(q in stripped for q in ("?", "？")):
+        return False
+    return bool(_MCQ_ANSWER_RE.match(stripped))
+
+
 _SIMPLE_GREETINGS = frozenset({
     "hi", "Hi", "HI", "hello", "Hello", "hey", "Hey",
     "你好", "你好啊", "你好呀", "喂", "喂喂", "早", "早晨", "早上好",
@@ -574,12 +599,15 @@ _SIMPLE_GREETINGS = frozenset({
 })
 
 # ── Farewell keywords ────────────────────────────────────────────────────────
+# Removed "ok / OK / okay / okok" (dry-run trace 2026-05-26): "OK 三點"
+# was misclassified as farewell, breaking appointment confirmation.
+# "OK" alone is too ambiguous (confirmation vs goodbye); rely on explicit
+# farewell words instead.
 _FAREWELL_TOKENS = frozenset({
     "拜拜", "再見", "再见", "bye", "bye bye", "goodbye",
     "謝謝", "谢谢", "多謝", "多谢", "thx", "thanks", "thank you", "thank u",
     "唔緊要", "唔使", "夠喇", "夠了", "够了", "知道了", "明白了",
     "good night", "goodnight", "晚安", "好啦", "好了",
-    "ok", "OK", "okay", "okok",
 })
 
 
