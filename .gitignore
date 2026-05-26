@@ -45,4 +45,5 @@ logs/
 secrets/
 traces/
 traces_dev/
+traces_qa/
 venv/
