@@ -376,7 +376,12 @@ def _rule_overrides(
         bool(user.conversation_history) or user.status != UserStatus.NEW
     )
     complaint = detect_health_complaint(user_message)
-    if complaint is not None and is_returning_user:
+    # If the user is ALSO expressing emotional distress (e.g. "我好攰，最近壓力大"
+    # — both 疲勞 keyword AND 壓力 keyword present), defer to the dedicated
+    # emotion rule below so the Writer gets the richer 七情/臟腑 frame,
+    # not the generic pain/acupoint frame.
+    has_emotion = detect_emotion(user_message) is not None
+    if complaint is not None and is_returning_user and not has_emotion:
         return PlannerDecision(
             specialists=[SpecialistName.FAQ, SpecialistName.CASUAL],
             mode="parallel",
