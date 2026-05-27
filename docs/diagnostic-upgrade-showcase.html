@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jessica — 中醫診斷層升級簡報</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8edf4 100%);
+      color: #1a1a2e;
+      padding: 32px 16px;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container { max-width: 920px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 40px; }
+    h1 { font-size: 1.9rem; color: #2d6a4f; margin-bottom: 6px; }
+    .date { color: #6b7280; font-size: 0.95rem; margin-bottom: 12px; }
+    .lede {
+      max-width: 640px;
+      margin: 0 auto;
+      color: #4b5563;
+      font-size: 0.96rem;
+    }
+
+    /* Doctor critique callout */
+    .critique {
+      background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+      border-left: 5px solid #d97706;
+      border-radius: 0 14px 14px 0;
+      padding: 20px 26px;
+      margin: 28px 0;
+    }
+    .critique-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #92400e;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .critique-quote {
+      font-size: 1.04rem;
+      color: #78350f;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* Section card */
+    .section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .section h2 {
+      font-size: 1.3rem;
+      color: #111827;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section h3 {
+      font-size: 1.04rem;
+      color: #2d6a4f;
+      margin: 18px 0 10px;
+    }
+    .section p {
+      color: #4b5563;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    /* Before/After compare */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    @media (max-width: 720px) {
+      .compare { grid-template-columns: 1fr; }
+    }
+    .col {
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .col.bad { background: #fef2f2; border: 1px solid #fecaca; }
+    .col.good { background: #ecfdf5; border: 1px solid #a7f3d0; }
+    .col-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .col.bad .col-label { color: #b91c1c; }
+    .col.good .col-label { color: #047857; }
+    .col p { font-size: 0.92rem; color: #1f2937; margin: 0; }
+
+    /* WhatsApp bubbles */
+    .chat {
+      background: #e7e2db;
+      background-image:
+        radial-gradient(circle at 25px 25px, rgba(255,255,255,0.15) 2%, transparent 2%),
+        radial-gradient(circle at 75px 75px, rgba(255,255,255,0.1) 2%, transparent 2%);
+      background-size: 100px 100px;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 10px 0 0;
+    }
+    .bubble {
+      padding: 7px 11px;
+      border-radius: 8px;
+      margin-bottom: 5px;
+      max-width: 92%;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+      white-space: pre-wrap;
+    }
+    .bubble.user { background: #d9fdd3; margin-left: auto; border-top-right-radius: 2px; }
+    .bubble.j { background: #fff; margin-right: auto; border-top-left-radius: 2px; }
+    .bubble.hint {
+      background: #fef3c7; color: #78350f;
+      font-style: italic; font-size: 0.78rem;
+      border: 1px dashed #d97706;
+    }
+
+    /* Stat strip */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 18px 0 6px;
+    }
+    @media (max-width: 600px) { .stats { grid-template-columns: 1fr; } }
+    .stat {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-num { font-size: 1.6rem; font-weight: 700; color: #2d6a4f; }
+    .stat-label { font-size: 0.78rem; color: #6b7280; margin-top: 4px; }
+
+    /* KB table */
+    .kb-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 12px 0;
+    }
+    @media (max-width: 720px) { .kb-list { grid-template-columns: 1fr; } }
+    .kb-item {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kb-item .tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .tag-new { background: #dcfce7; color: #166534; }
+    .tag-upd { background: #dbeafe; color: #1d4ed8; }
+    .tag-med { background: #fef9c3; color: #854d0e; }
+
+    /* Doctor TODO list */
+    .doctor-todo {
+      background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+      border-radius: 14px;
+      padding: 22px 28px;
+      border-left: 5px solid #f59e0b;
+    }
+    .doctor-todo h2 { color: #92400e; }
+    .doctor-todo ul { list-style: none; padding: 0; }
+    .doctor-todo li {
+      padding: 10px 0;
+      font-size: 0.94rem;
+      color: #44403c;
+      border-top: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    .doctor-todo li:first-child { border-top: 0; }
+    .doctor-todo li strong { color: #78350f; }
+
+    .footer-note {
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.84rem;
+      margin-top: 32px;
+      padding-top: 18px;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>🌿 Jessica — 中醫診斷層升級</h1>
+      <p class="date">2026-05-27</p>
+      <p class="lede">
+        中醫師之前指出 Jessica 嘅最大不足。今日針對嗰個 critique 做咗一輪深入升級。
+        以下係問題重點 + 我哋嘅回應，唔講 code、唔講 schema，只講對話實際變咩樣。
+      </p>
+    </header>
+
+    <!-- ───────────── Critique ───────────── -->
+    <div class="critique">
+      <div class="critique-label">中醫師原本嘅 critique</div>
+      <p class="critique-quote">
+        「現在整個感覺只會判斷他是氣虛還是什麼體質，並不會真的幫他做病診的 diagnosis。
+        其實中醫也是有病診的 diagnosis 的。」
+      </p>
+    </div>
+
+    <!-- ───────────── Big fix #1 ───────────── -->
+    <section class="section">
+      <h2>🩺 升級 1：由「淨係識體質」→「會做辨證」</h2>
+
+      <p>
+        TCM 臨床診斷實際上有 <strong>三層</strong>，我哋之前只覆蓋到第一層：
+      </p>
+
+      <ul style="margin: 6px 0 16px 20px; color: #4b5563; font-size: 0.95rem;">
+        <li>
+          <strong>辨體</strong>（9 體質）— <span style="color:#047857">已有 ✓</span>
+          <em>長期傾向，月年才變</em>
+        </li>
+        <li>
+          <strong>辨證</strong>（證型 — 肝鬱氣滯／心脾兩虛／脾腎陽虛 等）—
+          <span style="color:#b91c1c">之前冇 ✗ → 今日加 ✓</span>
+          <em>呢一刻嘅 clinical pattern，TCM 開方/針灸根據</em>
+        </li>
+        <li>
+          <strong>辨病</strong>（具體病名 + 對應證型分支）—
+          <span style="color:#b91c1c">之前只有 3 張卡 ✗ → 今日 12 張 ✓</span>
+        </li>
+      </ul>
+
+      <div class="compare">
+        <div class="col bad">
+          <div class="col-label">❌ 之前嘅 Jessica</div>
+          <div class="chat">
+            <div class="bubble user">我最近成日唔開心，心煩，胸口頂住，瞓唔著</div>
+            <div class="bubble j">你呢啲情況可能同氣鬱質有關🌿</div>
+            <div class="bubble j">建議多做運動、放鬆心情</div>
+            <div class="bubble hint">⚠ 只係 label 一個體質，冇針對性</div>
+          </div>
+        </div>
+        <div class="col good">
+          <div class="col-label">✓ 升級後</div>
+          <div class="chat">
+            <div class="bubble user">我最近成日唔開心，心煩，胸口頂住，瞓唔著</div>
+            <div class="bubble j">咁辛苦你 😣 心煩夾住胸悶又瞓唔著，真係幾辛苦</div>
+            <div class="bubble j">你呢個情況可能屬於<b>肝鬱氣滯</b> — 即係情緒易繃緊、心煩、容易胸悶嗰類狀態，建議搵中醫師面診確認下喎 🌿</div>
+            <div class="bubble j">可以試下按太衝穴（腳背第一二趾骨之間）30 秒，配合深呼吸</div>
+            <div class="bubble hint">✓ 識辨證、識評估、識建議</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>幾個重點</h3>
+      <ul style="margin-left: 20px; color: #4b5563; font-size: 0.94rem;">
+        <li>Jessica <strong>永遠用「可能」、「建議搵醫師確認」</strong>嘅措辭 — 唔會自己斷症</li>
+        <li>Jessica <strong>唔會開藥方、唔會建議針灸 protocol</strong> — 留俾真人中醫師</li>
+        <li>每次推斷都會 <strong>cite 用戶原話</strong>做 evidence，醫師可以見到 AI 點諗</li>
+        <li>所有推斷都會 <strong>儲入用戶檔案</strong>，醫師面診前可以一覽 Jessica 過去幾週推斷嘅 pattern 演化</li>
+        <li>醫師可以將來 <strong>confirm 或 reject</strong> AI 嘅推斷 — 個系統會 learn</li>
+      </ul>
+    </section>
+
+    <!-- ───────────── Big fix #2 ───────────── -->
+    <section class="section">
+      <h2>📚 升級 2：知識庫由 52 張 → 71 張</h2>
+      <p>
+        中醫師之前話「Jessica 答嘢 generic、唔夠專業」。原因係 KB cover 唔到嘅 topic，AI 就答得空泛。
+        今日我哋補咗 19 張卡，包括所有最常被問嘅情況：
+      </p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-num">19</div><div class="stat-label">新增 KB cards</div></div>
+        <div class="stat"><div class="stat-num">71</div><div class="stat-label">總 cards 數</div></div>
+        <div class="stat"><div class="stat-num">+37%</div><div class="stat-label">Coverage 增長</div></div>
+      </div>
+
+      <h3>新增 / 加強嘅領域</h3>
+
+      <div class="kb-list">
+        <div class="kb-item"><span class="tag tag-new">新</span> 平和質 / 陽虛質 / 陰虛質 / 痰濕質</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 濕熱質 / 血瘀質 / 氣鬱質 / 特稟質</div>
+        <div class="kb-item"><span class="tag tag-med">醫</span> 糖尿病（消渴）— 4 證型</div>
+        <div class="kb-item"><span class="tag tag-med">醫</span> 高血壓 — 2 證型</div>
+        <div class="kb-item"><span class="tag tag-med">醫</span> 高膽固醇 — 4 證型</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 七情五臟（怒/喜/思/憂/悲/恐/驚）</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 男性腎陽虛 / 腎陰虛</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 男性前列腺 / 尿頻</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 40 味常用中藥目錄</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 24 節氣養生指南</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 焦慮鬱悶（4 證型）</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 鼻敏感（4 證型）</div>
+        <div class="kb-item"><span class="tag tag-new">新</span> 皮膚痕癢（5 證型）</div>
+        <div class="kb-item"><span class="tag tag-upd">加強</span> 失眠 — 加 5 證型</div>
+        <div class="kb-item"><span class="tag tag-upd">加強</span> 頭痛 — 加 5 證型</div>
+        <div class="kb-item"><span class="tag tag-upd">加強</span> 胃脹 — 加 4 證型</div>
+        <div class="kb-item"><span class="tag tag-upd">加強</span> 便秘 — 加 4 證型</div>
+        <div class="kb-item"><span class="tag tag-upd">加強</span> 月經 — 加 4 證型</div>
+        <div class="kb-item"><span class="tag tag-upd">加強</span> 感冒 — 加 2 虛人感冒型</div>
+      </div>
+
+      <p style="margin-top: 18px;">
+        每個證型都有：典型表現 / 舌象脈象 / 病機 / 調理方向 / 食療 / 穴位 / 生活建議。
+        全部 cite 標準中醫教科書（中醫內科學、傷寒論、金匱要略、王琦九種體質手冊 等）。
+      </p>
+    </section>
+
+    <!-- ───────────── Small fixes ───────────── -->
+    <section class="section">
+      <h2>✨ 其他用戶體驗修正</h2>
+
+      <h3>1. 舌診跟進提醒</h3>
+      <p>
+        之前用戶第一次影完舌相、做完評估之後，就<strong>唔會主動再嚟</strong>。
+        舌診進度追蹤功能空轉。今日加咗：用戶 30 日冇影舌相 → Jessica 自動發訊息邀請佢再影一張，比較進度。
+      </p>
+      <div class="chat" style="max-width: 480px; margin: 8px 0;">
+        <div class="bubble j">嗨！上次你影脷相已經一個月喇 📷 你嘅陽虛質調理得點？</div>
+        <div class="bubble j">得閒影返張新嘅俾我，我幫你睇下進度 — 自然光、伸出脷、唔好啱啱刷牙就 OK 😊</div>
+      </div>
+
+      <h3>2. 預約流程暢順</h3>
+      <p>
+        之前用戶想預約但唔肯講「到診定視診」+「邊區」，Jessica 會<strong>無限 loop 問同樣嘢</strong>。
+        而家：用戶話「下星期三三點」→ Jessica 識自動默認到診 + 默認沙田主分店，唔再 loop。
+      </p>
+
+      <h3>3. 產品推介格式統一</h3>
+      <p>
+        之前有時用戶問「點訂湯水」，Jessica 講「抗病毒湯 HK$88」就完，<strong>冇講功效、冇相</strong>。
+        而家強制每款產品都要包：名 + 價錢 + 功效 + 相 + 適合咩體質。
+      </p>
+    </section>
+
+    <!-- ───────────── Doctor TODO ───────────── -->
+    <div class="section doctor-todo">
+      <h2>🩺 等中醫師 review 嘅事</h2>
+      <p style="color: #78350f;">以下幾項，我哋已經寫好內容，但需要中醫師 spot-check 一下再 sign-off：</p>
+      <ul>
+        <li>
+          <strong>三高 cards 嘅藥物相互作用警告</strong>：紅麴米 × statin、三七 × warfarin、甘草 × 降壓藥 — 內容係由 Cochrane Reviews 出，建議中醫師 quick verify
+        </li>
+        <li>
+          <strong>焦慮鬱悶 card 嘅「嚴重抑鬱必須精神科」用詞</strong>：對 HK consumer 嘅 tone 啱唔啱？應唔應該再 soften 或者再 firm？
+        </li>
+        <li>
+          <strong>鼻敏感 card 提到三伏天灸 / 三九天灸</strong>：心宜中醫實際上有冇 offer 呢個療程？如果冇就要拎走
+        </li>
+        <li>
+          <strong>40 味中藥目錄</strong>：尤其鹿茸 / 巴戟天 / 肉桂 嘅孕婦禁忌段落 — 中醫師確認 wording 安全
+        </li>
+        <li>
+          <strong>男性前列腺 card 嘅 PSA 篩查建議</strong>：HK 50+ 男士 PSA threshold 同最新指南有冇 align
+        </li>
+        <li>
+          <strong>9 個證型加強 cards</strong>：內容全部 grounded 喺中醫內科學教科書，但建議中醫師抽兩三個 pattern 看看 wording 啱唔啱
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer-note">
+      所有變動已 live on production。中醫師 review 之後嘅修改可以直接喺 KB 卡 update — Jessica 下次對話就會用新內容。
+    </div>
+
+  </div>
+</body>
+</html>
