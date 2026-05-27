@@ -623,6 +623,54 @@ async def delete_prompt(key: str) -> JSONResponse:
     return JSONResponse({"key": key, "cleared": True})
 
 
+@router.get("/admin/kb_stats")
+async def kb_stats(request: Request) -> JSONResponse:
+    """KB diagnostics — file-on-disk count vs pgvector embedded count.
+
+    Useful after deploys to verify the on-startup `index_kb()` actually
+    embedded new cards into pgvector. If file_count > embedded_count it
+    means some cards never got indexed (likely silent failure).
+    """
+    kb_search = getattr(request.app.state, "kb_search", None)
+    vector_store = getattr(request.app.state, "vector_store", None)
+
+    file_count = 0
+    if kb_search is not None and getattr(kb_search, "_index", None) is not None:
+        file_count = len(kb_search._index)  # noqa: SLF001
+
+    embedded_count: int | None = None
+    embedded_ids: list[str] = []
+    if vector_store is not None:
+        try:
+            embedded_count = await vector_store.count()
+            # Pull the card_ids so we can spot which (if any) are missing
+            async with vector_store._pool.acquire() as conn:  # noqa: SLF001
+                rows = await conn.fetch(
+                    "SELECT DISTINCT card_id FROM kb_embeddings ORDER BY card_id"
+                )
+                embedded_ids = [r["card_id"] for r in rows]
+        except Exception as exc:  # noqa: BLE001
+            return JSONResponse(
+                {"file_count": file_count, "embedded_count": None,
+                 "error": f"{type(exc).__name__}: {exc}"}
+            )
+
+    file_ids: list[str] = []
+    if kb_search is not None and getattr(kb_search, "_index", None) is not None:
+        file_ids = sorted(kb_search._index._cards.keys())  # noqa: SLF001
+
+    missing = sorted(set(file_ids) - set(embedded_ids))
+    extra = sorted(set(embedded_ids) - set(file_ids))
+
+    return JSONResponse({
+        "file_count": file_count,
+        "embedded_count": embedded_count,
+        "in_sync": file_count == embedded_count and not missing and not extra,
+        "missing_from_vector_store": missing,
+        "extra_in_vector_store": extra,
+    })
+
+
 @router.get("/admin/traces", response_class=HTMLResponse)
 async def traces_list(request: Request, phone: str | None = None) -> HTMLResponse:
     tw = _get_trace_writer(request)
