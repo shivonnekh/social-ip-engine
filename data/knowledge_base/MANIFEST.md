@@ -1,13 +1,37 @@
 # TCM Knowledge Base Manifest
 
-Generated: 2026-05-21
+Generated: 2026-05-21 (ported from dr-baba-agent) — extended 2026-05-27
 Source: `/Users/shivonne/Claude Code/dr-baba-agent/data/cards/tcm-wellness-中醫養生/`
 Destination: `/Users/shivonne/Claude Code/TCM-Jessica/data/knowledge_base/`
 
-**Total cards copied:** 52
+**Total cards:** 68 (52 ported + 16 added 2026-05-27)
 - soups: 5
-- constitution: 4
-- faq: 43
+- constitution: 12 (4 original + 8 體質 deep-dives)
+- faq: 51 (43 original + 8 added: 三高×3, 七情五臟, 男性×2, 中藥目錄, 24 節氣)
+
+## 2026-05-27 KB enhancement push (16 cards)
+
+### 8 constitution deep-dives (王琦《九種體質使用手冊》+ 中華中醫藥學會 ZYYXH/T157-2009):
+- `constitution/tcm_constitution_pinghe.json` — 平和質 baseline
+- `constitution/tcm_constitution_yangxu.json` — 陽虛質 (手腳冰冷 / 怕凍)
+- `constitution/tcm_constitution_yinxu.json` — 陰虛質 (口乾 / 失眠 / 盜汗)
+- `constitution/tcm_constitution_tanshi.json` — 痰濕質 (肥胖 / 痰多)
+- `constitution/tcm_constitution_shire.json` — 濕熱質 (暗瘡 / 口苦)
+- `constitution/tcm_constitution_xueyu.json` — 血瘀質 (經痛 / 暗沉)
+- `constitution/tcm_constitution_qiyu.json` — 氣鬱質 (情緒鬱悶)
+- `constitution/tcm_constitution_tebing.json` — 特稟質 (過敏體質)
+
+### 3 三高 cards (Medical, Level B review needed):
+- `faq/tcm_diabetes.json` — 糖尿病 / 消渴症
+- `faq/tcm_hypertension.json` — 高血壓
+- `faq/tcm_cholesterol.json` — 高膽固醇 / 高血脂
+
+### Other gap-fill cards:
+- `faq/tcm_seven_emotions.json` — 七情五臟（怒/喜/思/憂悲/恐/驚 → 五臟）
+- `faq/tcm_mens_kidney_health.json` — 男性腎陽虛 / 腎陰虛
+- `faq/tcm_mens_prostate_urinary.json` — 前列腺 / 尿頻（red-flag escalation）
+- `faq/tcm_herbs_directory.json` — 40 味常用中藥目錄
+- `faq/tcm_24_solar_terms.json` — 24 節氣養生（broadcaster 用）
 
 **Skipped (paid product cards — handled by a different system):**
 - `tcm_paid_soups.json`

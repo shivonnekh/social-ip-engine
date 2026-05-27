@@ -13,10 +13,16 @@ def index() -> KBIndex:
 
 
 def test_index_loads_expected_card_count(index: KBIndex) -> None:
-    # MANIFEST.md says 52 base cards across 3 domains;
-    # +8 constitution deep-dive cards added 2026-05-27 (pinghe/yangxu/yinxu/
-    # tanshi/shire/xueyu/qiyu/tebing — 氣虛 already existed) → 60.
-    assert len(index) == 60
+    # MANIFEST.md says 52 base cards across 3 domains. 2026-05-27 KB
+    # enhancement added 16 cards (one-day push):
+    #   - 8 constitution deep-dives (平和/陽虛/陰虛/痰濕/濕熱/血瘀/氣鬱/特稟)
+    #   - 3 三高 cards (diabetes/hypertension/cholesterol)
+    #   - 1 七情五臟 card
+    #   - 2 men's health cards (kidney + prostate)
+    #   - 1 中藥目錄 (40 herbs)
+    #   - 1 24 節氣 養生
+    # → 52 + 16 = 68
+    assert len(index) == 68
 
 
 def test_known_soup_card_present(index: KBIndex) -> None:
