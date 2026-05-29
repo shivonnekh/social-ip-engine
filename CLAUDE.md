@@ -465,6 +465,14 @@ Same hard triggers as `~/.claude/rules/common/agents.md`. Additionally for this 
   reason. We deliberately ship only MiniMax to keep the ops surface
   small. The dr-baba multi-provider abstraction is over-engineered for
   Jessica's single-voice brand identity.
+- Do not put raw `{...}` JSON / dict examples in a system-prompt
+  template that gets passed through `str.format()` — `str.format()` will
+  read the inner content as a `{key}` placeholder and `KeyError` the
+  whole reply pipeline. Use `{{...}}` to emit literal braces. Caused a
+  prod-down on 2026-05-29 (commit `bd09d9f` added an `inferred_patterns`
+  JSON example without escaping). `tests/test_prompt_template_render.py`
+  is the forcing function — it actually calls every prompt builder and
+  fails if `.format()` raises.
 - Do not skip running `scripts/persona_dry_run.py` after any change to
   the Planner, Writer, or a Specialist prompt. The dry-run found 4
   bugs in the same day that unit tests had passed — it tests against

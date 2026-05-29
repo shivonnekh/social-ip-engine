@@ -176,17 +176,17 @@ C. **inferred_patterns** — 由用戶嘅 symptoms + 已知 constitution 推斷 
 
    例：
      msg「我成日唔開心，心好煩，胸口有時頂住，瞓唔著」，CRM constitution=氣鬱質
-       → [{
+       → [{{
            "name": "肝鬱氣滯",
            "confidence": 0.78,
            "evidence": ["我成日唔開心", "心好煩", "胸口有時頂住"],
            "layman_zh": "情緒易繃緊、心煩、容易胸悶嘅狀態"
-         }, {
+         }}, {{
            "name": "肝鬱化火",
            "confidence": 0.55,
            "evidence": ["心好煩", "瞓唔著"],
            "layman_zh": "肝氣鬱住化熱、煩躁、影響睡眠"
-         }]
+         }}]
 
      msg「我頭痛」 (no other context, no constitution)
        → []（資料唔夠，唔估）
