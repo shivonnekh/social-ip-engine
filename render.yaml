@@ -82,3 +82,20 @@ services:
       # CRM data (users, messages, appointments) is safe in Postgres.
       - key: TRACE_DIR
         value: /tmp/traces
+
+      # ── TTS / voice output (MiniMax) ─────────────────────────
+      # Match-modality: Jessica voice-replies only when the inbound
+      # turn included a voice note. Opt-in via TTS_ENABLED=true.
+      # Audio files cached under data/media/tts/ (ephemeral on free plan
+      # — that's OK, MiniMax cache rebuilds on demand).
+      - key: TTS_ENABLED
+        value: "false"   # flip to "true" after MINIMAX_* secrets are set
+      - key: MINIMAX_API_KEY
+        sync: false
+      - key: MINIMAX_GROUP_ID
+        sync: false
+      - key: MINIMAX_TTS_VOICE
+        value: Cantonese_KindWoman
+      # Absolute URL so ChatDaddy can fetch the generated audio file.
+      - key: JESSICA_BASE_URL
+        value: https://tcm-jessica.onrender.com

@@ -332,8 +332,19 @@ Also expose a **live trace viewer** (simple FastAPI + HTML) at `/trace/<turn_id>
   use `client.messages.create(...)` unchanged. `_uses_max_completion_tokens()`
   routes gpt-5.x / o-series to the new `max_completion_tokens` parameter
   (gpt-5 family rejects `max_tokens`).
-- **Voice transcribe:** `gpt-4o-transcribe` (migrated from `gpt-4o-mini-transcribe`
-  which retired 2026-06-01).
+- **Voice transcribe (STT):** `gpt-4o-transcribe` (migrated from
+  `gpt-4o-mini-transcribe` which retired 2026-06-01).
+- **Voice output (TTS):** **MiniMax T2A** (`speech-2.8-hd`) with native
+  HK Cantonese voice `Cantonese_KindWoman` (matches 心宜中醫 brand).
+  Lives in `src/media/tts.py` (ported + simplified from
+  `dr-baba-agent/src/media_output/tts.py` — keep ONLY the MiniMax
+  provider; do NOT re-add Azure / OpenAI / ElevenLabs unless you have
+  a reason). Trigger model is **match modality**: voice-reply fires
+  ONLY when the inbound turn included a voice note (`transcript != ""`
+  in `router._process_turn`). Cached on disk as
+  `data/media/tts/<sha16>.mp3`, served via the existing
+  `/media` StaticFiles mount; absolute URL requires `JESSICA_BASE_URL`
+  env var (otherwise ChatDaddy can't fetch the audio).
 - **DB:** PostgreSQL in production (Render free, 1GB, persistent — **free
   tier expires 90 days after creation; current expiry 2026-06-20**).
   SQLite for local dev. Dispatched by `repo_factory.py` based on `DATABASE_URL`.
@@ -446,6 +457,14 @@ Same hard triggers as `~/.claude/rules/common/agents.md`. Additionally for this 
 - Do not pass `max_tokens` to gpt-5.x / o-series — they require
   `max_completion_tokens`. `_uses_max_completion_tokens()` in `src/llm.py`
   handles this; new direct OpenAI calls should use the facade.
+- Do not voice-reply unsolicited. The match-modality trigger in
+  `_send_bubbles` only fires when `inbound_was_voice=True`. If you add
+  an opt-in voice flag to CRM later, gate it on user consent — sending
+  unexpected audio to text-typing users is jarring and burns credits.
+- Do not re-add Azure / OpenAI / ElevenLabs TTS providers without a
+  reason. We deliberately ship only MiniMax to keep the ops surface
+  small. The dr-baba multi-provider abstraction is over-engineered for
+  Jessica's single-voice brand identity.
 - Do not skip running `scripts/persona_dry_run.py` after any change to
   the Planner, Writer, or a Specialist prompt. The dry-run found 4
   bugs in the same day that unit tests had passed — it tests against

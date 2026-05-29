@@ -457,6 +457,7 @@ async def _process_turn(
             chat_id=chat_id,
             bubbles=bubbles,
             media_to_send=media_to_send,
+            inbound_was_voice=bool(transcript),
         )
 
 
@@ -600,16 +601,59 @@ async def _send_bubbles(
     chat_id: str,
     bubbles: list[str],
     media_to_send: list[dict] | None = None,
+    inbound_was_voice: bool = False,
 ) -> None:
     """Send the Writer's bubble list with the client's typing-delay model.
 
     Inline media: after sending bubble index N, also send any media whose
     ``after_bubble_idx`` equals N (image as a separate WhatsApp message).
+
+    Voice reply (match-modality): when ``inbound_was_voice`` is True, we
+    kick off MiniMax TTS in the background while the text bubbles stream,
+    then send the audio file as a final attachment so the voice-replying
+    user gets an audible reply without perceiving the synthesis latency.
     """
     if not bubbles:
         return
     media_to_send = media_to_send or []
 
+    # Kick off TTS synthesis BEFORE the text-bubble loop so the audio is
+    # (hopefully) ready by the time the final bubble has been sent. Synth
+    # typically takes 1-3s; bubble delays add up to 10-20s — so the voice
+    # almost always lands at the end with zero perceived wait.
+    voice_task: asyncio.Task[Any] | None = None
+    if inbound_was_voice:
+        from src.media.tts import merge_bubbles_for_speech, synthesize
+
+        voice_script = merge_bubbles_for_speech(list(bubbles))
+        if voice_script:
+            voice_task = asyncio.create_task(synthesize(voice_script))
+
+    try:
+        await _send_bubbles_impl(
+            account_id=account_id,
+            chat_id=chat_id,
+            bubbles=bubbles,
+            media_to_send=media_to_send,
+            voice_task=voice_task,
+        )
+    finally:
+        # Defensive: if we crashed before awaiting voice_task, cancel it so
+        # Python doesn't emit "Task was destroyed but it is pending" warnings
+        # and so we don't keep the MiniMax HTTP call running uselessly.
+        if voice_task is not None and not voice_task.done():
+            voice_task.cancel()
+
+
+async def _send_bubbles_impl(
+    *,
+    account_id: str,
+    chat_id: str,
+    bubbles: list[str],
+    media_to_send: list[dict],
+    voice_task: asyncio.Task[Any] | None,
+) -> None:
+    """Inner body of ``_send_bubbles`` — see that function's docstring."""
     # Group media by the bubble index they should appear after.
     # Defensive: only accept absolute http(s) URLs — relative paths
     # (e.g. 'data/media/...') would be unfetchable by ChatDaddy.
@@ -644,7 +688,9 @@ async def _send_bubbles(
                 "[WA] send failed (chat=%s, bubble=%d/%d) — abandoning rest of bubbles",
                 chat_id, i + 1, len(bubbles),
             )
-            return
+            # Don't return — still try to deliver any pending voice file so
+            # the voice-user at least gets the audio version of the reply.
+            break
 
         # Send any media that should follow this bubble.
         for url in media_by_idx.get(i, []):
@@ -661,6 +707,45 @@ async def _send_bubbles(
                 )
             except Exception:
                 logger.exception("[WA] media send failed (url=%s)", url[:80])
+
+    # ── Final voice-reply send (match-modality) ──────────────────────
+    if voice_task is not None:
+        try:
+            await asyncio.sleep(0.6)  # small breath before the audio bubble
+            voice_result = await voice_task
+        except Exception:
+            logger.exception("[WA] tts synthesis task crashed")
+            voice_result = None
+
+        if voice_result is None:
+            logger.info("[WA] tts skipped or failed — sending text only")
+        else:
+            voice_url = voice_result.url
+            if not voice_url.startswith(("http://", "https://")):
+                logger.warning(
+                    "[WA] tts url is relative (%s) — JESSICA_BASE_URL not set; skipping audio send",
+                    voice_url,
+                )
+            else:
+                try:
+                    await client.send_message(
+                        account_id,
+                        chat_id,
+                        text="",
+                        attachments=[
+                            {
+                                "url": voice_url,
+                                "type": "audio",
+                                "mimetype": voice_result.mime_type,
+                            }
+                        ],
+                    )
+                    logger.info(
+                        "[WA] sent voice reply (%d bytes, %s)",
+                        voice_result.byte_count, voice_url[:60],
+                    )
+                except Exception:
+                    logger.exception("[WA] voice attachment send failed")
 
 
 def _guess_mimetype(url: str) -> str:

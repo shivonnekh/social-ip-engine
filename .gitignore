@@ -39,6 +39,7 @@ data/jessica.db
 data/jessica_dev.db
 data/media/inbound/
 data/media/tmp/
+data/media/tts/
 env/
 htmlcov/
 logs/
