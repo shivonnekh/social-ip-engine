@@ -611,13 +611,6 @@ def _build_payload_ask_mcq(
     # Render the options as a single pre-formatted string the Writer MUST
     # use verbatim — prevents LLM from dropping option D / reordering.
     rendered_options = "\n".join(f"{o['id']}. {o['label']}" for o in options)
-    # WhatsApp tappable poll buttons — text starts with the letter so the
-    # planner can still parse the answer even if ChatDaddy sends back the
-    # full label text rather than just the ID from the poll vote webhook.
-    buttons_for_user = [
-        {"id": o["id"], "text": f"{o['id']}. {o['label']}"}
-        for o in options
-    ]
     payload = {
         "phase": "asking_mcq",
         "q_index": q_idx,
@@ -625,12 +618,15 @@ def _build_payload_ask_mcq(
         "question": q["question"],
         "options": options,
         "options_rendered": rendered_options,
-        "buttons_for_user": buttons_for_user,
+        # NOTE: no buttons_for_user — WhatsApp poll votes are E2E-encrypted,
+        # ChatDaddy never sends the selected option back (pollReplyOptions always []).
+        # Plain ABCD text is the reliable path. Confirmed 2026-05-29 after exhaustive testing.
         "writer_hint": (
             f"問第 {q_idx + 1} / {MAX_MCQ} 條題。\n"
-            f"只需要 1 個 bubble：「{q['question']}」(可以加 emoji)\n"
-            f"⚠️ 唔好寫 A B C D 選項 — 選項已經會以 poll buttons 形式顯示俾用戶，"
-            f"你寫出嚟只係重複同難睇。只係問問題就夠。"
+            f"Bubble 1: 「{q['question']}」(可以加 emoji)\n"
+            f"Bubble 2: 必須 verbatim 用呢段（全部 4 個選項 A B C D 一個都唔少）:\n"
+            f"{rendered_options}\n"
+            f"絕對唔可以剩低任何選項、唔可以改字、唔可以分開做幾個 bubble。"
         ),
     }
     # On the first MCQ right after vision analysis, share a preliminary
