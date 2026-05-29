@@ -611,13 +611,6 @@ def _build_payload_ask_mcq(
     # Render the options as a single pre-formatted string the Writer MUST
     # use verbatim — prevents LLM from dropping option D / reordering.
     rendered_options = "\n".join(f"{o['id']}. {o['label']}" for o in options)
-    # WhatsApp tappable buttons — text starts with the letter so the
-    # planner can still parse the answer even if ChatDaddy sends the
-    # full label back rather than just the ID.
-    buttons_for_user = [
-        {"id": o["id"], "text": f"{o['id']}. {o['label']}"}
-        for o in options
-    ]
     payload = {
         "phase": "asking_mcq",
         "q_index": q_idx,
@@ -625,12 +618,18 @@ def _build_payload_ask_mcq(
         "question": q["question"],
         "options": options,
         "options_rendered": rendered_options,
-        "buttons_for_user": buttons_for_user,
+        # NOTE: buttons_for_user intentionally NOT included for MCQ.
+        # WhatsApp quick-reply buttons max out at 3 options; 4 options
+        # falls back to a poll widget which shows vote counts (wrong UX
+        # for a private health assessment) and fires a second webhook
+        # event on vote that breaks the MCQ state machine.
+        # Buttons reserved for binary/ternary choices (appointment mode etc.)
         "writer_hint": (
             f"問第 {q_idx + 1} / {MAX_MCQ} 條題。\n"
-            f"只需要 1 個 bubble：「{q['question']}」(可以加 emoji)\n"
-            f"⚠️ 唔好寫 A B C D 選項 — 選項已經會以 tappable buttons 形式顯示俾用戶，"
-            f"你寫出嚟只係重複同難睇。只係問問題就夠。"
+            f"Bubble 1: 「{q['question']}」(可以加 emoji)\n"
+            f"Bubble 2: 必須 verbatim 用呢段（全部 4 個選項 A B C D 一個都唔少）:\n"
+            f"{rendered_options}\n"
+            f"絕對唔可以剩低任何選項、唔可以改字、唔可以分開做幾個 bubble。"
         ),
     }
     # On the first MCQ right after vision analysis, share a preliminary
@@ -641,8 +640,9 @@ def _build_payload_ask_mcq(
         payload["writer_hint"] = (
             "Bubble 1-2: 用 1-2 句講脷相觀察 (顏色、苔、形態) + 1 句初步方向 "
             "(例 「初步睇起來氣虛偏向」)。\n"
-            f"Bubble 3: 「{q['question']}」(可以加 emoji)\n"
-            f"⚠️ 唔好寫 A B C D 選項 — 選項已經會以 tappable buttons 形式顯示俾用戶。"
+            f"Bubble 3: 「{q['question']}」\n"
+            "Bubble 4: 必須 verbatim 用呢段（全部 4 個選項一個都唔少）:\n"
+            f"{rendered_options}"
         )
     return payload
 

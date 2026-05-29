@@ -133,6 +133,14 @@ def parse_webhook(payload: dict) -> ChatDaddyMessage | None:
     if not isinstance(msg, dict):
         return None
 
+    # Drop poll vote notifications — when ChatDaddy sends a button-style
+    # poll (4+ options), each vote fires a separate message-insert event
+    # with messageType="poll_update" or a non-empty "vote" field.
+    # These are NOT user messages — processing them breaks MCQ state.
+    msg_type = (msg.get("messageType") or msg.get("type") or "").lower()
+    if "poll" in msg_type or "vote" in msg_type or msg.get("vote"):
+        return None
+
     message_id = msg.get("id") or payload.get("id") or ""
     chat_id = msg.get("chatId") or msg.get("senderContactId") or ""
     account_id = msg.get("accountId") or payload.get("accountId") or ""
