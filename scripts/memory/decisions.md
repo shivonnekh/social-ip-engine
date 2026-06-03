@@ -3280,3 +3280,9 @@
 ### Architecture Decisions
 - **`router.py`** — Group messages now split into two paths:
 
+
+## 2026-06-03 11:52 — TCM-Jessica
+
+### Architecture Decisions
+- **`router.py`** — Group messages now split into two paths:
+
