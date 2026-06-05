@@ -107,13 +107,18 @@ class ChloeAgent:
         history = list(getattr(user, "conversation_history", []) or [])
         is_first_touch = len(history) == 0
 
-        # 2. Build the LLM reply (always answer their actual message).
-        try:
-            answer_bubbles = await self._generate(persona, history, user_message)
-        except Exception:  # noqa: BLE001
-            logger.exception("[chloe] LLM generation failed for %s", crm_key)
-            answer_bubbles = ["唔好意思，我而家有少少繁忙 🙏 你可以 WhatsApp 我 "
-                              f"{persona.whatsapp_cta}，我盡快覆你 🌿"]
+        # 2. Decide whether we need the LLM. On a first-touch PURE greeting
+        # (just "hi"/"你好"), the intro greeting IS the whole reply — no LLM
+        # call, and no redundant second greeting. Otherwise generate an answer.
+        need_llm = not (is_first_touch and _is_pure_greeting(user_message))
+        answer_bubbles: list[str] = []
+        if need_llm:
+            try:
+                answer_bubbles = await self._generate(persona, history, user_message)
+            except Exception:  # noqa: BLE001
+                logger.exception("[chloe] LLM generation failed for %s", crm_key)
+                answer_bubbles = ["唔好意思，我而家有少少繁忙 🙏 你可以 WhatsApp 我 "
+                                  f"{persona.whatsapp_cta}，我盡快覆你 🌿"]
 
         # 3. Greeting-first composition.
         bubbles: list[str] = []
@@ -124,7 +129,8 @@ class ChloeAgent:
                 media.append({"url": persona.greeting_media_url,
                               "after_bubble_idx": max(0, len(persona.greeting_bubbles) - 1)})
         bubbles.extend(answer_bubbles)
-        bubbles = [b for b in bubbles if b.strip()][: max(1, persona.max_bubbles + len(persona.greeting_bubbles))]
+        cap = len(persona.greeting_bubbles) + persona.max_bubbles
+        bubbles = [b for b in bubbles if b.strip()][: max(1, cap)]
 
         # 4. Persist both sides to CRM (best-effort).
         await self._persist(crm_key, user_message, bubbles, message_id)
@@ -175,6 +181,19 @@ class ChloeAgent:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+
+# Whole-message greeting (no health content) → first-touch intro is enough.
+_PURE_GREETING_RE = re.compile(
+    r"^\s*(?:hi+|hey+|hello+|he+llo+|hihi|yo+|哈囉|哈罗|你好+|您好|早晨|早安|午安|晚安|"
+    r"嗨+|喂+|hi 啊|hello 啊|在嗎|在吗|有人嗎|有人吗)\s*[!！~～.。、,，\s]*$",
+    re.IGNORECASE,
+)
+
+
+def _is_pure_greeting(text: str) -> bool:
+    """True when the whole message is just a greeting (no health content)."""
+    return bool(_PURE_GREETING_RE.match((text or "").strip()))
 
 
 def _split_bubbles(text: str, max_bubbles: int) -> list[str]:
