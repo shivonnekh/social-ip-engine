@@ -117,6 +117,37 @@ async def test_returning_user_no_greeting():
 
 
 @pytest.mark.asyncio
+async def test_whatsapp_cta_gated_by_turns():
+    """The WhatsApp nudge is only injected into the system prompt after
+    cta_after_turns; early conversation gets the no-push base prompt."""
+    from src.crm.models import ConversationMessage
+    persona = load_persona()
+
+    def hist(n_user):
+        out = []
+        for i in range(n_user):
+            out.append(ConversationMessage(role="user", content=f"u{i}", at=datetime.utcnow()))
+            out.append(ConversationMessage(role="chloe", content=f"c{i}", at=datetime.utcnow()))
+        return out
+
+    # Early conversation (2 turns) → no nudge
+    crm_early = _FakeCRM(history=hist(2))
+    client_early = _FakeClient("飲多啲水 🌿")
+    await ChloeAgent(client=client_early, crm=crm_early).respond(
+        crm_key="ig_e", user_message="仲係攰")
+    sys_early = client_early.messages.calls[0]["system"]
+    assert persona.cta_nudge.strip()[:8] not in sys_early  # nudge absent
+
+    # Deep conversation (>= cta_after_turns) → nudge present
+    crm_deep = _FakeCRM(history=hist(persona.cta_after_turns))
+    client_deep = _FakeClient("不如試下…")
+    await ChloeAgent(client=client_deep, crm=crm_deep).respond(
+        crm_key="ig_d", user_message="想知多啲")
+    sys_deep = client_deep.messages.calls[0]["system"]
+    assert "wa.me" in sys_deep and len(sys_deep) > len(sys_early)
+
+
+@pytest.mark.asyncio
 async def test_llm_failure_falls_back_to_cta():
     class _BoomClient:
         class messages:

@@ -49,6 +49,8 @@ class ChloePersona:
     model: str
     max_tokens: int
     max_bubbles: int
+    cta_after_turns: int = 15
+    cta_nudge: str = ""
 
 
 @dataclass(frozen=True)
@@ -75,6 +77,8 @@ def _load_persona(path_str: str, mtime: float) -> ChloePersona:
         model=str(data.get("model", "gpt-5.4-mini")),
         max_tokens=int(data.get("max_tokens", 400)),
         max_bubbles=int(data.get("max_bubbles", 3)),
+        cta_after_turns=int(data.get("cta_after_turns", 15)),
+        cta_nudge=str(data.get("cta_nudge", "")),
     )
 
 
@@ -114,7 +118,10 @@ class ChloeAgent:
         answer_bubbles: list[str] = []
         if need_llm:
             try:
-                answer_bubbles = await self._generate(persona, history, user_message)
+                turns = _count_user_turns(history)
+                answer_bubbles = await self._generate(
+                    persona, history, user_message, turns=turns
+                )
             except Exception:  # noqa: BLE001
                 logger.exception("[chloe] LLM generation failed for %s", crm_key)
                 answer_bubbles = ["唔好意思，我而家有少少繁忙 🙏 你可以 WhatsApp 我 "
@@ -140,7 +147,12 @@ class ChloeAgent:
     # ------------------------------------------------------------------
 
     async def _generate(
-        self, persona: ChloePersona, history: list[ConversationMessage], user_message: str
+        self,
+        persona: ChloePersona,
+        history: list[ConversationMessage],
+        user_message: str,
+        *,
+        turns: int = 0,
     ) -> list[str]:
         messages: list[dict] = []
         for m in history[-_HISTORY_WINDOW:]:
@@ -148,10 +160,17 @@ class ChloeAgent:
             messages.append({"role": role, "content": getattr(m, "content", "")})
         messages.append({"role": "user", "content": user_message})
 
+        # WhatsApp CTA is relationship-gated: the nudge instruction is only
+        # appended once the conversation is ~cta_after_turns deep. Before
+        # that, the base prompt tells Chloe NOT to push WhatsApp unsolicited.
+        system = persona.system_prompt
+        if persona.cta_nudge and turns >= persona.cta_after_turns:
+            system = system + persona.cta_nudge
+
         resp = await self._client.messages.create(
             model=persona.model,
             max_tokens=persona.max_tokens,
-            system=persona.system_prompt,
+            system=system,
             messages=messages,
         )
         text = "".join(
@@ -194,6 +213,11 @@ _PURE_GREETING_RE = re.compile(
 def _is_pure_greeting(text: str) -> bool:
     """True when the whole message is just a greeting (no health content)."""
     return bool(_PURE_GREETING_RE.match((text or "").strip()))
+
+
+def _count_user_turns(history: list[ConversationMessage]) -> int:
+    """Number of user messages so far — the conversation 'depth'."""
+    return sum(1 for m in history if getattr(m, "role", "") == "user")
 
 
 def _split_bubbles(text: str, max_bubbles: int) -> list[str]:
