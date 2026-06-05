@@ -153,7 +153,7 @@ async def test_handle_dm_routes_to_chloe(monkeypatch):
     dm = IncomingDM(platform="instagram", sender_id="S1", recipient_id="B",
                     text="hi", message_id="m1", timestamp=0)
     # pipeline arg is ignored when Chloe is set
-    await meta_webhook.handle_dm(dm, pipeline=None)  # type: ignore[arg-type]
+    await meta_webhook._dispatch_dm(dm, pipeline=None)  # type: ignore[arg-type]
 
     assert sent == ["Hi 我係陳芷晴 🌿", "你想搞好啲咩？"]
 
@@ -191,7 +191,7 @@ async def test_dm_keyword_guide_short_circuits_chloe(monkeypatch, tmp_path):
 
     dm = IncomingDM(platform="instagram", sender_id="U1", recipient_id="B",
                     text="hi can i get GUT guide", message_id="m1", timestamp=0)
-    await meta_webhook.handle_dm(dm, pipeline=None)  # type: ignore[arg-type]
+    await meta_webhook._dispatch_dm(dm, pipeline=None)  # type: ignore[arg-type]
 
     assert chloe_called == []                       # LLM skipped
     assert texts == [("U1", "懶人包俾你 🌿")]          # canned text

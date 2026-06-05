@@ -113,6 +113,33 @@ def set_chloe_agent(agent) -> None:
     _chloe_agent = agent
 
 
+# Merge buffer — debounces rapid-fire DM fragments into one turn (lazy init).
+_merge_buffer = None  # type: ignore[var-annotated]
+
+
+def _get_merge_buffer(pipeline: JessicaPipeline):
+    """Lazily build the per-process merge buffer bound to the dispatcher."""
+    global _merge_buffer
+    if _merge_buffer is None:
+        from src.channels.merge_buffer import MergeBuffer
+
+        async def _on_flush(dm: IncomingDM) -> None:
+            await _dispatch_dm(dm, pipeline)
+
+        _merge_buffer = MergeBuffer(
+            window_s=float(os.environ.get("CHLOE_MERGE_WINDOW_S", "5.0")),
+            max_s=float(os.environ.get("CHLOE_MERGE_MAX_S", "20.0")),
+            on_flush=_on_flush,
+        )
+    return _merge_buffer
+
+
+def reset_merge_buffer() -> None:
+    """Test hook — drop the buffer so a fresh window/on_flush is built."""
+    global _merge_buffer
+    _merge_buffer = None
+
+
 def is_duplicate(event_id: str) -> bool:
     if not event_id:
         return False
@@ -183,9 +210,18 @@ async def process_post(
 
 
 async def handle_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
-    """Reply to a DM. Routes to Chloe (social persona) when registered;
-    otherwise falls back to the Jessica pipeline. Replies interleave text
-    + images."""
+    """Entry point for an inbound DM — pushes it into the merge buffer.
+
+    Rapid-fire fragments from one user are debounced and combined into a
+    single turn (see ``merge_buffer``). When buffering is off the fragment
+    dispatches immediately. The actual reply logic is ``_dispatch_dm``.
+    """
+    await _get_merge_buffer(pipeline).submit(dm)
+
+
+async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
+    """Reply to a (possibly merged) DM. Routes to Chloe when registered;
+    otherwise falls back to the Jessica pipeline. Text + images interleave."""
     # Keyword guide short-circuit — "gut" etc. in a DM sends the canned
     # guide (images) directly, skipping the LLM. Same rules as comments.
     rule = comment_rules.match(dm.text)

@@ -249,7 +249,7 @@ async def test_handle_dm_interleaves_text_and_image(monkeypatch):
         ["第一款湯水", "第二款"],
         media=[{"url": "https://x/soup.png", "after_bubble_idx": 0}],
     )
-    await meta_webhook.handle_dm(dm, pipe)
+    await meta_webhook._dispatch_dm(dm, pipe)
 
     assert pipe.calls[0]["phone"] == "ig_IGSID123"
     # text(0) → image(after 0) → text(1)
