@@ -54,13 +54,24 @@ _DEFAULT_PATH: Final[str] = str(
 
 @dataclass(frozen=True)
 class CommentReply:
-    """One canned (or agent-routed) comment→DM rule."""
+    """One canned (or agent-routed) keyword rule (applies to comments AND DMs)."""
 
     keyword: str
     dm_text: str = ""
-    image_url: str = ""
+    image_url: str = ""               # single image (back-compat)
+    image_urls: tuple[str, ...] = ()  # multiple images (e.g. a multi-page guide)
     public_ack: str = ""
     use_agent: bool = False
+
+    @property
+    def all_images(self) -> list[str]:
+        """Ordered, de-duped image URLs (image_urls first, then image_url)."""
+        out: list[str] = []
+        for u in (*self.image_urls, self.image_url):
+            u = (u or "").strip()
+            if u and u not in out:
+                out.append(u)
+        return out
 
 
 def _config_path() -> Path:
@@ -88,11 +99,15 @@ def _load_raw(path_str: str, mtime: float) -> tuple[CommentReply, ...]:
         kw = str(keyword).strip().lower()
         if not kw or not isinstance(spec, dict):
             continue
+        raw_imgs = spec.get("image_urls") or []
+        image_urls = tuple(str(u).strip() for u in raw_imgs if str(u).strip()) \
+            if isinstance(raw_imgs, list) else ()
         rules.append(
             CommentReply(
                 keyword=kw,
                 dm_text=str(spec.get("dm_text", "")).strip(),
                 image_url=str(spec.get("image_url", "")).strip(),
+                image_urls=image_urls,
                 public_ack=str(spec.get("public_ack", "")).strip(),
                 use_agent=bool(spec.get("use_agent", False)),
             )

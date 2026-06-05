@@ -102,6 +102,16 @@ def verify_signature(raw: bytes, header: str) -> bool:
 
 _seen_ids: "OrderedDict[str, None]" = OrderedDict()
 
+# Chloe agent — the social-DM persona (set at startup). When present, IG/FB
+# DMs route to Chloe instead of the Jessica pipeline.
+_chloe_agent = None  # type: ignore[var-annotated]
+
+
+def set_chloe_agent(agent) -> None:
+    """Register the Chloe agent for IG/FB DMs. Called from web.lifespan."""
+    global _chloe_agent
+    _chloe_agent = agent
+
 
 def is_duplicate(event_id: str) -> bool:
     if not event_id:
@@ -173,19 +183,38 @@ async def process_post(
 
 
 async def handle_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
-    """Run a DM through the pipeline; reply with interleaved text + images."""
-    try:
-        result = await pipeline.run_turn(
-            phone=dm.crm_key,
-            user_message=dm.text,
-            wa_message_id=dm.message_id,
-        )
-    except Exception:  # noqa: BLE001
-        logger.exception("[meta] pipeline failed for %s", dm.crm_key)
+    """Reply to a DM. Routes to Chloe (social persona) when registered;
+    otherwise falls back to the Jessica pipeline. Replies interleave text
+    + images."""
+    # Keyword guide short-circuit — "gut" etc. in a DM sends the canned
+    # guide (images) directly, skipping the LLM. Same rules as comments.
+    rule = comment_rules.match(dm.text)
+    if rule is not None and not rule.use_agent:
+        await _send_canned_to_user(dm.sender_id, rule, platform=dm.platform)
         return
 
-    bubbles = [b for b in (result.writer_output.bubbles or []) if b.strip()]
-    media_by_idx = _group_media(result.writer_output.media_to_send or [])
+    if _chloe_agent is not None:
+        try:
+            reply = await _chloe_agent.respond(
+                crm_key=dm.crm_key, user_message=dm.text, message_id=dm.message_id
+            )
+            bubbles = [b for b in reply.bubbles if b.strip()]
+            media_by_idx = _group_media(reply.media)
+        except Exception:  # noqa: BLE001
+            logger.exception("[meta] Chloe failed for %s", dm.crm_key)
+            return
+    else:
+        try:
+            result = await pipeline.run_turn(
+                phone=dm.crm_key,
+                user_message=dm.text,
+                wa_message_id=dm.message_id,
+            )
+        except Exception:  # noqa: BLE001
+            logger.exception("[meta] pipeline failed for %s", dm.crm_key)
+            return
+        bubbles = [b for b in (result.writer_output.bubbles or []) if b.strip()]
+        media_by_idx = _group_media(result.writer_output.media_to_send or [])
 
     for i, bubble in enumerate(bubbles):
         send = await meta_client.send_dm(dm.sender_id, bubble, platform=dm.platform)
@@ -227,22 +256,37 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
 
 
 async def _comment_via_canned(comment: IncomingComment, rule) -> None:
-    """Send the predefined DM for this keyword — no LLM call."""
-    if not rule.dm_text:
-        logger.warning("[meta] rule %r has no dm_text — nothing to send", rule.keyword)
-        return
-    send = await meta_client.send_private_reply(
-        comment.comment_id, rule.dm_text, platform=comment.platform
-    )
-    if not send.ok:
-        logger.warning("[meta] canned private reply failed: %s", send.detail)
-        return
-    # Image, if any, follows the text as a normal DM (recipient by id).
-    if rule.image_url and comment.from_id:
-        await asyncio.sleep(_MEDIA_PAUSE_S)
-        await meta_client.send_dm_image(
-            comment.from_id, rule.image_url, platform=comment.platform
+    """Send the predefined DM for this keyword — no LLM call.
+
+    The first message is a private reply (comment→DM). Any images then
+    follow as normal DMs to the commenter (recipient by id).
+    """
+    if rule.dm_text:
+        send = await meta_client.send_private_reply(
+            comment.comment_id, rule.dm_text, platform=comment.platform
         )
+        if not send.ok:
+            logger.warning("[meta] canned private reply failed: %s", send.detail)
+            return
+    if comment.from_id:
+        for url in rule.all_images:
+            await asyncio.sleep(_MEDIA_PAUSE_S)
+            img = await meta_client.send_dm_image(
+                comment.from_id, url, platform=comment.platform
+            )
+            if not img.ok:
+                logger.warning("[meta] canned image failed: %s", img.detail)
+
+
+async def _send_canned_to_user(recipient_id: str, rule, *, platform) -> None:
+    """Send a canned keyword reply (text + images) straight to a DM user."""
+    if rule.dm_text:
+        await meta_client.send_dm(recipient_id, rule.dm_text, platform=platform)
+    for url in rule.all_images:
+        await asyncio.sleep(_MEDIA_PAUSE_S)
+        img = await meta_client.send_dm_image(recipient_id, url, platform=platform)
+        if not img.ok:
+            logger.warning("[meta] canned DM image failed: %s", img.detail)
 
 
 async def _comment_via_agent(comment: IncomingComment, pipeline: JessicaPipeline) -> None:

@@ -117,6 +117,12 @@ async def lifespan(app: FastAPI):
     # "fb_<psid>") so surfaces never collide.
     set_ig_pipeline(pipeline)
     set_fb_pipeline(pipeline)
+    # Social DMs use the Chloe persona (陳芷晴) — a separate, lighter route
+    # from Jessica: greeting-first, drives to WhatsApp. Comments still use
+    # the canned comment_rules.
+    from src.channels.chloe_agent import ChloeAgent
+    from src.channels.meta_webhook import set_chloe_agent
+    set_chloe_agent(ChloeAgent(client=client, crm=crm))
 
     # Start background tasks — token refresh + (optional) polling fallback.
     # Both are best-effort: if ChatDaddy credentials aren't configured we
