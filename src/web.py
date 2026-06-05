@@ -275,6 +275,30 @@ async def data_deletion() -> str:
     return _LEGAL_PAGE.format(title="資料刪除 Data Deletion", body=_DATA_DELETION_BODY)
 
 
+@app.post("/admin/crm/reset")
+async def admin_crm_reset(request: Request) -> JSONResponse:
+    """Wipe one CRM record by key — for testing (e.g. reset a Chloe IG flow).
+
+    Body: ``{"key": "ig_2069881150591895"}``. Guarded by ADMIN_RESET_TOKEN
+    when set (header ``X-Admin-Token``); open in dev if unset.
+    """
+    expected = os.environ.get("ADMIN_RESET_TOKEN", "")
+    if expected and request.headers.get("X-Admin-Token", "") != expected:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+    body = await request.json()
+    key = (body.get("key") or "").strip()
+    if not key:
+        return JSONResponse({"error": "missing key"}, status_code=400)
+    crm = request.app.state.crm
+    try:
+        counts = await crm.delete_all_for_phone(key)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("[admin] crm reset failed for %s", key)
+        return JSONResponse({"error": str(exc)}, status_code=500)
+    logger.info("[admin] crm reset key=%s counts=%s", key, counts)
+    return JSONResponse({"status": "reset", "key": key, "deleted": counts})
+
+
 @app.get("/admin/webhooks/recent")
 async def admin_recent_webhooks(limit: int = 20, group_only: bool = False) -> JSONResponse:
     """Return recent raw ChatDaddy webhook payloads captured in memory.
