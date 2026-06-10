@@ -63,5 +63,6 @@ async def receive(request: Request) -> JSONResponse:
         signature_header=request.headers.get("X-Hub-Signature-256", ""),
         pipeline=_pipeline_ref,
         enabled=_enabled(),
+        app_secret=meta_webhook._fb_app_secret(),
     )
     return JSONResponse(body, status_code=status)

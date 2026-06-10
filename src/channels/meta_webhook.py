@@ -50,7 +50,16 @@ _DEDUP_MAX: Final[int] = 2048
 
 
 def _app_secret() -> str:
+    """Instagram-side secret. Instagram API with Instagram Login signs IG
+    webhooks with the *Instagram app secret*, stored in ``META_APP_SECRET``."""
     return os.environ.get("META_APP_SECRET", "").strip()
+
+
+def _fb_app_secret() -> str:
+    """Facebook/Messenger secret. Facebook Pages sign webhooks with the
+    *Meta app secret* (distinct from the Instagram app secret). Falls back to
+    ``META_APP_SECRET`` only if ``FB_APP_SECRET`` is unset (single-app setups)."""
+    return os.environ.get("FB_APP_SECRET", "").strip() or _app_secret()
 
 
 def _verify_token() -> str:
@@ -77,13 +86,15 @@ def verify_subscription(mode: str, token: str, challenge: str) -> str | None:
 # ---------------------------------------------------------------------------
 
 
-def verify_signature(raw: bytes, header: str) -> bool:
+def verify_signature(raw: bytes, header: str, *, secret: str | None = None) -> bool:
     """Validate ``X-Hub-Signature-256: sha256=<hex>`` against the app secret.
 
-    Production requires the secret (fails closed). Dev with no secret
-    skips verification so curl smoke tests work.
+    ``secret`` lets the caller pick the platform-specific secret (Instagram vs
+    Meta app secret). When omitted it defaults to the Instagram secret.
+    Production requires a secret (fails closed). Dev with no secret skips
+    verification so curl smoke tests work.
     """
-    secret = _app_secret()
+    secret = secret if secret is not None else _app_secret()
     if not secret:
         if APP_ENV == "production":
             logger.error("[meta] META_APP_SECRET unset in production — rejecting")
@@ -162,17 +173,20 @@ async def process_post(
     signature_header: str,
     pipeline: JessicaPipeline | None,
     enabled: bool,
+    app_secret: str | None = None,
 ) -> tuple[dict, int]:
     """Verify + parse + dispatch. Returns ``(json_body, status_code)``.
 
-    The router just wraps the return value in a ``JSONResponse``. We always
-    prefer a 200 once the payload is authentic so Meta doesn't disable the
-    subscription on transient downstream issues.
+    ``app_secret`` selects the platform secret for signature verification
+    (Facebook passes the Meta app secret; Instagram leaves it ``None`` to use
+    the Instagram secret). The router just wraps the return value in a
+    ``JSONResponse``. We always prefer a 200 once the payload is authentic so
+    Meta doesn't disable the subscription on transient downstream issues.
     """
     if not enabled:
         return {"status": "disabled"}, 200
 
-    if not verify_signature(raw, signature_header):
+    if not verify_signature(raw, signature_header, secret=app_secret):
         return {"error": "bad signature"}, 401
 
     try:
