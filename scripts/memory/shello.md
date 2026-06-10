@@ -323,6 +323,18 @@ OTHER TODO: IG token auto-refresh loop (60d expiry ~Aug 2026); Facebook line (co
 - Diagnostics how-to: app token = `1546738537122434|<FB_APP_SECRET>`; GET /{app_id}/subscriptions shows object/fields/active. Render logs API: GET https://api.render.com/v1/logs?ownerId=tea-d467almuk2gs73cvmd60&resource=srv-d879lsmq1p3s73av6f80&limit=N&text=POST (filter to dodge /health flood every 5s).
 - ⚠️ ROTATE both secrets after testing (IG + Meta app secrets both leaked in chat history).
 
+**✅ MESSENGER LIVE & WORKING (2026-06-10)**
+- After both fixes + both subscription layers, real FB DM → `POST /webhook/facebook 200` (from FB IP 66.220.149.4) → Chloe replied in Messenger (screenshot confirmed: greeting intro + reply bubbles). Chloe persona shared with IG (object=="page" routes to ChloeAgent).
+- The TWO subscription layers BOTH required (this was the real blocker, not code):
+  1. App-level: POST /{app_id}/subscriptions object=page fields=messages,messaging_postbacks (was empty).
+  2. Page-level: POST /{page_id}/subscribed_apps subscribed_fields=messages,messaging_postbacks (our page token CAN do this w/ just pages_messaging — returned success). Dashboard "Connect page" did NOT set this.
+
+**Merge buffer — IG & Messenger ALREADY unified**
+- `_merge_buffer` is a process-level SINGLETON (meta_webhook._get_merge_buffer). Both IG + FB DMs go through the same handle_dm → same buffer → same window. Keyed by crm_key (ig_/fb_ + sender_id). They are structurally aligned — there are NOT two buffers.
+- "Replies to 2 separate messages" causes: (a) default window 5s too short → msgs >5s apart = 2 turns; (b) Chloe sends 2-3 bubbles/turn by design (max_bubbles) — looks like multi-reply but is ONE turn.
+- TUNED 2026-06-10: Render CHLOE_MERGE_WINDOW_S=8, CHLOE_MERGE_MAX_S=30 (was unset→5/20). ⚠️ Buffer caches window at first-build → needs redeploy to take effect (done). Applies to BOTH channels (shared buffer).
+- Lever for future: raise CHLOE_MERGE_WINDOW_S = merges slower typers but delays first reply.
+
 **Connected account**
 - IG handle: `chloechan.cccc` · account_type: **BUSINESS** (must NOT be Creator — Creator can't message)
 - IG_USER_ID: `17841424706900394` (the `user_id` from /me, NOT id `27405003679135878`)
