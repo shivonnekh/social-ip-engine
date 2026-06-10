@@ -303,7 +303,7 @@ class TestUserEligibility:
 
     @pytest.mark.asyncio
     async def test_eligible_at_one_broadcast(self):
-        past = datetime(2026, 5, 23, 10, 0, tzinfo=HKT)  # 48h ago
+        past = datetime(2026, 5, 22, 9, 0, tzinfo=HKT)  # 73h ago — past the 72h minimum gap
         crm = self._make_crm(count=1, last_at=past.isoformat())
         now = datetime(2026, 5, 25, 10, 0, tzinfo=HKT)
         assert await _user_is_eligible(crm, "+85291234567", "2026-W21", now) is True
@@ -315,16 +315,16 @@ class TestUserEligibility:
         assert await _user_is_eligible(crm, "+85291234567", "2026-W21", now) is False
 
     @pytest.mark.asyncio
-    async def test_ineligible_within_36h_gap(self):
-        # sent 10h ago — within the 36h minimum gap
-        past = datetime(2026, 5, 25, 0, 0, tzinfo=HKT)
+    async def test_ineligible_within_72h_gap(self):
+        # sent 48h ago — still within the 72h (3-day) minimum gap
+        past = datetime(2026, 5, 23, 10, 0, tzinfo=HKT)
         crm = self._make_crm(count=1, last_at=past.isoformat())
         now = datetime(2026, 5, 25, 10, 0, tzinfo=HKT)
         assert await _user_is_eligible(crm, "+85291234567", "2026-W21", now) is False
 
     @pytest.mark.asyncio
-    async def test_eligible_after_36h_gap(self):
-        past = datetime(2026, 5, 23, 9, 0, tzinfo=HKT)  # 49h ago
+    async def test_eligible_after_72h_gap(self):
+        past = datetime(2026, 5, 22, 9, 0, tzinfo=HKT)  # 73h ago — past the 3-day minimum gap
         crm = self._make_crm(count=1, last_at=past.isoformat())
         now = datetime(2026, 5, 25, 10, 0, tzinfo=HKT)
         assert await _user_is_eligible(crm, "+85291234567", "2026-W21", now) is True

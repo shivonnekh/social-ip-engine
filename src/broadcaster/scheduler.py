@@ -4,7 +4,7 @@ Runs as an asyncio background task (same pattern as ``start_token_refresh_loop``
 Enable via environment variable: ``BROADCAST_ENABLED=true``
 
 Weather broadcast:
-  - Per-user cap: max 2/ISO week, min 36h gap
+  - Per-user cap: max 2/ISO week, min 72h gap (3 days)
   - Send window: 08:00–21:00 HKT
   - HKO free API: cold front, heatwave, rainstorm, humidity
 
@@ -64,7 +64,7 @@ BROADCAST_CHECK_INTERVAL_S = int(
 )
 BROADCAST_SEND_PACE_S = float(os.environ.get("BROADCAST_SEND_PACE_S", "2.0"))
 BROADCAST_WEEKLY_CAP = int(os.environ.get("BROADCAST_WEEKLY_CAP", "2"))
-BROADCAST_MIN_GAP_H = int(os.environ.get("BROADCAST_MIN_GAP_H", "36"))
+BROADCAST_MIN_GAP_H = int(os.environ.get("BROADCAST_MIN_GAP_H", "72"))  # 3 days minimum gap
 SEND_WINDOW_START_H = 8   # 08:00 HKT
 SEND_WINDOW_END_H = 21    # 21:00 HKT
 
