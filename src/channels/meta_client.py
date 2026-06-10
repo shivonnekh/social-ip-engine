@@ -40,7 +40,6 @@ from src.channels.meta_events import Platform
 
 logger = logging.getLogger("channels.meta_client")
 
-_DEFAULT_BASE: Final[str] = "https://graph.facebook.com"
 _DEFAULT_VERSION: Final[str] = "v25.0"
 _TIMEOUT_S: Final[float] = 15.0
 
@@ -48,6 +47,21 @@ _TIMEOUT_S: Final[float] = 15.0
 _CREDS_ENV: Final[dict[Platform, tuple[str, str]]] = {
     "instagram": ("IG_PAGE_ACCESS_TOKEN", "IG_USER_ID"),
     "facebook": ("FB_PAGE_ACCESS_TOKEN", "FB_PAGE_ID"),
+}
+
+# Graph host is PER-PLATFORM and cannot be shared:
+#   * Instagram API with Instagram Login (IGAA tokens) → graph.instagram.com
+#   * Facebook Pages / Messenger                       → graph.facebook.com
+# Each platform reads its override vars in order, else falls back to the
+# correct default host. ``META_GRAPH_BASE`` is kept as a legacy alias for
+# Instagram so existing deployments keep working.
+_BASE_ENV: Final[dict[Platform, tuple[str, ...]]] = {
+    "instagram": ("IG_GRAPH_BASE", "META_GRAPH_BASE"),
+    "facebook": ("FB_GRAPH_BASE",),
+}
+_DEFAULT_BASE_BY_PLATFORM: Final[dict[Platform, str]] = {
+    "instagram": "https://graph.instagram.com",
+    "facebook": "https://graph.facebook.com",
 }
 
 
@@ -78,16 +92,20 @@ def _creds(platform: Platform) -> _Creds:
     )
 
 
-def _base() -> str:
-    return os.environ.get("META_GRAPH_BASE", _DEFAULT_BASE).rstrip("/")
+def _base(platform: Platform) -> str:
+    for var in _BASE_ENV[platform]:
+        value = os.environ.get(var, "").strip()
+        if value:
+            return value.rstrip("/")
+    return _DEFAULT_BASE_BY_PLATFORM[platform]
 
 
 def _version() -> str:
     return os.environ.get("META_GRAPH_VERSION", _DEFAULT_VERSION).strip()
 
 
-def _graph_url(path: str) -> str:
-    return f"{_base()}/{_version()}/{path.lstrip('/')}"
+def _graph_url(platform: Platform, path: str) -> str:
+    return f"{_base(platform)}/{_version()}/{path.lstrip('/')}"
 
 
 # ---------------------------------------------------------------------------
@@ -155,7 +173,7 @@ async def reply_to_comment(
         logger.warning("[meta] %s token unset — cannot reply to comment", platform)
         return SendResult(False, "no token")
 
-    url = _graph_url(comment_id + "/replies")
+    url = _graph_url(platform, comment_id + "/replies")
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT_S) as client:
             resp = await client.post(
@@ -186,7 +204,7 @@ async def _post_message(
         )
         return SendResult(False, "missing credentials")
 
-    url = _graph_url(f"{creds.sender_id}/messages")
+    url = _graph_url(platform, f"{creds.sender_id}/messages")
     body = {
         "recipient": recipient,
         "message": message,
