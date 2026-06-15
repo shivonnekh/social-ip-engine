@@ -3510,3 +3510,88 @@
 ### Decisions & Reasoning
 - WhatsApp 的 LID 係 opaque 的，唔係電話號碼，所以無法自動 link。除非用戶自己 DM，我哋才能將兩個 record 合併。現在唔需要擔心呢個 — 只係你要知道有呢個 edge case。
 
+
+## 2026-06-03 16:44 — TCM-Jessica
+
+### What Didn't Work (negative knowledge)
+- The 400 means `parse_webhook` rejected the payload (likely a non-message event OR the cold-start). I can't see the raw payload because the diagnostic endpoint was removed earlier. The cleanest move: re-add a minimal raw-webhook viewer so I can see **exactly** what ChatDaddy sends for your @-mention. Let me check the capture module:
+- - 6 regression tests including the exact message that broke.
+
+### Architecture Decisions
+- **Is this a gap you want to fill?** Because it's actually a good one for TCM — HK weather swings are a natural trigger for health care tips. The architecture for it would be:
+- 呢個 split 大概貴 3-5x（但 production query 量低，每個用戶日均幾條 message 而已），可能值得試。要我先 fix 緊嘅產品圖片同功效顯示問題，定先做 model split 實驗？
+- Now apply `extracted_pain_points` to CRM. This is the **critical fix**:
+- 如果你想 sales 都用 vector，可以做 **hybrid**：keyword 先跑 → 如果 score < threshold 就 fallback 去 vector 搜 product cards。Same pattern as FAQ。
+- | **Pain extraction inconsistent** | 🟡 Medium | gpt-5.4-mini 有時 omit `extracted_pain_points`。CRM 最終仍然係 `[]`。要 strengthen prompt 或者用 JSON schema enforcement |
+- **Fix E1: Pain extraction fallback** — if LLM omits `extracted_pain_points`, fall back to keyword detection so CRM still gets populated:
+- | 2. **辨證**（證型 — 八綱 / 臟腑 / 氣血津液）| ❌ 冇 | 而家**呢一刻嘅 pattern**：肝鬱氣滯 / 脾腎陽虛 / 心脾兩虛 / 痰濕困脾… 真實臨床用嚟開方嘅根據 |
+- 2. **No agent does pattern inference** — material in KB, but never extracted into structured form
+
+### Decisions & Reasoning
+- | 7 | **情志調理** | 用戶話壓力大 → 自動鏈接對應臟腑 → 推薦湯水 |
+- 同天氣廣播共用同一個 6h loop — 唔需要多開任何新嘅 background task。下一個做邊個？節氣提醒定體質複查？
+- 全部共用同一個 6h loop，一個 `BROADCAST_ENABLED=true` 開晒。
+- `wa.me/85252417448?text=想訂【彭魚鰓解毒湯 HK$120】` — 用戶 click 之後會喺 WhatsApp 開一個 chat 去診所號碼，直接落單。呢個唔係 Jessica 的號碼，所以 Jessica 本身永遠唔知用戶訂咗咩。
+- 1. **Purchase CTA 加了一句話** — Jessica 推完產品之後，Writer 現在會加 `「訂完記得話我知呀 😊」`，提示用戶返嚟確認
+- 2. **Planner routing** — 用戶回覆 "我訂咗" 類型嘅訊息 → 自動路由去 Sales Agent
+- 唯一的 imperfection：我們假設用戶買的是最後被 pitch 的產品（最多 3 款）。如果佢買係更早 pitch 的，會有偏差。但對於 care follow-up 嚟講，"你有冇飲到上次介紹嘅湯" 夠用了。之後如果需要精確，可以讓 Jessica 問 "係邊款呀？"
+- 从零搭建了一个 asyncio 后台循环，每 6 小时跑一次，自动给用户发主动关怀消息。共有四种广播类型：
+
+
+## 2026-06-04 18:36 — TCM-Jessica
+
+### What Didn't Work (negative knowledge)
+- Straight answer before I burn an API call on something that won't work:
+
+
+## 2026-06-04 18:38 — TCM-Jessica
+
+### What Didn't Work (negative knowledge)
+- Straight answer before I burn an API call on something that won't work:
+
+
+## 2026-06-04 18:39 — TCM-Jessica
+
+### What Didn't Work (negative knowledge)
+- Straight answer before I burn an API call on something that won't work:
+
+
+## 2026-06-04 18:41 — TCM-Jessica
+
+### What Didn't Work (negative knowledge)
+- Straight answer before I burn an API call on something that won't work:
+
+### Decisions & Reasoning
+- Listen for any misreads — watch 嘢 (ye5)、咁 (gam2)、係 (hai6). Flag any and I'll homophone-swap. Otherwise send me video 3's script (or say "用返 short-cut 版" and I'll pull TCM/remedy/CTA from the plan).
+
+
+## 2026-06-04 20:29 — TCM-Jessica
+
+### What Didn't Work (negative knowledge)
+- Straight answer before I burn an API call on something that won't work:
+
+### Decisions & Reasoning
+- Listen for any misreads — watch 嘢 (ye5)、咁 (gam2)、係 (hai6). Flag any and I'll homophone-swap. Otherwise send me video 3's script (or say "用返 short-cut 版" and I'll pull TCM/remedy/CTA from the plan).
+
+
+## 2026-06-04 20:30 — TCM-Jessica
+
+### What Didn't Work (negative knowledge)
+- Straight answer before I burn an API call on something that won't work:
+
+### Decisions & Reasoning
+- Listen for any misreads — watch 嘢 (ye5)、咁 (gam2)、係 (hai6). Flag any and I'll homophone-swap. Otherwise send me video 3's script (or say "用返 short-cut 版" and I'll pull TCM/remedy/CTA from the plan).
+
+
+## 2026-06-11 14:11 — TCM-Jessica
+
+### Decisions & Reasoning
+- | 楼价来源 | 用户发链接 → 我抓页面用 LLM 提取楼价;抓不到就直接问用户楼价 | 28hse/中原等可能挡爬虫,所以要 fallback |
+- - 手机都可以试 — 而且 ngrok 是 HTTPS,**语音录音在手机上都用得**(MediaRecorder 一定要 HTTPS)
+- | 📄 测试用月结单 | `docs/samples/sample-bank-statement.pdf`(Finder 已打开) |
+- 对了,你打断我之前,**28hse 估价那个功能**我已经探完路:28hse 不挡爬虫(HTTP 200,首页就有 4 万个盘的结构化数据),完全可以做到"用户只发地址 → 我去 28hse 搜同屋苑放盘 → 拿真实市价做预估"。要不要我继续把这个建完?建好之后连楼价都不用问用户了。
+- ① 链接/文字本身有价? → 直接用 (price_source: listing)
+- 加埋一个 UX 位:用市场估价之后,等月结单时用户**随时打个数修正**(比如"950萬"),系统更新再继续。
+- 注意一点:28hse 的搜索对「屋苑名」效果最好(太古城、美孚新邨、嘉湖山莊呢啲),如果用户发一条很随意的街道地址,可能跌到问价那步 — 这是预期行为,不是 bug。
+- 提醒一句:这套是**简化版** HK 规则。真实世界还有按揭保险(高成数按揭可去到 80–90%)、首置/非首置之分、固定收入 vs 自雇的 DSR 差异。Demo 够用,真上线前要同 Dr Loan 核一次这些数。要我加按揭保险那层吗?
+

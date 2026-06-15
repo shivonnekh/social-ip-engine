@@ -369,3 +369,22 @@ OTHER TODO: IG token auto-refresh loop (60d expiry ~Aug 2026); Facebook line (co
 - IG token auto-refresh loop before ~Aug 2026
 - Facebook line: code ready, needs FB_PAGE_ACCESS_TOKEN + FB_PAGE_ID + FB_ENABLED
 - App Review (Advanced Access) for full public messaging/comments
+
+---
+
+## Session — 2026-06-10 / 2026-06-15
+
+### What happened
+Two quick fixes: (1) weather broadcast throttle tightened, (2) Render deploy triggered manually.
+
+### Decisions
+- `BROADCAST_MIN_GAP_H` bumped 36 → 72 (3 days). Root cause: HK summer `humidity_heat` fires almost every day (≥29°C + ≥85% humidity), and ISO-week reset on Monday meant users could get 4 weather msgs in 5 days despite the 2/week cap. 72h gap + 2/week cap is now the correct dual guard.
+- Weekly cap of 2 kept as-is (was already correct).
+- 3 tests updated to reflect new 72h gap logic (49h case → now ineligible, 73h case → eligible).
+- Render API key `rnd_4KadINh8FUoRVOJf0WLd33GujXI8` was shared in chat — **rotate this key**.
+
+### Still open
+- Rotate Render API key (shared in chat)
+- Rotate Meta App Secret (security debt, noted prior session)
+- IG token auto-refresh loop (~Aug 2026 expiry)
+- Facebook line activation (code ready, needs env vars)
