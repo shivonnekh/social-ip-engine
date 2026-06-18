@@ -175,11 +175,12 @@ const wsProto   = location.protocol === 'https:' ? 'wss:' : 'ws:';
 const WS_URL    = `${wsProto}//${location.host}/ws/voice/${ROOM_ID}`;
 
 // VAD tuning
-const VAD_THRESHOLD   = 12;   // avg frequency amplitude (0-255)
+const VAD_THRESHOLD   = 14;   // fallback floor (overridden by calibration)
 const SPEECH_START_MS = 280;  // must detect voice for this long before recording
-const SILENCE_END_MS  = 1100; // silence duration to end recording
+const SILENCE_END_MS  = 850;  // silence duration to end recording
 const MIN_AUDIO_MS    = 400;  // discard very short clips
 const MAX_AUDIO_MS    = 18000;// auto-end after 18s
+let   dynamicThreshold = VAD_THRESHOLD; // updated by calibrateNoise()
 
 // ─────────────────────────────────────────────
 // DOM
@@ -564,20 +565,47 @@ async function setupMedia() {
     analyser.fftSize = 1024;
     const src = audioCtx.createMediaStreamSource(micStream);
     src.connect(analyser);
+    await calibrateNoise();
   }
+}
+
+// Sample ambient noise for 1.2s, set threshold = 2.5× the 75th-percentile
+// background level. This handles noisy offices, fans, AC, etc.
+async function calibrateNoise() {
+  setStatus('s-conn', '環境校準中…');
+  await new Promise(r => setTimeout(r, 500)); // let mic warm up
+
+  const fd  = new Uint8Array(analyser.frequencyBinCount);
+  const samples = [];
+  const iv = setInterval(() => {
+    analyser.getByteFrequencyData(fd);
+    let sum = 0;
+    for (let i = 2; i < 80; i++) sum += fd[i];
+    samples.push(sum / 78);
+  }, 50);
+
+  await new Promise(r => setTimeout(r, 1200));
+  clearInterval(iv);
+
+  const sorted = [...samples].sort((a, b) => a - b);
+  const p75 = sorted[Math.floor(sorted.length * 0.75)];
+  dynamicThreshold = Math.max(VAD_THRESHOLD, p75 * 2.5);
+  console.log('[VAD] noise p75=', p75.toFixed(1), '→ threshold=', dynamicThreshold.toFixed(1));
 }
 
 // ─────────────────────────────────────────────
 // VAD — Voice Activity Detection
 // ─────────────────────────────────────────────
 let vadInterval = null;
-const freqData  = new Uint8Array(256);
+let freqData    = null; // sized after analyser is created
 
 function getAmplitude() {
   if (!analyser) return 0;
+  if (!freqData) freqData = new Uint8Array(analyser.frequencyBinCount);
   analyser.getByteFrequencyData(freqData);
   let sum = 0;
-  for (let i = 2; i < 80; i++) sum += freqData[i]; // focus on speech frequencies
+  // bins 2-79 ≈ 86 Hz – 3.4 kHz: covers speech, skips DC/rumble
+  for (let i = 2; i < 80; i++) sum += freqData[i];
   return sum / 78;
 }
 
@@ -603,7 +631,7 @@ function vadTick() {
   const amp = getAmplitude();
   const now  = Date.now();
 
-  if (amp > VAD_THRESHOLD) {
+  if (amp > dynamicThreshold) {
     // ── Voice detected ──
     silenceStart = null;
 
