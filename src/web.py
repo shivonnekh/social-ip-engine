@@ -41,6 +41,8 @@ from src.channels.facebook import router as facebook_router
 from src.channels.facebook import set_pipeline as set_fb_pipeline
 from src.channels.instagram import router as instagram_router
 from src.channels.instagram import set_pipeline as set_ig_pipeline
+from src.consultation.repo import ConsultationRepo
+from src.consultation.router import router as consultation_router
 from src.whatsapp import client as wa_client
 from src.whatsapp.router import router as whatsapp_router
 from src.whatsapp.router import set_pipeline as set_wa_pipeline
@@ -117,6 +119,11 @@ async def lifespan(app: FastAPI):
     # "fb_<psid>") so surfaces never collide.
     set_ig_pipeline(pipeline)
     set_fb_pipeline(pipeline)
+
+    # ---- Video consultation repo ----
+    consultation_repo = await ConsultationRepo.connect(DB_URL)
+    app.state.consultation_repo = consultation_repo
+
     # Social DMs use the Chloe persona (陳芷晴) — a separate, lighter route
     # from Jessica: greeting-first, drives to WhatsApp. Comments still use
     # the canned comment_rules.
@@ -164,6 +171,7 @@ async def lifespan(app: FastAPI):
             task.cancel()
         await wa_client.close()
         await crm.close()
+        await consultation_repo.close()
         if vector_store is not None:
             try:
                 await vector_store.close()
@@ -176,11 +184,18 @@ app.include_router(whatsapp_router)
 app.include_router(instagram_router)
 app.include_router(facebook_router)
 app.include_router(admin_router)
+app.include_router(consultation_router)
 
 # Public-readable static media — ChatDaddy fetches these via the URL
 # Jessica writes into `WriterOutput.media_to_send`.
 if MEDIA_DIR.is_dir():
     app.mount("/media", StaticFiles(directory=str(MEDIA_DIR)), name="media")
+
+# Static assets for the consultation video page (consult.html served by router,
+# but any future CSS/JS assets live here).
+_STATIC_DIR = Path(__file__).resolve().parent / "static"
+if _STATIC_DIR.is_dir():
+    app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
 # Dev sandbox UI — http://localhost:8000/dev/ to test pipeline without WhatsApp.
 DEV_UI_DIR = ROOT / "static" / "dev"
