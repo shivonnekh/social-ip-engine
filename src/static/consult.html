@@ -220,16 +220,8 @@
 <!-- Subtitle -->
 <div id="subtitle"></div>
 
-<!-- Debug panel (tap to toggle) -->
-<div id="debugPanel" onclick="this.classList.toggle('open')" style="
-  position:fixed;top:60px;right:8px;z-index:999;
-  background:rgba(0,0,0,0.82);color:#0f0;font:11px/1.5 monospace;
-  border-radius:8px;padding:6px 10px;max-width:280px;cursor:pointer;
-  max-height:36px;overflow:hidden;transition:max-height .3s;
-">⚙ debug</div>
-<style>
-  #debugPanel.open { max-height:320px; overflow-y:auto; }
-</style>
+<!-- Debug panel (hidden in production) -->
+<div id="debugPanel" style="display:none"></div>
 
 <!-- Listening wave -->
 <div id="listenWave">
