@@ -897,15 +897,17 @@ async function onRecordingStop() {
   setStatus('s-thinking', '傳送中…');
 
   // ── 1. Capture vision frame and send before audio ──────────────
-  // Server starts GPT-4o Vision analysis concurrently with STT,
-  // so the latency cost is hidden behind Whisper transcription (~1-2s).
+  // Always send a vision_frame message so the server knows the camera state.
+  // If the camera is off / unavailable, send camera_off:true so Chloe can
+  // proactively ask the patient to turn it on (TCM 望診 requires seeing the face).
   if (ws?.readyState === WebSocket.OPEN) {
     const frameB64 = captureFrame();
     if (frameB64) {
       ws.send(JSON.stringify({ type: 'vision_frame', image_b64: frameB64 }));
       dbg('vision_frame sent b64_len=' + frameB64.length);
     } else {
-      dbg('vision_frame skipped (no camera)');
+      ws.send(JSON.stringify({ type: 'vision_frame', camera_off: true }));
+      dbg('vision_frame: camera off — notifying server');
     }
   }
 

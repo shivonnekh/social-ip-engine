@@ -89,8 +89,9 @@ async def handle_voice(
     await websocket.accept()
     persona = load_persona()
     history: list[ConversationMessage] = []
-    vision_notes: str = ""               # latest TCM inspection notes
+    vision_notes: str = ""                   # latest TCM inspection notes
     vision_task: asyncio.Task | None = None  # concurrent vision analysis
+    camera_available: bool = False           # set True when first frame received
     logger.info("[voice] connected room=%s", room_id)
 
     # ── Welcome message — Chloe speaks first ──────────────────────
@@ -135,8 +136,11 @@ async def handle_voice(
                 try:
                     json_msg = json.loads(text_data)
                     if json_msg.get("type") == "vision_frame":
-                        img_b64 = json_msg.get("image_b64", "")
-                        if img_b64:
+                        if json_msg.get("camera_off"):
+                            camera_available = False
+                            logger.info("[voice] camera off room=%s", room_id)
+                        elif img_b64 := json_msg.get("image_b64", ""):
+                            camera_available = True
                             # Cancel any in-flight analysis before starting a new one
                             if vision_task and not vision_task.done():
                                 vision_task.cancel()
@@ -200,13 +204,14 @@ async def handle_voice(
                         vision_notes = ""
 
             # 3. LLM — Chloe generates reply (reuse private _generate)
-            logger.info("[voice] calling LLM room=%s vision=%s",
-                        room_id, bool(vision_notes))
+            logger.info("[voice] calling LLM room=%s vision=%s camera=%s",
+                        room_id, bool(vision_notes), camera_available)
             try:
                 bubbles = await chloe._generate(
                     persona, history, user_text,
                     turns=len([m for m in history if m.role == "user"]),
                     vision_notes=vision_notes,
+                    camera_available=camera_available,
                 )
                 logger.info("[voice] LLM ok room=%s bubbles=%d", room_id, len(bubbles))
             except Exception:  # noqa: BLE001

@@ -189,6 +189,7 @@ class ChloeAgent:
         *,
         turns: int = 0,
         vision_notes: str = "",
+        camera_available: bool = True,
     ) -> list[str]:
         messages: list[dict] = []
         for m in history[-_HISTORY_WINDOW:]:
@@ -203,16 +204,39 @@ class ChloeAgent:
         if persona.cta_nudge and turns >= persona.cta_after_turns:
             system = system + persona.cta_nudge
 
-        # Inject TCM 望診 observations from vision frame analysis (voice calls only).
-        # This gives Chloe concrete facial/eye/tongue observations so she can ask
-        # more targeted questions (e.g. "我睇到你面色偏白，係咪平時比較怕冷？").
-        if vision_notes:
+        # Inject TCM 望診 context from vision frame analysis (voice calls only).
+        #
+        # Three cases:
+        #   1. Good vision notes → inject observations, ask targeted questions
+        #   2. Camera on but analysis unclear (very short) → prompt to show face/tongue
+        #   3. Camera off → proactively ask patient to turn it on
+        if vision_notes and len(vision_notes) >= 20:
+            # Case 1: meaningful observations available
             system = (
                 system
                 + "\n\n【即時望診記錄（AI望診助理提供）】\n"
                 + vision_notes
                 + "\n\n請在問診時適時參考以上望診觀察，問出更有針對性的中醫問題。"
                 "（例如面色偏白 → 詢問是否怕冷；黑眼圈明顯 → 詢問睡眠質素）"
+                "如病人提到某個症狀，可以結合望診觀察加以印證或深入詢問。"
+            )
+        elif camera_available and not vision_notes:
+            # Case 2: camera on but nothing useful captured (bad angle / too dark)
+            system = (
+                system
+                + "\n\n【望診提醒】鏡頭畫面不夠清晰，未能進行望診。"
+                "請溫和地請病人調整鏡頭，讓你可以清楚睇到佢嘅面色。"
+                "如需睇舌頭，請病人微微伸出舌頭。"
+            )
+        elif not camera_available:
+            # Case 3: camera is off — must ask patient to enable it
+            system = (
+                system
+                + "\n\n【望診提醒】病人現時未有開啟鏡頭。"
+                "中醫望診（觀察面色、眼神、舌象）係重要嘅診症環節，必須透過鏡頭進行。"
+                "請你溫和但清楚地提醒病人開啟鏡頭，例如：「方便嘅話，可以幫我打開鏡頭嗎？"
+                "中醫睇診需要望診，睇一睇你嘅面色同舌苔，會幫助我了解你嘅身體狀況。」"
+                "唔好接受病人靠口頭形容代替望診——請堅持叫佢開鏡頭。"
             )
 
         resp = await self._client.messages.create(
