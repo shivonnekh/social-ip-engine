@@ -2942,3 +2942,173 @@
 - 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
 - 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
 
+
+## 2026-06-25 22:13 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:20 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:21 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:22 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:24 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:28 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:29 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:36 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 22:53 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+
+
+## 2026-06-25 23:46 — ai-tcm-ip
+
+### Architecture Decisions
+- One honest flag on this: clips 1 & 2 are ~6.5s while 3–5 are ~12s — that's uneven pacing for a 5-video series. The grouping follows the natural script beats (which is what you asked for), but if you want **more even ~10s clips**, I'd merge clip 1+2 into one hook and split the back half differently. Your call — want me to rebalance, or is the narrative-beat split what you're after for the Dreamina i2v step?
+- Good design question — and the answer matters because you'll have *multiple* assets per video (4 images + several voice segments + a final cut). Let me give you my take, then show you the real thing.
+
+### Decisions & Reasoning
+- 现有方案是 **Playwright 控浏览器**（`dreamina_i2v.py` / `dreamina_run.py`）——很脆弱，靠点 dreamina.capcut.com 的按钮。你截图里的 **Dreamina OmniHuman 1.0 / 1.5** 是另一回事：那是**音频驱动数字人对嘴模型**（ByteDance OmniHuman），通常透过 API 聚合平台调用。让我查清楚是哪个平台、怎么调、什么输入输出、限制和价格。
+- **OmniHuman 吃「音频文件」做输入，不是文字转语音。** 所有平台都一样：你喂一张**人像图 + 你的音频**，模型把嘴型对到你的音频上。也就是说——你刚切好的那 5 段 MiniMax 粤语 clip 可以**直接喂进去**，不用重新生成语音。
+- - **fal.ai**:文档最全、认证最简单、还能直接上传本地音频(不用先把文件传到公网)。新手最快上手。
+- **你截图里那个 "Dreamina OmniHuman 1.0 / 1.5" 的模型选择器 —— 是哪个平台的?你手上的 API key 是哪家发的?**
+- 记得。昨天那个 `v5-s1.2` 是**语音**配置(speed 1.2),不是 OmniHuman 视频参数——OmniHuman 是视频对嘴模型,语音是 MiniMax 生成的。你要的是:用昨天那套英文语音配置生成这段新稿(肉桂菠萝排毒),然后切成每段 <13 秒。
+- 语音默认配置是粤语的,但 `tonsil-stone-en` 用的是「中文男声 + 英文 language boost」带口音那套。我要找出 v5 的**确切** voice id 和参数(elderly 那个声音 + speed 1.2)。继续挖。
+- 语音的 speed 1.2 我能确认,但有个关键 gap:**v5 用的那个「elderly 英文带中文口音」的 voice_id 没被记进 log**——只记了候选(`Boyan_new_hd` / `male-qn-jingying` / `audiobook_male_1`)。让我做最后一次定位,查文件元数据和全仓任何残留记录。
+- 完成。用昨天那套 v5 配置生成了肉桂菠萝排毒的整段语音,切成 4 段,全部 ≤13 秒,每个断点都在句子间静音处。
+

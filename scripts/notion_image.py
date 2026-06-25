@@ -224,22 +224,26 @@ def main():
                 return b["id"]
         return None
 
-    def _has_image_toggle(shot_title):
+    def _image_toggle(shot_title):
+        """Return (toggle_id_or_None, has_image_bool) for this shot's '🖼️ Image here' toggle."""
         in_shot = False
         for b in _children(args.row):
             t = b["type"]; tx = _txt(b)
             if t == "heading_3":
                 in_shot = (tx == shot_title)
             elif in_shot and t == "toggle" and "Image here" in tx:
-                return True
-        return False
+                has_img = b.get("has_children") and any(
+                    c["type"] == "image" for c in _children(b["id"]))
+                return b["id"], bool(has_img)
+        return None, False
 
     done = 0
     for i, s in enumerate(shots, 1):
         if args.shot and i != args.shot:
             continue
-        if _has_image_toggle(s["title"]):
-            print(f"  Shot {i}: already has an 🖼️ Image here toggle — skip"); continue
+        toggle_id, has_img = _image_toggle(s["title"])
+        if has_img:
+            print(f"  Shot {i}: image already present — skip"); continue
         is_person = "same person" in s["prompt"].lower()
         refs = (ip_refs if is_person else []) + ([bg] if bg else [])
         out_path = str(outdir / f"shot{i}.png")
@@ -252,21 +256,26 @@ def main():
                 continue
             out = gen_image(s["prompt"], refs, out_path)
         fid = upload_image(out)
-        # place inside a "🖼️ Image here" toggle, right under this shot's Image prompt
-        toggle = {"object": "block", "type": "toggle", "toggle": {
-            "rich_text": [{"type": "text", "text": {"content": "🖼️ Image here"}}],
-            "children": [{"object": "block", "type": "image",
-                          "image": {"type": "file_upload", "file_upload": {"id": fid}}}]}}
-        body = {"children": [toggle]}
-        anchor = _img_prompt_code_id(s["title"])
-        if anchor:
-            body["after"] = anchor
-        ncall("PATCH", f"/blocks/{args.row}/children", body)
-        print(f"    ✅ Shot {i} → 🖼️ Image here toggle ({out})")
+        img_block = {"object": "block", "type": "image",
+                     "image": {"type": "file_upload", "file_upload": {"id": fid}}}
+        if toggle_id:
+            # fill the existing (empty) "🖼️ Image here" toggle
+            ncall("PATCH", f"/blocks/{toggle_id}/children", {"children": [img_block]})
+        else:
+            # no toggle yet — create one after the image prompt
+            toggle = {"object": "block", "type": "toggle", "toggle": {
+                "rich_text": [{"type": "text", "text": {"content": "🖼️ Image here"}}],
+                "children": [img_block]}}
+            body = {"children": [toggle]}
+            anchor = _img_prompt_code_id(s["title"])
+            if anchor:
+                body["after"] = anchor
+            ncall("PATCH", f"/blocks/{args.row}/children", body)
+        print(f"    ✅ Shot {i} → 🖼️ Image here ({out})")
         done += 1
         time.sleep(0.4)
     if not args.dry_run and not args.shot:
-        if all(_has_image_toggle(s["title"]) for s in shots):
+        if all(_image_toggle(s["title"])[1] for s in shots):
             ncall("PATCH", f"/pages/{args.row}", {"properties": {"🎨 Image": {"checkbox": True}}})
             print("✅ all shots have images + 🎨 ticked")
 

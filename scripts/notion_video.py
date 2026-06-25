@@ -69,7 +69,21 @@ def ncall_w(method, path, body=None):
         return json.loads(r.read().decode())
 
 
+def _maybe_compress_video(path):
+    """Notion single-part upload caps at 20MB — compress oversized mp4s first."""
+    if not path.endswith(".mp4") or os.path.getsize(path) <= 19 * 1024 * 1024:
+        return path
+    out = path[:-4] + "_web.mp4"
+    subprocess.run(["ffmpeg", "-y", "-i", path, "-vf",
+                    "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,fps=30",
+                    "-c:v", "libx264", "-crf", "24", "-preset", "medium", "-pix_fmt", "yuv420p",
+                    "-c:a", "aac", "-ar", "44100", "-ac", "2", out], capture_output=True)
+    return out if os.path.exists(out) else path
+
+
 def upload_to_notion(path, content_type, fname):
+    if content_type == "video/mp4":
+        path = _maybe_compress_video(path)
     o = ncall_w("POST", "/file_uploads", {"filename": fname, "content_type": content_type})
     bnd = "----nv" + uuid.uuid4().hex
     body = (f"--{bnd}\r\n".encode()
