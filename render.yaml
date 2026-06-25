@@ -1,0 +1,27 @@
+# Render deployment for ai-tcm-ip Meta webhook (TCM-ChloeChan / 陳芷晴 IG brand).
+#
+# Phase 1: receive + log Instagram comment/DM events.
+# Free plan is fine for the verify handshake + initial event testing.
+# Upgrade to starter ($7) before production so the endpoint never cold-starts
+# (Meta disables flaky webhooks).
+
+services:
+  - type: web
+    name: ai-tcm-ip
+    runtime: python
+    region: singapore
+    plan: free
+    rootDir: server
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn webhook:app --host 0.0.0.0 --port $PORT
+
+    healthCheckPath: /health
+
+    envVars:
+      # Must match the Verify Token pasted into the Meta dashboard.
+      - key: META_VERIFY_TOKEN
+        sync: false
+      # App Secret from Meta App dashboard → App Settings → Basic.
+      - key: META_APP_SECRET
+        sync: false

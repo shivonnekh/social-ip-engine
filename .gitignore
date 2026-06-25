@@ -1,0 +1,27 @@
+# Secrets
+.env
+server/.env
+**/.env
+
+# Generated media (large binaries — don't commit)
+*.mp3
+*.mp4
+*.wav
+*.mov
+campaigns/**/voice/
+campaigns/**/video/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+
+# Generated AI images (regenerable)
+campaigns/_generated/
+
+# Playwright MCP debug logs
+.playwright-mcp/

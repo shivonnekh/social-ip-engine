@@ -1,0 +1,13 @@
+{
+  "_note": "Local reference assets for image generation. Faces map IP name -> a face photo path (used as the 'same person' reference). clinic_bg = scene backgrounds.",
+  "clinic_bg": [
+    "campaigns/assets/clinic-bg/clinic-1.png",
+    "campaigns/assets/clinic-bg/clinic-2.png",
+    "campaigns/assets/clinic-bg/clinic-3.png",
+    "campaigns/assets/clinic-bg/clinic-4.png"
+  ],
+  "faces": {
+    "Jackie Chan": "",
+    "Jessica": ""
+  }
+}
