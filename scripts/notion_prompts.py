@@ -107,6 +107,18 @@ def ip_persona(ip_id: str) -> tuple[str, str]:
     return name, persona or "TCM doctor"
 
 
+def _primary_beat(visual: str) -> str:
+    """Extract the single primary frame from a (possibly rich, multi-beat) shot guide,
+    for IMAGE generation — one image = one frame, so drop cuts/inserts/transitions."""
+    import re
+    parts = re.split(r";|；|，|\bthen\b|cut[- ]?in|quick cut|cut to|cut back|insert|return to",
+                     visual, flags=re.I)
+    first = parts[0].strip().strip("—-：: ").strip()
+    # strip a leading label like "Demonstration:" / "Talking head —"
+    first = re.sub(r"^(talking head|demonstration|doctor)\b[\s—:-]*", r"\1: ", first, flags=re.I)
+    return first or visual
+
+
 def build_prompt(persona: str, visual: str) -> str:
     """One shot = ONE single frame. The doctor's identity is locked only when the
     doctor is in the frame. Other people (e.g. a patient) appear when the scene
@@ -171,11 +183,13 @@ def build_jimeng_prompt(title: str, visual: str = "", lang: str = "") -> str:
     variable: the image (画面+人物) = {{图片}}, the dialogue audio = {{对白}}. We only
     author the read-language (from the row's IP) + camera (运镜, derived from the
     storyboard shot) + the AI-digital-human disclaimer."""
-    scene = f"画面 / 动作（按分镜）：{visual}\n" if visual else ""
+    scene = f"分镜指令（Shot Guide）：{visual}\n" if visual else ""
     read = "人物對口型朗读" + (f"{lang}对白" if lang else "对白") + "：{{对白}}（以上传音频为准）\n"
     return ("音频驱动（Audio Native）数字人视频。\n"
             f"{scene}"
-            "图片：{{图片}}（以上传图片为准）\n"
+            "画面要生动丰富：自然的肢体动作与表情变化，适时插入相关空镜/特写或镜头切换，"
+            "景别有变化，避免全程呆板正面。\n"
+            "图片：{{图片}}（以上传图片为准，人物外形以此为准）\n"
             f"{read}"
             f"运镜：{_jimeng_camera(title, visual)}。保持 9:16 竖屏、自然光。\n"
             f"{JIMENG_DISCLAIMER}")
@@ -331,12 +345,16 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
              "annotations": {"bold": True, "italic": False, "strikethrough": False,
                              "underline": False, "code": False, "color": "default"}}]}}
 
+    def _empty_toggle(label):
+        return {"object": "block", "type": "toggle",
+                "toggle": {"rich_text": _rt(label), "children": []}}
+
     blocks = [
         {"object": "block", "type": "callout", "callout": {
-            "rich_text": _rt("PER-SHOT PLAN — upload the IP photo to GPT once. Then for EACH shot below: "
-                             "copy the 🖼️ image prompt into GPT, and the 🗣️ voice script into MiniMax "
-                             "(settings in 🎙️ Voice Config). Lip-sync image + audio in 即梦. "
-                             "Track progress with the Stage / ✅ properties above."),
+            "rich_text": _rt("PER-SHOT PLAN — for EACH shot: (1) generate the still with the 🖼️ image prompt "
+                             "(GPT), (2) make the audio from the 🗣️ voice script in MiniMax (🎙️ Voice Config), "
+                             "(3) feed that image + audio + the 🎬 即梦 prompt into 即梦 to make the video. "
+                             "Drop results into the 🖼️ / 🎬 toggles. Track progress via the Stage / ✅ properties."),
             "icon": {"type": "emoji", "emoji": "🎬"}, "color": "blue_background"}},
         {"object": "block", "type": "callout", "callout": {
             "rich_text": _rt(f"{SENTINEL_VOICE} — same for every shot. ⚠️ avoid commas in MiniMax."),
@@ -352,16 +370,18 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
                       else (s["line"] or "<add to the Script property: one line per shot>"))
         blocks.append({"object": "block", "type": "heading_3",
                        "heading_3": {"rich_text": _rt(s["title"])}})
-        blocks.append(_bold("🖼️ Image prompt"))
+        blocks.append(_bold("🖼️ Image prompt (single frame → GPT)"))
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(build_prompt(persona, s["visual"])), "language": "plain text"}})
+            "rich_text": _rt(build_prompt(persona, _primary_beat(s["visual"]))), "language": "plain text"}})
         blocks.append(_bold("🗣️ Voice script"))
         blocks.append({"object": "block", "type": "code", "code": {
             "rich_text": _rt(voice_line), "language": "plain text"}})
-        blocks.append(_bold("🎬 即梦 prompt (image + voice → video)"))
+        blocks.append(_bold("🎬 即梦 prompt (rich shot guide → video)"))
         blocks.append({"object": "block", "type": "code", "code": {
             "rich_text": _rt(build_jimeng_prompt(s["title"], s["visual"], lang)),
             "language": "plain text"}})
+        blocks.append(_empty_toggle("🖼️ Image here"))   # leave blank — drop assets in later
+        blocks.append(_empty_toggle("🎬 Video here"))   # leave blank — drop assets in later
         blocks.append({"object": "block", "type": "divider", "divider": {}})
 
     for i in range(0, len(blocks), 25):

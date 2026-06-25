@@ -115,3 +115,35 @@ Decisions:
 - Wired apply_prompts into notion_fanout.py AND notion_watch.py (after apply_guide) → every new row auto-gets guide + filled image prompts on creation. Backfilled existing 4 rows (4–5 prompts each).
 Pipeline scripts: notion_ids.json, notion_fanout.py, notion_row_guide.py, notion_prompts.py, notion_watch.py.
 Still open: rotate token; fill IP-3..IP-10; optional auto-attach generated voice/images into row body (file upload API works — tested w/ detox EN clips); optional auto-copy EN master into Script for English IPs.
+
+## Session — 2026-06-25 (cont. image+video pipeline)
+What happened: Built the full media-gen tail of the pipeline — image gen (GPT) + video gen (即梦 CLI) — wired to Notion.
+Decisions:
+- **Image gen** (`scripts/notion_image.py`): pulls IP reference photos FROM the Notion IP page (image blocks = source of truth, re-downloaded each run since Notion URLs expire) + a clinic bg → OpenAI `gpt-image-2` (key in .env, IMAGE_MODEL=gpt-image-2) → places each shot image in a "🖼️ Image here" toggle under that shot's image prompt → ticks 🎨. Uses each shot's OWN Notion image prompt. --shot N (one), --reuse (skip regen), skip-if-toggle-exists. Timeout 300s.
+- **Image prompt rules** (build_prompt): ONE single frame (no split/collage), patients allowed (no blanket "no extra people"), identity-lock only on the doctor when present.
+- **Reference faces**: real Jackie Chan refs live on the IP Notion page (3 imgs, beardless). Do NOT use AI-generated candidate. notion_assets.json clinic_bg paths; faces map is override-only.
+- **Video gen** (`scripts/notion_video.py`): uses the official 即梦 CLI `~/.local/bin/dreamina` (logged in, maestro VIP, ~10k credits). Command = `multimodal2video --image --audio --prompt --ratio 9:16 --duration <2-15> --model_version seedance2.0fast_vip`. **VIP models (_vip) SKIP the queue** (non-vip queue is 500k+, hours). Pulls per-shot image+audio+即梦prompt from Notion; resolves the 即梦 prompt ({{图片}}→--image, {{对白}}→--audio, rest→--prompt); submits all → polls → downloads (video url at result_json.videos[0].video_url) → places each in "🎬 Video here" toggle → ffmpeg concat → final.mp4.
+- Lip-sync CONFIRMED good (Shivonne approved shot1_vip.mp4: 720x1280 9:16, 8s, AAC audio, correct beardless doctor).
+- Notion file upload API works for png/mp3/mp4 (single-part <20MB).
+- Committed pipeline on branch feat/notion-content-pipeline (commit 93416c1) — that was before image/video scripts; need a follow-up commit for notion_image.py/notion_video.py/notion_assets.json.
+Still open:
+- Follow-up git commit for notion_image.py + notion_video.py + notion_assets.json + assets.
+- Knee × Jackie: Shivonne settled it herself.
+- Jessica (Cantonese) image+video not yet generated.
+- Rotate Notion + OpenAI tokens (pasted in chat).
+
+## Session — 2026-06-25 (cont. style guide + 养胃)
+STYLE GUIDE (locked rules for ALL future content):
+- **Richness lives in the Content Library Shot Guide (🎥 Visual), NOT the production 即梦 prompt.** The 即梦 prompt is DERIVED from the Shot Guide by apply_shot_plan. To enrich the video, write a RICH cinematic 🎥 Visual (action, insert/cutaway shots, framing/景别 changes, transitions — e.g. "talking head leans in, quick cut to pineapple"). Then re-run apply_shot_plan; 即梦 prompt auto-updates.
+- **Drop the GPT image-prompt section** for new content. Per-shot blocks now = 🗣️ Voice script + 🎬 即梦 prompt (rich) + empty "🖼️ Image here" + empty "🎬 Video here" toggles (left blank to drop assets in later).
+- 即梦 prompt (build_jimeng_prompt) now: 分镜指令(=Shot Guide visual) + "画面要生动丰富(动作/插入空镜/景别变化)" + {{图片}}/{{对白}} variables + read-language (from IP) + 运镜(by shot beat) + AI-digital-human disclaimer.
+- The single-frame/"one moment/no collage" rule was for IMAGE gen only — for 即梦 VIDEO, multi-beat/cuts/inserts = GOOD (richer).
+Built: NEW concept "🍵 Stomach pain after meals" (38af2a3f4320818f9e45de56db178bea) with rich shot guides + EN(Jackie)/粤语(Jessica) shot-aligned scripts. Production rows: Stomach × Jackie (38af2a3f4320811587e6c221d16f396d), Stomach × Jessica (38af2a3f4320812782ced078d6b169bf) — new style (no image prompt, rich 即梦, blank Image/Video toggles). Added Topic option 🍵 Stomach.
+Still open: commit generator changes + notion_video.py + new concept. Sleep shot3 real-motion still waiting on 即梦 throttle (poller bnpmqas5o). Don't touch existing content (Sleep/detox/tonsil/knee).
+
+## CORRECTION (2026-06-25): Image prompt is KEPT
+- Earlier note "drop image prompt" was WRONG. BOTH prompts are needed, derived from the SAME Shot Guide 🎥:
+  - 🖼️ Image prompt = SINGLE frame (apply via _primary_beat(): take the first/primary beat of the rich shot guide, drop cuts/inserts/transitions) → GPT generates the still.
+  - 🎬 即梦 prompt = FULL rich shot guide → animates the still into video.
+- Per-shot blocks (final): 🖼️ Image prompt → 🗣️ Voice script → 🎬 即梦 prompt → empty 🖼️ Image here → empty 🎬 Video here.
+- Pipeline: GPT still (from image prompt) → 即梦 multimodal2video(still + audio + rich 即梦 prompt) → video.
