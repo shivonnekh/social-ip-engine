@@ -49,6 +49,14 @@ _CREDS_ENV: Final[dict[Platform, tuple[str, str]]] = {
     "facebook": ("FB_PAGE_ACCESS_TOKEN", "FB_PAGE_ID"),
 }
 
+# Per-account overrides keyed by business IG/FB account id.
+# When a webhook event's recipient_id matches one of these, the override
+# token + sender_id is used instead of the global platform defaults.
+# Add a new account by adding its id → (token_env_var, id_env_var) here.
+_ACCOUNT_CREDS_ENV: Final[dict[str, tuple[str, str]]] = {
+    "17841417304649448": ("IG_PAGE_ACCESS_TOKEN_JACKIE", "IG_USER_ID_JACKIE"),  # jackiechan.tcm
+}
+
 # Graph host is PER-PLATFORM and cannot be shared:
 #   * Instagram API with Instagram Login (IGAA tokens) → graph.instagram.com
 #   * Facebook Pages / Messenger                       → graph.facebook.com
@@ -84,8 +92,14 @@ class _Creds:
         return bool(self.token) and bool(self.sender_id)
 
 
-def _creds(platform: Platform) -> _Creds:
-    token_var, id_var = _CREDS_ENV[platform]
+def _creds(platform: Platform, account_id: str | None = None) -> _Creds:
+    """Return credentials for the given platform, optionally scoped to a
+    specific business account id (``recipient_id`` on inbound events).
+    Falls back to the global platform token when no per-account override exists."""
+    if account_id and account_id in _ACCOUNT_CREDS_ENV:
+        token_var, id_var = _ACCOUNT_CREDS_ENV[account_id]
+    else:
+        token_var, id_var = _CREDS_ENV[platform]
     return _Creds(
         token=os.environ.get(token_var, "").strip(),
         sender_id=os.environ.get(id_var, "").strip(),
@@ -114,13 +128,17 @@ def _graph_url(platform: Platform, path: str) -> str:
 
 
 async def send_dm(
-    recipient_id: str, text: str, *, platform: Platform = "instagram"
+    recipient_id: str, text: str, *, platform: Platform = "instagram",
+    account_id: str | None = None,
 ) -> SendResult:
-    """Send a text direct message to a user (recipient by id)."""
+    """Send a text direct message to a user (recipient by id).
+    Pass ``account_id`` (the business/page account that received the event)
+    to use per-account credentials instead of the global platform token."""
     if not text.strip():
         return SendResult(False, "empty text")
     return await _post_message(
         platform=platform,
+        account_id=account_id,
         recipient={"id": recipient_id},
         message={"text": text},
         context=f"{platform}:dm→{recipient_id}",
@@ -128,7 +146,8 @@ async def send_dm(
 
 
 async def send_dm_image(
-    recipient_id: str, image_url: str, *, platform: Platform = "instagram"
+    recipient_id: str, image_url: str, *, platform: Platform = "instagram",
+    account_id: str | None = None,
 ) -> SendResult:
     """Send an image direct message (Send API attachment payload)."""
     url = (image_url or "").strip()
@@ -136,6 +155,7 @@ async def send_dm_image(
         return SendResult(False, "non-absolute url")
     return await _post_message(
         platform=platform,
+        account_id=account_id,
         recipient={"id": recipient_id},
         message={
             "attachment": {
@@ -148,13 +168,15 @@ async def send_dm_image(
 
 
 async def send_private_reply(
-    comment_id: str, text: str, *, platform: Platform = "instagram"
+    comment_id: str, text: str, *, platform: Platform = "instagram",
+    account_id: str | None = None,
 ) -> SendResult:
     """Comment → DM. Reply privately to the author of ``comment_id``."""
     if not text.strip():
         return SendResult(False, "empty text")
     return await _post_message(
         platform=platform,
+        account_id=account_id,
         recipient={"comment_id": comment_id},
         message={"text": text},
         context=f"{platform}:private_reply→{comment_id}",
@@ -162,13 +184,14 @@ async def send_private_reply(
 
 
 async def reply_to_comment(
-    comment_id: str, text: str, *, platform: Platform = "instagram"
+    comment_id: str, text: str, *, platform: Platform = "instagram",
+    account_id: str | None = None,
 ) -> SendResult:
     """Public reply on the comment thread (visible to everyone)."""
     if not text.strip():
         return SendResult(False, "empty text")
 
-    creds = _creds(platform)
+    creds = _creds(platform, account_id)
     if not creds.token:
         logger.warning("[meta] %s token unset — cannot reply to comment", platform)
         return SendResult(False, "no token")
@@ -194,10 +217,11 @@ async def reply_to_comment(
 
 
 async def _post_message(
-    *, platform: Platform, recipient: dict, message: dict, context: str
+    *, platform: Platform, recipient: dict, message: dict, context: str,
+    account_id: str | None = None,
 ) -> SendResult:
     """POST to the Send API: ``/{sender_id}/messages``."""
-    creds = _creds(platform)
+    creds = _creds(platform, account_id)
     if not creds.complete:
         logger.warning(
             "[meta] missing %s credentials — cannot send (%s)", platform, context

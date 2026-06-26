@@ -113,15 +113,29 @@ def verify_signature(raw: bytes, header: str, *, secret: str | None = None) -> b
 
 _seen_ids: "OrderedDict[str, None]" = OrderedDict()
 
-# Chloe agent — the social-DM persona (set at startup). When present, IG/FB
-# DMs route to Chloe instead of the Jessica pipeline.
-_chloe_agent = None  # type: ignore[var-annotated]
+# Per-account agent registry — keyed by business IG/FB account id.
+# When a DM/comment arrives on a known account, its agent handles the reply.
+# Falls back to _chloe_agent (default) when no per-account entry exists.
+_account_agents: dict[str, object] = {}
+_chloe_agent = None  # type: ignore[var-annotated]  # default agent
 
 
 def set_chloe_agent(agent) -> None:
-    """Register the Chloe agent for IG/FB DMs. Called from web.lifespan."""
+    """Register the default Chloe agent for IG/FB DMs. Called from web.lifespan."""
     global _chloe_agent
     _chloe_agent = agent
+
+
+def set_account_agent(account_id: str, agent) -> None:
+    """Register a per-account agent (e.g. Jackie for jackiechan.tcm)."""
+    _account_agents[account_id] = agent
+
+
+def _get_agent(account_id: str | None):
+    """Return the agent for this account, falling back to the default."""
+    if account_id and account_id in _account_agents:
+        return _account_agents[account_id]
+    return _chloe_agent
 
 
 # Merge buffer — debounces rapid-fire DM fragments into one turn (lazy init).
@@ -243,15 +257,16 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
         await _send_canned_to_user(dm.sender_id, rule, platform=dm.platform)
         return
 
-    if _chloe_agent is not None:
+    _agent = _get_agent(dm.recipient_id)
+    if _agent is not None:
         try:
-            reply = await _chloe_agent.respond(
+            reply = await _agent.respond(
                 crm_key=dm.crm_key, user_message=dm.text, message_id=dm.message_id
             )
             bubbles = [b for b in reply.bubbles if b.strip()]
             media_by_idx = _group_media(reply.media)
         except Exception:  # noqa: BLE001
-            logger.exception("[meta] Chloe failed for %s", dm.crm_key)
+            logger.exception("[meta] agent failed for %s", dm.crm_key)
             return
     else:
         try:
@@ -267,13 +282,17 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
         media_by_idx = _group_media(result.writer_output.media_to_send or [])
 
     for i, bubble in enumerate(bubbles):
-        send = await meta_client.send_dm(dm.sender_id, bubble, platform=dm.platform)
+        send = await meta_client.send_dm(
+            dm.sender_id, bubble, platform=dm.platform, account_id=dm.recipient_id
+        )
         if not send.ok:
             logger.warning("[meta] DM bubble send failed: %s", send.detail)
             break
         for url in media_by_idx.get(i, []):
             await asyncio.sleep(_MEDIA_PAUSE_S)
-            img = await meta_client.send_dm_image(dm.sender_id, url, platform=dm.platform)
+            img = await meta_client.send_dm_image(
+                dm.sender_id, url, platform=dm.platform, account_id=dm.recipient_id
+            )
             if not img.ok:
                 logger.warning("[meta] DM image send failed: %s", img.detail)
         if i < len(bubbles) - 1:
@@ -290,13 +309,26 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
     """
     rule = comment_rules.match(comment.text)
     if rule is None:
-        logger.info("[meta] comment %s: no rule match — skipping", comment.comment_id)
+        # Catch-all: if this account has a registered agent (e.g. Jackie),
+        # post a public ack on the thread and open a DM conversation.
+        _agent = _get_agent(comment.recipient_id or None)
+        if _agent is not None and hasattr(_agent, "comment_ack"):
+            ack = _agent.comment_ack
+            if ack:
+                await meta_client.reply_to_comment(
+                    comment.comment_id, ack, platform=comment.platform,
+                    account_id=comment.recipient_id or None,
+                )
+            await _comment_via_account_agent(comment)
+        else:
+            logger.info("[meta] comment %s: no rule match — skipping", comment.comment_id)
         return
 
     # Optional public acknowledgement on the thread (per-rule).
     if rule.public_ack:
         await meta_client.reply_to_comment(
-            comment.comment_id, rule.public_ack, platform=comment.platform
+            comment.comment_id, rule.public_ack, platform=comment.platform,
+            account_id=comment.recipient_id or None,
         )
 
     if rule.use_agent:
@@ -313,7 +345,8 @@ async def _comment_via_canned(comment: IncomingComment, rule) -> None:
     """
     if rule.dm_text:
         send = await meta_client.send_private_reply(
-            comment.comment_id, rule.dm_text, platform=comment.platform
+            comment.comment_id, rule.dm_text, platform=comment.platform,
+            account_id=comment.recipient_id or None,
         )
         if not send.ok:
             logger.warning("[meta] canned private reply failed: %s", send.detail)
@@ -322,7 +355,8 @@ async def _comment_via_canned(comment: IncomingComment, rule) -> None:
         for url in rule.all_images:
             await asyncio.sleep(_MEDIA_PAUSE_S)
             img = await meta_client.send_dm_image(
-                comment.from_id, url, platform=comment.platform
+                comment.from_id, url, platform=comment.platform,
+                account_id=comment.recipient_id or None,
             )
             if not img.ok:
                 logger.warning("[meta] canned image failed: %s", img.detail)
@@ -357,10 +391,57 @@ async def _comment_via_agent(comment: IncomingComment, pipeline: JessicaPipeline
 
     joined = "\n\n".join(bubbles)
     send = await meta_client.send_private_reply(
-        comment.comment_id, joined, platform=comment.platform
+        comment.comment_id, joined, platform=comment.platform,
+        account_id=comment.recipient_id or None,
     )
     if not send.ok:
         logger.warning("[meta] agent private reply failed: %s", send.detail)
+
+
+async def _comment_via_account_agent(comment: IncomingComment) -> None:
+    """Catch-all DM for accounts with a registered ChloeAgent (e.g. Jackie).
+
+    Uses the commenter's IG id as the CRM key so each unique commenter gets
+    their own conversation thread. Sends greeting + first response as a
+    private reply (comment→DM) linked to the original comment.
+    """
+    _agent = _get_agent(comment.recipient_id or None)
+    if _agent is None:
+        return
+    try:
+        reply = await _agent.respond(
+            crm_key=comment.crm_key,
+            user_message=comment.text,
+            message_id=comment.comment_id,
+        )
+        bubbles = [b for b in reply.bubbles if b.strip()]
+    except Exception:  # noqa: BLE001
+        logger.exception("[meta] account agent failed for comment %s", comment.comment_id)
+        return
+
+    if not bubbles:
+        return
+
+    # Send greeting + reply as a private reply (appears as DM linked to comment).
+    for i, bubble in enumerate(bubbles):
+        if i == 0:
+            send = await meta_client.send_private_reply(
+                comment.comment_id, bubble, platform=comment.platform,
+                account_id=comment.recipient_id or None,
+            )
+        else:
+            # Subsequent bubbles go as regular DMs to the commenter.
+            if not comment.from_id:
+                break
+            send = await meta_client.send_dm(
+                comment.from_id, bubble, platform=comment.platform,
+                account_id=comment.recipient_id or None,
+            )
+        if not send.ok:
+            logger.warning("[meta] account agent DM bubble %d failed: %s", i, send.detail)
+            break
+        if i < len(bubbles) - 1:
+            await asyncio.sleep(_BUBBLE_PAUSE_S)
 
 
 # ---------------------------------------------------------------------------
