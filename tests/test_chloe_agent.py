@@ -174,7 +174,7 @@ async def test_llm_failure_falls_back_to_cta():
 async def test_handle_dm_routes_to_chloe(monkeypatch):
     sent = []
 
-    async def fake_send_dm(rid, text, *, platform="instagram"):
+    async def fake_send_dm(rid, text, *, platform="instagram", **_):
         sent.append(text); return meta_client.SendResult(True)
 
     monkeypatch.setattr(meta_client, "send_dm", fake_send_dm)
@@ -211,10 +211,10 @@ async def test_dm_keyword_guide_short_circuits_chloe(monkeypatch, tmp_path):
 
     texts, images = [], []
 
-    async def fake_send_dm(rid, text, *, platform="instagram"):
+    async def fake_send_dm(rid, text, *, platform="instagram", **_):
         texts.append((rid, text)); return meta_client.SendResult(True)
 
-    async def fake_send_dm_image(rid, url, *, platform="instagram"):
+    async def fake_send_dm_image(rid, url, *, platform="instagram", **_):
         images.append((rid, url)); return meta_client.SendResult(True)
 
     chloe_called = []

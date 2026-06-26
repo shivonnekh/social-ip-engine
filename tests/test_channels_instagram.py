@@ -296,12 +296,19 @@ async def test_handle_comment_canned_no_agent(monkeypatch, tmp_path):
 class _FakeCRM:
     def __init__(self):
         self.claimed = set()
+        self.messages = []
 
     async def try_claim_webhook_event(self, event_id, kind):
         if event_id in self.claimed:
             return False
         self.claimed.add(event_id)
         return True
+
+    async def get_or_create_user(self, phone):
+        return object()
+
+    async def append_message(self, phone, msg):
+        self.messages.append((phone, msg))
 
 
 @pytest.mark.asyncio
@@ -336,7 +343,8 @@ async def test_handle_comment_persistent_dedup_blocks_repeat(monkeypatch, tmp_pa
     comment = IncomingComment(platform="instagram", comment_id="c1", text="gut pls",
                               from_id="U9", from_username="amy", media_id="m42")
     pipe = _FakePipeline(["AGENT SHOULD NOT RUN"])
-    pipe._crm = _FakeCRM()
+    crm = _FakeCRM()
+    pipe._crm = crm
 
     await meta_webhook.handle_comment(comment, pipe)
     await meta_webhook.handle_comment(comment, pipe)
@@ -344,6 +352,11 @@ async def test_handle_comment_persistent_dedup_blocks_repeat(monkeypatch, tmp_pa
     assert private == [("c1", "腸胃懶人包送俾你")]
     assert public == [("c1", "send咗喇")]
     assert images == [("U9", "https://x/g.png")]
+    assert [m[0] for m in crm.messages] == ["ig_U9", "ig_U9"]
+    assert crm.messages[0][1].role == "user"
+    assert crm.messages[0][1].content == "gut pls"
+    assert crm.messages[1][1].role == "chloe"
+    assert crm.messages[1][1].media_urls == ["https://x/g.png"]
 
 
 @pytest.mark.asyncio

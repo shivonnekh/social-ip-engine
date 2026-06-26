@@ -24,6 +24,7 @@ import hmac
 import json
 import logging
 import os
+from datetime import datetime
 from collections import OrderedDict
 from typing import Final
 
@@ -34,6 +35,7 @@ from src.channels.meta_events import (
     Platform,
     parse_meta_webhook,
 )
+from src.crm.models import ConversationMessage
 from src.orchestrator.pipeline import JessicaPipeline
 
 logger = logging.getLogger("channels.meta_webhook")
@@ -274,7 +276,17 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
     # guide (images) directly, skipping the LLM. Same rules as comments.
     rule = comment_rules.match(dm.text)
     if rule is not None and not rule.use_agent:
-        await _send_canned_to_user(dm.sender_id, rule, platform=dm.platform)
+        await _persist_canned_interaction(
+            pipeline,
+            crm_key=dm.crm_key,
+            inbound_text=dm.text,
+            inbound_message_id=dm.message_id,
+            outbound_text=rule.dm_text,
+            image_urls=rule.all_images,
+        )
+        await _send_canned_to_user(
+            dm.sender_id, rule, platform=dm.platform, account_id=dm.recipient_id
+        )
         return
 
     _agent = _get_agent(dm.recipient_id)
@@ -351,7 +363,7 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
     if rule.use_agent:
         sent = await _comment_via_agent(comment, pipeline)
     else:
-        sent = await _comment_via_canned(comment, rule)
+        sent = await _comment_via_canned(comment, rule, pipeline)
 
     # Optional public acknowledgement on the thread (per-rule). Send it after
     # the private path succeeds so failures do not create public-only spam.
@@ -362,7 +374,9 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
         )
 
 
-async def _comment_via_canned(comment: IncomingComment, rule) -> bool:
+async def _comment_via_canned(
+    comment: IncomingComment, rule, pipeline: JessicaPipeline | None = None
+) -> bool:
     """Send the predefined DM for this keyword — no LLM call.
 
     The first message is a private reply (comment→DM). Any images then
@@ -376,6 +390,15 @@ async def _comment_via_canned(comment: IncomingComment, rule) -> bool:
         if not send.ok:
             logger.warning("[meta] canned private reply failed: %s", send.detail)
             return False
+    if pipeline is not None:
+        await _persist_canned_interaction(
+            pipeline,
+            crm_key=comment.crm_key,
+            inbound_text=comment.text,
+            inbound_message_id=comment.comment_id,
+            outbound_text=rule.dm_text,
+            image_urls=rule.all_images,
+        )
     if comment.from_id:
         for url in rule.all_images:
             await asyncio.sleep(_MEDIA_PAUSE_S)
@@ -384,18 +407,29 @@ async def _comment_via_canned(comment: IncomingComment, rule) -> bool:
                 account_id=comment.recipient_id or None,
             )
             if not img.ok:
-                logger.warning("[meta] canned image failed: %s", img.detail)
+                logger.warning(
+                    "[meta] canned image failed for %s url=%s: %s",
+                    comment.comment_id,
+                    url,
+                    img.detail,
+                )
                 return False
     return True
 
 
-async def _send_canned_to_user(recipient_id: str, rule, *, platform) -> None:
+async def _send_canned_to_user(
+    recipient_id: str, rule, *, platform, account_id: str | None = None
+) -> None:
     """Send a canned keyword reply (text + images) straight to a DM user."""
     if rule.dm_text:
-        await meta_client.send_dm(recipient_id, rule.dm_text, platform=platform)
+        await meta_client.send_dm(
+            recipient_id, rule.dm_text, platform=platform, account_id=account_id
+        )
     for url in rule.all_images:
         await asyncio.sleep(_MEDIA_PAUSE_S)
-        img = await meta_client.send_dm_image(recipient_id, url, platform=platform)
+        img = await meta_client.send_dm_image(
+            recipient_id, url, platform=platform, account_id=account_id
+        )
         if not img.ok:
             logger.warning("[meta] canned DM image failed: %s", img.detail)
 
@@ -477,6 +511,45 @@ async def _comment_via_account_agent(comment: IncomingComment) -> bool:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+
+async def _persist_canned_interaction(
+    pipeline: JessicaPipeline,
+    *,
+    crm_key: str,
+    inbound_text: str,
+    inbound_message_id: str | None,
+    outbound_text: str,
+    image_urls: list[str],
+) -> None:
+    """Store canned guide exchanges so later agent replies have context."""
+    crm = getattr(pipeline, "_crm", None)
+    if crm is None:
+        return
+    try:
+        await crm.get_or_create_user(crm_key)
+        now = datetime.utcnow()
+        await crm.append_message(
+            crm_key,
+            ConversationMessage(
+                role="user",
+                content=inbound_text,
+                at=now,
+                wa_message_id=inbound_message_id,
+            ),
+        )
+        if outbound_text or image_urls:
+            await crm.append_message(
+                crm_key,
+                ConversationMessage(
+                    role="chloe",
+                    content=outbound_text or "[sent guide images]",
+                    media_urls=list(image_urls),
+                    at=now,
+                ),
+            )
+    except Exception:  # noqa: BLE001
+        logger.exception("[meta] failed to persist canned interaction for %s", crm_key)
 
 
 def _group_media(media_to_send: list[dict]) -> dict[int, list[str]]:
