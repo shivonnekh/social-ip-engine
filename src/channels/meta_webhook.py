@@ -269,6 +269,28 @@ async def handle_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
     await _get_merge_buffer(pipeline).submit(dm)
 
 
+async def _should_send_canned_for_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> bool:
+    """Only use keyword canned guides to open a DM conversation.
+
+    Once the user has CRM history, the social agent should continue naturally
+    instead of looping back into the same protocol prompt whenever a keyword is
+    mentioned again.
+    """
+    crm = getattr(pipeline, "_crm", None)
+    if crm is None:
+        return True
+    try:
+        user = await crm.get_user(dm.crm_key)
+    except Exception:  # noqa: BLE001
+        logger.exception("[meta] failed to check CRM history for %s", dm.crm_key)
+        return False
+    if user is None:
+        return True
+    history = list(getattr(user, "conversation_history", []) or [])
+    state = dict(getattr(user, "temp_state", {}) or {})
+    return not history and not state.get("meta_pending_guide_images")
+
+
 async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
     """Reply to a (possibly merged) DM. Routes to Chloe when registered;
     otherwise falls back to the Jessica pipeline. Text + images interleave."""
@@ -278,7 +300,7 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
     # Keyword guide short-circuit — "gut" etc. in a DM sends the canned
     # guide (images) directly, skipping the LLM. Same rules as comments.
     rule = comment_rules.match(dm.text)
-    if rule is not None and not rule.use_agent:
+    if rule is not None and not rule.use_agent and await _should_send_canned_for_dm(dm, pipeline):
         await _persist_canned_interaction(
             pipeline,
             crm_key=dm.crm_key,
@@ -503,12 +525,13 @@ async def _comment_via_account_agent(comment: IncomingComment) -> bool:
 
 
 async def _send_pending_guide_images(dm: IncomingDM, pipeline: JessicaPipeline) -> bool:
-    """After a comment private reply, wait for the user's DM reply before images.
+    """Send queued guide images, then let the agent continue the conversation.
 
     Instagram may allow the first comment→DM text but reject immediate follow-up
     media while the thread is still in a message-request state. Once the user
-    replies in DM, they have opened the conversation, so we send the queued
-    protocol images before invoking the LLM.
+    replies in DM, they have opened the conversation, so we send queued protocol
+    images first, clear the pending state, and then still allow the LLM to reply
+    naturally on the same turn.
     """
     crm = getattr(pipeline, "_crm", None)
     if crm is None:
@@ -538,7 +561,6 @@ async def _send_pending_guide_images(dm: IncomingDM, pipeline: JessicaPipeline) 
         )
         if not img.ok:
             logger.warning("[meta] pending guide image failed url=%s: %s", url, img.detail)
-            return True
 
     if user is not None:
         state.pop("meta_pending_guide_images", None)
@@ -547,7 +569,7 @@ async def _send_pending_guide_images(dm: IncomingDM, pipeline: JessicaPipeline) 
             await crm.save_user(user.with_updates(temp_state=state))
         except Exception:  # noqa: BLE001
             logger.exception("[meta] failed to clear pending guide state for %s", dm.crm_key)
-    return True
+    return False
 
 
 async def _persist_canned_interaction(

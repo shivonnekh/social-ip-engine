@@ -14,6 +14,7 @@ import hashlib
 import hmac
 import json
 from dataclasses import dataclass, field
+from datetime import datetime
 
 import pytest
 
@@ -23,7 +24,7 @@ from src.channels.meta_events import (
     IncomingDM,
     parse_meta_webhook,
 )
-from src.crm.models import User
+from src.crm.models import ConversationMessage, User
 
 # ---------------------------------------------------------------------------
 # Payload builders
@@ -373,12 +374,16 @@ async def test_handle_comment_persistent_dedup_blocks_repeat(monkeypatch, tmp_pa
 @pytest.mark.asyncio
 async def test_dm_reply_sends_pending_comment_guide_images(monkeypatch):
     monkeypatch.setattr(meta_webhook, "_MEDIA_PAUSE_S", 0.0)
-    images = []
+    images, sent_texts = [], []
 
     async def fake_img(rid, url, *, platform="instagram", **_):
         images.append((rid, url)); return meta_client.SendResult(True)
 
+    async def fake_send_dm(rid, text, *, platform="instagram", **_):
+        sent_texts.append((rid, text)); return meta_client.SendResult(True)
+
     monkeypatch.setattr(meta_client, "send_dm_image", fake_img)
+    monkeypatch.setattr(meta_client, "send_dm", fake_send_dm)
 
     crm = _FakeCRM()
     await crm.save_user(User(phone="ig_U9", temp_state={
@@ -392,8 +397,49 @@ async def test_dm_reply_sends_pending_comment_guide_images(monkeypatch):
     await meta_webhook._dispatch_dm(dm, pipe)
 
     assert images == [("U9", "https://x/g1.png"), ("U9", "https://x/g2.png")]
-    assert pipe.calls == []
+    assert pipe.calls and pipe.calls[0]["msg"] == "yes please"
+    assert sent_texts == [("U9", "AGENT SHOULD NOT RUN")]
     assert "meta_pending_guide_images" not in crm.users["ig_U9"].temp_state
+
+
+@pytest.mark.asyncio
+async def test_dm_keyword_existing_conversation_routes_to_agent(monkeypatch, tmp_path):
+    cfg = tmp_path / "rules.json"
+    cfg.write_text(json.dumps({
+        "gut": {"dm_text": "懶人包俾你", "image_url": "https://x/g.png"},
+    }), encoding="utf-8")
+    monkeypatch.setenv("COMMENT_RESPONSES_PATH", str(cfg))
+    comment_rules._load_raw.cache_clear()
+
+    sent_texts, images = [], []
+
+    async def fake_send_dm(rid, text, *, platform="instagram", **_):
+        sent_texts.append((rid, text)); return meta_client.SendResult(True)
+
+    async def fake_img(rid, url, *, platform="instagram", **_):
+        images.append((rid, url)); return meta_client.SendResult(True)
+
+    monkeypatch.setattr(meta_client, "send_dm", fake_send_dm)
+    monkeypatch.setattr(meta_client, "send_dm_image", fake_img)
+
+    crm = _FakeCRM()
+    user = User(
+        phone="ig_U9",
+        conversation_history=[
+            ConversationMessage(role="user", content="earlier", at=datetime.utcnow())
+        ],
+    )
+    await crm.save_user(user)
+    pipe = _FakePipeline(["let's continue about your detox symptoms"])
+    pipe._crm = crm
+
+    dm = IncomingDM(platform="instagram", sender_id="U9", recipient_id="BIZ",
+                    text="detox again", message_id="m3", timestamp=0)
+    await meta_webhook._dispatch_dm(dm, pipe)
+
+    assert pipe.calls and pipe.calls[0]["msg"] == "detox again"
+    assert sent_texts == [("U9", "let's continue about your detox symptoms")]
+    assert images == []
 
 
 @pytest.mark.asyncio
