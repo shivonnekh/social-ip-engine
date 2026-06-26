@@ -71,6 +71,7 @@ class IncomingComment:
     from_username: str    # commenter handle (IG only; "" on FB)
     media_id: str        # the post/reel the comment is on
     parent_id: str = ""  # set when this comment replies to another comment
+    recipient_id: str = ""  # the business account id (page/IG account that owns the post)
 
     @property
     def crm_key(self) -> str:
@@ -154,6 +155,9 @@ def _parse_changes(entry: dict, platform: Platform) -> list[IncomingComment]:
     if not isinstance(changes, list):
         return []
 
+    # The entry-level "id" is the page/IG business account id.
+    entry_account_id = _as_str(entry.get("id"))
+
     out: list[IncomingComment] = []
     for change in changes:
         if not isinstance(change, dict):
@@ -183,6 +187,7 @@ def _parse_changes(entry: dict, platform: Platform) -> list[IncomingComment]:
                 from_username=_nested_str(value, "from", "username"),
                 media_id=_nested_str(value, "media", "id") or _as_str(value.get("post_id")),
                 parent_id=_as_str(value.get("parent_id")),
+                recipient_id=entry_account_id,
             )
         )
     return out

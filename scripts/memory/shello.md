@@ -388,3 +388,16 @@ Two quick fixes: (1) weather broadcast throttle tightened, (2) Render deploy tri
 - Rotate Meta App Secret (security debt, noted prior session)
 - IG token auto-refresh loop (~Aug 2026 expiry)
 - Facebook line activation (code ready, needs env vars)
+
+## Session — 2026-06-19
+What happened: Implemented TCM 望診 vision feature. Browser captures a camera frame (JPEG 320×240) on each turn and sends it as a JSON WS message before the audio. Server runs GPT-4o Vision concurrently with STT so there's zero added latency. Chloe gets vision_notes injected into her system prompt. Also committed the full backlog: post-call summary, welcome TTS warmup, VAD fixes, pitch+1, subtitle chunking, barge-in, post-call routing.
+Decisions:
+- Vision frame sent as JSON text message before binary audio on each turn (not once at start)
+- GPT-4o Vision with detail=low for speed/cost
+- 3s timeout on vision task — graceful degradation if slow
+- ChloeAgent._generate() vision_notes injects into system prompt (not as a message turn)
+- canvas capture ignores CSS scaleX(-1) mirror — correct natural orientation for TCM
+Still open:
+- WhatsApp post-call summary (phone-number crm_keys, different send path)
+- Silero VAD WASM upgrade (neural network, more precise end-of-speech)
+- PTT mode fallback button

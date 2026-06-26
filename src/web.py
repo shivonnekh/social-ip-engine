@@ -41,11 +41,8 @@ from src.channels.facebook import router as facebook_router
 from src.channels.facebook import set_pipeline as set_fb_pipeline
 from src.channels.instagram import router as instagram_router
 from src.channels.instagram import set_pipeline as set_ig_pipeline
-from src.consultation.repo import ConsultationRepo
-from src.consultation.router import router as consultation_router
-from src.whatsapp import client as wa_client
-from src.whatsapp.router import router as whatsapp_router
-from src.whatsapp.router import set_pipeline as set_wa_pipeline
+# WhatsApp channel removed — not routing IG/Messenger events to WhatsApp.
+# Consultation layer removed — Jessica partnership ended.
 
 logger = logging.getLogger("web")
 
@@ -111,66 +108,34 @@ async def lifespan(app: FastAPI):
     app.state.trace_writer = trace_writer
     app.state.pipeline = pipeline
 
-    # Register the pipeline with the WhatsApp router so the webhook +
-    # poller can dispatch turns to it.
-    set_wa_pipeline(pipeline)
     # Same pipeline backs the Instagram + Facebook webhooks (opt-in via
     # IG_ENABLED / FB_ENABLED). CRM keys are namespaced ("ig_<igsid>",
     # "fb_<psid>") so surfaces never collide.
     set_ig_pipeline(pipeline)
     set_fb_pipeline(pipeline)
 
-    # ---- Video consultation repo ----
-    consultation_repo = await ConsultationRepo.connect(DB_URL)
-    app.state.consultation_repo = consultation_repo
-
-    # Social DMs use the Chloe persona (陳芷晴) — a separate, lighter route
-    # from Jessica: greeting-first, drives to WhatsApp. Comments still use
-    # the canned comment_rules.
+    # IG/FB DMs — per-account persona routing.
+    # Chloe (陳芷晴) is the default agent; Jackie handles jackiechan.tcm.
     from src.channels.chloe_agent import ChloeAgent
-    from src.channels.meta_webhook import set_chloe_agent
+    from src.channels.meta_webhook import set_chloe_agent, set_account_agent
+
     chloe_agent = ChloeAgent(client=client, crm=crm,
-                             consultation_repo=consultation_repo)
+                             persona_path=os.environ.get("CHLOE_PERSONA_PATH"))
     set_chloe_agent(chloe_agent)
     app.state.chloe_agent = chloe_agent
 
-
-    # Start background tasks — token refresh + (optional) polling fallback.
-    # Both are best-effort: if ChatDaddy credentials aren't configured we
-    # log a warning and continue (dev / smoke-test mode still works via
-    # the inline pipeline path).
-    background_tasks: list[asyncio.Task] = []
-
-    # Pre-generate welcome audio so first patient gets instant greeting.
-    from src.consultation import voice_ws as _vws
-    background_tasks.append(asyncio.create_task(_vws.warmup_welcome_audio()))
-
-    if os.environ.get("CHATDADDY_REFRESH_TOKEN"):
-        background_tasks.append(
-            asyncio.create_task(wa_client.start_token_refresh_loop())
-        )
-        if os.environ.get("WA_POLL_ENABLED", "true").lower() == "true":
-            # Import lazily so tests that don't touch the gateway can
-            # still import web.py without httpx round-trips at start.
-            from src.whatsapp.poller import start_polling_loop
-            background_tasks.append(asyncio.create_task(start_polling_loop()))
+    # Jackie Chan TCM (jackiechan.tcm, IG id 17841417304649448)
+    _jackie_ig_id = os.environ.get("IG_USER_ID_JACKIE", "").strip()
+    if _jackie_ig_id and os.environ.get("IG_PAGE_ACCESS_TOKEN_JACKIE", "").strip():
+        _jackie_persona = str(ROOT / "data" / "personas" / "jackie.json")
+        jackie_agent = ChloeAgent(client=client, crm=crm, persona_path=_jackie_persona)
+        set_account_agent(_jackie_ig_id, jackie_agent)
+        app.state.jackie_agent = jackie_agent
+        logger.info("Jackie agent registered for IG account %s", _jackie_ig_id)
     else:
-        logger.warning(
-            "CHATDADDY_REFRESH_TOKEN unset — outbound sends will fail. "
-            "Set it before exposing the webhook publicly."
-        )
+        logger.warning("Jackie IG credentials not set — DMs to jackiechan.tcm will fall back to Chloe")
 
-    # Proactive weather broadcast loop — opt-in via env var (default OFF).
-    # Requires CHATDADDY_ACCOUNT_ID + OPENAI_API_KEY to be set.
-    if os.environ.get("BROADCAST_ENABLED", "false").lower() == "true":
-        from src.broadcaster.scheduler import start_broadcast_loop
-        from src.whatsapp.router import DEFAULT_ACCOUNT_ID
-        background_tasks.append(
-            asyncio.create_task(
-                start_broadcast_loop(crm, client, DEFAULT_ACCOUNT_ID)
-            )
-        )
-        logger.info("Broadcast loop scheduled (interval=6h, cap=2/user/week)")
+    background_tasks: list[asyncio.Task] = []
 
     try:
         yield
@@ -178,9 +143,7 @@ async def lifespan(app: FastAPI):
         logger.info("shutdown: closing CRM + background tasks")
         for task in background_tasks:
             task.cancel()
-        await wa_client.close()
         await crm.close()
-        await consultation_repo.close()
         if vector_store is not None:
             try:
                 await vector_store.close()
@@ -189,11 +152,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="TCM-Jessica", version="0.1.0", lifespan=lifespan)
-app.include_router(whatsapp_router)
 app.include_router(instagram_router)
 app.include_router(facebook_router)
 app.include_router(admin_router)
-app.include_router(consultation_router)
 
 # Public-readable static media — ChatDaddy fetches these via the URL
 # Jessica writes into `WriterOutput.media_to_send`.
