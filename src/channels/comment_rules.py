@@ -52,6 +52,16 @@ _DEFAULT_PATH: Final[str] = str(
 )
 
 
+# Maps account ID → expected content language.
+# This is a HARD GATE — a rule whose `language` field doesn't match this
+# map will be silently skipped and logged as an error, even if it would
+# otherwise match the keyword and account. Prevents cross-language image sends.
+_ACCOUNT_LANGUAGE: dict[str, str] = {
+    "17841417304649448": "en",   # jackiechan.tcm  → English only
+    "17841424706900394": "yue",  # chloechan.cccc  → Cantonese only
+}
+
+
 @dataclass(frozen=True)
 class CommentReply:
     """One canned (or agent-routed) keyword rule (applies to comments AND DMs)."""
@@ -63,6 +73,7 @@ class CommentReply:
     public_ack: str = ""
     use_agent: bool = False
     accounts: tuple[str, ...] = ()
+    language: str = ""                # "en" | "yue" | "" (any)
 
     @property
     def all_images(self) -> list[str]:
@@ -112,6 +123,7 @@ def _load_raw(path_str: str, mtime: float) -> tuple[CommentReply, ...]:
                 public_ack=str(spec.get("public_ack", "")).strip(),
                 use_agent=bool(spec.get("use_agent", False)),
                 accounts=_parse_accounts(spec.get("accounts")),
+                language=str(spec.get("language", "")).strip().lower(),
             )
         )
     return tuple(rules)
@@ -145,9 +157,29 @@ def _account_allowed(rule: CommentReply, account_id: str | None) -> bool:
 
 
 def match(text: str, *, account_id: str | None = None) -> CommentReply | None:
-    """Return the first matching rule allowed for this receiving account."""
+    """Return the first matching rule allowed for this receiving account.
+
+    Language gate: if the account has a registered expected language (see
+    ``_ACCOUNT_LANGUAGE``) and the rule has a ``language`` field that
+    differs, the rule is BLOCKED regardless of keyword/account match.
+    This prevents Jackie (English) from ever serving Cantonese images,
+    even if comment_responses.json is misconfigured.
+    """
     haystack = (text or "").lower()
+    expected_lang = _ACCOUNT_LANGUAGE.get(account_id or "", "")
     for rule in load_rules():
-        if rule.keyword and rule.keyword in haystack and _account_allowed(rule, account_id):
-            return rule
+        if not (rule.keyword and rule.keyword in haystack):
+            continue
+        if not _account_allowed(rule, account_id):
+            continue
+        # Hard language gate — both sides must declare a language for the check
+        # to fire. A rule with no language field passes through (backwards compat).
+        if expected_lang and rule.language and rule.language != expected_lang:
+            logger.error(
+                "[comment_rules] LANGUAGE BLOCK keyword=%r rule_lang=%r "
+                "account_expected=%r account=%s — rule skipped",
+                rule.keyword, rule.language, expected_lang, account_id,
+            )
+            continue
+        return rule
     return None

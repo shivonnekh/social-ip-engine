@@ -1,5 +1,6 @@
 {
   "gut": {
+    "language": "en",
     "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nQuick TCM gut tip: bloating and sluggish digestion often come from weak Spleen Qi and damp buildup. For the next 3 days, keep meals warm and simple, avoid iced drinks, and stop eating when you're about 80% full.\n\nIf you want the detailed gut guide images to save and refer to, reply GUIDE and I'll send them here 👇",
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/gut-en-page-1.png",
@@ -14,6 +15,7 @@
     ]
   },
   "濕熱": {
+    "language": "yue",
     "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nIn TCM, damp-heat can show up as heaviness, oily skin, bad breath, sticky stools, or a bitter taste. A simple first step: avoid fried/spicy food for a few days and drink warm water instead of iced drinks.\n\nTell me what symptoms you're noticing, and I'll point you in the right direction.",
     "public_ack": "I've sent you a quick TCM note — check your DM! 🌿",
     "use_agent": false,
@@ -22,6 +24,7 @@
     ]
   },
   "knee": {
+    "language": "en",
     "dm_text": "Hey! Saw your comment — I've put together my TCM Knee Pain guide just for you 🌿\n\nThe images below break down why your knees are struggling and exactly what to do about it from a TCM perspective. Save them!\n\nIf you want me to take a closer look at your specific situation, just reply here and let's chat 👇",
     "public_ack": "I've sent you the knee pain guide — check your DM! 🌿",
     "image_urls": [
@@ -36,6 +39,7 @@
     ]
   },
   "knee pain": {
+    "language": "en",
     "dm_text": "Hey! Saw your comment — I've put together my TCM Knee Pain guide just for you 🌿\n\nThe images below break down why your knees are struggling and exactly what to do about it from a TCM perspective. Save them!\n\nIf you want me to take a closer look at your specific situation, just reply here and let's chat 👇",
     "public_ack": "I've sent you the knee pain guide — check your DM! 🌿",
     "image_urls": [
@@ -50,6 +54,7 @@
     ]
   },
   "detox": {
+    "language": "en",
     "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nQuick TCM detox tip: detox is not about flushing your body — it's about helping Qi move and reducing damp buildup. For the next 3 days, keep dinners lighter, avoid fried/greasy food, and drink warm water instead of iced drinks.\n\nIf you want the detailed detox guide images to save and refer to, reply GUIDE and I'll send them here 👇",
     "public_ack": "I've sent you the TCM detox guide — check your DM! 🌿",
     "image_urls": [
@@ -64,6 +69,7 @@
     ]
   },
   "cleanse": {
+    "language": "en",
     "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nQuick TCM detox tip: detox is not about flushing your body — it's about helping Qi move and reducing damp buildup. For the next 3 days, keep dinners lighter, avoid fried/greasy food, and drink warm water instead of iced drinks.\n\nIf you want the detailed detox guide images to save and refer to, reply GUIDE and I'll send them here 👇",
     "public_ack": "I've sent you the TCM detox guide — check your DM! 🌿",
     "image_urls": [
@@ -78,6 +84,7 @@
     ]
   },
   "tonsil": {
+    "language": "en",
     "dm_text": "Hey! Glad you reached out 🌿\n\nTonsil stones are way more common than people realise — and from a TCM perspective, they're often a sign of too much heat in the stomach. That means gut support is actually the right starting point.\n\nI've put together a TCM gut guide that covers exactly this — images below, save them!\n\nWant to tell me more about what you're experiencing? Reply here and I'll give you a more personalised direction 👇",
     "public_ack": "I've sent you the guide — check your DM! 🌿",
     "image_urls": [
@@ -92,6 +99,7 @@
     ]
   },
   "tonsil stone": {
+    "language": "en",
     "dm_text": "Hey! Glad you reached out 🌿\n\nTonsil stones are way more common than people realise — and from a TCM perspective, they're often a sign of too much heat in the stomach. That means gut support is actually the right starting point.\n\nI've put together a TCM gut guide that covers exactly this — images below, save them!\n\nWant to tell me more about what you're experiencing? Reply here and I'll give you a more personalised direction 👇",
     "public_ack": "I've sent you the guide — check your DM! 🌿",
     "image_urls": [
