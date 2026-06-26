@@ -178,6 +178,28 @@ def is_duplicate(event_id: str) -> bool:
     return False
 
 
+def _is_own_comment(comment: IncomingComment) -> bool:
+    own_ids = {
+        os.environ.get("IG_USER_ID", "").strip(),
+        os.environ.get("IG_USER_ID_JACKIE", "").strip(),
+        os.environ.get("FB_PAGE_ID", "").strip(),
+        comment.recipient_id or "",
+    }
+    own_ids.discard("")
+    return bool(comment.from_id and comment.from_id in own_ids)
+
+
+def _comment_intent_key(comment: IncomingComment) -> str:
+    text = " ".join((comment.text or "").casefold().split())[:160]
+    return ":".join([
+        comment.platform,
+        comment.recipient_id or "unknown_account",
+        comment.media_id or "unknown_media",
+        comment.from_id or "unknown_user",
+        text or "empty",
+    ])
+
+
 async def _claim_webhook_event(event_id: str, kind: str, pipeline: JessicaPipeline) -> bool:
     """Persistently claim a Meta event before causing outbound side effects.
 
@@ -246,6 +268,8 @@ async def process_post(
             _spawn(handle_dm(event, pipeline))
             queued += 1
         elif isinstance(event, IncomingComment):
+            if event.is_reply_to_comment or _is_own_comment(event):
+                continue
             if is_duplicate(event.comment_id):
                 continue
             _spawn(handle_comment(event, pipeline))
@@ -364,8 +388,15 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
     know what the lead wants. Only ``use_agent: true`` rules run the
     pipeline. No matching rule ⇒ we stay silent (don't auto-DM strangers).
     """
+    if comment.is_reply_to_comment or _is_own_comment(comment):
+        logger.info("[meta] ignoring own/reply comment %s", comment.comment_id)
+        return
     if not await _claim_webhook_event(comment.comment_id, "comment", pipeline):
         logger.info("[meta] duplicate comment %s — already handled", comment.comment_id)
+        return
+    intent_key = _comment_intent_key(comment)
+    if not await _claim_webhook_event(intent_key, "comment_intent", pipeline):
+        logger.info("[meta] duplicate comment intent %s — already handled", intent_key)
         return
 
     rule = comment_rules.match(comment.text)
