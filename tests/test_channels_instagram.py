@@ -232,10 +232,10 @@ class _FakePipeline:
 async def test_handle_dm_interleaves_text_and_image(monkeypatch):
     sent = []
 
-    async def fake_send_dm(rid, text, *, platform="instagram"):
+    async def fake_send_dm(rid, text, *, platform="instagram", **_):
         sent.append(("text", rid, text, platform)); return meta_client.SendResult(True)
 
-    async def fake_send_dm_image(rid, url, *, platform="instagram"):
+    async def fake_send_dm_image(rid, url, *, platform="instagram", **_):
         sent.append(("image", rid, url, platform)); return meta_client.SendResult(True)
 
     monkeypatch.setattr(meta_client, "send_dm", fake_send_dm)
@@ -269,13 +269,13 @@ async def test_handle_comment_canned_no_agent(monkeypatch, tmp_path):
 
     private, public, images = [], [], []
 
-    async def fake_priv(cid, text, *, platform="instagram"):
+    async def fake_priv(cid, text, *, platform="instagram", **_):
         private.append((cid, text)); return meta_client.SendResult(True)
 
-    async def fake_pub(cid, text, *, platform="instagram"):
+    async def fake_pub(cid, text, *, platform="instagram", **_):
         public.append((cid, text)); return meta_client.SendResult(True)
 
-    async def fake_img(rid, url, *, platform="instagram"):
+    async def fake_img(rid, url, *, platform="instagram", **_):
         images.append((rid, url)); return meta_client.SendResult(True)
 
     monkeypatch.setattr(meta_client, "send_private_reply", fake_priv)
@@ -293,6 +293,59 @@ async def test_handle_comment_canned_no_agent(monkeypatch, tmp_path):
     assert images == [("U9", "https://x/g.png")]   # image followed
 
 
+class _FakeCRM:
+    def __init__(self):
+        self.claimed = set()
+
+    async def try_claim_webhook_event(self, event_id, kind):
+        if event_id in self.claimed:
+            return False
+        self.claimed.add(event_id)
+        return True
+
+
+@pytest.mark.asyncio
+async def test_handle_comment_persistent_dedup_blocks_repeat(monkeypatch, tmp_path):
+    cfg = tmp_path / "rules.json"
+    cfg.write_text(json.dumps({
+        "gut": {
+            "dm_text": "腸胃懶人包送俾你",
+            "image_url": "https://x/g.png",
+            "public_ack": "send咗喇",
+        },
+    }), encoding="utf-8")
+    monkeypatch.setenv("COMMENT_RESPONSES_PATH", str(cfg))
+    comment_rules._load_raw.cache_clear()
+    monkeypatch.setattr(meta_webhook, "_MEDIA_PAUSE_S", 0.0)
+
+    private, public, images = [], [], []
+
+    async def fake_priv(cid, text, *, platform="instagram", **_):
+        private.append((cid, text)); return meta_client.SendResult(True)
+
+    async def fake_pub(cid, text, *, platform="instagram", **_):
+        public.append((cid, text)); return meta_client.SendResult(True)
+
+    async def fake_img(rid, url, *, platform="instagram", **_):
+        images.append((rid, url)); return meta_client.SendResult(True)
+
+    monkeypatch.setattr(meta_client, "send_private_reply", fake_priv)
+    monkeypatch.setattr(meta_client, "reply_to_comment", fake_pub)
+    monkeypatch.setattr(meta_client, "send_dm_image", fake_img)
+
+    comment = IncomingComment(platform="instagram", comment_id="c1", text="gut pls",
+                              from_id="U9", from_username="amy", media_id="m42")
+    pipe = _FakePipeline(["AGENT SHOULD NOT RUN"])
+    pipe._crm = _FakeCRM()
+
+    await meta_webhook.handle_comment(comment, pipe)
+    await meta_webhook.handle_comment(comment, pipe)
+
+    assert private == [("c1", "腸胃懶人包送俾你")]
+    assert public == [("c1", "send咗喇")]
+    assert images == [("U9", "https://x/g.png")]
+
+
 @pytest.mark.asyncio
 async def test_handle_comment_use_agent_runs_pipeline(monkeypatch, tmp_path):
     cfg = tmp_path / "rules.json"
@@ -304,7 +357,7 @@ async def test_handle_comment_use_agent_runs_pipeline(monkeypatch, tmp_path):
 
     private = []
 
-    async def fake_priv(cid, text, *, platform="instagram"):
+    async def fake_priv(cid, text, *, platform="instagram", **_):
         private.append((cid, text)); return meta_client.SendResult(True)
 
     monkeypatch.setattr(meta_client, "send_private_reply", fake_priv)
@@ -327,7 +380,7 @@ async def test_handle_comment_no_rule_skips(monkeypatch, tmp_path):
 
     called = []
 
-    async def fake_priv(cid, text, *, platform="instagram"):
+    async def fake_priv(cid, text, *, platform="instagram", **_):
         called.append(cid); return meta_client.SendResult(True)
 
     monkeypatch.setattr(meta_client, "send_private_reply", fake_priv)

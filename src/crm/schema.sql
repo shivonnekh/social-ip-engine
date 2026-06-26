@@ -93,3 +93,17 @@ CREATE TABLE IF NOT EXISTS user_broadcasts (
 
 CREATE INDEX IF NOT EXISTS idx_user_broadcasts_phone_week
     ON user_broadcasts(phone, iso_week);
+
+
+-- Webhook idempotency — prevents duplicate Meta comment/DM side effects
+-- across retries, redeploys, and process restarts.
+CREATE TABLE IF NOT EXISTS webhook_events (
+    event_id       TEXT PRIMARY KEY,
+    kind           TEXT NOT NULL,
+    status         TEXT NOT NULL DEFAULT 'started',
+    first_seen_at  TEXT NOT NULL,
+    updated_at     TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_webhook_events_kind_seen
+    ON webhook_events(kind, first_seen_at DESC);

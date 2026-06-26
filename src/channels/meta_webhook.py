@@ -176,6 +176,26 @@ def is_duplicate(event_id: str) -> bool:
     return False
 
 
+async def _claim_webhook_event(event_id: str, kind: str, pipeline: JessicaPipeline) -> bool:
+    """Persistently claim a Meta event before causing outbound side effects.
+
+    The in-memory LRU only protects one process. Meta may retry webhooks after
+    a restart or while a deploy is rolling, so comments also need a DB-backed
+    idempotency key before we public-reply or DM. Tests/fakes without a CRM
+    keep the old in-memory-only behavior.
+    """
+    crm = getattr(pipeline, "_crm", None)
+    claim = getattr(crm, "try_claim_webhook_event", None)
+    if claim is None:
+        return True
+    key = f"meta:{kind}:{event_id}"
+    try:
+        return bool(await claim(key, kind))
+    except Exception:  # noqa: BLE001
+        logger.exception("[meta] webhook idempotency claim failed for %s", key)
+        return False
+
+
 # ---------------------------------------------------------------------------
 # POST processing
 # ---------------------------------------------------------------------------
@@ -307,37 +327,42 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
     know what the lead wants. Only ``use_agent: true`` rules run the
     pipeline. No matching rule ⇒ we stay silent (don't auto-DM strangers).
     """
+    if not await _claim_webhook_event(comment.comment_id, "comment", pipeline):
+        logger.info("[meta] duplicate comment %s — already handled", comment.comment_id)
+        return
+
     rule = comment_rules.match(comment.text)
     if rule is None:
         # Catch-all: if this account has a registered agent (e.g. Jackie),
-        # post a public ack on the thread and open a DM conversation.
+        # open a DM conversation and only then post the public ack.
         _agent = _get_agent(comment.recipient_id or None)
         if _agent is not None and hasattr(_agent, "comment_ack"):
+            sent = await _comment_via_account_agent(comment)
             ack = _agent.comment_ack
-            if ack:
+            if sent and ack:
                 await meta_client.reply_to_comment(
                     comment.comment_id, ack, platform=comment.platform,
                     account_id=comment.recipient_id or None,
                 )
-            await _comment_via_account_agent(comment)
         else:
             logger.info("[meta] comment %s: no rule match — skipping", comment.comment_id)
         return
 
-    # Optional public acknowledgement on the thread (per-rule).
-    if rule.public_ack:
+    if rule.use_agent:
+        sent = await _comment_via_agent(comment, pipeline)
+    else:
+        sent = await _comment_via_canned(comment, rule)
+
+    # Optional public acknowledgement on the thread (per-rule). Send it after
+    # the private path succeeds so failures do not create public-only spam.
+    if sent and rule.public_ack:
         await meta_client.reply_to_comment(
             comment.comment_id, rule.public_ack, platform=comment.platform,
             account_id=comment.recipient_id or None,
         )
 
-    if rule.use_agent:
-        await _comment_via_agent(comment, pipeline)
-    else:
-        await _comment_via_canned(comment, rule)
 
-
-async def _comment_via_canned(comment: IncomingComment, rule) -> None:
+async def _comment_via_canned(comment: IncomingComment, rule) -> bool:
     """Send the predefined DM for this keyword — no LLM call.
 
     The first message is a private reply (comment→DM). Any images then
@@ -350,7 +375,7 @@ async def _comment_via_canned(comment: IncomingComment, rule) -> None:
         )
         if not send.ok:
             logger.warning("[meta] canned private reply failed: %s", send.detail)
-            return
+            return False
     if comment.from_id:
         for url in rule.all_images:
             await asyncio.sleep(_MEDIA_PAUSE_S)
@@ -360,6 +385,8 @@ async def _comment_via_canned(comment: IncomingComment, rule) -> None:
             )
             if not img.ok:
                 logger.warning("[meta] canned image failed: %s", img.detail)
+                return False
+    return True
 
 
 async def _send_canned_to_user(recipient_id: str, rule, *, platform) -> None:
@@ -373,7 +400,7 @@ async def _send_canned_to_user(recipient_id: str, rule, *, platform) -> None:
             logger.warning("[meta] canned DM image failed: %s", img.detail)
 
 
-async def _comment_via_agent(comment: IncomingComment, pipeline: JessicaPipeline) -> None:
+async def _comment_via_agent(comment: IncomingComment, pipeline: JessicaPipeline) -> bool:
     """Run the pipeline on the comment text; send the joined reply as one DM."""
     try:
         result = await pipeline.run_turn(
@@ -383,11 +410,11 @@ async def _comment_via_agent(comment: IncomingComment, pipeline: JessicaPipeline
         )
     except Exception:  # noqa: BLE001
         logger.exception("[meta] pipeline failed for comment %s", comment.comment_id)
-        return
+        return False
 
     bubbles = [b for b in (result.writer_output.bubbles or []) if b.strip()]
     if not bubbles:
-        return
+        return False
 
     joined = "\n\n".join(bubbles)
     send = await meta_client.send_private_reply(
@@ -396,9 +423,11 @@ async def _comment_via_agent(comment: IncomingComment, pipeline: JessicaPipeline
     )
     if not send.ok:
         logger.warning("[meta] agent private reply failed: %s", send.detail)
+        return False
+    return True
 
 
-async def _comment_via_account_agent(comment: IncomingComment) -> None:
+async def _comment_via_account_agent(comment: IncomingComment) -> bool:
     """Catch-all DM for accounts with a registered ChloeAgent (e.g. Jackie).
 
     Uses the commenter's IG id as the CRM key so each unique commenter gets
@@ -407,7 +436,7 @@ async def _comment_via_account_agent(comment: IncomingComment) -> None:
     """
     _agent = _get_agent(comment.recipient_id or None)
     if _agent is None:
-        return
+        return False
     try:
         reply = await _agent.respond(
             crm_key=comment.crm_key,
@@ -417,10 +446,10 @@ async def _comment_via_account_agent(comment: IncomingComment) -> None:
         bubbles = [b for b in reply.bubbles if b.strip()]
     except Exception:  # noqa: BLE001
         logger.exception("[meta] account agent failed for comment %s", comment.comment_id)
-        return
+        return False
 
     if not bubbles:
-        return
+        return False
 
     # Send greeting + reply as a private reply (appears as DM linked to comment).
     for i, bubble in enumerate(bubbles):
@@ -439,9 +468,10 @@ async def _comment_via_account_agent(comment: IncomingComment) -> None:
             )
         if not send.ok:
             logger.warning("[meta] account agent DM bubble %d failed: %s", i, send.detail)
-            break
+            return False
         if i < len(bubbles) - 1:
             await asyncio.sleep(_BUBBLE_PAUSE_S)
+    return True
 
 
 # ---------------------------------------------------------------------------

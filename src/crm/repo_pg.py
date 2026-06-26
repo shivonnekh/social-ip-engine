@@ -66,6 +66,28 @@ class CRMRepoPG:
         await self._pool.close()
 
     # ---------------------------------------------------------------
+    # Webhook idempotency
+    # ---------------------------------------------------------------
+
+    async def try_claim_webhook_event(self, event_id: str, kind: str) -> bool:
+        """Return True only the first time a webhook event id is seen."""
+        now = datetime.now(_HKT).isoformat()
+        async with self._pool.acquire() as conn:
+            result = await conn.execute(
+                """
+                INSERT INTO webhook_events
+                    (event_id, kind, status, first_seen_at, updated_at)
+                VALUES ($1, $2, 'started', $3, $4)
+                ON CONFLICT (event_id) DO NOTHING
+                """,
+                event_id,
+                kind,
+                now,
+                now,
+            )
+        return result.endswith(" 1")
+
+    # ---------------------------------------------------------------
     # Users
     # ---------------------------------------------------------------
 

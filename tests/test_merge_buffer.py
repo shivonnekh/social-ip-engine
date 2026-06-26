@@ -83,7 +83,7 @@ async def test_handle_dm_routes_through_buffer(monkeypatch):
 
     sent = []
 
-    async def fake_send_dm(rid, text, *, platform="instagram"):
+    async def fake_send_dm(rid, text, *, platform="instagram", **_):
         sent.append(text); return meta_client.SendResult(True)
 
     monkeypatch.setattr(meta_client, "send_dm", fake_send_dm)

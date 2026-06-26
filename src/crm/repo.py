@@ -56,6 +56,24 @@ class CRMRepo:
         await self._db.close()
 
     # ---------------------------------------------------------------
+    # Webhook idempotency
+    # ---------------------------------------------------------------
+
+    async def try_claim_webhook_event(self, event_id: str, kind: str) -> bool:
+        """Return True only the first time a webhook event id is seen."""
+        now = datetime.now(_HKT).isoformat()
+        cur = await self._db.execute(
+            """
+            INSERT OR IGNORE INTO webhook_events
+                (event_id, kind, status, first_seen_at, updated_at)
+            VALUES (?, ?, 'started', ?, ?)
+            """,
+            (event_id, kind, now, now),
+        )
+        await self._db.commit()
+        return cur.rowcount == 1
+
+    # ---------------------------------------------------------------
     # Users
     # ---------------------------------------------------------------
 
