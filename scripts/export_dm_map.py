@@ -1,22 +1,40 @@
 #!/usr/bin/env python3
 """
-export_dm_map.py — build server/dm_map.json from the Content Library.
+export_dm_map.py — build server/dm_map.json from Content Library + Production Tracker.
 
-For every concept it extracts:
-  keyword         : the CTA comment keyword, normalized lowercase (e.g. "migraine")
-  title           : concept title (for logs)
-  first_dm        : the 💬 First DM text (sent as the IG private reply)
-  second_dm       : the 💬 Second DM text (sent after the viewer replies)
-  infographic_brief : the GPT prompt (so we know what image to attach later)
+Output format (per-brand):
+  {
+    "Jackie Chan (EN)": {
+      "migraine": {
+        "title": "...",
+        "first_dm": "...",
+        "second_dm": "...",
+        "infographic_brief": "...",
+        "infographic_url": "https://<WEBHOOK_BASE_URL>/infographics/jackie/migraine.png"
+      }
+    },
+    "Jessica (HK)": { ... }
+  }
 
-The webhook reads this static JSON — no live Notion calls per comment (fast + robust).
-Re-run whenever the Library DMs change.
+- DM text (first_dm, second_dm, infographic_brief) comes from Content Library Material section.
+  Currently English-only → Jackie. Jessica entries are empty until Cantonese DMs are authored.
+- infographic_url is built from WEBHOOK_BASE_URL env var + per-IP slug + keyword.
+  Leave WEBHOOK_BASE_URL unset during local dev — url field will be null.
+- Keywords are derived from CTA property of each concept in Content Library.
+- Only concepts with a first_dm authored appear in the map (no Material = no entry).
 
-Usage: python3 scripts/export_dm_map.py
+Webhook reads this map at startup. Re-run whenever DMs or keywords change:
+    python3 scripts/export_dm_map.py
+
+Called automatically after every notion_fanout.py run (new content → new keyword live in ~2 min).
+
+Usage:
+    python3 scripts/export_dm_map.py
 """
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -25,24 +43,37 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 import notion_video as nv
 
-CONTENT_DB = "389f2a3f-4320-81f8-9428-cd01f1d36add"
+IDS_PATH = Path(__file__).resolve().parent / "notion_ids.json"
+IDS = json.loads(IDS_PATH.read_text(encoding="utf-8"))
 OUT = ROOT / "server" / "dm_map.json"
 
 _STOP = {"comment", "the", "word", "below", "type", "now"}
 
+# IP full name → slug used in server/static/infographics/<slug>/
+_IP_SLUG: dict[str, str] = {}
+
+
+def _ip_slug(ip_full: str) -> str:
+    if ip_full in _IP_SLUG:
+        return _IP_SLUG[ip_full]
+    name = ip_full.split("(")[0].strip().lower()
+    name = " ".join(p for p in name.split() if not all(ord(c) > 0x2000 for c in p))
+    if "jackie" in name:
+        slug = "jackie"
+    elif "jessica" in name or "chloe" in name:
+        slug = "jessica"
+    else:
+        slug = re.sub(r"[^a-z0-9]+", "-", name).strip("-") or "unknown"
+    _IP_SLUG[ip_full] = slug
+    return slug
+
 
 def normalize_keyword(cta: str) -> str:
-    """Pull the trigger keyword out of a CTA string.
-
-    'Comment "tonsil"' -> 'tonsil' · 'migraine' -> 'migraine' · 'Comment gut' -> 'gut'.
-    """
     if not cta:
         return ""
-    # Prefer a quoted token if present.
-    m = re.search(r"[\"'“”‘’]([^\"'“”‘’]+)[\"'“”‘’]", cta)
+    m = re.search(r"[\"'""'']([^\"'""'']+)[\"'""'']", cta)
     if m:
         return m.group(1).strip().lower().split()[0]
-    # Else strip stop words and take the first meaningful token.
     tokens = re.findall(r"[a-zA-Z]+", cta.lower())
     for tok in tokens:
         if tok not in _STOP:
@@ -50,10 +81,10 @@ def normalize_keyword(cta: str) -> str:
     return tokens[0] if tokens else ""
 
 
-def _query_all(db: str) -> list:
+def _query_all(db: str) -> list[dict]:
     rows, cur = [], None
     while True:
-        body = {"page_size": 100}
+        body: dict = {"page_size": 100}
         if cur:
             body["start_cursor"] = cur
         d = nv.ncall_w("POST", f"/databases/{db}/query", body)
@@ -64,8 +95,15 @@ def _query_all(db: str) -> list:
             return rows
 
 
+def _title(page: dict) -> str:
+    for prop in page["properties"].values():
+        if prop.get("type") == "title":
+            return "".join(t["plain_text"] for t in prop["title"])
+    return ""
+
+
 def _extract_dms(page_id: str) -> dict:
-    """Walk the body, return {first_dm, second_dm, infographic_brief} from code blocks."""
+    """Walk Content Library page body → {first_dm, second_dm, infographic_brief}."""
     out = {"first_dm": "", "second_dm": "", "infographic_brief": ""}
     label = None
     for b in nv._children(page_id):
@@ -85,36 +123,103 @@ def _extract_dms(page_id: str) -> dict:
     return out
 
 
+def _active_ips() -> list[dict]:
+    """Return all IP Registry pages (active + inactive — we build map for all)."""
+    return _query_all(IDS["ip_db"])
+
+
+def _prod_rows_by_ip() -> dict[str, list[str]]:
+    """Return {ip_page_id: [content_page_id, ...]} from Production Tracker."""
+    rows = _query_all(IDS["prod_db"])
+    by_ip: dict[str, list[str]] = {}
+    for r in rows:
+        ip_ids = [rel["id"] for rel in r["properties"].get("IP", {}).get("relation", [])]
+        content_ids = [rel["id"] for rel in r["properties"].get("Content", {}).get("relation", [])]
+        for ip_id in ip_ids:
+            by_ip.setdefault(ip_id, [])
+            by_ip[ip_id].extend(content_ids)
+    return by_ip
+
+
 def main() -> int:
-    rows = _query_all(CONTENT_DB)
+    base_url = os.environ.get("WEBHOOK_BASE_URL", "").strip().rstrip("/")
+
+    print("[export] querying IPs ...")
+    ips = _active_ips()
+    print(f"[export] {len(ips)} IPs in registry")
+
+    print("[export] querying Production Tracker ...")
+    prod_by_ip = _prod_rows_by_ip()
+
+    print("[export] querying Content Library for DM text ...")
+    # Cache content pages to avoid duplicate API calls
+    content_cache: dict[str, dict] = {}
+    dm_cache: dict[str, dict] = {}
+
+    def _get_content(cid: str) -> dict:
+        if cid not in content_cache:
+            content_cache[cid] = nv.ncall_w("GET", f"/pages/{cid}")
+        return content_cache[cid]
+
+    def _get_dms(cid: str) -> dict:
+        if cid not in dm_cache:
+            dm_cache[cid] = _extract_dms(cid)
+        return dm_cache[cid]
+
     dm_map: dict[str, dict] = {}
     collisions: list[str] = []
 
-    for r in rows:
-        props = r["properties"]
-        title = "".join(
-            t["plain_text"] for p in props.values()
-            if p["type"] == "title" for t in p["title"]
-        )
-        cta = "".join(t["plain_text"] for t in props.get("CTA", {}).get("rich_text", []))
-        kw = normalize_keyword(cta)
-        if not kw:
+    for ip_page in ips:
+        ip_id = ip_page["id"]
+        ip_full = _title(ip_page)
+        slug = _ip_slug(ip_full)
+        content_ids = prod_by_ip.get(ip_id, [])
+
+        if not content_ids:
+            print(f"  [{ip_full}] no Production rows — skipping")
+            dm_map[ip_full] = {}
             continue
-        dms = _extract_dms(r["id"])
-        if not dms["first_dm"]:
-            continue  # no Material yet — skip
-        entry = {"title": title, **dms}
-        if kw in dm_map:
-            collisions.append(f"{kw}: '{dm_map[kw]['title']}' vs '{title}'")
-        dm_map[kw] = entry
+
+        brand_map: dict[str, dict] = {}
+        for cid in set(content_ids):
+            cp = _get_content(cid)
+            title = _title(cp)
+            cta = "".join(t["plain_text"] for t in cp["properties"].get("CTA", {}).get("rich_text", []))
+            kw = normalize_keyword(cta)
+            if not kw:
+                continue
+            dms = _get_dms(cid)
+            if not dms["first_dm"]:
+                continue  # Material not authored yet — skip
+
+            infographic_url = (
+                f"{base_url}/infographics/{slug}/{kw}.png" if base_url else None
+            )
+
+            entry = {
+                "title": title,
+                "first_dm": dms["first_dm"],
+                "second_dm": dms["second_dm"],
+                "infographic_brief": dms["infographic_brief"],
+                "infographic_url": infographic_url,
+            }
+            if kw in brand_map:
+                collisions.append(f"{ip_full}/{kw}: '{brand_map[kw]['title']}' vs '{title}'")
+            brand_map[kw] = entry
+
+        dm_map[ip_full] = brand_map
+        kw_count = len(brand_map)
+        print(f"  [{ip_full}] {kw_count} keywords  (slug={slug})")
 
     OUT.write_text(json.dumps(dm_map, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"wrote {len(dm_map)} keyword→DM entries → {OUT}")
-    print("keywords:", ", ".join(sorted(dm_map)))
+    total_kw = sum(len(v) for v in dm_map.values())
+    print(f"\nwrote {total_kw} total keyword entries across {len(dm_map)} brands → {OUT}")
+
     if collisions:
-        print("\n⚠️  keyword collisions (same keyword, multiple concepts — last wins):")
+        print("\n⚠️  keyword collisions (last wins):")
         for c in collisions:
             print("  -", c)
+
     return 0
 
 

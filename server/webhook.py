@@ -133,11 +133,20 @@ BRAND_ACCESS_TOKENS = {
     ),
 }
 
-# keyword → {title, first_dm, second_dm, infographic_brief}; built by scripts/export_dm_map.py
+# Per-brand dm_map: {brand_label: {keyword: {title, first_dm, second_dm, infographic_url}}}
+# Built by scripts/export_dm_map.py. Auto-regenerated + pushed after every fan-out.
 _DM_MAP_PATH = Path(__file__).resolve().parent / "dm_map.json"
 
+# Mapping from BRANDS label → Notion IP Registry full name (for dm_map lookup).
+# The Notion IP name (e.g. "Jackie Chan (EN)") is the key in dm_map.json.
+_BRAND_LABEL_TO_IP: dict[str, str] = {
+    "Jackie Chan": "Jackie Chan (EN)",
+    "陳芷晴/Jessica": "Jessica (HK)",
+}
 
-def _load_dm_map(path: Path) -> dict:
+
+def _load_dm_map(path: Path) -> dict[str, dict]:
+    """Load per-brand dm_map. Returns {} on missing/invalid file."""
     if not path.exists():
         logger.warning("[dm_map] %s missing — keyword replies disabled", path.name)
         return {}
@@ -148,17 +157,35 @@ def _load_dm_map(path: Path) -> dict:
         return {}
 
 
-DM_MAP = _load_dm_map(_DM_MAP_PATH)
+DM_MAP: dict[str, dict] = _load_dm_map(_DM_MAP_PATH)
 
 
-def _match_keyword(text: str) -> str | None:
-    """Return the first known CTA keyword that appears as a whole word in the comment."""
-    if not text or not DM_MAP:
+def _brand_keyword_map(brand: str) -> dict:
+    """Return keyword→entry map for this brand, or {} if none."""
+    ip_key = _BRAND_LABEL_TO_IP.get(brand, brand)
+    return DM_MAP.get(ip_key, {})
+
+
+def _match_keyword(text: str, brand: str = "") -> str | None:
+    """Return the first CTA keyword matching a whole word in the comment text.
+
+    If brand is supplied, searches only that brand's keyword map.
+    Falls back to searching all brands if no brand-specific match.
+    """
+    if not text:
         return None
     words = set(re.findall(r"[a-z]+", text.lower()))
-    for kw in DM_MAP:  # dict preserves insertion order
+    # Brand-specific lookup first (correct path)
+    kw_map = _brand_keyword_map(brand) if brand else {}
+    for kw in kw_map:
         if kw in words:
             return kw
+    # Fallback: search across all brands (handles unknown brand label edge case)
+    if not kw_map:
+        for brand_map in DM_MAP.values():
+            for kw in brand_map:
+                if kw in words:
+                    return kw
     return None
 
 
@@ -217,9 +244,12 @@ async def diagnostics() -> dict:
         "any_brand_ready": any(b["ready"] for b in brands.values()),
         "webhook_base_url": WEBHOOK_BASE_URL or "(not set — infographic URLs disabled)",
         "infographics_dir_exists": _STATIC_DIR.exists(),
-        "infographics_count": len(list(_STATIC_DIR.glob("*.png"))) if _STATIC_DIR.exists() else 0,
+        "infographics_count": len(list(_STATIC_DIR.glob("**/*.png"))) if _STATIC_DIR.exists() else 0,
+        "dm_map_brands": {
+            brand: len(kws) for brand, kws in DM_MAP.items()
+        },
         "sample_infographic_url": (
-            f"{WEBHOOK_BASE_URL}/infographics/migraine.png" if WEBHOOK_BASE_URL else None
+            f"{WEBHOOK_BASE_URL}/infographics/jackie/migraine.png" if WEBHOOK_BASE_URL else None
         ),
     }
 
@@ -422,20 +452,18 @@ def _handle_comment(brand: str, field: str, value: dict) -> None:
         return
 
     text = value.get("text") or ""
-    keyword = _match_keyword(text)
+    keyword = _match_keyword(text, brand)
     if keyword:
-        entry = DM_MAP[keyword]
-        _private_reply_to_comment(comment_id, entry["first_dm"], token)
+        entry = _brand_keyword_map(brand).get(keyword) or {}
+        first_dm = entry.get("first_dm", "")
+        infographic_url = entry.get("infographic_url") or ""
+        if first_dm:
+            _private_reply_to_comment(comment_id, first_dm, token)
         _reply_to_comment(comment_id, "Just sent you a DM 📩", token)
-        # Log infographic URL so it's visible in Render logs for manual sending
-        if WEBHOOK_BASE_URL:
-            infographic_url = f"{WEBHOOK_BASE_URL}/infographics/{keyword}.png"
-            logger.info(
-                "[reply] brand=%s keyword=%s concept=%r infographic=%s",
-                brand, keyword, entry["title"], infographic_url,
-            )
-        else:
-            logger.info("[reply] brand=%s keyword=%s concept=%r", brand, keyword, entry["title"])
+        logger.info(
+            "[reply] brand=%s keyword=%s concept=%r infographic=%s",
+            brand, keyword, entry.get("title", "?"), infographic_url or "(no url)",
+        )
         return
 
     if os.environ.get("REPLY_TO_ALL_COMMENTS", "").lower() in {"1", "true", "yes"}:
