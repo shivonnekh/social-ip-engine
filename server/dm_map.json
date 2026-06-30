@@ -1,0 +1,345 @@
+{
+  "tonsil": {
+    "title": "Tonsil Stones (Hidden in Throat, TCM Fix)",
+    "first_dm": "Hey! Tonsil stones almost always trace back to the gut, not just the throat 🌿\n\nQuick check so I send the right plan — is your bad breath worse in the morning, or all day even after brushing?",
+    "second_dm": "Here's your tonsil-stone clearing guide — save it and start with the gargle tonight 🧂\n\nWant the full gut-reset food list that stops them coming back? Just reply 'gut'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic (cream background, terracotta + sage accents, clean serif headings).\nTitle: 'Tonsil Stones — The Gut–Throat Connection'.\nThree stacked panels:\n1) WHY THEY FORM — icon of throat + small stones; text: dampness, heat, food stagnation rising up.\n2) DAILY GARGLE — icon of glass + salt + lemon; text: warm water, 1 tsp sea salt, squeeze of lemon, gargle 30s after meals.\n3) ROOT FIX — icon of stomach; text: warm cooked food, less dairy and sugar, support digestion.\nFooter: 'Persistent? See a practitioner.' No real photos — clean flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/tonsil.png"
+  },
+  "breath": {
+    "title": "Bad Breath (Gut Root Cause + Oral Rinse Fix)",
+    "first_dm": "Hey! Fresh-breath fix coming 🌬️ — but it works best when we target the right cause.\n\nQuick one: is your tongue more white-coated or yellow-coated in the morning?",
+    "second_dm": "Here's your breath-reset guide — the fennel trick works fastest after meals 🌿\n\nReply 'gut' and I'll send the food list that keeps stomach heat down for good.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic (cream bg, terracotta + sage accents).\nTitle: 'Bad Breath — Fix the Gut, Not Just the Mouth'.\nThree panels:\n1) THE REAL CAUSE — stomach icon with heat lines; text: stomach heat + undigested food.\n2) QUICK FIX — fennel + glass icons; text: chew fennel after meals, rinse with warm salt water.\n3) ROOT RESET — plate icon; text: smaller warm meals, less greasy/spicy food, more bitter greens.\nFooter: 'No improvement in 2 weeks? Check for reflux or sinus.' Flat icons, no photos.",
+    "infographic_path": "campaigns/assets/dm-infographics/breath.png"
+  },
+  "tags": {
+    "title": "Skin Tags (Shrink Overnight with Castor Oil)",
+    "first_dm": "Hey! The castor-oil method works — but skin tags love high blood sugar, so let's check the root 🍃\n\nQuick q: do you have just a few tags, or clusters around the neck and underarms?",
+    "second_dm": "Here's your skin-tag guide — patience is key, the oil works gradually 🌙\n\nWant the blood-sugar food list that stops new tags forming? Reply 'sugar'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Skin Tags — Surface Sign of an Inside Problem'.\nThree panels:\n1) WHAT THEY MEAN — neck/underarm icon; text: dampness, stagnation, often high blood sugar.\n2) OVERNIGHT FIX — castor oil + plaster icon; text: dab pure castor oil morning + night, cover.\n3) FIX THE INSIDE — plate icon; text: cut refined sugar, add cinnamon + bitter greens, move after meals.\nFooter: 'Changing, bleeding, or fast-growing? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/tags.png"
+  },
+  "teeth": {
+    "title": "Yellow Teeth (Baking Soda + Banana Peel)",
+    "first_dm": "Hey! The banana-peel + baking soda trick is great for surface stains ✨\n\nQuick check so I tailor it — is your yellowing more on the surface, or deep and grey-ish?",
+    "second_dm": "Here's your whitening guide — twice a week max so you protect the enamel 🦷\n\nWant the kidney-support foods that strengthen teeth from inside? Reply 'kidney'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Yellow Teeth — Surface vs Inside'.\nThree panels:\n1) WHY — tooth icon; text: stains from food + the kidney/bone connection in TCM.\n2) 2-MIN FIX — banana peel + baking soda icons; text: rub peel, brush with pinch of baking soda, 2x weekly only.\n3) PROTECT — water icon; text: rinse after coffee/tea, limit baking soda to avoid enamel wear.\nFooter: 'Sensitivity or deep discoloration? See a dentist.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/teeth.png"
+  },
+  "heels": {
+    "title": "Dry Cracked Heels (Overnight Fix)",
+    "first_dm": "Hey! The overnight coconut-oil soak softens heels fast 🦶\n\nQuick check — are your cracks just dry, or deep and sometimes painful or bleeding?",
+    "second_dm": "Here's your cracked-heel guide — do the soak 3 nights in a row to see the change 🌙\n\nWant the blood-nourishing food list that fixes it from inside? Reply 'blood'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Cracked Heels — It's Not Just Dry Skin'.\nThree panels:\n1) ROOT — foot icon; text: blood deficiency + weak spleen/kidney can't moisten skin.\n2) OVERNIGHT FIX — basin + oil + sock icons; text: warm soak 10 min, coconut oil, cotton socks to bed.\n3) NOURISH INSIDE — bowl icon; text: red dates, black sesame, bone broth, enough water.\nFooter: 'Diabetic or deep painful cracks? See a podiatrist.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/heels.png"
+  },
+  "nails": {
+    "title": "Nail Fungus (Overnight Garlic + Vinegar Remedy)",
+    "first_dm": "Hey! The vinegar + garlic combo is a strong natural antifungal 🧄\n\nQuick check so I send the right plan — is it one nail, or spreading across several toes?",
+    "second_dm": "Here's your nail-fungus guide — stay consistent nightly for a few weeks 🌿\n\nWant the circulation routine that helps it heal faster? Reply 'circ'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Nail Fungus — Clear It, Then Keep It Away'.\nThree panels:\n1) WHY — toe icon; text: dampness + heat + poor circulation to the feet.\n2) NIGHTLY FIX — basin + garlic icons; text: ACV soak 10 min, dab crushed garlic, cover overnight.\n3) STOP RETURN — sock icon; text: dry feet fully, breathable socks, warm the feet, move daily.\nFooter: 'Diabetic or painful/spreading? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/nails.png"
+  },
+  "salt": {
+    "title": "Salt in Socks (Ancient Pain Remedy)",
+    "first_dm": "Hey! Warm-salt foot therapy is one of my favorite simple remedies 🧦\n\nQuick q so I tailor it — is your pain more in the feet and legs, or in the lower back?",
+    "second_dm": "Here's your warm-salt routine — do it before bed for better sleep too 🌙\n\nWant my full cold-and-damp clearing plan for stubborn aches? Reply 'warm'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Salt in Socks — Warmth Where It Matters'.\nThree panels:\n1) WHY — sole-of-foot icon with point marked; text: feet hold key points; cold + damp cause aches.\n2) HOW — warm salt + sock icons; text: warm coarse sea salt, thin cotton sock, rest soles on it 15–20 min.\n3) BOOST — text: best before bed, pair with warm water, keep feet covered.\nFooter: 'Never use salt hot enough to burn. Numb feet? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/salt.png"
+  },
+  "kidney": {
+    "title": "Lower Back + Hip Pain = Kidneys Crying",
+    "first_dm": "Hey! Cold-type lower-back pain responds beautifully to warmth 🔥\n\nQuick q so I send the right plan — is your ache worse in cold weather and better with heat?",
+    "second_dm": "Here's your kidney-back guide — never let the lower back get cold 🔥\n\nWant the kidney-strengthening foods + gentle moves? Reply 'strong'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Lower Back + Hip Pain — The Kidney Link'.\nThree panels:\n1) WHY — lower-back/kidney icon; text: the low back houses the kidneys; cold + weakness = stiffness.\n2) NIGHTLY FIX — heat-pad + oil icons; text: warm the kidney area, ginger-oil rub, keep the waist covered.\n3) STRENGTHEN — text: black beans, walnuts, gentle waist twists, avoid sitting on cold surfaces.\nFooter: 'Numbness, leg weakness, or bladder changes? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/kidney.png"
+  },
+  "head": {
+    "title": "Headache Relief in 15 Seconds (Eyebrow Acupressure)",
+    "first_dm": "Hey! That brow point gives fast relief for tension headaches 🧠\n\nQuick check so I send the right map — are your headaches more at the temples, the forehead, or the back of the head?",
+    "second_dm": "Here's your pressure-point map — screenshot it for the next time one hits 📍\n\nWant the liver-calming habits that stop tension headaches forming? Reply 'liver'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Headache Relief — 3 Pressure Points'.\nThree panels, each a simple face/hand icon with the point marked:\n1) BROW NOTCH (Zanzhu) — under inner eyebrow; press up 15s.\n2) TEMPLE (Taiyang) — small circles 15s for side headaches.\n3) HAND WEBBING (Hegu) — between thumb + index, press 30s for overall relief.\nFooter: 'Sudden severe or unusual headache? Seek care immediately.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/head.png"
+  },
+  "phlegm": {
+    "title": "Phlegm / Mucus (TCM Root Cause)",
+    "first_dm": "Hey! Clearing phlegm is really about warming the spleen 🌿\n\nQuick check so I tailor it — is your phlegm more clear/white, or thick yellow-green?",
+    "second_dm": "Here's your phlegm-clearing guide — warm everything, nothing iced 🍵\n\nWant the full anti-damp food list that stops it returning? Reply 'damp'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Phlegm — Fix the Spleen, Not Just the Cough'.\nThree panels:\n1) WHY — spleen icon; text: weak damp spleen turns food into mucus.\n2) DAILY FIX — ginger + peel icons; text: warm ginger + tangerine-peel tea sipped through the day.\n3) AVOID — text: cut cold drinks, dairy, sugar and raw food that feed dampness.\nFooter: 'Phlegm with blood or fever? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/phlegm.png"
+  },
+  "magnesium": {
+    "title": "Magnesium Deficiency (Sleep + Weight + Movement)",
+    "first_dm": "Hey! Magnesium is the calm-down mineral most people are short on 🌙\n\nQuick q so I focus the plan — is your main issue sleep, muscle cramps, or puffiness/water retention?",
+    "second_dm": "Here's your magnesium guide — the epsom soak at night is a game-changer for sleep 🛁\n\nWant the full evening wind-down routine? Reply 'sleep'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Magnesium — Sleep, Calm, Less Puffiness'.\nThree panels:\n1) SIGNS — body icon; text: restless sleep, cramps, tension, water retention.\n2) EAT — seed + leaf + cacao icons; text: pumpkin seeds, leafy greens, dark chocolate, beans.\n3) ABSORB — foot-basin icon; text: epsom-salt foot soak at night, less coffee + sugar that deplete it.\nFooter: 'Kidney issues? Check with a doctor before supplementing.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/magnesium.png"
+  },
+  "tongue": {
+    "title": "Tongue Diagnosis for Gut Health",
+    "first_dm": "Hey! Your tongue tells me a lot about your digestion 👅\n\nQuick check so I read it right — is your coating more thick-white, or is the tip quite red?",
+    "second_dm": "Here's your tongue map — check it each morning before brushing for the clearest read 👅\n\nWant the gut-reset meal plan that matches your tongue type? Reply 'gut'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Read Your Tongue — Gut Health Map'.\nThree panels, each a clean tongue illustration:\n1) THICK WHITE COAT — cold + dampness; warm food, less raw/cold.\n2) TEETH MARKS ON EDGES — tired spleen; smaller warm meals, cooked grains.\n3) RED TIP — heat + stress; calm the mind, less spicy + alcohol.\nFooter: 'Persistent purple or cracked tongue? See a practitioner.' Flat illustrations only.",
+    "infographic_path": "campaigns/assets/dm-infographics/tongue.png"
+  },
+  "cold": {
+    "title": "Why Nobody in China Walks Barefoot",
+    "first_dm": "Hey! Keeping the feet warm protects your whole core 🧦\n\nQuick check — do you often have cold hands and feet, or feel the cold more than others around you?",
+    "second_dm": "Here's your stay-warm guide — cold feet at night undo a lot of good work 🧦\n\nWant my full warming routine for cold-type bodies? Reply 'warm'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Cold Enters Through the Feet'.\nThree panels:\n1) WHY — feet + rising-cold icon; text: cold enters the soles and settles in joints, womb, stomach.\n2) PROTECT — sock + basin icons; text: warm socks/slippers indoors, nightly warm foot soak.\n3) WARM CORE — text: warm cooked food, ginger tea, keep the waist + belly covered.\nFooter: 'Persistent coldness or numbness? Check circulation with a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/cold.png"
+  },
+  "bladder": {
+    "title": "Bladder Weakness / Urinary Incontinence",
+    "first_dm": "Hey! Bladder control is really about kidney strength in TCM 🌿\n\nQuick q so I tailor it — are the leaks mainly with laughing/coughing, or do you also feel urgency and frequency?",
+    "second_dm": "Here's your bladder-strength guide — consistency with the squeezes is everything 💪\n\nWant the kidney-qi food list that supports it? Reply 'kidney'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Bladder Weakness — Strengthen Kidney Qi'.\nThree panels:\n1) WHY — kidney + bladder icon; text: weak kidney qi can't hold the bladder.\n2) REBUILD — breathing icon; text: gentle hold-release squeezes daily, keep belly + back warm.\n3) SUPPORT — text: black beans, walnuts, yam; avoid too much cold + caffeine.\nFooter: 'Sudden onset, pain, or blood? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/bladder.png"
+  },
+  "urine": {
+    "title": "Urine Color Diagnosis (7 Colors, 6 Are Danger)",
+    "first_dm": "Hey! Urine color is a fast daily health read 🚽\n\nQuick check so I read it right — is yours more pale-and-clear, dark-yellow, or cloudy?",
+    "second_dm": "Here's your urine color chart — screenshot it for the bathroom 🚽\n\nWant the hydration + food plan to keep yours in the healthy zone? Reply 'water'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Urine Color — What Your Body Is Saying'.\nA vertical strip of 7 color swatches, each labeled:\nClear → too cold / over-hydrated · Pale straw → healthy · Yellow → mild heat/dehydration · Dark amber → heat, drink water · Cloudy → dampness · Pink/red → see a doctor · Brown → see a doctor.\nFooter: 'Red, brown, or persistent changes? Seek medical care.' Clean swatches + labels only.",
+    "infographic_path": "campaigns/assets/dm-infographics/urine.png"
+  },
+  "sugar": {
+    "title": "High Blood Sugar Signs (Swollen Feet, Dark Neck, Bags)",
+    "first_dm": "Hey! Those three signs together are worth taking seriously 🩺\n\nQuick q so I send the right plan — have you had your blood sugar checked recently, or not in a while?",
+    "second_dm": "Here's your blood-sugar guide — and please do get a proper test, this one matters 🩺\n\nWant the full sugar-balancing food list? Reply 'balance'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'High Blood Sugar — 3 Warning Signs'.\nThree sign panels: swollen feet · dark neck patch (acanthosis) · persistent eye bags.\nThen a FIX strip: cinnamon water in the morning · 10-min walk after meals · cut refined sugar + white carbs.\nFooter: 'These are warning signs — please get your blood sugar tested by a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/sugar.png"
+  },
+  "apple": {
+    "title": "Apple PLU Sticker Warning (GMO vs Conventional)",
+    "first_dm": "Hey! Those little PLU codes are a handy shopping shortcut 🍎\n\nQuick q — do you mostly shop supermarket produce, or local/farmers-market when you can?",
+    "second_dm": "Here's your produce-code guide — keep it in your notes for grocery runs 🍎\n\nWant my full clean-eating shopping list? Reply 'clean'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Decode the Fruit Sticker'.\nThree code panels with a sample sticker each:\n1) 4 DIGITS (e.g. 4131) — conventionally grown.\n2) STARTS WITH 9 (5 digits) — organically grown — best pick.\n3) STARTS WITH 8 — flagged as GMO (rarely used, but know it).\nBottom strip: 'Always wash: water + 1 tsp baking soda, 2 min, rinse.'\nFooter: 'Codes are voluntary — washing matters most.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/apple.png"
+  },
+  "feet": {
+    "title": "Swollen + Cracked Feet (Internal Root Cause)",
+    "first_dm": "Hey! End-of-day foot swelling usually points to fluid + spleen 🦶\n\nQuick check so I tailor it — does the swelling go down overnight, or is it there in the morning too?",
+    "second_dm": "Here's your foot-swelling guide — elevating after the soak makes a big difference 🦶\n\nWant the diuretic-food list that drains dampness? Reply 'drain'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Swollen Feet — Drain the Dampness'.\nThree panels:\n1) WHY — feet icon; text: weak spleen/kidney let fluid sink + pool in the feet.\n2) NIGHTLY FIX — basin + pillow icons; text: warm ginger-salt soak, then elevate feet 15 min.\n3) MOVE FLUID — text: reduce salt, gentle walking, red bean + barley water.\nFooter: 'Sudden, one-sided, or with breathlessness? See a doctor urgently.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/feet.png"
+  },
+  "socks": {
+    "title": "Sock Marks / Lymphatic Edema",
+    "first_dm": "Hey! Deep daily sock marks point to sluggish lymph + dampness 🌿\n\nQuick q so I tailor it — are the marks on both legs equally, or worse on one side?",
+    "second_dm": "Here's your lymph-moving routine — do the dry brushing before your shower ✨\n\nWant the anti-damp food list that keeps fluid moving? Reply 'damp'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Sock Marks — Get the Fluid Moving'.\nThree panels:\n1) WHY — ankle-ring icon; text: dampness + sluggish lymph from a weak spleen.\n2) MORNING FIX — dry-brush + ankle-pump icons; text: brush legs upward to the heart, pump ankles.\n3) KEEP FLOWING — text: move every hour, reduce salt, red bean + barley water.\nFooter: 'Sudden one-sided swelling? Rule out a clot with a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/socks.png"
+  },
+  "hump": {
+    "title": "Buffalo Hump / Cortisol (TCM Root)",
+    "first_dm": "Hey! That neck hump is often stress + dampness, not just posture 🌿\n\nQuick q so I tailor it — are you under long-term stress or poor sleep right now?",
+    "second_dm": "Here's your neck-release guide — pair it with earlier nights to lower cortisol 🌙\n\nWant my full stress-reset routine? Reply 'calm'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Neck Hump — The Cortisol Connection'.\nThree panels:\n1) WHY — side-neck icon; text: chronic stress + dampness pile up at the neck base.\n2) EVENING FIX — neck-roll + pressure-point icons; text: neck rolls, shoulder circles, press base of skull.\n3) LOWER STRESS — text: earlier sleep, less sugar + caffeine, calming breath before bed.\nFooter: 'Rapid growth or other symptoms? See a doctor to rule out causes.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/hump.png"
+  },
+  "aging": {
+    "title": "Facial Aging = Liver Blood Deficiency",
+    "first_dm": "Hey! Glowing skin in TCM is really about liver blood ✨\n\nQuick q so I tailor it — is your skin more dull-and-dry, or also showing dark circles + brittle nails?",
+    "second_dm": "Here's your skin-from-within guide — the 11pm bedtime is the secret weapon 🌙\n\nWant the full blood-nourishing meal plan? Reply 'glow'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Aging Skin — Nourish Liver Blood'.\nThree panels:\n1) WHY — face + liver icon; text: the face is fed by liver blood; low blood = dull, early aging.\n2) EAT — red date + goji + sesame icons; text: red dates, goji, black sesame, beetroot, leafy greens.\n3) RESTORE — moon icon; text: sleep before 11pm so the liver rebuilds blood; manage stress.\nFooter: 'Pair inside-nourishment with sun protection.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/aging.png"
+  },
+  "ankles": {
+    "title": "Swollen Ankles + Puffiness (Kidney Fluid)",
+    "first_dm": "Hey! Ankle + face puffiness usually means fluid isn't being transformed 💧\n\nQuick check so I tailor it — is the puffiness worse in the morning, or by the end of the day?",
+    "second_dm": "Here's your de-puffing guide — warm red bean + barley water is the daily staple 💧\n\nWant the full kidney-warming food list? Reply 'kidney'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Puffiness — Help Your Body Release Water'.\nThree panels:\n1) WHY — kidney icon; text: weak kidney yang can't transform fluid; it pools low.\n2) DAILY FIX — red-bean + massage icons; text: warm red bean + barley water, massage ankle→knee.\n3) SUPPORT — text: reduce salt + cold drinks, keep warm, gentle daily movement.\nFooter: 'Sudden, severe, or with breathlessness? See a doctor urgently.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/ankles.png"
+  },
+  "veins": {
+    "title": "Varicose Veins (Stagnant Blood TCM)",
+    "first_dm": "Hey! Varicose veins are a blood-flow issue we can support a lot 🦵\n\nQuick q so I tailor it — do your legs feel heavy and achy by evening, or mostly look bothersome?",
+    "second_dm": "Here's your circulation guide — legs-up-the-wall nightly is the easy win 🦵\n\nWant the blood-moving food + movement list? Reply 'flow'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Varicose Veins — Get the Blood Moving'.\nThree panels:\n1) WHY — leg-vein icon; text: weak qi can't push blood up; it pools + stagnates.\n2) EVENING FIX — legs-up + massage icons; text: elevate legs above heart 15 min, massage upward.\n3) CIRCULATE — text: walk daily, avoid long standing, hawthorn + ginger, stay warm.\nFooter: 'Hot, hard, painful veins? Rule out a clot with a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/veins.png"
+  },
+  "liver": {
+    "title": "Backed Up Liver (3 Warning Signs)",
+    "first_dm": "Hey! A stuck liver loves to wake you at 1–3am 🌙\n\nQuick check so I tailor it — do you wake in the early hours, feel tense/irritable, or both?",
+    "second_dm": "Here's your liver-decongesting guide — the early-hours waking often improves first 🌙\n\nWant the full liver-soothing food + routine? Reply 'flow'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Backed-Up Liver — 3 Warning Signs'.\nThree sign panels: 1–3am waking · irritability + tight mood · right-rib tension.\nThen a FIX strip: warm lemon water AM · side stretches to open ribs · less alcohol, sugar + late meals.\nFooter: 'Yellowing skin/eyes or severe pain? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/liver.png"
+  },
+  "eczema": {
+    "title": "Eczema (Blood + Gut Root Cause)",
+    "first_dm": "Hey! Stubborn eczema is usually blood-heat + gut, not just skin 🌿\n\nQuick q so I tailor it — is your eczema more red-hot-and-itchy, or dry-and-flaky?",
+    "second_dm": "Here's your eczema guide — cooling the blood from inside is the slow but real fix 🌿\n\nWant the full gut-and-skin elimination plan? Reply 'gut'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Eczema — Clear the Blood + Gut'.\nThree panels:\n1) ROOT — blood + gut icon; text: heat + dampness in the blood, fed by the gut.\n2) COOL + CALM — mung bean + compress icons; text: mung bean soup, cool chamomile compress, cut dairy + sugar.\n3) PROTECT SKIN — text: gentle fragrance-free moisturizer, avoid hot water + scratching.\nFooter: 'Infected, weeping, or spreading fast? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/eczema.png"
+  },
+  "soak": {
+    "title": "Full Body Detox Foot Soak (5 Ingredients)",
+    "first_dm": "Hey! This foot soak is the easiest way to unwind + release dampness 🛁\n\nQuick q so I tailor it — are you after better sleep, less puffiness, or warming up cold feet?",
+    "second_dm": "Here's your foot-soak recipe — do it 2–3 nights a week before bed 🛁\n\nWant the seasonal variations (warming vs cooling)? Reply 'soak'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Detox Foot Soak — 5 Ingredients'.\nTop: a basin illustration. Five labeled ingredient icons: epsom salt · fresh ginger · splash of vinegar · mugwort (艾葉) · warm water.\nMethod strip: 'Warm (not hot), soak 20 min before bed, dry feet + keep warm after.'\nFooter: 'Pregnant, diabetic, or low BP? Check with a practitioner first.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/soak.png"
+  },
+  "onion": {
+    "title": "Onion Slices on Feet Overnight",
+    "first_dm": "Hey! The onion-on-feet trick is an old warming remedy 🧅\n\nQuick q so I tailor it — are you mainly fighting a cough/cold, or cold feet at night?",
+    "second_dm": "Here's your overnight-remedy guide — fresh onion works better than old 🧅\n\nWant my full first-sign-of-a-cold kit? Reply 'cold'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Onion on the Feet — Overnight Warming Remedy'.\nThree panels:\n1) WHY — sole + onion icon; text: feet connect to the body; onion is warming + pungent, traditionally clears cold.\n2) HOW — onion + tape + sock icons; text: slice fresh onion, tape to each sole, socks on, sleep.\n3) SUPPORT — text: warm fluids, ginger tea, rest; best at the first sign of a chill.\nFooter: 'A comfort remedy — see a doctor for high fever or breathing trouble.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/onion.png"
+  },
+  "tea": {
+    "title": "Cinnamon Weight Loss Tea",
+    "first_dm": "Hey! This warming tea supports a sluggish metabolism 🍂\n\nQuick q so I tailor it — do you tend to feel cold, bloated, and crave sweets in the afternoon?",
+    "second_dm": "Here's your metabolism-tea guide — before meals is the sweet spot 🍂\n\nWant the full warm-eating plan that supports it? Reply 'warm'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Cinnamon Tea — Warm a Sluggish Metabolism'.\nThree panels:\n1) WHY — spleen icon; text: a cold damp spleen slows metabolism + traps fluid.\n2) RECIPE — cinnamon + ginger + honey icons; text: simmer cinnamon + ginger, a little honey, sip warm before meals.\n3) SUPPORT — text: warm cooked food, fewer cold drinks, walk after meals.\nFooter: 'Pregnant or on blood-sugar meds? Check with a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/tea.png"
+  },
+  "pineapple": {
+    "title": "Pineapple + Cinnamon Detox Smoothie",
+    "first_dm": "Hey! Pineapple + cinnamon is a lovely gentle digestive combo 🍍\n\nQuick q so I tailor it — is your main issue bloating, sluggish digestion, or both?",
+    "second_dm": "Here's your gut-reset smoothie guide — warm water, never iced, keeps it gentle 🍍\n\nWant the full anti-bloat morning routine? Reply 'gut'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Pineapple + Cinnamon — Gentle Gut Reset'.\nThree panels:\n1) WHY — stomach icon; text: pineapple clears damp-heat + aids digestion, cinnamon warms the center.\n2) RECIPE — pineapple + cinnamon icons; text: blend fresh pineapple, pinch of cinnamon, warm water, AM.\n3) SUPPORT — text: eat slowly, warm meals, don't drink ice-cold.\nFooter: 'Acid reflux or mouth sensitivity? Go easy on pineapple.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/pineapple.png"
+  },
+  "marks": {
+    "title": "Stretch Marks (Not a Skin Problem)",
+    "first_dm": "Hey! Stretch marks really are an inside-out fix in TCM 🌿\n\nQuick q so I tailor it — are your marks more fresh-and-red, or older-and-silvery?",
+    "second_dm": "Here's your skin-firming guide — the inside nourishment is what creams miss 🌿\n\nWant the full blood + qi building meal plan? Reply 'firm'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Stretch Marks — Firm the Skin From Within'.\nThree panels:\n1) WHY — skin-layer icon; text: skin is held by spleen qi + fed by blood; weakness = tearing.\n2) NOURISH — broth + red-date icons; text: bone broth, red dates, protein, enough water.\n3) OUTSIDE — sesame-oil icon; text: daily warm sesame-oil massage in circles.\nFooter: 'Fresh red marks respond best — be patient + consistent.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/marks.png"
+  },
+  "beet": {
+    "title": "Lemon + Beet Blood Cleanse",
+    "first_dm": "Hey! Beet + lemon is a lovely blood-building combo 🫐\n\nQuick q so I tailor it — do you get tired easily, pale, or cold hands and feet?",
+    "second_dm": "Here's your blood-cleanse guide — beets can turn urine pink, that's normal 🫐\n\nWant the full blood-building food list? Reply 'blood'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Beet + Lemon — Build + Move Your Blood'.\nThree panels:\n1) SIGNS — body icon; text: dull skin, fatigue, cold hands = weak/stagnant blood.\n2) RECIPE — beet + lemon icons; text: juice fresh beetroot + squeeze of lemon, a few times a week.\n3) BUILD MORE — text: red dates, leafy greens, black sesame, beans.\nFooter: 'On blood thinners or low BP? Check with a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/beet.png"
+  },
+  "back": {
+    "title": "Lower Back Pain Fix (Vicks + Epsom Salt)",
+    "first_dm": "Hey! For a locked-up cold-type lower back, warmth is everything 🔥\n\nQuick check so I send the right plan — is the pain worse with cold + rest, and a bit better with movement + heat?",
+    "second_dm": "Here's your lower-back rescue guide — heat first, gentle movement second 🔥\n\nWant the kidney-strengthening routine that prevents flare-ups? Reply 'strong'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Lower Back Rescue — Warm + Release'.\nThree panels:\n1) WHY — kidney/low-back icon; text: cold + damp lodge in the back, locking muscles.\n2) RELIEF — bath + balm icons; text: warm epsom soak, warming balm over the area, keep it covered.\n3) PROTECT — text: keep the waist warm, gentle movement, avoid cold floors + drafts.\nFooter: 'Leg numbness, weakness, or bladder changes? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/back.png"
+  },
+  "spots": {
+    "title": "Baking Soda Dark Spots (Neck + Elbows)",
+    "first_dm": "Hey! Dark neck/elbow patches are often circulation + dampness, not just dirt 🌿\n\nQuick q so I tailor it — are the patches velvety-dark (neck), or rough-and-grey (elbows/knees)?",
+    "second_dm": "Here's your dark-patch guide — twice a week only so skin stays happy 🌿\n\nWant the circulation + blood-sugar food list? Reply 'sugar'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Dark Patches — Lift + Support Circulation'.\nThree panels:\n1) WHY — neck/elbow icon; text: dampness + sluggish circulation under the skin.\n2) 2x WEEK FIX — baking soda + oil icons; text: baking soda paste, gentle rub, seal with coconut oil.\n3) FROM INSIDE — text: move daily, less refined sugar, check blood sugar if velvety neck.\nFooter: 'Velvety dark neck can signal insulin issues — get checked.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/spots.png"
+  },
+  "bay": {
+    "title": "Bay Leaves in Socks (Sleep + Pain)",
+    "first_dm": "Hey! The bay-leaf foot trick is a gentle wind-down ritual 🌿\n\nQuick q so I tailor it — is your main goal falling asleep faster, or staying asleep through the night?",
+    "second_dm": "Here's your sleep-ritual guide — pair the bay leaves with a warm foot soak 🌙\n\nWant my full wind-down routine for deeper sleep? Reply 'sleep'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Bay Leaves in Socks — Calm + Sleep'.\nThree panels:\n1) WHY — sole + bay-leaf icon; text: soles hold key points; bay leaf is warming + calming.\n2) HOW — bay + sock icons; text: 2–3 bay leaves on each sole, cotton socks, sleep.\n3) WIND DOWN — text: warm foot soak first, dim lights, no screens before bed.\nFooter: 'A comfort ritual — see a doctor for ongoing insomnia.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/bay.png"
+  },
+  "cycle": {
+    "title": "📅 The Week Before Your Period Determines Everything",
+    "first_dm": "Hey! The week before your period is genuinely the most important week — and most women miss it 📅\n\nYour pre-period protection plan (Days 21–28):\n\nEat:\n• 益母草 (Motherwort) tea — moves Qi and Blood gently, prevents stagnation\n• 當歸 + 紅棗 (Dang gui + red dates) in warm soup — Blood nourishment 3x this week\n• Everything warm. No raw vegetables, no ice, no cold drinks.\n\nAvoid:\n• Ice water, sashimi, anything cold\n• Intense cardio (light walking only)\n• Late nights past midnight\n• Big arguments or emotional stress\n\nAre you usually more crampy, more PMS-emotional, or more exhausted in that pre-period week?",
+    "second_dm": "Here's your pre-period protection plan — screenshot the DO/AVOID columns 📅\nStart the motherwort tea on Day 21. That's all you need to do differently this week.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM wellness aesthetic.\nTitle: 'Pre-Period Protection Protocol — Days 21–28'\nSubtitle: 'The week before determines the week during.'\nBackground: warm amber-cream with subtle red date (紅棗) and herb illustrations.\n\nTwo-section layout:\n\nSection 1 — ✅ DO THIS (green-amber accents):\n  1. 🌿 益母草 (Motherwort) tea — daily\n  2. 🍲 當歸 + 紅棗 soup — 3x this week\n  3. 🌡️ Eat everything warm — no cold, no raw\n  4. 🚶 Light walking only — no intense cardio\n  5. 🛏️ Sleep before midnight\n\nSection 2 — ❌ AVOID (muted red accents):\n  1. 🧊 Ice water, cold drinks, ice cream\n  2. 🐟 Raw food, sashimi\n  3. 😤 Emotional stress, big arguments\n  4. 💪 Intense exercise\n  5. 🌙 Late nights past midnight\n\nBottom quote: 'The pain you prevent this week is the pain you won't feel next week.'\nStyle: warm amber and cream. Clean two-column do/avoid layout. Organic herb illustrations (red dates, dang gui). No face/person.",
+    "infographic_path": "campaigns/assets/dm-infographics/cycle.png"
+  },
+  "period": {
+    "title": "🩸 Period Pain Emergency — Do This Now",
+    "first_dm": "Hey! Let's get you some relief — but type ID first 🩸\n\nTwo quick questions:\n1. Does a heat pack on your lower abdomen make the pain better or does it not really help?\n   → Better = Cold Stagnation type\n   → Doesn't help much = Blood Stasis type\n\n2. Is the pain crampy and wave-like, or stabbing and fixed in one spot?\n\nTell me which, and I'll send the exact protocol for your type — including the right acupressure combo.",
+    "second_dm": "Here's your period pain protocol split by type — screenshot your column 🩸\nFor next month: start the prevention protocol the week before (comment 'cycle' for that one).",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, urgent but calm TCM medical aesthetic.\nTitle: 'Period Pain Emergency Protocol'\nSubtitle: 'Identify Your Type. Act Fast.'\nBackground: deep warm red-cream gradient, clinical and reassuring.\n\nSplit two-column layout:\n\nLeft column — ❄️ Cold Stagnation (寒凝):\n  Signs: better with heat · crampy wave pain · feels cold\n  1. 🌡️ Heat pack on lower abdomen\n  2. 👆 Press 三陰交 Sanyinjiao — inner ankle, 3 fingers above bone · 2 min each\n  3. 🍵 Ginger + brown sugar tea, drink hot\n  ❌ Avoid: ice, cold drinks, cold compress\n\nRight column — 🔴 Blood Stasis (血瘀):\n  Signs: stabbing fixed pain · heat doesn't help · clots\n  1. 👆 Press 合谷 Hegu + 三陰交 Sanyinjiao together · 2 min\n  2. 🚶 Gentle slow walking — moves stagnant Blood\n  3. 🌿 Motherwort (益母草) tea\n  ❌ Avoid: intense exercise, stress, cold\n\nFull-width bottom bar (both types): '❌ Never (either type): ice cream, cold drinks, cold compress'\n\nSmall acupressure diagrams for 三陰交 and 合谷 point locations.\nStyle: clear split layout. Warm red-cream palette. Clinical but warm. No face/person.",
+    "infographic_path": "campaigns/assets/dm-infographics/period.png"
+  },
+  "hormone": {
+    "title": "🌙 Pre-Period Migraines — It's Your Liver-Kidney",
+    "first_dm": "Hey! That pre-period timing is SO specific and SO fixable in TCM 🌙\n\nThe key insight: you need to build Liver Blood in the 2 weeks AFTER your period ends, so there's enough to go around when it descends pre-period.\n\nYour cycle-aware plan:\n• Days 1–14 (after period): Goji + dang gui + ejiao soup, 3x per week — this is your Liver Blood building window\n• Days 21–28 (before period): Sleep before 10:30pm. No alcohol. No cold food. Protect what you built.\n• Day of migraine: Press Taichong (太衝) — between big and second toe, 60 seconds each side. Brings Liver Yang down.\n\nWhich week are you in right now?",
+    "second_dm": "Here's your hormonal migraine cycle protocol — save the diagram 🌙\nThe Phase 2 foods are the most important part. Start there.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, feminine TCM cycle aesthetic.\nTitle: 'Hormonal Migraine Prevention — Cycle Protocol'\nSubtitle: 'Build Liver Blood. Stop the Drop.'\nBackground: soft dusty rose with moon phase illustration at top.\n\nCircular cycle diagram divided into 4 phases:\n  Phase 1 (Days 1–7, during period): 'Rest + light nourishment'\n  Phase 2 (Days 8–14): '🌟 BUILD LIVER BLOOD — goji, dang gui, ejiao 3x/week'\n  Phase 3 (Days 15–21): 'Maintain — warm foods, moderate activity'\n  Phase 4 (Days 22–28): '⚠️ PROTECT — sleep before 10:30, no cold, no alcohol'\n\nEmergency point box at bottom:\n  太衝 Taichong — small foot diagram showing point between big and second toe\n  'Press when migraine starts — brings Liver Yang down'\n\nKey insight callout: 'The migraine happens in Phase 4. The fix happens in Phase 2.'\nStyle: soft rose and dusty lavender, moon cycle motif, clean and feminine. No face/person — moon and botanical elements only.",
+    "infographic_path": "campaigns/assets/dm-infographics/hormone.png"
+  },
+  "migraine": {
+    "title": "🤯 Which Type of Migraine Do You Have?",
+    "first_dm": "Hey! Getting your migraine type right changes everything 🧠\n\nQuick type check — which sounds most like you?\n• Type 1 (Liver Yang Rising / 肝陽上亢): Throbbing, one side, worse when stressed, better lying in a dark room\n• Type 2 (Blood Deficiency / 血虛): Dull, heavy, worse at end of day, comes with fatigue\n• Type 3 (Phlegm-Damp / 痰濕): Heavy, foggy, often with nausea, worse in damp weather\n\nReply with your type (1, 2, or 3) and I'll send your specific protocol + the right tea to make this week.",
+    "second_dm": "Here's your full migraine type guide — screenshot the column that matches you 🤯\nDrink your type's tea daily, not just when the pain hits. Prevention is the whole game.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, TCM diagnostic comparison aesthetic.\nTitle: 'TCM Migraine Types — Know Yours, Fix Yours'\nBackground: clean white with subtle ink-wash head/brain illustration at top.\n\nThree-column comparison layout:\n\nColumn 1 — 肝陽上亢 Liver Yang Rising:\n  Pain: throbbing, one side\n  Trigger: stress, anger\n  Better: lying down, dark room\n  ✅ Tea: 菊花 + 決明子\n\nColumn 2 — 血虛 Blood Deficiency:\n  Pain: dull, heavy\n  Trigger: end of day, fatigue\n  Better: after eating, rest\n  ✅ Tea: 當歸 + 紅棗\n\nColumn 3 — 痰濕 Phlegm-Damp:\n  Pain: foggy, heavy, nausea\n  Trigger: damp weather, heavy meals\n  Better: moving around\n  ✅ Tea: 薑 + 陳皮\n\nBottom: 'Wrong type = wrong fix. Right type = real relief.'\nStyle: clean 3-column grid, amber accent lines, professional diagnostic feel. No face/person — herb icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/migraine.png"
+  },
+  "eye": {
+    "title": "👀 Dry Eyes from Screens? Your Liver Is Depleted",
+    "first_dm": "Hey! The liver-eye connection is one of TCM's most underrated insights 👁️\n\nYour screen-eye recovery protocol:\n• Chrysanthemum + goji tea (菊花枸杞茶): drink every afternoon — afternoon is when Liver Qi starts to settle, not morning\n• Jingming point (睛明): inner corner of each eye, beside the nose. Press gently 30 seconds each side.\n• 20-20-20 with a twist: every 20 min, look 20 feet away for 20 seconds — then blink 10 times rapidly to reset tear film.\n\nDo you also wake up between 1 and 3am? That's a key Liver Blood signal I want to check.",
+    "second_dm": "Here's your screen-eye protocol — the Jingming point diagram is the key part 👁️\nStart the chrysanthemum tea this week. Your eyes will feel different in 10 days.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, clean eye health + TCM aesthetic.\nTitle: 'Screen Eye Recovery — TCM Protocol'\nSubtitle: 'Nourish Liver Blood. Restore Your Eyes.'\nBackground: soft white with pale blue-green accents, chrysanthemum (菊花) illustration top right corner.\n\nSection 1 — '3 Liver Blood Foods for Eye Health':\n  1. 🌼 Chrysanthemum (菊花) — clears Liver heat from the eyes\n  2. 🔴 Goji berries (枸杞) — nourishes Liver and Kidney Yin\n  3. 🫐 Blueberries — supports retinal health\n\nSection 2 — 'Daily Habits':\n  1. 💧 Chrysanthemum + goji tea — 1 cup every afternoon\n  2. 👆 Jingming point (睛明) — 30s each side [small eye diagram showing point at inner corner]\n  3. 👀 20-20-20 rule + 10 blinks\n  4. 🌙 Sleep before 11pm — Liver regenerates 11pm–3am\n\nBottom: 'Drops fix the symptom. TCM fixes the source.'\nStyle: clean, calm. Soft blue-green and cream palette. Chrysanthemum illustration. No face/person.",
+    "infographic_path": "campaigns/assets/dm-infographics/eye.png"
+  },
+  "neck": {
+    "title": "📱 Phone Neck — TCM Fixes What Stretching Can't",
+    "first_dm": "Hey! Phone neck is one of the fastest-growing complaints I see — you're not alone 📱\n\nYour 5-minute daily neck recovery routine:\n• Neck roll with exhale: 5 slow circles each direction. Exhale on the way down — that's when the muscle releases.\n• Fengchi (風池) point: base of skull, in the two hollows where neck meets skull. Press 60 seconds.\n• Kudzu root (葛根) tea: drink once daily — specifically targets neck and upper back stiffness in TCM.\n\nIs your pain more in the neck itself, the shoulders pulling down, or do you also get headaches from it?",
+    "second_dm": "Your phone neck protocol is attached — the Fengchi point diagram is the part to screenshot 📲\nDo the neck roll every morning before you pick up your phone. Game changer.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, clean TCM anatomy aesthetic.\nTitle: 'Phone Neck Recovery — 5-Minute Daily Protocol'\nSubtitle: 'Unblock the Gallbladder & Bladder Meridians'\nBackground: clean white with warm beige border.\n\nTop section: side-profile neck outline showing GB and BL meridian pathways highlighted in amber (simple anatomical illustration).\n\nProtocol steps — numbered list:\n1. 🔄 Neck roll with exhale — 5 circles each side, slow\n2. 👆 Press Fengchi (風池) — 60 seconds, base of skull hollows [small diagram showing point location]\n3. 🍵 Kudzu root tea (葛根茶) — 1 cup daily\n4. 📱 Phone at eye level — raise your screen, not your head\n5. ⏰ Every 45 min: look up + shoulder rolls x10\n\nBottom: 'Stagnation breaks with consistency. 5 min/day.'\nStyle: clean anatomical illustration, warm white + amber. No face/person.",
+    "infographic_path": "campaigns/assets/dm-infographics/neck.png"
+  },
+  "anxiety": {
+    "title": "😮‍💨 Constant Anxiety? Your Heart and Liver Are Out of Sync",
+    "first_dm": "Hey! Heart-Liver imbalance is one of the most common root causes of anxiety I see 💚\n\nYour 4-week anxiety reset — start this week:\n• Evening tea at 6pm: Sour jujube seeds (酸棗仁) + Lily bulb (百合) + Mimosa flower (合歡花) — steep 15 min\n• No screens after 9pm: screen light aggravates Liver Yang and keeps the mind up\n• 5 intentional sighs before bed: moves stuck Liver Qi, signals nervous system to downshift\n\nDo you notice your anxiety more in your chest (tight/heavy), your stomach (unsettled), or your head (racing thoughts)?",
+    "second_dm": "Here's your anxiety reset protocol — save this one 💜\nStart with the 6pm tea this week. It's the smallest change with the biggest downstream effect.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, calm TCM botanical aesthetic.\nTitle: 'TCM Anxiety Reset Protocol'\nSubtitle: 'Heart Blood + Liver Qi — 4 Weeks to Balance'\nBackground: soft lavender-cream with delicate mimosa flower (合歡花) illustrations.\n\nTwo sections:\n\nSection 1 — 'What's happening inside' (small, explanatory):\n  Heart Blood deficiency → restless mind, palpitations\n  Liver Qi stagnation → trapped emotions, chest tightness\n\nSection 2 — 'Your daily protocol':\n  1. 🌿 6pm tea: 酸棗仁 + 百合 + 合歡花 (steep 15 min)\n  2. 📵 No screens after 9pm\n  3. 😤 5 intentional sighs before bed\n  4. 🛏️ Sleep before 11pm (Heart Blood rebuilds 11pm–1am)\n  5. 🚶 30-min walk daily — moves Liver Qi gently\n\nBottom quote: 'Give it 4 weeks. The root shifts slowly — and it shifts.'\nStyle: soft, hopeful. Lavender-cream palette. Botanical illustration feel. No face/person — herb and flower illustrations only.",
+    "infographic_path": "campaigns/assets/dm-infographics/anxiety.png"
+  },
+  "stress": {
+    "title": "⚡ Stress is Attacking Your Organs",
+    "first_dm": "Hey! So glad you caught that — stress is silent but it hits hard in TCM 🏥\n\nYour 3-minute organ stress release:\n• Press Neiguan (內關) — inside of wrist, 3 finger widths from wrist crease. 30 seconds each side.\n• Press Baihui (百會) — crown of your head. 60 seconds. Slow breath.\n• After: drink warm water with a slice of ginger. Helps Spleen recover.\n\nWhich organ feels most affected for you — heart (palpitations/anxiety), stomach (bloating/pain), or sleep (insomnia/restless)?",
+    "second_dm": "Here's your stress + organ protocol — the body map is the key part, screenshot it 📲\nThe 3-minute acupressure routine works best at 6pm, before dinner.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, TCM body-mapping aesthetic.\nTitle: 'Stress & Your Organs — TCM Protocol'\nSubtitle: '3 Minutes to Release What Stress Builds Up'\nBackground: warm white with amber tones.\n\nLeft side — simplified body outline with 4 organs highlighted:\n  ❤️ Heart → palpitations, racing heart\n  🫀 Liver → migraines, eye strain, irritability\n  🫁 Spleen → bloating, stomach pain, low appetite\n  🫘 Kidney → insomnia, lower back pain, fatigue\n\nRight side — 2 acupressure points with small location diagrams:\n  內關 Neiguan — inner wrist, 3 fingers from crease\n  百會 Baihui — crown of head\n\nBottom: '3 minutes daily. Press. Breathe. Release.'\nStyle: clean medical illustration, warm amber/cream palette. No face/person.",
+    "infographic_path": "campaigns/assets/dm-infographics/stress.png"
+  },
+  "immune": {
+    "title": "🛡️ Never Get Sick — Strengthen Your Wei Qi",
+    "first_dm": "Hey! Wei Qi is everything when it comes to not catching every cold 🛡️\n\nYour quick Wei Qi protocol:\n• Morning tea: Astragalus (黃耆) + Prince Ginseng (太子參) — simmer 20 min, drink before 9am\n• Sleep before 11pm: Wei Qi rebuilds during deep sleep. Past midnight = Wei Qi drain.\n• 20 min of sunlight daily: Lung Qi (which generates Wei Qi) needs sunlight to stay active\n\nTell me — do you get sick after every season change, or is it more like you're always tired and never feel 100%?",
+    "second_dm": "Your Wei Qi protocol is attached — screenshot this and put it somewhere you'll see it 🛡️\nThe morning tea is the biggest move. Start tomorrow.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, TCM immunity aesthetic.\nTitle: 'Wei Qi Immunity Protocol' — bold serif.\nSubtitle: 'Your Daily Invisible Shield'\nBackground: soft jade green with subtle brush-stroke borders.\nHeader note (italic): 'Wei Qi = your body's protective force field'\n\n5 protocol points:\n1. ☀️ Morning Wei Qi Tea: Astragalus (黃耆) + Prince Ginseng (太子參) — simmer 20 min, drink before 9am\n2. 🌙 Sleep before 11pm every night\n3. ☀️ 20 minutes of sunlight daily\n4. 🧣 Cover your neck in wind — Wind carries all pathogens in TCM\n5. 🍲 Eat cooked warm food — raw/cold weakens Spleen, which feeds Wei Qi\n\nSeasonal note at bottom: 'Double dose during season changes'\nStyle: clean, educational. Warm jade-green palette. Herb illustrations (astragalus root). No face/person.",
+    "infographic_path": "campaigns/assets/dm-infographics/immune.png"
+  },
+  "muscle": {
+    "title": "💪 Why You're Not Building Muscle",
+    "first_dm": "Hey! Thanks for commenting — you're in the right place 💪\n\nHere's your quick TCM muscle protocol:\n• Build Kidney Essence first: black beans, walnuts, Chinese yam (山藥) daily\n• Time your protein: eat within 30 min post-workout WITH warm food — cold shakes block Spleen absorption and slow gains\n• Sleep before 11pm: Kidney Essence rebuilds between 11pm–1am. This is when your gains actually happen.\n\nQuick question — which feels more like you: slow recovery (3+ days sore), or training hard but muscles feel 'soft'?",
+    "second_dm": "Here's your full TCM muscle protocol — screenshot this and keep it 💪\nStart with the foods this week. Sleep before 11. Give it 3 weeks and notice the difference in your recovery.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM aesthetic.\nTitle: 'TCM Muscle Building Protocol' — bold serif font.\nSubtitle: 'Build from the Root — Kidney Essence'\nBackground: warm cream/beige with subtle ink-wash herb illustrations in corners.\n\n5 protocol points in a clean list with small herb icons:\n1. 🫘 Black beans (黑豆) — replenish Kidney Essence · handful daily\n2. 🌰 Walnuts (核桃) — strengthen sinew and tendon · 5–7 daily\n3. 🍠 Chinese Yam (山藥) — Spleen Qi for protein absorption\n4. 🌙 Sleep before 11pm — Kidney rebuilds 11pm–1am\n5. 🌡️ Eat warm post-workout — cold foods block Spleen, slow gains\n\nBottom strip: warm amber banner — 'Comment MUSCLE for your personalized plan'\nStyle: clean, educational, no face/person — herbs and simple icons only. Warm cream + amber palette.",
+    "infographic_path": "campaigns/assets/dm-infographics/muscle.png"
+  },
+  "stomach": {
+    "title": "Stomach pain after meals? Warm a cold, weak stomach",
+    "first_dm": "Hey! Warming a cold weak stomach is the whole game here 🍵\n\nQuick check so I send the right plan — is your stomach pain better with warmth and worse with cold/raw food?",
+    "second_dm": "Here's your warm-stomach guide — warm millet porridge in the morning is the anchor 🍵\n\nWant the full spleen-warming food list that stops it returning? Reply 'warm'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic (cream bg, terracotta + sage accents).\nTitle: 'Stomach Pain After Meals — Warm the Spleen'.\nThree panels:\n1) WHY — stomach icon; text: cold weak spleen/stomach from cold drinks, raw food, eating while stressed.\n2) DAILY FIX — porridge + ginger icons; text: warm millet porridge each morning, ginger tea, eat calm + slow.\n3) AVOID — text: iced drinks, raw salads, skipping meals, late heavy dinners.\nFooter: 'Severe pain, weight loss, or black stool? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/stomach.png"
+  },
+  "knee": {
+    "title": "Knee pain isn't just old age — cold, damp & circulation",
+    "first_dm": "Hey! Cold-damp knee pain responds really well to warmth + circulation 🦵\n\nQuick q so I tailor it — are your knees worse in cold/damp weather and a bit stiff in the morning?",
+    "second_dm": "Here's your knee guide — heat first, gentle movement second, never force it 🦵\n\nWant the kidney + circulation routine that protects the joint? Reply 'strong'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Knee Pain — Clear Cold, Damp + Stagnation'.\nThree panels:\n1) WHY — knee icon; text: cold + dampness + poor circulation lodge in the joint, not just 'age'.\n2) DAILY FIX — heat + massage icons; text: warm the knee, ginger-oil rub, gentle bend-and-straighten moves.\n3) STRENGTHEN — text: keep knees covered, black beans + walnuts, avoid cold floors + damp.\nFooter: 'Hot, red, swollen, or locked knee? See a doctor.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/knee.png"
+  },
+  "sleep": {
+    "title": "Can't sleep? Your heart and liver are talking",
+    "first_dm": "Hey! Heart-and-liver sleep issues each have a different fix 🌙\n\nQuick check so I send the right one — do you struggle to FALL asleep, or WAKE around 1–3am and can't settle?",
+    "second_dm": "Here's your sleep-type guide — match the column to your pattern 🌙\n\nWant the full evening wind-down routine for your type? Reply 'sleep'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Can't Sleep? Heart vs Liver'.\nTwo comparison columns:\nHEART (can't fall asleep, racing mind, palpitations) → calm the shen: warm milk + red dates, less screens, breathing.\nLIVER (wake 1–3am, tense, irritable) → soothe the liver: lighter dinners, no late alcohol, side stretches.\nBottom strip: 'Both: sleep before 11pm, warm foot soak, dim lights.'\nFooter: 'Ongoing insomnia? See a practitioner.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/sleep.png"
+  },
+  "detox": {
+    "title": "Put cinnamon on pineapple and watch what happens",
+    "first_dm": "Hey! Pineapple + cinnamon is a gentle digestion + detox combo 🍍\n\nQuick q so I tailor it — is your main goal less bloating, better digestion, or feeling lighter overall?",
+    "second_dm": "Here's your gentle-detox guide — warm water not iced keeps it kind on the gut 🍍\n\nWant the full anti-bloat morning routine? Reply 'gut'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Pineapple + Cinnamon — Gentle Detox'.\nThree panels:\n1) WHY — stomach icon; text: pineapple clears damp-heat + aids digestion, cinnamon warms the center.\n2) RECIPE — pineapple + cinnamon icons; text: fresh pineapple + a pinch of cinnamon, warm water, in the morning.\n3) SUPPORT — text: eat slowly, warm meals, skip ice-cold drinks.\nFooter: 'Acid reflux or mouth sensitivity? Go easy on pineapple.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/detox.png"
+  },
+  "gut": {
+    "title": "Watch what came out of her throat — tonsil stones",
+    "first_dm": "Hey! Tonsil stones almost always trace back to the gut, not just the throat 🌿\n\nQuick check so I send the right plan — is your bad breath worse in the morning, or all day even after brushing?",
+    "second_dm": "Here's your tonsil-stone guide — start the gargle tonight and watch the breath improve 🧂\n\nWant the full gut-reset that stops them coming back? Reply 'gut'.",
+    "infographic_brief": "Vertical infographic, 4:5 ratio, warm TCM clinic aesthetic.\nTitle: 'Tonsil Stones — The Gut–Throat Connection'.\nThree panels:\n1) WHY THEY FORM — throat + stones icon; text: dampness, heat, food stagnation rising up.\n2) DAILY GARGLE — glass + salt + lemon icons; text: warm water, 1 tsp sea salt, squeeze of lemon, gargle after meals.\n3) ROOT FIX — stomach icon; text: warm cooked food, less dairy + sugar, support digestion.\nFooter: 'Persistent? See a practitioner.' Flat icons only.",
+    "infographic_path": "campaigns/assets/dm-infographics/gut.png"
+  }
+}

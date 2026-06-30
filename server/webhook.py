@@ -1,10 +1,12 @@
-"""Meta (Instagram / Facebook) webhook receiver for ai-tcm-ip (陳芷晴 brand).
+"""Meta (Instagram / Facebook) webhook receiver for ai-tcm-ip brands.
 
 Phase 1 goal: prove we can RECEIVE Instagram comment + DM events from Meta.
 This server does two things only:
 
   GET  /webhook/instagram   → verification handshake (echoes hub.challenge)
   POST /webhook/instagram   → receives events, verifies signature, logs raw body
+  GET  /webhook/facebook    → same verification endpoint for Messenger/Page apps
+  POST /webhook/facebook    → same receiver, useful when Meta product wants a FB URL
 
 Once we can see real events land in the logs, Phase 2 wires the AI auto-reply
 (keyword "gut" on a comment → private DM, etc.) via the Graph API.
@@ -18,6 +20,14 @@ Security:
 Env vars (server/.env or process env):
   META_VERIFY_TOKEN   any random string; must match the dashboard value
   META_APP_SECRET     App Secret from the Meta App dashboard (Settings > Basic)
+  CHLOE_IG_ID         optional Instagram business account id for 陳芷晴/Jessica
+  CHLOE_PAGE_ID       optional Facebook Page id for 陳芷晴/Jessica
+  JACKIE_IG_ID        optional Instagram business account id for Jackie Chan
+  JACKIE_PAGE_ID      optional Facebook Page id for Jackie Chan
+  JACKIE_PAGE_ACCESS_TOKEN  Page/IG token with permission to reply to comments
+  JACKIE_IG_ACCESS_TOKEN    Instagram token with permission to reply to comments
+  JACKIE_COMMENT_REPLY      optional English public reply text for Jackie comments
+  JACKIE_PRIVATE_REPLY      optional English private reply text for Jackie comments
 
 Run locally:
   cd server && pip install -r requirements.txt
@@ -31,10 +41,15 @@ import hmac
 import json
 import logging
 import os
+import re
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import PlainTextResponse
+from fastapi.staticfiles import StaticFiles
 
 # ── Config ────────────────────────────────────────────────────────
 
@@ -63,8 +78,95 @@ logger = logging.getLogger("meta.webhook")
 
 VERIFY_TOKEN = os.environ.get("META_VERIFY_TOKEN", "").strip()
 APP_SECRET = os.environ.get("META_APP_SECRET", "").strip()
+# Public base URL for this server (no trailing slash).
+# Used to build infographic URLs for DMs.
+# Set in Render dashboard, e.g. https://ai-tcm-ip.onrender.com
+WEBHOOK_BASE_URL = os.environ.get("WEBHOOK_BASE_URL", "").strip().rstrip("/")
+GRAPH_VERSION = os.environ.get("META_GRAPH_VERSION", "v23.0").strip()
+JACKIE_COMMENT_ACCESS_TOKEN = (
+    os.environ.get("JACKIE_IG_ACCESS_TOKEN", "").strip()
+    or os.environ.get("JACKIE_PAGE_ACCESS_TOKEN", "").strip()
+)
+JACKIE_COMMENT_REPLY = os.environ.get(
+    "JACKIE_COMMENT_REPLY",
+    "Sent you the details. Check your DM 📩",
+).strip()
+JACKIE_PRIVATE_REPLY = os.environ.get(
+    "JACKIE_PRIVATE_REPLY",
+    "Thanks for commenting. I sent you the details here.",
+).strip()
+_REPLIED_COMMENT_IDS: set[str] = set()
+_PRIVATE_REPLIED_COMMENT_IDS: set[str] = set()
+
+BRANDS = {
+    "chloe": {
+        "label": "陳芷晴/Jessica",
+        "ids": {
+            os.environ.get("CHLOE_IG_ID", "").strip(),
+            os.environ.get("CHLOE_PAGE_ID", "").strip(),
+        },
+    },
+    "jackie": {
+        "label": "Jackie Chan",
+        "ids": {
+            os.environ.get("JACKIE_IG_ID", "").strip(),
+            os.environ.get("JACKIE_PAGE_ID", "").strip(),
+        },
+    },
+}
+BRAND_BY_ID = {
+    account_id: cfg["label"]
+    for cfg in BRANDS.values()
+    for account_id in cfg["ids"]
+    if account_id
+}
+
+# Per-brand Graph API access token. Add brand tokens to env as accounts connect.
+BRAND_ACCESS_TOKENS = {
+    "Jackie Chan": (
+        os.environ.get("JACKIE_IG_ACCESS_TOKEN", "").strip()
+        or os.environ.get("JACKIE_PAGE_ACCESS_TOKEN", "").strip()
+    ),
+    "陳芷晴/Jessica": (
+        os.environ.get("CHLOE_IG_ACCESS_TOKEN", "").strip()
+        or os.environ.get("CHLOE_PAGE_ACCESS_TOKEN", "").strip()
+    ),
+}
+
+# keyword → {title, first_dm, second_dm, infographic_brief}; built by scripts/export_dm_map.py
+_DM_MAP_PATH = Path(__file__).resolve().parent / "dm_map.json"
+
+
+def _load_dm_map(path: Path) -> dict:
+    if not path.exists():
+        logger.warning("[dm_map] %s missing — keyword replies disabled", path.name)
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.error("[dm_map] failed to load: %r", exc)
+        return {}
+
+
+DM_MAP = _load_dm_map(_DM_MAP_PATH)
+
+
+def _match_keyword(text: str) -> str | None:
+    """Return the first known CTA keyword that appears as a whole word in the comment."""
+    if not text or not DM_MAP:
+        return None
+    words = set(re.findall(r"[a-z]+", text.lower()))
+    for kw in DM_MAP:  # dict preserves insertion order
+        if kw in words:
+            return kw
+    return None
+
 
 app = FastAPI(title="ai-tcm-ip Meta webhook")
+
+_STATIC_DIR = Path(__file__).resolve().parent / "static" / "infographics"
+if _STATIC_DIR.exists():
+    app.mount("/infographics", StaticFiles(directory=str(_STATIC_DIR)), name="infographics")
 
 
 # ── Health ────────────────────────────────────────────────────────
@@ -76,6 +178,49 @@ async def health() -> dict[str, str]:
         "status": "ok",
         "verify_token_set": "yes" if VERIFY_TOKEN else "no",
         "app_secret_set": "yes" if APP_SECRET else "no",
+        "known_brand_ids": str(len(BRAND_BY_ID)),
+        "jackie_comment_reply_ready": "yes" if JACKIE_COMMENT_ACCESS_TOKEN else "no",
+    }
+
+
+@app.get("/diagnostics")
+async def diagnostics() -> dict:
+    """Exactly what's configured vs missing for comment→DM auto-reply to work.
+
+    Hit this on the deployed URL (e.g. /diagnostics) to see which env vars and
+    Meta connections are still needed. `ready` is true only when a brand can reply.
+    """
+    def brand_status(label: str, prefix: str) -> dict:
+        ig_id = bool(os.environ.get(f"{prefix}_IG_ID", "").strip())
+        page_id = bool(os.environ.get(f"{prefix}_PAGE_ID", "").strip())
+        token = bool(BRAND_ACCESS_TOKENS.get(label, ""))
+        return {
+            "ig_id_set": ig_id,
+            "page_id_set": page_id,
+            "access_token_set": token,
+            "ready": (ig_id or page_id) and token,
+        }
+
+    brands = {
+        "Jackie Chan": brand_status("Jackie Chan", "JACKIE"),
+        "陳芷晴/Jessica": brand_status("陳芷晴/Jessica", "CHLOE"),
+    }
+    return {
+        "verify_token_set": bool(VERIFY_TOKEN),
+        "app_secret_set": bool(APP_SECRET),
+        "known_brand_ids": sorted(BRAND_BY_ID),
+        "dm_map_loaded": bool(DM_MAP),
+        "dm_map_keywords": len(DM_MAP),
+        "reply_to_all_comments": os.environ.get("REPLY_TO_ALL_COMMENTS", "").lower()
+        in {"1", "true", "yes"},
+        "brands": brands,
+        "any_brand_ready": any(b["ready"] for b in brands.values()),
+        "webhook_base_url": WEBHOOK_BASE_URL or "(not set — infographic URLs disabled)",
+        "infographics_dir_exists": _STATIC_DIR.exists(),
+        "infographics_count": len(list(_STATIC_DIR.glob("*.png"))) if _STATIC_DIR.exists() else 0,
+        "sample_infographic_url": (
+            f"{WEBHOOK_BASE_URL}/infographics/migraine.png" if WEBHOOK_BASE_URL else None
+        ),
     }
 
 
@@ -103,6 +248,12 @@ async def verify(request: Request) -> Response:
         mode, token == VERIFY_TOKEN,
     )
     return PlainTextResponse(content="verification failed", status_code=403)
+
+
+@app.get("/webhook/facebook")
+async def verify_facebook(request: Request) -> Response:
+    """Alias for Messenger from Meta / Facebook Page webhook verification."""
+    return await verify(request)
 
 
 # ── Webhook events (POST) ─────────────────────────────────────────
@@ -148,19 +299,182 @@ async def receive(request: Request) -> Response:
     return Response(status_code=200)
 
 
+@app.post("/webhook/facebook")
+async def receive_facebook(request: Request) -> Response:
+    """Alias for Messenger from Meta / Facebook Page webhook events."""
+    return await receive(request)
+
+
+def _brand_for_entry(entry: dict) -> str:
+    """Best-effort brand label from Meta entry ids.
+
+    Instagram webhooks usually use the IG business account id as entry.id.
+    Facebook Page/Messenger webhooks usually use the Page id as entry.id, with
+    some message payloads also carrying recipient.id.
+    """
+    ids = [str(entry.get("id") or "")]
+    for msg in entry.get("messaging", []) or []:
+        ids.append(str(msg.get("recipient", {}).get("id") or ""))
+    for account_id in ids:
+        if account_id in BRAND_BY_ID:
+            return BRAND_BY_ID[account_id]
+    return "unknown"
+
+
+def _reply_to_comment(comment_id: str, message: str, access_token: str) -> bool:
+    """Post a public reply under an Instagram/Facebook comment."""
+    if not comment_id:
+        return False
+    if comment_id in _REPLIED_COMMENT_IDS:
+        logger.info("[reply] comment=%s already handled in this process", comment_id)
+        return True
+    if not access_token:
+        logger.warning("[reply] JACKIE_PAGE_ACCESS_TOKEN not set; cannot reply comment=%s", comment_id)
+        return False
+
+    url = f"https://graph.facebook.com/{GRAPH_VERSION}/{comment_id}/replies"
+    body = urllib.parse.urlencode({
+        "message": message,
+        "access_token": access_token,
+    }).encode("utf-8")
+    req = urllib.request.Request(url, data=body, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        payload = exc.read().decode("utf-8", errors="replace")
+        logger.error("[reply] Graph HTTP %s comment=%s body=%s", exc.code, comment_id, payload[:500])
+        return False
+    except Exception as exc:  # noqa: BLE001
+        logger.error("[reply] Graph request failed comment=%s error=%r", comment_id, exc)
+        return False
+
+    _REPLIED_COMMENT_IDS.add(comment_id)
+    logger.info("[reply] Jackie comment=%s reply_id=%s", comment_id, data.get("id", "unknown"))
+    return True
+
+
+def _private_reply_to_comment(comment_id: str, message: str, access_token: str) -> bool:
+    """Send an Instagram private reply for a comment, opening the DM flow."""
+    if not comment_id:
+        return False
+    if comment_id in _PRIVATE_REPLIED_COMMENT_IDS:
+        logger.info("[private-reply] comment=%s already handled in this process", comment_id)
+        return True
+    if not access_token:
+        logger.warning(
+            "[private-reply] JACKIE_PAGE_ACCESS_TOKEN not set; cannot DM comment=%s",
+            comment_id,
+        )
+        return False
+
+    url = f"https://graph.facebook.com/{GRAPH_VERSION}/{comment_id}/private_replies"
+    body = urllib.parse.urlencode({
+        "message": message,
+        "access_token": access_token,
+    }).encode("utf-8")
+    req = urllib.request.Request(url, data=body, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        payload = exc.read().decode("utf-8", errors="replace")
+        logger.error(
+            "[private-reply] Graph HTTP %s comment=%s body=%s",
+            exc.code,
+            comment_id,
+            payload[:500],
+        )
+        return False
+    except Exception as exc:  # noqa: BLE001
+        logger.error("[private-reply] Graph request failed comment=%s error=%r", comment_id, exc)
+        return False
+
+    _PRIVATE_REPLIED_COMMENT_IDS.add(comment_id)
+    logger.info(
+        "[private-reply] Jackie comment=%s message_id=%s",
+        comment_id,
+        data.get("message_id") or data.get("id", "unknown"),
+    )
+    return True
+
+
+def _handle_comment(brand: str, field: str, value: dict) -> None:
+    """Keyword-driven auto-reply: comment CTA keyword → private DM + public nudge.
+
+    The private reply sends the matched concept's First DM (from dm_map.json).
+    If no keyword matches, nothing is sent unless REPLY_TO_ALL_COMMENTS is enabled,
+    in which case the brand's static default reply is used (legacy behavior).
+    """
+    if field != "comments":
+        return
+    comment_id = str(value.get("id") or value.get("comment_id") or "")
+    if not comment_id:
+        logger.warning("[reply] comment event had no comment id: %s", value)
+        return
+
+    token = BRAND_ACCESS_TOKENS.get(brand, "")
+    if not token:
+        logger.warning(
+            "[reply] no access token for brand=%s — cannot reply comment=%s",
+            brand, comment_id,
+        )
+        return
+
+    text = value.get("text") or ""
+    keyword = _match_keyword(text)
+    if keyword:
+        entry = DM_MAP[keyword]
+        _private_reply_to_comment(comment_id, entry["first_dm"], token)
+        _reply_to_comment(comment_id, "Just sent you a DM 📩", token)
+        # Log infographic URL so it's visible in Render logs for manual sending
+        if WEBHOOK_BASE_URL:
+            infographic_url = f"{WEBHOOK_BASE_URL}/infographics/{keyword}.png"
+            logger.info(
+                "[reply] brand=%s keyword=%s concept=%r infographic=%s",
+                brand, keyword, entry["title"], infographic_url,
+            )
+        else:
+            logger.info("[reply] brand=%s keyword=%s concept=%r", brand, keyword, entry["title"])
+        return
+
+    if os.environ.get("REPLY_TO_ALL_COMMENTS", "").lower() in {"1", "true", "yes"}:
+        _private_reply_to_comment(comment_id, JACKIE_PRIVATE_REPLY, token)
+        _reply_to_comment(comment_id, JACKIE_COMMENT_REPLY, token)
+        logger.info("[reply] brand=%s default reply (no keyword match)", brand)
+
+
 def _describe(payload: dict) -> None:
     """Human-readable one-liner per event entry — quick eyeball in logs."""
     obj = payload.get("object")  # "instagram" | "page"
     for entry in payload.get("entry", []) or []:
+        brand = _brand_for_entry(entry)
+        entry_id = entry.get("id") or "unknown"
         for change in entry.get("changes", []) or []:
             field = change.get("field")  # "comments" | "messages" | ...
             value = change.get("value", {})
             text = value.get("text") or value.get("message", {}).get("text", "")
             frm = value.get("from", {})
             who = frm.get("username") or frm.get("id") or "unknown"
-            logger.info("[event] %s/%s from=%s text=%r", obj, field, who, text)
+            logger.info(
+                "[event] brand=%s entry=%s %s/%s from=%s text=%r",
+                brand,
+                entry_id,
+                obj,
+                field,
+                who,
+                text,
+            )
+            _handle_comment(brand, field, value)
         # Messenger-style DM events arrive under entry.messaging, not changes
         for msg in entry.get("messaging", []) or []:
             sender = msg.get("sender", {}).get("id", "unknown")
             text = msg.get("message", {}).get("text", "")
-            logger.info("[event] %s/dm from=%s text=%r", obj, sender, text)
+            logger.info(
+                "[event] brand=%s entry=%s %s/dm from=%s text=%r",
+                brand,
+                entry_id,
+                obj,
+                sender,
+                text,
+            )
