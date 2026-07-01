@@ -98,7 +98,19 @@ def main() -> int:
     if not DM_MAP_PATH.exists():
         sys.exit(f"[error] {DM_MAP_PATH} missing — run scripts/export_dm_map.py first")
 
-    dm_map: dict[str, dict] = json.loads(DM_MAP_PATH.read_text(encoding="utf-8"))
+    raw = json.loads(DM_MAP_PATH.read_text(encoding="utf-8"))
+    # Support both per-brand {brand: {kw: entry}} and flat {kw: entry} formats
+    first_val = next(iter(raw.values()), {})
+    if isinstance(first_val, dict) and "first_dm" not in first_val:
+        # Per-brand format — flatten, dedup (same brief across brands, first wins)
+        dm_map: dict[str, dict] = {}
+        for brand_map in raw.values():
+            for kw, entry in brand_map.items():
+                if kw not in dm_map:
+                    dm_map[kw] = entry
+    else:
+        dm_map = raw
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     targets = [args.keyword] if args.keyword else sorted(dm_map)
