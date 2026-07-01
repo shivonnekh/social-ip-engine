@@ -83,6 +83,13 @@ _SYSTEM_TEMPLATE = """你係 Jessica 嘅 Planner — 一個路由 brain。
    FAQ solo (KB 有食譜詳情)
 9. 用戶問「邊款」「點解」「乜嘢」「邊度」「幾耐」嘅知識問題（同時冇預約意向）
    → FAQ solo
+10. ⚠️ 如果「最近對話」入面最後一句 Jessica/assistant 嘅訊息係一條有編號
+    /字母嘅選擇題 (例如 "1. ... 2. ... 3. ..." 或者 "A. ... B. ...")，
+    而今次用戶訊息淨係一個好簡短嘅答案 (例如 "1"、"2"、"B"、"應該係2")
+    → 呢個係用戶認真噉答緊嗰條題，**絕對唔可以當純閒聊 (casual)**。
+    要根據嗰條題嘅主題 route 去啱嘅 specialist（通常係 FAQ，因為呢類選擇題
+    通常源自知識性內容，例如頭痛/偏頭痛分型、體質類型等）。rephrased_query
+    要將個編號解讀返做返個完整選項嘅中文描述，等 KB search 用得着。
 
 Proactive hints (soft):
 - status=constitution_done 但 products_pitched 空 → 寫 proactive_hint="ready_for_pitch"
@@ -107,6 +114,13 @@ A. **rephrased_query** — 將用戶訊息標準化成清晰嘅 HK 廣東話：
      "Hello hi 我想问下汤水" → "你好，我想問下湯水"
      "頭痛😭" → "頭痛😭"  （已 OK）
      "hi" → ""
+
+   ⚠️ 特殊情況 — 用戶淨係覆一個編號/字母去答返上一句嘅選擇題（例如上一句
+   問「1. 抽痛、單側、有壓力時加重、瞓喺黑房會舒服啲 (Liver Yang Rising)
+   2. ... 3. ...」，用戶答「1」）：
+   rephrased_query 唔可以照抄個「1」— 要將個編號解讀返做返個完整選項嘅
+   中文描述（連 TCM 證型都要譯做中文），等 KB search 搵得到相關卡片：
+     "1" → "頭痛類型 1：抽痛、單側、有壓力時加重、瞓喺黑房會舒服啲，即肝陽上亢型頭痛"
 
 B. **extracted_pain_points** — 用戶嘅健康訴求 NER（多 tag 並存）：
 
@@ -466,6 +480,45 @@ def _rule_overrides(
             reasoning="rule: mid constitution assessment",
         )
 
+    # ── Bare numbered/lettered reply to a prior numbered-choice question ──
+    # Bug fix 2026-07-01 (production scenario "David"): Jackie/Jessica sent
+    # a canned numbered question ("1. ... 2. ... 3. ...") and the user
+    # replied bare "1". The LLM path mis-routed this to CASUAL because (a)
+    # the history snippet used to be truncated to 80 chars — hiding the
+    # numbered options entirely — and (b) there was no explicit instruction
+    # to resolve a bare short reply against the prior question. Both are
+    # fixed above (see _HISTORY_SNIPPET_CHARS + rule 10 in the system
+    # prompt), but this deterministic rule ALSO short-circuits the common
+    # case so it never depends on the LLM getting it right: a bare digit
+    # reply directly following a genuine multi-option numbered question is
+    # ALWAYS an answer to that question, never chit-chat.
+    last_assistant = _last_assistant_message(user)
+    if (
+        last_assistant is not None
+        and _looks_like_numbered_question(last_assistant.content)
+        and _looks_like_bare_choice_reply(user_message)
+    ):
+        digit = _leading_digit(user_message)
+        chosen_text = (
+            _extract_chosen_option(last_assistant.content, digit) if digit else None
+        )
+        rephrased = _label_to_zh_query(chosen_text) if chosen_text else "頭痛"
+        return PlannerDecision(
+            specialists=[SpecialistName.FAQ],
+            mode="solo",
+            reasoning=(
+                "rule: bare numeric/lettered reply to prior numbered question "
+                "→ resolve against that question's topic via FAQ, not casual"
+            ),
+            rephrased_query=rephrased,
+            notes_for_writer=(
+                f"用戶啱啱覆咗「{user_message.strip()}」去回應上一句嘅編號選擇題。"
+                + (f"佢揀嘅選項係：「{chosen_text}」。" if chosen_text else "")
+                + "Writer：直接確認返佢揀咗嗰個選項，然後用 FAQ payload 嘅內容俾返"
+                "針對性建議 — 唔好當純閒聊、唔好覆閒話家常。"
+            ),
+        )
+
     # ── Farewell detection → warm closing summary ──────────────────────
     # Only fire when the user has prior history (pure first-touch farewell
     # is pathological; just let Greeting handle it).
@@ -745,6 +798,103 @@ def _looks_like_mcq_answer(text: str) -> bool:
     if any(q in stripped for q in ("?", "？")):
         return False
     return bool(_MCQ_ANSWER_RE.match(stripped))
+
+
+# ── Bare numbered-choice reply detector ──────────────────────────────────────
+# Companion to the MCQ-letter detector above, but for plain DIGIT choices
+# (e.g. "1"/"2"/"3") in numbered questions that are NOT part of the
+# constitution MCQ flow (which only ever uses A/B/C/D — see MCQS in
+# constitution_agent.py). Canned social DMs (e.g. Jackie's migraine-type
+# question) use digits instead.
+import re as _re_choice
+
+# Matches lines like "1. ..." or "2) ..." — used to detect a genuine
+# multi-option numbered question (need >=2 such lines to count).
+_NUMBERED_LINE_RE = _re_choice.compile(r"(?m)^\s*([1-9])[.\)]\s+(\S.*\S|\S)\s*$")
+
+# A short, bare digit reply — optionally with a trailing "." or ")" and
+# nothing else of substance (e.g. "1", "2.", "答案係3" would NOT match —
+# kept conservative like _looks_like_mcq_answer above).
+_BARE_CHOICE_RE = _re_choice.compile(r"^\s*[1-9]\s*[.\)]?\s*$")
+
+
+def _looks_like_numbered_question(text: str) -> bool:
+    """True if `text` presents a genuine multi-option numbered list."""
+    if not text:
+        return False
+    return len(_NUMBERED_LINE_RE.findall(text)) >= 2
+
+
+def _looks_like_bare_choice_reply(text: str) -> bool:
+    """True if `text` is plausibly just a bare digit answering a numbered
+    question (e.g. "1", "2)"). Conservative — long sentences or questions
+    are rejected, mirroring `_looks_like_mcq_answer`."""
+    if not text:
+        return False
+    stripped = text.strip()
+    if len(stripped) > 5:
+        return False
+    if any(q in stripped for q in ("?", "？")):
+        return False
+    return bool(_BARE_CHOICE_RE.match(stripped))
+
+
+def _leading_digit(text: str) -> str | None:
+    m = _re_choice.match(r"^\s*([1-9])", text)
+    return m.group(1) if m else None
+
+
+def _extract_chosen_option(question_text: str, digit: str | None) -> str | None:
+    """Pull out the option text for `digit` from a numbered question."""
+    if not digit:
+        return None
+    for m in _NUMBERED_LINE_RE.finditer(question_text):
+        if m.group(1) == digit:
+            return m.group(2).strip()
+    return None
+
+
+# Small English → Chinese lookup for standard TCM 證型 (pattern) labels that
+# tend to appear parenthesised at the end of a numbered option (e.g.
+# "... (Liver Yang Rising)"). Used to build a Chinese-keyword-rich
+# rephrased_query so KBSearch's keyword matcher (which indexes Chinese
+# trigger phrases) can actually find the matching KB card — otherwise an
+# English-language canned DM's numbered option resolves to zero KB hits.
+_TCM_PATTERN_LABEL_ZH: dict[str, str] = {
+    "liver yang rising": "肝陽上亢頭痛",
+    "blood deficiency": "血虛頭痛",
+    "phlegm-damp": "痰濁頭痛",
+    "phlegm damp": "痰濁頭痛",
+    "qi stagnation": "氣滯頭痛",
+    "blood stasis": "瘀血頭痛",
+    "wind-cold": "風寒頭痛",
+    "wind cold": "風寒頭痛",
+}
+
+_PAREN_LABEL_RE = _re_choice.compile(r"\(([^)]+)\)\s*$")
+
+
+def _label_to_zh_query(option_text: str) -> str:
+    """Resolve a chosen option's text into a Chinese-keyword query for
+    KBSearch. Falls back to the generic "頭痛" trigger phrase (itself a
+    literal trigger_condition on tcm_headache_migraine.json) so the search
+    at least surfaces the general headache-types card even for an
+    unrecognised label."""
+    m = _PAREN_LABEL_RE.search(option_text)
+    if m:
+        label = m.group(1).strip().lower()
+        if label in _TCM_PATTERN_LABEL_ZH:
+            return _TCM_PATTERN_LABEL_ZH[label]
+    return "頭痛"
+
+
+def _last_assistant_message(user: User) -> Any | None:
+    """Most recent non-user message in history (any assistant persona —
+    "jessica", "chloe", etc. are all non-"user" roles)."""
+    for m in reversed(user.conversation_history):
+        if m.role != "user":
+            return m
+    return None
 
 
 _SIMPLE_GREETINGS = frozenset({
@@ -1065,11 +1215,20 @@ def _build_user_prompt(
 決定點 route，輸出 JSON。"""
 
 
+# How much of each history message to show the Planner LLM. Used to be 80
+# chars — too short: a canned numbered-choice DM (e.g. "1. ... 2. ... 3. ...")
+# routinely runs 400-600 chars, so the truncation silently hid the numbered
+# options themselves, leaving the LLM only the preamble and unable to
+# resolve a bare "1" reply against the question it was answering (bug fix
+# 2026-07-01 — see _looks_like_bare_choice_reply / rule 10 above).
+_HISTORY_SNIPPET_CHARS = 400
+
+
 def _format_history(messages: list[Any]) -> str:
     lines = []
     for m in messages:
         who = "用戶" if m.role == "user" else "Jessica"
-        lines.append(f"- {who}: {m.content[:80]}")
+        lines.append(f"- {who}: {m.content[:_HISTORY_SNIPPET_CHARS]}")
     return "\n".join(lines)
 
 

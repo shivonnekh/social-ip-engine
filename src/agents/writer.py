@@ -44,6 +44,34 @@ MAX_BUBBLES = 5
 # "3 款湯水" but only 2 rendered because bubbles[5] got dropped).
 MAX_BUBBLES_PITCH = 8
 
+# ── English-persona CJK enforcement (bug fix 2026-07-01) ────────────────────
+# Unicode ranges covering Chinese/Cantonese script (CJK Unified Ideographs +
+# common extensions). Cantonese has no separate script from Mandarin — both
+# are written with Han characters — so a Han-script scan is sufficient to
+# catch either.
+_CJK_RE = re.compile(r"[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]")
+
+_ENGLISH_ONLY_RETRY_REMINDER = (
+    "\n\n⚠️⚠️⚠️ CRITICAL: your previous reply contained Chinese characters. "
+    "This is STRICTLY FORBIDDEN for this persona — the user only reads English. "
+    "Rewrite the ENTIRE reply in English ONLY. Not a single Chinese character, "
+    "not even for a TCM term (spell it out in English instead, e.g. \"Liver Yang "
+    "Rising\" not \"肝陽上亢\"). ⚠️⚠️⚠️"
+)
+
+_ENGLISH_FALLBACK_MESSAGE = (
+    "Sorry, I'm having a little technical hiccup right now — mind trying again "
+    "in a moment? 🙏"
+)
+
+
+def _contains_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+def _bubbles_contain_cjk(bubbles: list[str]) -> bool:
+    return any(_contains_cjk(b) for b in bubbles)
+
 
 # Conflict resolution — when specialists disagree (e.g. FAQ "no_match"
 # + Sales has products), Writer leans on the HIGHER-priority specialist
@@ -68,6 +96,20 @@ _TONE_MATRIX: dict[UserStatus, str] = {
     UserStatus.BOOKED: "reassuring + prep — 提預約細節，俾佢安心",
     UserStatus.BOUGHT: "感激 + follow-up — 關心使用效果",
     UserStatus.CHURNED: "好輕、零壓力、純關心 — 唔好 push pitch",
+    UserStatus.OPTED_OUT: "(should not be reached)",
+}
+
+# English equivalent of _TONE_MATRIX — used ONLY for language="en" profiles
+# (bug fix 2026-07-01). The Chinese tone matrix was being interpolated into
+# every persona's system prompt regardless of language, including Jackie's —
+# another direct source of Chinese-character leakage into English replies.
+_TONE_MATRIX_EN: dict[UserStatus, str] = {
+    UserStatus.NEW: "warm + self-introduction — first meeting, build rapport",
+    UserStatus.QUALIFIED: "curious + engaging — draw out more about their situation",
+    UserStatus.CONSTITUTION_DONE: "confident + caring — you know them now, suggestions feel natural",
+    UserStatus.BOOKED: "reassuring + prep — confirm appointment details, put them at ease",
+    UserStatus.BOUGHT: "grateful + follow-up — check in on how it's going",
+    UserStatus.CHURNED: "very light, zero pressure, pure care — don't push a pitch",
     UserStatus.OPTED_OUT: "(should not be reached)",
 }
 
@@ -360,28 +402,285 @@ _SKELETON_TEMPLATE = (
 )
 
 
+# -------------------------------------------------------------------
+# English skeleton — bug fix 2026-07-01.
+#
+# _SKELETON_TEMPLATE (Cantonese, above) was being reused VERBATIM for every
+# persona regardless of `profile.language`, including English-only Jackie.
+# Its docstring claimed "identical wording for every persona; only
+# identity_block/tone_matrix/brand_commerce vary" — but the shared
+# behavioural sections (bubble rhythm rules, worked examples, one-question
+# rule, hallucination ban, product-mention formatting) are themselves
+# written entirely in Cantonese, WITH Cantonese example output bubbles
+# (e.g. "你嘅體質係氣虛質"). That is exactly what leaked into Jackie's
+# replies ("Haha收到呀 😄" / "近排忙唔忙呀？") — the surrounding prompt was
+# overwhelmingly Chinese, so the model followed the worked examples' script
+# rather than the one English identity line.
+#
+# Fix: a parallel, fully-English translation of the same behavioural
+# sections, selected whenever `profile.language == "en"`. This is a
+# translation/rewrite, not a byte-for-byte copy — the RULES are identical
+# (bubble length/count, conflict-resolution priority, one-question rule,
+# hallucination ban, product-mention format, banned markdown), only the
+# language + example bubbles differ.
+# -------------------------------------------------------------------
+
+_SKELETON_PART1_EN = (
+    "Your job:\n"
+    "Read the structured intent the specialists give you and combine it into a "
+    "natural WhatsApp/IG-DM-style conversation. Every bubble should be short and "
+    "punchy — just like a real person texting.\n"
+    "\n"
+    "══════════════════════════════\n"
+    "Bubble length + count rules (IMPORTANT):\n"
+    "- Target per bubble: 20-60 words (short, punchy)\n"
+    "- Max ~80 words. Longer than that → split into 2 bubbles\n"
+    "- Use emoji, but sparingly — 1-2 per bubble, never a string of them\n"
+    "\n"
+    "Bubble count — don't pad every reply to the cap! Match the weight of a real "
+    "conversation:\n"
+    "- Simple reply / empathy / small talk / acknowledgement → 2-3 bubbles is enough\n"
+    "- General explanation / follow-up → 3-4 bubbles\n"
+    "- A complex multi-step explanation → only then use up to the cap\n"
+    "- Never stuff content just to hit a higher bubble count. A warm short reply beats "
+    "a long info-dump. Real people texting usually stop after 1-3 lines, not five in a "
+    "row.\n"
+    "\n"
+    "Good examples (natural DM rhythm):\n"
+    "✓ \"Hey there! 😊\"\n"
+    "✓ \"Sounds like there's some real tension built up there\"\n"
+    "✓ \"That kind of headache is usually linked to stress in TCM terms\"\n"
+    "✓ \"Try gently pressing this point for a minute and see if it helps\"\n"
+    "\n"
+    "Bad example (too long, too formal):\n"
+    "✗ \"Hello, based on the information you have shared, it would appear that your "
+    "presentation is consistent with a particular pattern, and I would therefore "
+    "recommend the following multi-step regimen for your consideration.\"\n"
+    "\n"
+    "══════════════════════════════\n"
+    "Conflict resolution (when 2 specialists disagree):\n"
+    "Priority (high → low):\n"
+    "  1. constitution — diagnosis is in-flow\n"
+    "  2. appointment — booking is a concrete action\n"
+    "  3. sales — product pitch\n"
+    "  4. faq — education / knowledge\n"
+    "  5. greeting — filler\n"
+    "\n"
+    "Lower-priority specialist content becomes a brief side mention, or is dropped.\n"
+    "E.g.: faq returns no_match while sales has products → focus on sales, faq gets at "
+    "most a brief mention.\n"
+    "\n"
+    "══════════════════════════════\n"
+    "Casual Talk specialist payload (when this turn includes a casual specialist):\n"
+    "- payload.tone (warm/playful/concerned/supportive) → pick your emoji + tone accordingly\n"
+    "- payload.topic → acknowledge what the user is sharing\n"
+    "- payload.lifestyle_question (if not null) → use it as THIS turn's follow-up, don't "
+    "invent your own\n"
+    "- payload.soft_pivot_hint → the user implicitly hinted at a health topic. Don't go "
+    "into detail this turn — just lightly mention you're happy to help look into it\n"
+    "- intent_flags containing empathy_needed → the FIRST bubble must be an emotional "
+    "acknowledgement (e.g. \"That sounds really tough...\"), don't jump straight to a "
+    "question\n"
+    "\n"
+    "══════════════════════════════\n"
+    "ONE-QUESTION RULE (the most important conversational discipline):\n"
+    "⚠️ The ENTIRE reply (all bubbles combined) may contain AT MOST one question mark.\n"
+    "   Never ask 2+ questions in a single turn — real people don't fire off a string of "
+    "questions; it feels like an interrogation, overwhelms the user, and they'll only "
+    "answer one (or not reply at all).\n"
+    "\n"
+    "How to decide whether to ask 0 or 1 question:\n"
+    "- If this turn's specialist payload already contains a question (e.g. "
+    "casual.lifestyle_question / a constitution question / appointment asking for a "
+    "time) → use THAT one, don't add your own on top.\n"
+    "- If there's no specialist question, but the conversation naturally calls for a "
+    "follow-up → you may add ONE gentle follow-up.\n"
+    "- If the user just needs to feel heard, has already been asked several questions in "
+    "a row, or is in an emotional moment → **it's fine not to ask anything** — just "
+    "respond warmly and stop. Not asking a question is not a mistake.\n"
+    "\n"
+    "Follow-up questions (max one, alternate between lifestyle / health):\n"
+    "A. Lifestyle rapport: \"Sleeping OK lately?\" \"Work been stressful?\" \"Getting "
+    "enough water?\" \"Any exercise lately?\"\n"
+    "B. Health deep-dive: \"Anything else bothering you besides this?\" \"How long has "
+    "this been going on?\" \"Tried anything for it before?\" \"When is it worst?\"\n"
+    "\n"
+    "Rule: if last turn asked a lifestyle question, lean toward a health question this "
+    "turn (and vice versa) — alternate, don't repeat the same angle. Use conversational "
+    "phrasing, never clinical language. On a first meeting / just after a restart → "
+    "follow the intro with a SOFT follow-up, don't jump into a personal question.\n"
+    "\n"
+    "══════════════════════════════\n"
+    "FORWARD MOTION (don't just comfort — give a next step):\n"
+    "When the user asks \"how can you help me?\" / \"what should I do?\" / \"what are my "
+    "options?\" / \"what can I do?\"\n"
+    "→ You must give ONE CONCRETE next step, not vague reassurance.\n"
+    "   ✗ Bad (empty): \"I'll help you sort through this\" / \"Let's break it down "
+    "together\" / \"I can help you analyse it\"\n"
+    "   ✓ Good (specific + one step): pick ONE, based on user.status / how far the "
+    "conversation has progressed and what THIS turn's specialist payload actually "
+    "supports — e.g. a concrete food-therapy / lifestyle / self-care tip from today's "
+    "faq or constitution payload, or gently suggesting a deeper look with a TCM "
+    "practitioner if things feel unresolved.\n"
+    "- Only ONE next step per turn, never a menu of options. Combine with the "
+    "ONE-QUESTION RULE: after giving a concrete suggestion, at most one soft follow-up "
+    "question (or none).\n"
+    "\n"
+    "══════════════════════════════\n"
+    "Tone calibration (based on user.status):\n"
+)
+
+_SKELETON_PART2_EN = (
+    "\n\n══════════════════════════════\n"
+    "══════════════════════════════\n"
+    "THINGS YOU MUST NEVER DO (HALLUCINATION BAN):\n"
+    "1. NEVER say \"you have X constitution\" (X = qi-deficient / damp-heat / "
+    "yin-deficient / phlegm-damp, etc.) unless the constitution specialist's "
+    "payload.phase == \"declaring\" AND payload.constitution has a value. If there is no "
+    "constitution payload, or phase != \"declaring\", **you may never name a "
+    "constitution type**.\n"
+    "2. The user having itchy skin, fatigue, or pain does NOT mean they have any "
+    "particular constitution. Wait for the actual full assessment to finish.\n"
+    "3. If the user asks \"what's my constitution?\" / \"how do you know I'm X type?\" → "
+    "answer that you'd need to run a proper assessment first to know for sure — never "
+    "guess.\n"
+    "4. NEVER name a specific paid product or price unless THIS turn's sales specialist "
+    "payload actually provided it. A general fact about the range of products offered "
+    "is fine, but the SPECIFIC product + price must come from the sales payload. If "
+    "this turn only has an FAQ payload, don't mention product names + prices.\n"
+    "\n"
+)
+
+_SKELETON_PART3_EN = (
+    "\n\n══════════════════════════════\n"
+    "Rules (must never be violated):\n"
+    "- NEVER invent anything a specialist did not say (specific product names, prices, "
+    "the user's constitution, addresses, consultation fees)\n"
+    "- General TCM food-therapy knowledge, wellness tips, how to prepare a remedy → you "
+    "may answer from your own knowledge (not limited to the specialist payload). But "
+    "\"which specific product\", \"how much\", \"which clinic\", \"which constitution\" must "
+    "always be grounded in a payload.\n"
+    "- NEVER infer the user's own constitution from FAQ knowledge cards. A card saying "
+    "\"X constitution tends to have symptom Y\" does NOT mean the user HAS constitution "
+    "X — reverse inference is banned.\n"
+    "- NEVER say anything listed under a specialist payload's writer_must_not_say.\n"
+    "- If the user asks how to buy / says they want it, and the sales payload has "
+    "products_to_pitch → **list every single one: name + price + benefits + image** "
+    "(one bubble per product + media_to_send with image_url). NEVER just say \"we have "
+    "several options\" and tell them to message support — actually show them.\n"
+    "\n"
+    "【Mandatory format for mentioning any product (every time)】\n"
+    "Whenever you mention a product from products_to_pitch, the bubble MUST include:\n"
+    "  1. Product name\n"
+    "  2. Price (the price_display field)\n"
+    "  3. Benefits (3-5 short phrases pulled from indications)\n"
+    "  4. Image (via media_to_send's image_url, auto-attached after that bubble)\n"
+    "\n"
+    "【Standard bubble template】\n"
+    "  \"🍲 [name] — [price_display]\n"
+    "   Benefits: [indications, top 3-5]\n"
+    "   [optional: good for [constitution_match top 1]]\"\n"
+    "\n"
+    "Strictly forbidden:\n"
+    "  ✗ Naming a product + price with no benefits listed\n"
+    "  ✗ \"We have several soups\" with no per-item breakdown\n"
+    "  ✗ Mentioning any product without attaching its image_url to media_to_send\n"
+    "  ✗ Using a benefit word that isn't in that product's indications (never invent one)\n"
+    "  ✗ Pitching 3+ products in a single bubble — one product per bubble\n"
+    "  ✗ Announcing \"I picked N options for you\" but rendering fewer than N product "
+    "bubbles — every product in payload.products_to_pitch MUST get its own bubble with "
+    "its image\n"
+    "- Sales payload intent=\"no_match\" does NOT mean \"no products\" — it just means no "
+    "NEW product to suggest right now.\n"
+    "- Media (images) are handled via media_to_send:\n"
+    "  * Every media_to_send URL must be copied VERBATIM from a URL that already exists "
+    "in a specialist payload (greeting.intro_media[i].url / "
+    "constitution.free_recipes[i].image_url / sales.products_to_pitch[i].image_url / "
+    "faq.named_recipes[i].image_url / faq.acupoint_images[i].image_url).\n"
+    "  * Each media_to_send entry: {{\"url\": \"<verbatim URL>\", \"after_bubble_idx\": 0}}\n"
+    "  * No URL available in the payload → leave media_to_send as []\n"
+    "  * NEVER invent a URL, never write a relative path\n"
+    "  * If the user asks about acupressure, attach the matching faq.acupoint_images "
+    "entries (one image per acupoint mentioned, matched to the bubble that names it).\n"
+    "\n"
+    "- Recipe / remedy recommendations must use the REAL name (the title from the "
+    "specialist payload) + attach the image_url. NEVER say something vague like \"we "
+    "have plenty of recipes but can't send them right now\" — always name the actual "
+    "recipe.\n"
+    "\n"
+    "⛔ NEVER write any of the following inside a bubble:\n"
+    "  - Markdown image syntax `![alt](url)` — the channel doesn't render Markdown, the "
+    "user would just see a raw URL as text\n"
+    "  - Any raw image-hosting URL — image links belong ONLY in media_to_send; bubble "
+    "text should be plain description only\n"
+    "  - External recipe links — same, put those in media_to_send; the bubble should "
+    "just name the recipe + one descriptive sentence\n"
+    "- When the user is meeting you for the first time (greeting.intent_flags contains "
+    "\"new_user_intro\") →\n"
+    "  * Bubble 1 MUST include a brief self-introduction using your name\n"
+    "  * greeting.intro_bubbles can be used almost verbatim as your bubbles\n"
+    "  * Every image in greeting.intro_media must go into media_to_send\n"
+    "\n"
+    "Output JSON (pure JSON, no markdown):\n"
+    "{{\n"
+    "  \"bubbles\": [\"...\", \"...\"],\n"
+    "  \"media_to_send\": [{{\"url\": \"...\", \"after_bubble_idx\": 0}}]\n"
+    "}}\n"
+)
+
+_SKELETON_TEMPLATE_EN = (
+    "{identity_block}\n\n"
+    + _SKELETON_PART1_EN
+    + "{tone_matrix}"
+    + _SKELETON_PART2_EN
+    + "{brand_commerce}"
+    + _SKELETON_PART3_EN
+)
+
+
 def _profile_identity_block(profile: PersonaProfile) -> str:
     """Build a minimal identity paragraph for a non-Jessica persona.
 
-    Phase 0 scaffolding only — NOT reachable from any live call site today
-    (WriterAgent.compose is only ever invoked with profile=None in the
-    current pipeline). A future phase will refine this for Jackie/Chloe
-    parity; today it just needs to exist and be distinct per persona.
+    IMPORTANT: this must be a FULLY English paragraph for an
+    ``language == "en"`` profile (bug fix 2026-07-01 — a mixed Cantonese/
+    English identity block was a direct contributor to Jackie's replies
+    leaking Chinese characters, since so much of the surrounding prompt
+    was in Chinese that even a bilingual identity block biased the model
+    toward Chinese). Cantonese personas (Jessica/Chloe, ``language == "yue"``)
+    keep the original Cantonese wording, unchanged.
     """
     if profile.language == "yue":
-        style_note = (
+        return (
+            f"你係 {profile.identity_name} — AI teammate。\n\n"
+            "身份:\n"
+            "- 唔係醫師，唔做診斷\n"
+            "- 溫柔、人情味、有少少俏皮\n"
+            f"- 永遠用「我」，唔好用「{profile.identity_name}」自稱 (除非有 new_user_intro flag)\n"
             "- 唔好用書面語、唔好用普通話詞 (「您」「我們」「請」「嗎」)\n"
             "- 用「你」「我哋」「啦」「嘞」「啊」「㗎」"
         )
-    else:
-        style_note = "- Use natural, warm, conversational spoken English."
+
     return (
-        f"你係 {profile.identity_name} — AI teammate。\n\n"
-        "身份:\n"
-        "- 唔係醫師，唔做診斷\n"
-        "- 溫柔、人情味、有少少俏皮\n"
-        f"- 永遠用「我」，唔好用「{profile.identity_name}」自稱 (除非有 new_user_intro flag)\n"
-        f"{style_note}"
+        f"You are {profile.identity_name} — an AI teammate.\n\n"
+        "Identity:\n"
+        "- You are NOT a licensed doctor and you do not diagnose\n"
+        "- Gentle, warm, a little playful — like a caring friend, not a salesperson\n"
+        f"- Always refer to yourself as \"I\", never say \"{profile.identity_name}\" in "
+        "third person (unless there is a new_user_intro flag)\n"
+        "- Use natural, warm, conversational spoken English — never formal or stiff "
+        "phrasing\n"
+        "- Write EVERY bubble in English ONLY. Never use Chinese characters, Cantonese, "
+        "Mandarin, or any mix of scripts — not even a single Chinese character, even "
+        "when a TCM term is more commonly written in Chinese. Spell TCM concepts out in "
+        "English (e.g. \"Liver Yang Rising\" not \"肝陽上亢\")."
+    )
+
+
+def _render_tone_matrix(matrix: dict[UserStatus, str]) -> str:
+    return "\n".join(
+        f"- status={status.value}: {voice}"
+        for status, voice in matrix.items()
+        if status != UserStatus.OPTED_OUT
     )
 
 
@@ -394,23 +693,28 @@ def _build_system_prompt(profile: PersonaProfile | None = None) -> str:
     The default Jessica profile (``profile.key == "jessica"``) routes
     through the exact same branch, so it too is byte-identical.
 
-    A non-default profile (Phase 0 scaffolding — dead code path, not
-    reachable from any live dispatch today) swaps in persona-specific
-    identity + brand/commerce text while reusing every shared
-    behavioural rule verbatim via ``_SKELETON_TEMPLATE``.
+    A non-default profile (Phase 0 scaffolding — still not reachable from
+    any live dispatch today) swaps in persona-specific identity +
+    brand/commerce text while reusing every shared behavioural rule via
+    ``_SKELETON_TEMPLATE`` (Cantonese, ``language == "yue"``) or
+    ``_SKELETON_TEMPLATE_EN`` (English, ``language == "en"`` — bug fix
+    2026-07-01: previously EVERY profile, regardless of language, was
+    formatted through the Cantonese-only ``_SKELETON_TEMPLATE``, which is
+    what caused Jackie's (English) replies to leak Chinese characters).
     """
-    tone_lines = "\n".join(
-        f"- status={status.value}: {voice}"
-        for status, voice in _TONE_MATRIX.items()
-        if status != UserStatus.OPTED_OUT
-    )
-
     if profile is None or profile.key == "jessica":
-        return _SYSTEM.format(tone_matrix=tone_lines)
+        return _SYSTEM.format(tone_matrix=_render_tone_matrix(_TONE_MATRIX))
+
+    if profile.language == "en":
+        return _SKELETON_TEMPLATE_EN.format(
+            identity_block=_profile_identity_block(profile),
+            tone_matrix=_render_tone_matrix(_TONE_MATRIX_EN),
+            brand_commerce=profile.brand_policy,
+        )
 
     return _SKELETON_TEMPLATE.format(
         identity_block=_profile_identity_block(profile),
-        tone_matrix=tone_lines,
+        tone_matrix=_render_tone_matrix(_TONE_MATRIX),
         brand_commerce=profile.brand_policy,
     )
 
@@ -558,7 +862,88 @@ class WriterAgent:
             "input_tokens": response.usage.input_tokens,
             "output_tokens": response.usage.output_tokens,
         }
+
+        # HARD enforcement (bug fix 2026-07-01) — an English-only persona
+        # (profile.language == "en") must NEVER send Chinese text, no
+        # matter which code path produced `output` above (LLM success,
+        # salvage, or the Cantonese apology fallback). Prompt instructions
+        # alone are not sufficient (proven in production — Jackie's reply
+        # mixed in Chinese despite an English identity block), so this is
+        # a code-level check + retry + safe fallback, mirroring this
+        # codebase's existing "truncate/fallback, never crash or leak"
+        # philosophy (see MAX_BUBBLES truncation above, _split_bubbles
+        # bubble-count enforcement in chloe_agent.py).
+        #
+        # Gated strictly on `profile.language == "en"` — never fires for
+        # profile=None / Jessica / Chloe (language="yue"), so this cannot
+        # regress the Cantonese path.
+        if profile is not None and profile.language == "en" and _bubbles_contain_cjk(output.bubbles):
+            output, retry_usage = await self._enforce_english_output(
+                profile=profile,
+                prompt=prompt,
+                adaptive_max=adaptive_max,
+                bubble_cap=bubble_cap,
+            )
+            usage["input_tokens"] += retry_usage.get("input_tokens", 0)
+            usage["output_tokens"] += retry_usage.get("output_tokens", 0)
+
         return output, usage
+
+    async def _enforce_english_output(
+        self,
+        *,
+        profile: PersonaProfile,
+        prompt: str,
+        adaptive_max: int,
+        bubble_cap: int,
+    ) -> tuple[WriterOutput, dict[str, int]]:
+        """Retry ONCE with a stronger English-only reminder; if that still
+        leaks CJK (or fails to parse), fall back to a safe generic English
+        message. Never sends Chinese text to an English-only persona."""
+        logger.warning(
+            "writer: CJK detected in English-persona output (profile=%s) — "
+            "retrying once with a stronger reminder",
+            profile.key,
+        )
+        zero_usage = {"input_tokens": 0, "output_tokens": 0}
+        try:
+            response = await self._client.messages.create(
+                model=self._model,
+                max_tokens=adaptive_max,
+                system=self._resolve_system(profile) + _ENGLISH_ONLY_RETRY_REMINDER,
+                messages=[{"role": "user", "content": prompt}],
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("writer: English-enforcement retry call failed (%s)", exc)
+            return WriterOutput(bubbles=[_ENGLISH_FALLBACK_MESSAGE], media_to_send=[]), zero_usage
+
+        raw = "".join(
+            block.text for block in response.content if block.type == "text"
+        ).strip()
+        retry_usage = {
+            "input_tokens": response.usage.input_tokens,
+            "output_tokens": response.usage.output_tokens,
+        }
+
+        try:
+            data = _extract_json(raw)
+            bubbles = [b.strip() for b in data.get("bubbles", []) if b.strip()]
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("writer: English-enforcement retry JSON parse failed (%s)", exc)
+            bubbles = []
+
+        if bubbles and not _bubbles_contain_cjk(bubbles):
+            return (
+                WriterOutput(bubbles=bubbles[:bubble_cap], media_to_send=data.get("media_to_send", [])),
+                retry_usage,
+            )
+
+        logger.error(
+            "writer: English-enforcement retry still leaked CJK (or failed to "
+            "parse) — falling back to a safe generic English message (profile=%s)",
+            profile.key,
+        )
+        return WriterOutput(bubbles=[_ENGLISH_FALLBACK_MESSAGE], media_to_send=[]), retry_usage
 
 
 # -------------------------------------------------------------------

@@ -136,13 +136,23 @@ class FAQAgent:
         # Async hybrid search (keyword first, semantic fallback). If the
         # KBSearch lacks vector_store/embedder, this falls back to
         # keyword automatically.
+        #
+        # Use `effective_query` (rephrased_query when the Planner supplied
+        # one, else the raw user_message) — NOT the raw user_message. This
+        # matters most for bare short replies like "1" answering a prior
+        # numbered question: the Planner resolves those into a real,
+        # KB-searchable query (e.g. "肝陽上亢頭痛") via rephrased_query (see
+        # src/agents/planner.py's bare-choice-reply rule). Searching on the
+        # literal "1" instead would always return zero hits (bug fix
+        # 2026-07-01 — this was silently defeating the documented
+        # rephrased_query → FAQ KB search plumbing described in the
+        # Planner's own docstring).
+        query = inp.effective_query
         try:
-            hits = await self._search.search_async(
-                inp.user_message, top_k=3, min_score=2.5
-            )
+            hits = await self._search.search_async(query, top_k=3, min_score=2.5)
         except Exception as exc:  # noqa: BLE001
             logger.warning("search_async failed (%s); falling back to sync keyword", exc)
-            hits = self._search.search(inp.user_message, top_k=3, min_score=2.5)
+            hits = self._search.search(query, top_k=3, min_score=2.5)
 
         if not hits:
             output = SpecialistOutput(
@@ -155,7 +165,7 @@ class FAQAgent:
                 },
                 cards_used=[],
                 tools_called=[
-                    {"name": "KBSearch.search", "args": {"query": inp.user_message}, "result": "0 hits"}
+                    {"name": "KBSearch.search", "args": {"query": query}, "result": "0 hits"}
                 ],
             )
             return output, {"model": "no_llm", "input_tokens": 0, "output_tokens": 0}
@@ -182,12 +192,12 @@ class FAQAgent:
                 specialist=SpecialistName.FAQ,
                 payload=payload,
                 cards_used=cards_used,
-                tools_called=_tools_log(hits, inp.user_message),
+                tools_called=_tools_log(hits, query),
             )
             return output, {"model": "no_llm", "input_tokens": 0, "output_tokens": 0}
 
         # LLM extract
-        prompt = _build_extract_prompt(inp.user_message, hits)
+        prompt = _build_extract_prompt(query, hits)
         response = await self._client.messages.create(
             model=self._model,
             max_tokens=self._max_tokens,
@@ -241,7 +251,7 @@ class FAQAgent:
             specialist=SpecialistName.FAQ,
             payload=payload,
             cards_used=cards_used,
-            tools_called=_tools_log(hits, inp.user_message),
+            tools_called=_tools_log(hits, query),
         )
 
         usage = {
