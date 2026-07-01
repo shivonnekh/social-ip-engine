@@ -100,7 +100,7 @@ _PRIVATE_REPLIED_COMMENT_IDS: set[str] = set()
 
 BRANDS = {
     "chloe": {
-        "label": "陳芷晴/Jessica",
+        "label": "Chloe Chan",
         "ids": {
             os.environ.get("CHLOE_IG_ID", "").strip(),
             os.environ.get("CHLOE_PAGE_ID", "").strip(),
@@ -141,7 +141,7 @@ _DM_MAP_PATH = Path(__file__).resolve().parent / "dm_map.json"
 # The Notion IP name (e.g. "Jackie Chan (EN)") is the key in dm_map.json.
 _BRAND_LABEL_TO_IP: dict[str, str] = {
     "Jackie Chan": "Jackie Chan (EN)",
-    "陳芷晴/Jessica": "Jessica (HK)",
+    "Chloe Chan": "Chloe Chan (HK)",
 }
 
 

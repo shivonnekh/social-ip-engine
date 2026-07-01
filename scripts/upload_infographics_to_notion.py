@@ -89,8 +89,8 @@ def _ip_slug(full: str) -> str:
     name = _short_ip(full).lower()
     if "jackie" in name:
         return "jackie"
-    if "jessica" in name or "chloe" in name or "陳" in full:
-        return "jessica"
+    if "chloe" in name:
+        return "chloe"
     return re.sub(r"[^a-z0-9]+", "-", name).strip("-")
 
 

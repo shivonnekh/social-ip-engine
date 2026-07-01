@@ -60,8 +60,8 @@ def _ip_slug(ip_full: str) -> str:
     name = " ".join(p for p in name.split() if not all(ord(c) > 0x2000 for c in p))
     if "jackie" in name:
         slug = "jackie"
-    elif "jessica" in name or "chloe" in name:
-        slug = "jessica"
+    elif "chloe" in name:
+        slug = "chloe"
     else:
         slug = re.sub(r"[^a-z0-9]+", "-", name).strip("-") or "unknown"
     _IP_SLUG[ip_full] = slug
