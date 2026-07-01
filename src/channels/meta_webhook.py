@@ -26,9 +26,10 @@ import logging
 import os
 from datetime import datetime
 from collections import OrderedDict
-from typing import Final
+from typing import Callable, Final
 
 from src.channels import comment_rules, meta_client
+from src.channels.chloe_agent import _is_pure_greeting
 from src.channels.meta_events import (
     IncomingComment,
     IncomingDM,
@@ -37,6 +38,7 @@ from src.channels.meta_events import (
 )
 from src.crm.models import ConversationMessage
 from src.orchestrator.pipeline import JessicaPipeline
+from src.personas.profile import PersonaProfile, load_jackie_profile
 
 logger = logging.getLogger("channels.meta_webhook")
 
@@ -138,6 +140,68 @@ def _get_agent(account_id: str | None):
     if account_id and account_id in _account_agents:
         return _account_agents[account_id]
     return _chloe_agent
+
+
+# ---------------------------------------------------------------------------
+# Social-pipeline feature flag (SOCIAL_PIPELINE_ACCOUNTS)
+#
+# Opt-in, per-business-account routing to the profile-driven JessicaPipeline
+# (Planner -> Specialists -> Writer, KB-grounded) instead of ChloeAgent's
+# single-LLM-call model. Empty/unset SOCIAL_PIPELINE_ACCOUNTS = today's
+# ChloeAgent behavior for every account (zero-risk default). See
+# ``_dispatch_dm_profile_pipeline`` for the dispatch logic + fallback.
+# ---------------------------------------------------------------------------
+
+_social_pipeline: JessicaPipeline | None = None
+
+
+def set_social_pipeline(pipeline: JessicaPipeline) -> None:
+    """Register the shared JessicaPipeline for the profile-pipeline DM path.
+
+    Called from ``web.lifespan`` — mirrors ``set_chloe_agent`` /
+    ``set_account_agent``'s registration pattern. This is the SAME
+    pipeline instance already backing WhatsApp (and the dormant
+    Jessica-pipeline fallback branch in ``_dispatch_dm``); registering it
+    explicitly here keeps the profile-pipeline path's dependency clear
+    and independent of the `pipeline` param threaded through `_dispatch_dm`.
+    """
+    global _social_pipeline
+    _social_pipeline = pipeline
+
+
+def _social_pipeline_accounts() -> frozenset[str]:
+    """Business account ids opted into the profile-pipeline path."""
+    raw = os.environ.get("SOCIAL_PIPELINE_ACCOUNTS", "")
+    return frozenset(a.strip() for a in raw.split(",") if a.strip())
+
+
+def _account_profile_loaders() -> dict[str, Callable[[], PersonaProfile]]:
+    """Business account id -> PersonaProfile loader.
+
+    Extend THIS mapping (not the dispatch logic in
+    ``_dispatch_dm_profile_pipeline``) to opt additional accounts/personas
+    into the profile-pipeline path later — e.g. Chloe's own IG account id
+    -> ``load_chloe_profile``. Jackie is the only entry today.
+    """
+    loaders: dict[str, Callable[[], PersonaProfile]] = {}
+    jackie_id = os.environ.get("IG_USER_ID_JACKIE", "").strip()
+    if jackie_id:
+        loaders[jackie_id] = load_jackie_profile
+    return loaders
+
+
+def _profile_for_account(account_id: str | None) -> PersonaProfile | None:
+    """Resolve the PersonaProfile for an account id, or None if unmapped.
+
+    A None return is treated as a failure by the caller (falls back to
+    ChloeAgent) — an account should not be listed in
+    SOCIAL_PIPELINE_ACCOUNTS without a matching profile, but we never
+    assume that invariant holds in production.
+    """
+    if not account_id:
+        return None
+    loader = _account_profile_loaders().get(account_id)
+    return loader() if loader else None
 
 
 # Merge buffer — debounces rapid-fire DM fragments into one turn (lazy init).
@@ -338,6 +402,13 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
         )
         return
 
+    if dm.recipient_id in _social_pipeline_accounts():
+        if await _dispatch_dm_profile_pipeline(dm):
+            return
+        # Profile-pipeline path failed (exception, or unmapped account) —
+        # fall through to the ChloeAgent safety net below so the user is
+        # never left without a reply.
+
     _agent = _get_agent(dm.recipient_id)
     if _agent is not None:
         try:
@@ -362,6 +433,19 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
         bubbles = [b for b in (result.writer_output.bubbles or []) if b.strip()]
         media_by_idx = _group_media(result.writer_output.media_to_send or [])
 
+    await _send_dm_bubbles(dm, bubbles, media_by_idx)
+
+
+async def _send_dm_bubbles(
+    dm: IncomingDM, bubbles: list[str], media_by_idx: dict[int, list[str]]
+) -> None:
+    """Send bubbles + interleaved media to a DM recipient.
+
+    Shared send cadence for every DM reply path in this module (ChloeAgent,
+    the dormant Jessica-pipeline fallback, and the new profile-pipeline
+    path) — one bubble at a time, images grouped right after the bubble
+    they follow, paused between sends.
+    """
     for i, bubble in enumerate(bubbles):
         send = await meta_client.send_dm(
             dm.sender_id, bubble, platform=dm.platform, account_id=dm.recipient_id
@@ -378,6 +462,108 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
                 logger.warning("[meta] DM image send failed: %s", img.detail)
         if i < len(bubbles) - 1:
             await asyncio.sleep(_BUBBLE_PAUSE_S)
+
+
+def _shift_media_by_idx(
+    media_by_idx: dict[int, list[str]], offset: int
+) -> dict[int, list[str]]:
+    """Return a NEW media-by-bubble-index mapping shifted by ``offset``.
+
+    Used when greeting bubbles are prepended ahead of the pipeline's own
+    answer bubbles — the Writer's media indices are relative to its own
+    bubble list, so they must shift by however many greeting bubbles now
+    precede them.
+    """
+    if not offset:
+        return dict(media_by_idx)
+    return {idx + offset: list(urls) for idx, urls in media_by_idx.items()}
+
+
+async def _dispatch_dm_profile_pipeline(dm: IncomingDM) -> bool:
+    """Profile-driven pipeline path (Planner -> Specialists -> Writer,
+    KB-grounded) for accounts opted into SOCIAL_PIPELINE_ACCOUNTS.
+
+    Mirrors ``ChloeAgent.respond()``'s greeting-first / first-touch
+    semantics so the user experience does not regress relative to today's
+    live ChloeAgent path:
+      * First-touch is keyed off "does the CRM row exist" (NOT
+        history-empty — a persist hiccup can read empty history and cause
+        repeat greetings; same reasoning as ``ChloeAgent.respond()``).
+      * A first-touch PURE greeting gets ONLY the persona's greeting
+        bubbles (+ optional greeting media), verbatim — no LLM/pipeline
+        call, mirroring ChloeAgent's fast path.
+      * Otherwise the pipeline runs; greeting bubbles are prepended first
+        if this is still the user's first (non-greeting) message.
+
+    Returns True once the reply has been sent (including the "greeting
+    bubbles only" fast path). Returns False on ANY failure (exception, or
+    an unmapped account/pipeline) — the caller MUST then fall back to
+    ``ChloeAgent.respond()`` for this same turn so the user is never left
+    without a reply.
+    """
+    pipeline = _social_pipeline
+    profile = _profile_for_account(dm.recipient_id)
+    if pipeline is None or profile is None:
+        logger.warning(
+            "[meta] account %s is in SOCIAL_PIPELINE_ACCOUNTS but has no "
+            "registered pipeline/profile — falling back to ChloeAgent",
+            dm.recipient_id,
+        )
+        return False
+
+    try:
+        crm = getattr(pipeline, "_crm", None)
+        existing = await crm.get_user(dm.crm_key) if crm is not None else None
+        is_first_touch = existing is None
+        logger.info(
+            "[meta] profile-pipeline turn key=%s profile=%s first_touch=%s",
+            dm.crm_key, profile.key, is_first_touch,
+        )
+
+        if is_first_touch and _is_pure_greeting(dm.text):
+            bubbles = [b for b in profile.greeting_bubbles if b.strip()]
+            media_by_idx: dict[int, list[str]] = {}
+            if profile.greeting_media_url:
+                media_by_idx[max(0, len(bubbles) - 1)] = [profile.greeting_media_url]
+        else:
+            result = await pipeline.run_turn(
+                phone=dm.crm_key,
+                user_message=dm.text,
+                profile=profile,
+                wa_message_id=dm.message_id,
+            )
+            answer_bubbles = [
+                b for b in (result.writer_output.bubbles or []) if b.strip()
+            ]
+            answer_media = _group_media(result.writer_output.media_to_send or [])
+
+            greeting_bubbles = list(profile.greeting_bubbles) if is_first_touch else []
+            media_by_idx = _shift_media_by_idx(answer_media, len(greeting_bubbles))
+            if is_first_touch and profile.greeting_media_url:
+                greet_idx = max(0, len(greeting_bubbles) - 1)
+                media_by_idx = {
+                    **media_by_idx,
+                    greet_idx: [profile.greeting_media_url, *media_by_idx.get(greet_idx, [])],
+                }
+
+            bubbles = [b for b in greeting_bubbles + answer_bubbles if b.strip()]
+            # Safety cap — the shared Writer's own bubble_cap is a fixed
+            # MAX_BUBBLES / MAX_BUBBLES_PITCH constant (src/agents/writer.py),
+            # NOT profile.max_bubbles, so a persona's bubble cap is not
+            # actually enforced upstream today. Enforce it here so the
+            # persona's reply-shape limit always holds regardless of what
+            # the shared Writer internals decide to do.
+            cap = len(greeting_bubbles) + profile.max_bubbles
+            bubbles = bubbles[: max(1, cap)]
+
+        await _send_dm_bubbles(dm, bubbles, media_by_idx)
+        return True
+    except Exception:  # noqa: BLE001
+        logger.exception(
+            "[meta] profile-pipeline failed for %s, falling back to ChloeAgent",
+            dm.crm_key,
+        )
+        return False
 
 
 async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) -> None:

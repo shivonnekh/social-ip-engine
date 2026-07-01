@@ -117,12 +117,22 @@ async def lifespan(app: FastAPI):
     # IG/FB DMs — per-account persona routing.
     # Chloe (陳芷晴) is the default agent; Jackie handles jackiechan.tcm.
     from src.channels.chloe_agent import ChloeAgent
-    from src.channels.meta_webhook import set_chloe_agent, set_account_agent
+    from src.channels.meta_webhook import (
+        set_account_agent,
+        set_chloe_agent,
+        set_social_pipeline,
+    )
 
     chloe_agent = ChloeAgent(client=client, crm=crm,
                              persona_path=os.environ.get("CHLOE_PERSONA_PATH"))
     set_chloe_agent(chloe_agent)
     app.state.chloe_agent = chloe_agent
+
+    # Profile-pipeline path (SOCIAL_PIPELINE_ACCOUNTS) — same JessicaPipeline
+    # instance already backing WhatsApp. Empty/unset SOCIAL_PIPELINE_ACCOUNTS
+    # means this is registered but never used (ChloeAgent handles 100% of
+    # IG/FB traffic, same as before this feature flag existed).
+    set_social_pipeline(pipeline)
 
     # Jackie Chan TCM (jackiechan.tcm, IG id 17841417304649448)
     _jackie_ig_id = os.environ.get("IG_USER_ID_JACKIE", "").strip()

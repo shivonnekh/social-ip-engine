@@ -133,6 +133,21 @@ services:
       - key: IG_USER_ID          # IG professional account id (Send API target)
         sync: false
 
+      # Profile-pipeline feature flag (meta_webhook.py::_dispatch_dm) —
+      # comma-separated IG/FB business account ids that should route
+      # through the profile-driven JessicaPipeline (Planner -> Specialists
+      # -> Writer, KB-grounded) instead of ChloeAgent's single-LLM-call
+      # model. Any account NOT listed here keeps today's ChloeAgent
+      # behavior unchanged. On ANY failure in the new path (exception,
+      # unmapped account) the turn falls back to ChloeAgent automatically
+      # — this flag only ever adds a path, never removes the safety net.
+      # Empty/unset (the default) = zero risk, identical to pre-migration
+      # behavior for every account.
+      # To activate for Jackie (jackiechan.tcm, IG id 17841417304649448),
+      # set this to "17841417304649448" in the Render dashboard.
+      - key: SOCIAL_PIPELINE_ACCOUNTS
+        sync: false
+
       # ── Facebook Page ──
       - key: FB_ENABLED
         value: "false"   # flip to "true" after FB secrets are set
