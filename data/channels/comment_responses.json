@@ -1,5 +1,16 @@
 [
   {
+    "keyword": "teeth",
+    "language": "en",
+    "accounts": ["17841417304649448"],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nThe banana-peel + baking soda trick is great for surface stains ✨ Rub the inside of a banana peel on your teeth for 2 minutes, then brush with a pinch of baking soda — do this 2-3x a week, not daily (baking soda is abrasive on enamel if overused).\n\nQuick check so I can point you right — is your yellowing more on the surface, or deeper and grey-ish?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/teeth-page-1.png"
+    ],
+    "public_ack": "I've sent you the TCM teeth guide — check your DM! 🌿",
+    "use_agent": false
+  },
+  {
     "keyword": "eye",
     "language": "en",
     "accounts": [
@@ -176,5 +187,17 @@
     "use_agent": false,
     "_source": "notion_sync",
     "_notion_title": "💤 Can't sleep? Your heart and liver are talking"
+  },
+  {
+    "keyword": "teeth",
+    "language": "yue",
+    "accounts": [
+      "17841424706900394"
+    ],
+    "dm_text": "多謝你留言！🌿 我係芷晴～\n\n蕉皮加梳打粉呢個方法,對表面色斑幾有用㗎 ✨ 用蕉皮內側嗰面搽牙齒兩分鐘,再沾少少梳打粉刷牙,一星期做2-3次就夠,唔好日日做(梳打粉太磨損牙齒琺瑯質)。\n\n想問多啲:你啲牙齒係表面偏黃,定係比較深色、灰灰哋?\n\n有任何症狀想傾？回覆我 👇",
+    "public_ack": "Send咗中醫teeth資料俾你喇 — 入嚟睇下 DM！🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🦷 Yellow Teeth (Baking Soda + Banana Peel)"
   }
 ]
