@@ -252,6 +252,21 @@ Proactive outreach — 10 channels, all sharing one 6h asyncio loop in `schedule
 
 All gated by `_within_send_window()` (HKT 09:00-21:00) and `is_blocked(phone)`.
 
+### 3.10 Social Channels — Instagram / Facebook (`src/channels/`)
+
+Two personas share this surface: **Chloe/陳芷晴** (`chloechan.cccc`, IG id `17841424706900394`, Cantonese, default agent) and **Jackie** (`jackiechan.tcm`, IG id `17841417304649448`, English). `src/channels/meta_webhook.py` is the shared core (verify → parse → dedup → dispatch) behind thin `instagram.py`/`facebook.py` routers.
+
+**Comments → DM (canned-first, live, working):**
+`comment_rules.py` matches a keyword substring in a comment against `data/channels/comment_responses.json` (array format — same keyword can exist twice, once per account/language, gated by `_ACCOUNT_LANGUAGE`). A match → `send_private_reply` (the DM) + optional public ack on the thread. No LLM call unless a rule sets `"use_agent": true` (none do today — that path exists but is effectively untested against real traffic, see gotcha below). **No rule match = silent, by design** — never auto-DMs a stranger just because they commented.
+
+**DM replies (two parallel systems — know which one is live):**
+- **`ChloeAgent`** (`chloe_agent.py`) — the ONLY thing actually serving live DM traffic today. One LLM call per turn: persona JSON (`data/personas/{jackie,chloe}.json`) system prompt + last 16 CRM messages, no knowledge-base grounding. Greeting-first (keyed off "does the CRM row exist," not history-empty — a persist hiccup reading empty history must never cause a repeat greeting).
+- **Profile-pipeline path** (`src/personas/profile.py` + the shared `JessicaPipeline`, Planner→Specialists→Writer, KB-grounded) — built 2026-07-01/02, functionally correct (verified via `scripts/persona_dry_run_social.py`), but **dormant in production** unless an account id is in the `SOCIAL_PIPELINE_ACCOUNTS` env var. On ANY exception it falls back to `ChloeAgent` automatically — the fallback net is real, tested (`tests/test_dispatch_dm_profile_pipeline.py`), don't remove it when extending this path.
+
+**Notion → keyword auto-sync:** `POST /admin/notion-sync` (shared secret `X-Sync-Secret` header) reads Production Tracker directly (stdlib only, no import from `ai-tcm-ip` — separate repo/deploy), drafts a keyword rule the moment a row's `Stage` flips to `✅ Published`, writes straight to `comment_responses.json` (takes effect immediately, no redeploy — `comment_rules.load_rules()` reloads on file mtime) and best-effort pushes to git for durability (`GITHUB_PUSH_TOKEN`). `src/notion_sync.py`. Idempotent via `data/channels/notion_sync_state.json`.
+
+**Backfilling missed comments** (webhooks never replay history): `scripts/backfill_comments.py` (local, `pipeline=None`) is safe ONLY for one-shot canned rules with no expected follow-up — see gotcha below. `POST /admin/backfill-comments` runs the same logic inside the live process against the real production CRM — use this for anything conversational.
+
 ---
 
 ## 4. Data
@@ -477,3 +492,38 @@ Same hard triggers as `~/.claude/rules/common/agents.md`. Additionally for this 
   the Planner, Writer, or a Specialist prompt. The dry-run found 4
   bugs in the same day that unit tests had passed — it tests against
   real LLM, with realistic conversation state.
+- **Do not give `IG_ENABLED` / `FB_ENABLED` a literal `value:` in
+  `render.yaml` — they MUST be `sync: false`.** `instagram.py`/`facebook.py`
+  read this env var fresh on every webhook POST; when falsy it returns
+  `{"status":"disabled"}, 200` (so Meta doesn't disable the subscription)
+  and processes NOTHING — no error anywhere, comments/DMs just vanish
+  silently. A hardcoded `value:` gets re-applied by Render's blueprint
+  sync on every deploy, silently overwriting whatever was set in the
+  dashboard. This caused a real multi-day outage (2026-07-01/02) — 5
+  deploys in one day kept resetting it back to disabled. To check the
+  LIVE state without dashboard access: POST a correctly-signed synthetic
+  webhook event and read the response `status` field directly
+  (`"disabled"` vs `"queued"`) — don't infer from git history or guess.
+- Do not run `scripts/backfill_comments.py` (local) for any comment
+  where a conversational follow-up is expected (numbered options, "reply
+  here"). It runs with `pipeline=None` — even if you wire a real
+  pipeline in, running it LOCALLY still writes to local SQLite, never
+  the production Postgres the live app actually reads. A user's next
+  reply then arrives with zero context. 2026-07-01 incident: David
+  replied "1" to a migraine-type DM sent via this script; `ChloeAgent`
+  had no memory it was ever sent, replied "did your message get cut
+  off?". Use `POST /admin/backfill-comments` (real CRM) for anything
+  conversational; the local script is for one-shot canned rules only.
+- Meta's private-reply-to-comment API allows roughly ONE reply per
+  comment. Re-running `backfill_comments.py` against already-replied
+  comments returns generic `HTTP 500 OAuthException "unknown error"` —
+  this is expected and harmless (Meta's way of saying "already done"),
+  not a sign the token or integration is broken. Verify via `GET
+  /{comment_id}/replies`, not by re-sending.
+- `notion_sync.py`'s keyword-rule drafting is mechanical templating, not
+  translation — it wraps whatever raw text sits in the Notion "First DM"
+  code block into the target persona's greeting/closing template without
+  checking the source text's actual language. If a Content Library entry
+  was authored in English but routed to Chloe (Cantonese), the drafted
+  rule comes out Cantonese-greeting-wrapped-around-English-middle. Spot
+  check every auto-drafted non-English-source rule before it ships.

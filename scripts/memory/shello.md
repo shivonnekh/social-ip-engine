@@ -401,3 +401,75 @@ Still open:
 - WhatsApp post-call summary (phone-number crm_keys, different send path)
 - Silero VAD WASM upgrade (neural network, more precise end-of-speech)
 - PTT mode fallback button
+
+## Session — 2026-06-26
+
+### What happened
+Full day wiring Jackie Chan's IG agent flow into TCM-Jessica. Merged the Jackie branch to main, deployed to Render, set up per-account routing, keyword protocols, and fixed the Postgres DB expiry crash.
+
+### Decisions
+- **Jackie agent** on `jackiechan.tcm` (IG id `17841417304649448`) — English, gpt-4o-mini, no WA push
+- **Catch-all comment handler**: any comment on Jackie → public ack "I've sent you the details — check your DM! 🌿" + Jackie agent DM
+- **Keyword rules wired**: `detox`/`cleanse` (4 images live), `knee`/`knee pain` (images pending), `tonsil`/`tonsil stone` (images pending)
+- **Both agents scope-limited to TCM only** — off-topic gets a warm redirect, no credits wasted
+- **Chloe model fixed**: was `gpt-5.4-mini` (bad model name) → `gpt-4o-mini`
+- **comment_ack** field added to persona JSON — controls what Jackie posts publicly on the thread
+- **New Postgres DB**: `tcm-jessica-db-2` (basic_256mb, Singapore) — `dpg-d8v33p67r5hc73e5eri0-a`. Old free DB expired 2026-06-20. New DB internal URL not resolving — left on external URL, deploy still failing at session end.
+
+### Still open
+- **Postgres connection still broken** — external URL also failed DNS. User transferred to Codex to continue. Need correct External Database URL from Render dashboard for `dpg-d8v33p67r5hc73e5eri0-a`
+- **Knee + tonsil stone images** — user needs to provide; keyword rules are ready (empty image_urls)
+- **Rotate Jackie IG token** — the one pasted in chat earlier (`IGAAWCAW9wrw...`) should be rotated
+- **Rotate Render API key** `rnd_4KadINh8FUoRVOJf0WLd33GujXI8` — was logged in chat/memory
+- **IG token auto-refresh** — Jackie token expires ~60 days (around late August 2026)
+- **App Review** for Advanced Access (public users beyond testers)
+
+### Key references
+- Render service: `srv-d879lsmq1p3s73av6f80` · owner: `tea-d467almuk2gs73cvmd60`
+- New DB ID: `dpg-d8v33p67r5hc73e5eri0-a` · DB name: `jessica_db_k7gp` · user: `jessica`
+- Jackie IG token in Render env as `IG_PAGE_ACCESS_TOKEN_JACKIE`
+
+## Session — 2026-06-27
+
+### What happened
+Full Jackie IG agent flow audit + two-layer language routing hardened. Continued from previous session where Jackie's IG account was wired up.
+
+### Decisions
+- **Array format for comment_responses.json** — switched from dict (can't have duplicate keys) to array so "gut" can exist for Jackie (en) AND Chloe (yue) as separate rules
+- **Two-layer match**: keyword substring → account filter → language gate (hard block in code)
+- **`_ACCOUNT_LANGUAGE` map** in `comment_rules.py` — Jackie=en, Chloe=yue. Code-level guard logs ERROR and skips rule on language mismatch
+- **Chloe gut rule added** — gut-page-1..6.png (Cantonese, 6 pages) with Cantonese DM text
+- **濕熱 DM text fixed** — was saying "I'm Jackie", corrected to Chloe Cantonese voice
+- Root cause of the incident: shared "gut" keyword with no account/language separation → Jackie sent Cantonese images to English users
+
+### Self-reply guard confirmed
+- `_is_own_comment()` runs at two layers (process_post + handle_comment)
+- `IG_USER_ID_JACKIE` ✅ confirmed set on Render
+- `recipient_id` also in `own_ids` — bulletproof even without the env var
+
+### Still open
+- `IG_PAGE_ACCESS_TOKEN` and `IG_PAGE_ACCESS_TOKEN_JACKIE` both MISSING from Render — no outbound DMs/replies work until these are added
+- Jackie IG token shared in previous chat session — should be rotated
+- Render API key `rnd_4KadINh8FUoRVOJf0WLd33GujXI8` — in memory file, rotate when possible
+- IG tokens expire ~60 days (Aug 2026) — no auto-refresh loop built
+
+## Session — 2026-07-01/02 (comment auto-reply outage + KB-grounded DM pipeline)
+
+### What happened
+Diagnosed + fixed a real production outage (comments/DMs going unreplied), then built + shipped (behind flags, fallback-protected) the first phase of a bigger migration: giving Jackie/Chloe's IG DMs the same KB-grounded multi-agent brain WhatsApp/Jessica already has, instead of the ungrounded single-LLM-call `ChloeAgent`. Full narrative in CLAUDE.md §3.10 + §10 (What Not To Do) — this is the session log; those are the durable lessons.
+
+### Decisions / what shipped (all merged to main, all verified independently — not just agent-reported)
+- **eye/migraine/teeth keyword rules** added for Jackie (images recovered from ai-tcm-ip's already-generated set, not regenerated). Backfilled all stuck historical comments via `scripts/backfill_comments.py` + verified via Graph API (`/replies`, `/conversations`).
+- **`POST /admin/notion-sync`** — Notion Automation webhook, drafts keyword rules the moment Production Tracker Stage → ✅ Published. `POST /admin/backfill-comments` — live-CRM version of the backfill script for anything conversational.
+- **`PersonaProfile` abstraction** (`src/personas/profile.py`) — Jessica/Jackie/Chloe profiles threaded optionally through `pipeline.run_turn`/`Planner.decide`/`Writer.compose`. Default path proven byte-identical to pre-migration behavior via golden-fixture test.
+- **Fixed 2 real bugs found via manual dry-run** (`scripts/persona_dry_run_social.py`), not just unit tests: Planner truncated history to 80 chars (cut off numbered options before it could see them) + FAQAgent searched KB with raw message instead of Planner's `rephrased_query`. Also added a hard code-level CJK-character guard so English personas can never leak Chinese text (retry once, then safe fallback).
+- **Jackie wired live behind `SOCIAL_PIPELINE_ACCOUNTS`** (empty by default = zero risk) — `_dispatch_dm_profile_pipeline()` in `meta_webhook.py`, any exception falls back to `ChloeAgent` automatically, tested with a forced-failure case.
+- **Root-caused the actual outage**: `IG_ENABLED`/`FB_ENABLED` had a literal `value: "false"` in `render.yaml` (not `sync: false`) since they were first added — every deploy silently reset them, killing comment/DM processing with zero errors. Fixed to `sync: false`. Confirmed the live gate state directly by POSTing a signed synthetic webhook and reading the response `status` field (`"disabled"`) — don't infer from git history, test the real thing.
+- **`notion_sync.py` mechanical templating bug**: doesn't check if the Notion source text's language matches the target persona — drafted a Chloe/Cantonese rule that was English-wrapped-in-Cantonese-greeting. Fixed by hand for `teeth`; worth a real fix in the sync script itself later (flagged, not yet built).
+
+### Still open
+- **`IG_ENABLED=true` needs to actually be set in the Render dashboard** — the `sync:false` fix prevents future resets but doesn't retroactively fix the current live value. User was walking through this when session ended.
+- Chloe's own IG account — no live posts found when checked (`/media` returned empty) — the Chloe/yue teeth rule may be sitting unused for now.
+- Shadow-mode / full Chloe cutover for the PersonaProfile pipeline not started — only Jackie is wired, and only behind a flag that isn't flipped on yet either.
+- `notion_sync.py` source-language verification — real gap, not yet fixed at the tool level.
+- `_comment_via_agent()` (the pre-existing, separately-dormant comment path that calls `pipeline.run_turn` directly with no profile) still mis-voices IG comments if any rule ever sets `use_agent: true` — none do today, confirmed, but it's a live landmine if someone adds one without knowing this.
