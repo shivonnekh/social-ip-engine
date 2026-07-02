@@ -24,6 +24,7 @@ import hmac
 import json
 import logging
 import os
+import re
 from datetime import datetime
 from collections import OrderedDict
 from typing import Callable, Final
@@ -357,12 +358,67 @@ async def handle_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
     await _get_merge_buffer(pipeline).submit(dm)
 
 
-async def _should_send_canned_for_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> bool:
+# Words allowed AROUND a keyword for the DM to still count as a bare
+# trigger ("eye pls", "want gut guide"). Anything else in the message
+# means the user is saying something real — route to the agent.
+_TRIGGER_FILLER_WORDS = frozenset({
+    # courtesy / greeting
+    "pls", "please", "plz", "thanks", "thank", "you", "ty",
+    "hi", "hello", "hey", "yo", "ok", "okay",
+    # request framing
+    "want", "send", "give", "get", "have", "need", "share",
+    "can", "may", "me", "i", "a", "an", "the", "this", "that",
+    # the thing being requested
+    "guide", "guides", "info", "protocol", "tips",
+})
+# CJK equivalent — request framing + particles + "guide/懶人包" nouns.
+_TRIGGER_FILLER_CJK = frozenset(
+    "我要想俾比畀唔該麻煩請份個嗰啊呀啦喇喎嘅資料懶人包指南攻略貼士圖"
+)
+
+
+def _is_bare_keyword_trigger(text: str, keyword: str) -> bool:
+    """True when a DM is essentially a keyword trigger ("eye", "gut pls",
+    "want eye guide") rather than a genuine message that merely contains
+    a keyword substring.
+
+    Approach: remove the keyword, then everything left must be filler
+    (courtesy/request words, particles, emoji, punctuation). This catches
+    English statements ("my eye hurts"), English questions ("what about
+    dark under-eye circle?") AND punctuation-less Cantonese questions
+    ("眼點算好") — all of which must reach the agent.
+
+    Regression guard for the 2026-07-02 incident: a real question
+    substring-matched the ``eye`` rule and received the canned guide
+    (again) instead of a real answer.
+    """
+    stripped = (text or "").strip()
+    if not stripped or not keyword:
+        return False
+    if "?" in stripped or "？" in stripped:
+        return False
+    remainder = stripped.lower().replace(keyword.lower(), " ")
+    # Latin words left over must all be filler.
+    for word in re.findall(r"[a-z']+", remainder):
+        if word.strip("'") not in _TRIGGER_FILLER_WORDS:
+            return False
+    # CJK characters left over must all be filler.
+    for ch in remainder:
+        if "一" <= ch <= "鿿" and ch not in _TRIGGER_FILLER_CJK:
+            return False
+    return True
+
+
+async def _should_send_canned_for_dm(
+    dm: IncomingDM, pipeline: JessicaPipeline, rule=None
+) -> bool:
     """Only use keyword canned guides to open a DM conversation.
 
     Once the user has CRM history, the social agent should continue naturally
     instead of looping back into the same protocol prompt whenever a keyword is
-    mentioned again.
+    mentioned again. Additionally, the same guide is never sent twice to one
+    user (``temp_state.guides_sent``) — this holds even when conversation
+    history is missing, e.g. when a backfill run persisted elsewhere.
     """
     crm = getattr(pipeline, "_crm", None)
     if crm is None:
@@ -376,6 +432,8 @@ async def _should_send_canned_for_dm(dm: IncomingDM, pipeline: JessicaPipeline) 
         return True
     history = list(getattr(user, "conversation_history", []) or [])
     state = dict(getattr(user, "temp_state", {}) or {})
+    if rule is not None and rule.keyword in state.get("guides_sent", []):
+        return False
     return not history and not state.get("meta_pending_guide_images")
 
 
@@ -385,10 +443,16 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
     if await _send_pending_guide_images(dm, pipeline):
         return
 
-    # Keyword guide short-circuit — "gut" etc. in a DM sends the canned
+    # Keyword guide short-circuit — a bare "gut"/"eye" DM sends the canned
     # guide (images) directly, skipping the LLM. Same rules as comments.
+    # Genuine sentences/questions containing a keyword go to the agent.
     rule = comment_rules.match(dm.text, account_id=dm.recipient_id)
-    if rule is not None and not rule.use_agent and await _should_send_canned_for_dm(dm, pipeline):
+    if (
+        rule is not None
+        and not rule.use_agent
+        and _is_bare_keyword_trigger(dm.text, rule.keyword)
+        and await _should_send_canned_for_dm(dm, pipeline, rule)
+    ):
         await _persist_canned_interaction(
             pipeline,
             crm_key=dm.crm_key,
@@ -396,6 +460,7 @@ async def _dispatch_dm(dm: IncomingDM, pipeline: JessicaPipeline) -> None:
             inbound_message_id=dm.message_id,
             outbound_text=rule.dm_text,
             image_urls=rule.all_images,
+            keyword=rule.keyword,
         )
         await _send_canned_to_user(
             dm.sender_id, rule, platform=dm.platform, account_id=dm.recipient_id
@@ -629,6 +694,7 @@ async def _comment_via_canned(
             outbound_text=rule.dm_text,
             image_urls=rule.all_images,
             pending_images=True,
+            keyword=rule.keyword,
         )
     return True
 
@@ -786,6 +852,7 @@ async def _persist_canned_interaction(
     outbound_text: str,
     image_urls: list[str],
     pending_images: bool = False,
+    keyword: str | None = None,
 ) -> None:
     """Store canned guide exchanges so later agent replies have context."""
     crm = getattr(pipeline, "_crm", None)
@@ -793,10 +860,18 @@ async def _persist_canned_interaction(
         return
     try:
         user = await crm.get_or_create_user(crm_key)
+        state = dict(getattr(user, "temp_state", {}) or {})
+        state_dirty = False
         if pending_images and image_urls:
-            state = dict(getattr(user, "temp_state", {}) or {})
             state["meta_pending_guide_images"] = list(image_urls)
             state["meta_pending_guide_text"] = outbound_text
+            state_dirty = True
+        if keyword:
+            already = [s for s in state.get("guides_sent", []) if isinstance(s, str)]
+            if keyword not in already:
+                state["guides_sent"] = [*already, keyword]
+                state_dirty = True
+        if state_dirty:
             await crm.save_user(user.with_updates(temp_state=state))
         now = datetime.utcnow()
         await crm.append_message(

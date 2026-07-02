@@ -122,6 +122,9 @@ async def test_returning_user_no_greeting():
     assert reply.bubbles == ["飲多啲水啦 😊"]
 
 
+@pytest.mark.skip(reason="cta_nudge was removed from ChloePersona (post-9b3c993); "
+                         "WhatsApp CTA returns per-IP in the funnel integration — "
+                         "see TCM-INTEGRATION-PLAN.html Phase 2")
 @pytest.mark.asyncio
 async def test_whatsapp_cta_gated_by_turns():
     """The WhatsApp nudge is only injected into the system prompt after
@@ -153,6 +156,9 @@ async def test_whatsapp_cta_gated_by_turns():
     assert "wa.me" in sys_deep and len(sys_deep) > len(sys_early)
 
 
+@pytest.mark.skip(reason="cta_nudge was removed from ChloePersona (post-9b3c993); "
+                         "WhatsApp CTA returns per-IP in the funnel integration — "
+                         "see TCM-INTEGRATION-PLAN.html Phase 2")
 @pytest.mark.asyncio
 async def test_llm_failure_falls_back_to_cta():
     class _BoomClient:
@@ -197,7 +203,12 @@ async def test_handle_dm_routes_to_chloe(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_dm_keyword_guide_short_circuits_chloe(monkeypatch, tmp_path):
-    """A 'gut' DM sends the canned guide (text + images), NOT the LLM."""
+    """A bare 'gut' DM sends the canned guide (text + images), NOT the LLM.
+
+    Note: only BARE keyword triggers short-circuit (case-insensitive,
+    ≤3 words). Full sentences containing a keyword go to the agent —
+    see tests/test_dm_keyword_hijack.py (2026-07-02 incident).
+    """
     import json as _json
     from src.channels import comment_rules
     cfg = tmp_path / "rules.json"
@@ -227,7 +238,7 @@ async def test_dm_keyword_guide_short_circuits_chloe(monkeypatch, tmp_path):
     monkeypatch.setattr(meta_webhook, "_chloe_agent", _Chloe())
 
     dm = IncomingDM(platform="instagram", sender_id="U1", recipient_id="B",
-                    text="hi can i get GUT guide", message_id="m1", timestamp=0)
+                    text="GUT pls", message_id="m1", timestamp=0)
     await meta_webhook._dispatch_dm(dm, pipeline=None)  # type: ignore[arg-type]
 
     assert chloe_called == []                       # LLM skipped
