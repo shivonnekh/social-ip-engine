@@ -2,6 +2,17 @@
 
 Multi-IP short-form video factory for TCM marketing. Pipeline: **idea → image → voice → video**, orchestrated through a Notion board and a set of `scripts/notion_*.py` helpers.
 
+## ⚠️ This repo does NOT run the live Instagram bot — a separate repo does
+
+**`TCM-Jessica`** (`/Users/shivonne/Claude Code/TCM-Jessica`, `github.com/shivonnekh/TCM-Jessica`, deployed at `https://tcm-jessica.onrender.com`) is a completely separate, unrelated live-production repo — Jackie's and Chloe's real Instagram comment→DM auto-reply, plus Jessica's WhatsApp bot for 心宜中醫. Confused these twice in one session (2026-07-01/02) — burned real time investigating this repo's dead-code `server/webhook.py` (never deployed, was never the live thing) before finding the actual live system. Do not assume a "webhook"/"comment reply" ask is about this repo's `server/` folder — it almost certainly means TCM-Jessica.
+
+**What lives where:**
+- **Here (ai-tcm-ip)**: authoring — Notion content pipeline, image/voice/video generation, DM copy + infographic *briefs* written per concept.
+- **TCM-Jessica**: the actual live bot — `data/channels/comment_responses.json` (keyword→DM rules, separate schema from anything here), Meta webhook/Graph API integration, real customer conversations.
+- **The bridge**: TCM-Jessica's `POST /admin/notion-sync` (its own `src/notion_sync.py`, stdlib-only, reads Notion directly — does NOT import anything from this repo) polls Production Tracker for `Stage = ✅ Published` and auto-drafts a keyword rule the moment content goes live. `scripts/notion_ids.json` here is duplicated (not secret) into TCM-Jessica for this purpose — keep both in sync if the Notion board structure changes.
+- **Infographic images already generated here** (`server/static/infographics/<brand>/<keyword>.png` via `batch_infographic_gen.py`) need a **manual copy** into TCM-Jessica's `data/media/guides/<keyword>-page-1.png` + a matching `image_urls` entry in its `comment_responses.json` — the auto-sync does not do this step yet.
+- **Check Notion FIRST before regenerating an infographic**: `batch_infographic_gen.py` sometimes already ran and uploaded the real image to the **Production Tracker row's "📊 DM Infographic" toggle** (not the Content Library concept page, which only ever has the text brief). Walk the row body for that toggle before assuming a new GPT image-gen call is needed.
+
 ## Secrets (NEVER commit)
 All keys live in `.env` (gitignored). Scripts auto-load it.
 - `NOTION_KEY` — Notion integration token
@@ -46,7 +57,9 @@ Shot N · ~Xs · beat
 ## Voice (MiniMax)
 - English IP (Jackie): `voice_id=elderly_man, speed=1.2, pitch=0, MINIMAX_TTS_LANGUAGE=English`
 - Cantonese IP (Jessica): `voice_id=Cantonese_GentleLady, speed=1.0, pitch=1, language=Chinese,Yue`
-- ⚠️ Commas (，/,) make MiniMax insert pauses — minimize in scripts. Keep each clip ≤13s.
+- ✅ **Use NATURAL punctuation (，。？—) — MiniMax respects it for pauses + rhythm.** Verified empirically: same line 6.9s (no punctuation) → 8.5s (with `. , —`) → 9.4s (with `<#x#>` tags). Stripping punctuation = robotic/fake delivery. Do NOT replace punctuation with spaces.
+- Optional explicit pause: `<#x.x#>` tags (seconds, 0.01–99.99), e.g. `…the same.<#0.4#> TCM doesn't.` — for extra emphasis beyond punctuation.
+- Keep each clip ≤13s.
 
 ## 即梦 / Dreamina CLI (video)
 `~/.local/bin/dreamina` (logged in, maestro VIP). Key command:
