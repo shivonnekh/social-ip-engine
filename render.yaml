@@ -126,8 +126,16 @@ services:
         sync: false
 
       # ── Instagram ──
+      # sync:false (NOT a hardcoded value) — this MUST be dashboard-managed.
+      # Render blueprint syncs re-apply a literal `value:` on every deploy,
+      # silently overwriting any manual dashboard change. This var was
+      # hardcoded "false" here since it was first added, so every deploy
+      # (we did 5 today) reset it back to disabled regardless of what was
+      # set in the dashboard — real comments/DMs arrived and were silently
+      # dropped (200 OK to Meta, zero processing) with no error anywhere.
+      # Set the actual value ("true"/"false") in the Render dashboard only.
       - key: IG_ENABLED
-        value: "false"   # flip to "true" after IG secrets are set
+        sync: false
       - key: IG_PAGE_ACCESS_TOKEN
         sync: false
       - key: IG_USER_ID          # IG professional account id (Send API target)
@@ -149,8 +157,10 @@ services:
         sync: false
 
       # ── Facebook Page ──
+      # sync:false — same reasoning as IG_ENABLED above: must be
+      # dashboard-managed so a deploy never silently resets it.
       - key: FB_ENABLED
-        value: "false"   # flip to "true" after FB secrets are set
+        sync: false
       - key: FB_PAGE_ACCESS_TOKEN
         sync: false
       - key: FB_PAGE_ID          # Facebook Page id (Send API target)
