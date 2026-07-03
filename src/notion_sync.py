@@ -41,6 +41,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from src.ips import registry as ip_registry
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 _IDS_PATH = REPO_ROOT / "scripts" / "notion_ids.json"
 _RULES_PATH = REPO_ROOT / "data" / "channels" / "comment_responses.json"
@@ -48,15 +50,6 @@ _STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_sync_state.json"
 
 NOTION_API = "https://api.notion.com/v1"
 _STOP_WORDS = {"comment", "the", "word", "below", "type", "now"}
-
-# IP Registry title → (account_id, language). Extend as new IPs go live.
-# Matches the same accounts already wired in meta_client._ACCOUNT_CREDS_ENV
-# and comment_rules._ACCOUNT_LANGUAGE.
-_IP_ACCOUNT: dict[str, tuple[str, str]] = {
-    "jackie": ("17841417304649448", "en"),
-    "chloe": ("17841424706900394", "yue"),
-    "jessica": ("17841424706900394", "yue"),  # legacy IP name, same account
-}
 
 _VOICE_TEMPLATE = {
     "en": (
@@ -171,11 +164,20 @@ def _extract_first_dm(content_page_id: str) -> str:
 
 
 def _ip_account(ip_full_name: str) -> tuple[str, str] | None:
+    """Notion IP Registry title → (instagram account id, language), or None.
+
+    Resolution (ids + legacy aliases like jessica→chloe) lives in
+    ``data/ips/*/ip.json`` via ``src.ips.registry`` — add an IP there,
+    not here.
+    """
     name = ip_full_name.split("(")[0].strip().lower()
-    for key, val in _IP_ACCOUNT.items():
-        if key in name:
-            return val
-    return None
+    ip = ip_registry.resolve_ip_name(name)
+    if ip is None:
+        return None
+    channel = ip.channels.get("instagram")
+    if channel is None:
+        return None
+    return (channel.account_id, ip.language)
 
 
 def _load_json(path: Path, default: Any) -> Any:

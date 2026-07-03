@@ -44,22 +44,14 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Final
 
+from src.ips import registry as ip_registry
+
 logger = logging.getLogger("channels.comment_rules")
 
 _DEFAULT_PATH: Final[str] = str(
     Path(__file__).resolve().parent.parent.parent
     / "data" / "channels" / "comment_responses.json"
 )
-
-
-# Maps account ID → expected content language.
-# This is a HARD GATE — a rule whose `language` field doesn't match this
-# map will be silently skipped and logged as an error, even if it would
-# otherwise match the keyword and account. Prevents cross-language image sends.
-_ACCOUNT_LANGUAGE: dict[str, str] = {
-    "17841417304649448": "en",   # jackiechan.tcm  → English only
-    "17841424706900394": "yue",  # chloechan.cccc  → Cantonese only
-}
 
 
 @dataclass(frozen=True)
@@ -174,14 +166,15 @@ def _account_allowed(rule: CommentReply, account_id: str | None) -> bool:
 def match(text: str, *, account_id: str | None = None) -> CommentReply | None:
     """Return the first matching rule allowed for this receiving account.
 
-    Language gate: if the account has a registered expected language (see
-    ``_ACCOUNT_LANGUAGE``) and the rule has a ``language`` field that
-    differs, the rule is BLOCKED regardless of keyword/account match.
-    This prevents Jackie (English) from ever serving Cantonese images,
-    even if comment_responses.json is misconfigured.
+    Language gate: if the account belongs to a registered IP (see
+    ``data/ips/*/ip.json`` via ``src.ips.registry``) and the rule has a
+    ``language`` field that differs from that IP's language, the rule is
+    BLOCKED regardless of keyword/account match — a HARD GATE, logged as
+    an error. This prevents Jackie (English) from ever serving Cantonese
+    images, even if comment_responses.json is misconfigured.
     """
     haystack = (text or "").lower()
-    expected_lang = _ACCOUNT_LANGUAGE.get(account_id or "", "")
+    expected_lang = ip_registry.account_language(account_id)
     for rule in load_rules():
         if not (rule.keyword and rule.keyword in haystack):
             continue

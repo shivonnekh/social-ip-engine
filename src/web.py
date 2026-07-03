@@ -29,6 +29,7 @@ from fastapi.staticfiles import StaticFiles
 from src.admin_views import router as admin_router
 from src.agents.registry import build_specialist_registry
 from src.crm.repo_factory import open_crm_repo, resolve_database_url
+from src.ips import registry as ip_registry
 from src.llm import LLMClient
 from src.orchestrator.pipeline import JessicaPipeline
 from src.tools.embedder import Embedder
@@ -50,6 +51,12 @@ ROOT = Path(__file__).resolve().parent.parent
 DB_URL = resolve_database_url(str(ROOT / "data" / "jessica.db"))
 TRACE_DIR = os.environ.get("TRACE_DIR", str(ROOT / "traces"))
 MEDIA_DIR = ROOT / "data" / "media"
+
+# Default IP for IG/FB DMs (Chloe) — every account without its own agent
+# falls back to this persona. Backfill defaults to Jackie's IG account
+# (the main IP). Both resolved from data/ips/ — the single source of truth.
+_DEFAULT_DM_IP = "chloe"
+_DEFAULT_BACKFILL_ACCOUNT = ip_registry.get("jackie").channels["instagram"].account_id
 
 
 # -------------------------------------------------------------------
@@ -134,16 +141,26 @@ async def lifespan(app: FastAPI):
     # IG/FB traffic, same as before this feature flag existed).
     set_social_pipeline(pipeline)
 
-    # Jackie Chan TCM (jackiechan.tcm, IG id 17841417304649448)
-    _jackie_ig_id = os.environ.get("IG_USER_ID_JACKIE", "").strip()
-    if _jackie_ig_id and os.environ.get("IG_PAGE_ACCESS_TOKEN_JACKIE", "").strip():
-        _jackie_persona = str(ROOT / "data" / "ips" / "jackie" / "persona.json")
-        jackie_agent = ChloeAgent(client=client, crm=crm, persona_path=_jackie_persona)
-        set_account_agent(_jackie_ig_id, jackie_agent)
-        app.state.jackie_agent = jackie_agent
-        logger.info("Jackie agent registered for IG account %s", _jackie_ig_id)
-    else:
-        logger.warning("Jackie IG credentials not set — DMs to jackiechan.tcm will fall back to Chloe")
+    # Per-account persona agents for every other active IP in the registry
+    # (e.g. Jackie for jackiechan.tcm). Keyed by the RUNTIME value of the
+    # IP's user-id env var — matches the webhook's recipient_id.
+    for ip in ip_registry.all_ips():
+        if not ip.active or ip.id == _DEFAULT_DM_IP:
+            continue
+        channel = ip.channels.get("instagram")
+        if channel is None or channel.dms != "persona":
+            continue
+        ip_ig_id = os.environ.get(channel.user_id_env, "").strip()
+        if ip_ig_id and os.environ.get(channel.token_env, "").strip():
+            agent = ChloeAgent(client=client, crm=crm, persona_path=str(ip.persona_path))
+            set_account_agent(ip_ig_id, agent)
+            setattr(app.state, f"{ip.id}_agent", agent)
+            logger.info("%s agent registered for IG account %s", ip.display_name, ip_ig_id)
+        else:
+            logger.warning(
+                "%s IG credentials (%s/%s) not set — DMs will fall back to the default agent",
+                ip.display_name, channel.token_env, channel.user_id_env,
+            )
 
     background_tasks: list[asyncio.Task] = []
 
@@ -338,7 +355,7 @@ async def admin_backfill_comments(request: Request) -> JSONResponse:
     from src.channels.meta_events import IncomingComment
     from src.channels.meta_webhook import handle_comment
 
-    account_id = body.get("account_id", "17841417304649448")
+    account_id = body.get("account_id", _DEFAULT_BACKFILL_ACCOUNT)
     pipeline: JessicaPipeline = request.app.state.pipeline
     summary: dict[str, list[str]] = {}
 

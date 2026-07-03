@@ -42,24 +42,20 @@ from typing import Final
 import httpx
 
 from src.channels.meta_events import Platform
+from src.ips import registry as ip_registry
 
 logger = logging.getLogger("channels.meta_client")
 
 _DEFAULT_VERSION: Final[str] = "v25.0"
 _TIMEOUT_S: Final[float] = 15.0
 
-# Per-platform env var names: (access-token var, sender-id var)
+# Per-platform env var names: (access-token var, sender-id var).
+# Per-ACCOUNT credential env var names come from the IP registry
+# (data/ips/<id>/ip.json → channels.instagram.{token_env,user_id_env}) —
+# add a new account by adding an ip.json, not by editing this module.
 _CREDS_ENV: Final[dict[Platform, tuple[str, str]]] = {
     "instagram": ("IG_PAGE_ACCESS_TOKEN", "IG_USER_ID"),
     "facebook": ("FB_PAGE_ACCESS_TOKEN", "FB_PAGE_ID"),
-}
-
-# Per-account overrides keyed by business IG/FB account id.
-# When a webhook event's recipient_id matches one of these, the override
-# token + sender_id is used instead of the global platform defaults.
-# Add a new account by adding its id → (token_env_var, id_env_var) here.
-_ACCOUNT_CREDS_ENV: Final[dict[str, tuple[str, str]]] = {
-    "17841417304649448": ("IG_PAGE_ACCESS_TOKEN_JACKIE", "IG_USER_ID_JACKIE"),  # jackiechan.tcm
 }
 
 # Graph host is PER-PLATFORM and cannot be shared:
@@ -100,9 +96,11 @@ class _Creds:
 def _creds(platform: Platform, account_id: str | None = None) -> _Creds:
     """Return credentials for the given platform, optionally scoped to a
     specific business account id (``recipient_id`` on inbound events).
-    Falls back to the global platform token when no per-account override exists."""
-    if account_id and account_id in _ACCOUNT_CREDS_ENV:
-        token_var, id_var = _ACCOUNT_CREDS_ENV[account_id]
+    Falls back to the global platform token when the IP registry has no
+    entry for the account."""
+    account_envs = ip_registry.token_envs_for_account(account_id)
+    if account_envs is not None:
+        token_var, id_var = account_envs
     else:
         token_var, id_var = _CREDS_ENV[platform]
     return _Creds(
