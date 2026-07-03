@@ -88,12 +88,15 @@ def test_chloe_account_is_cantonese_gated(rules_file):
     assert rule is not None and rule.dm_text == "YUE GUT"
 
 
-def test_unknown_account_has_no_language_gate(rules_file):
+def test_unknown_account_fails_closed_for_language_tagged_rules(rules_file):
+    """SEMANTICS CHANGED 2026-07-03 (Phase 4 merge): language-tagged rules
+    are BLOCKED for unregistered accounts (fail closed) — previously the
+    first rule won regardless, which would have served wrong-language
+    content to any account id missing from the language map."""
     from src.channels import comment_rules
 
-    # No expected language for an unregistered account → first rule wins.
     rule = comment_rules.match("gut", account_id="999")
-    assert rule is not None and rule.dm_text == "EN GUT"
+    assert rule is None
 
 
 def test_rule_without_language_passes_any_gate(rules_file):
