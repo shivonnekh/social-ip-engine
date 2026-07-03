@@ -214,5 +214,20 @@
     ],
     "public_ack": "Sent you the kidney-yang food guide — check your DM! 🌿",
     "use_agent": false
+  },
+  {
+    "keyword": "muscle",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Thanks for commenting — you're in the right place 💪\n\nHere's your quick TCM muscle protocol:\n• Build Kidney Essence first: black beans, walnuts, Chinese yam (山藥) daily\n• Time your protein: eat within 30 min post-workout WITH warm food — cold shakes block Spleen absorption and slow gains\n• Sleep before 11pm: Kidney Essence rebuilds between 11pm–1am. This is when your gains actually happen.\n\nQuick question — which feels more like you: slow recovery (3+ days sore), or training hard but muscles feel 'soft'?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM muscle guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "💪 Why You're Not Building Muscle",
+    "image_urls": [
+      "https://michele-linguistical-unslyly.ngrok-free.dev/media/guides/muscle-page-1.png"
+    ]
   }
 ]
