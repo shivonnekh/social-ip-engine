@@ -1,0 +1,59 @@
+# Render deployment for ai-tcm-ip Meta webhook (TCM-ChloeChan / 陳芷晴 IG brand).
+#
+# Standard plan — no cold starts, always-on.
+# Meta disables flaky webhooks if the server doesn't respond consistently.
+
+services:
+  - type: web
+    name: ai-tcm-ip
+    runtime: python
+    region: singapore
+    plan: standard
+    rootDir: server
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn webhook:app --host 0.0.0.0 --port $PORT
+
+    healthCheckPath: /health
+
+    envVars:
+      # Must match the Verify Token pasted into the Meta dashboard.
+      - key: META_VERIFY_TOKEN
+        sync: false
+      # App Secret from Meta App dashboard → App Settings → Basic.
+      - key: META_APP_SECRET
+        sync: false
+      # Optional ids used only to label incoming events by IP/brand in logs.
+      - key: CHLOE_IG_ID
+        sync: false
+      - key: CHLOE_PAGE_ID
+        sync: false
+      - key: JACKIE_IG_ID
+        sync: false
+      - key: JACKIE_PAGE_ID
+        sync: false
+      - key: JACKIE_PAGE_ACCESS_TOKEN
+        sync: false
+      - key: JACKIE_IG_ACCESS_TOKEN
+        sync: false
+      - key: JACKIE_COMMENT_REPLY
+        sync: false
+      - key: JACKIE_PRIVATE_REPLY
+        sync: false
+      - key: CHLOE_IG_ACCESS_TOKEN
+        sync: false
+      - key: CHLOE_PAGE_ACCESS_TOKEN
+        sync: false
+      # Aliases matching medical-agent env var naming convention
+      - key: IG_USER_ID_JACKIE
+        sync: false
+      - key: IG_PAGE_ACCESS_TOKEN_JACKIE
+        sync: false
+      - key: IG_USER_ID
+        sync: false
+      - key: IG_PAGE_ACCESS_TOKEN
+        sync: false
+      # Public URL of this Render service — used to build infographic URLs in DMs.
+      # Set AFTER first deploy once you know the URL (e.g. https://ai-tcm-ip.onrender.com)
+      - key: WEBHOOK_BASE_URL
+        sync: false

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  launchd job: run the auto-fan-out watcher every 5 minutes (local Mac).
+
+  INSTALL (one time):
+    cp deploy/com.chatdaddy.tcm-fanout.plist ~/Library/LaunchAgents/
+    # edit the two paths below if your repo lives elsewhere, then:
+    launchctl load   ~/Library/LaunchAgents/com.chatdaddy.tcm-fanout.plist
+    launchctl start  com.chatdaddy.tcm-fanout      # run immediately once
+
+  STOP / REMOVE:
+    launchctl unload ~/Library/LaunchAgents/com.chatdaddy.tcm-fanout.plist
+
+  LOGS:  tail -f /tmp/tcm-fanout.out  /tmp/tcm-fanout.err
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.chatdaddy.tcm-fanout</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/shivonne/Claude Code/ai-tcm-ip/scripts/run_watch.sh</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/shivonne/Claude Code/ai-tcm-ip</string>
+
+  <!-- every 300 seconds (5 min). Use 1800 for half-hourly. -->
+  <key>StartInterval</key>
+  <integer>300</integer>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/tcm-fanout.out</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/tcm-fanout.err</string>
+</dict>
+</plist>
