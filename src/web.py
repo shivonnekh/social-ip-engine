@@ -122,22 +122,23 @@ async def lifespan(app: FastAPI):
     set_fb_pipeline(pipeline)
 
     # IG/FB DMs — per-account persona routing.
-    # Chloe (陳芷晴) is the default agent; Jackie handles jackiechan.tcm.
-    from src.channels.chloe_agent import ChloeAgent
+    # Chloe (陳芷晴) is the default agent; other IPs (e.g. Jackie) get their
+    # own PersonaAgent per the IP registry loop below.
+    from src.channels.chloe_agent import PersonaAgent
     from src.channels.meta_webhook import (
         set_account_agent,
         set_chloe_agent,
         set_social_pipeline,
     )
 
-    chloe_agent = ChloeAgent(client=client, crm=crm,
-                             persona_path=os.environ.get("CHLOE_PERSONA_PATH"))
+    chloe_agent = PersonaAgent(client=client, crm=crm,
+                               persona_path=os.environ.get("CHLOE_PERSONA_PATH"))
     set_chloe_agent(chloe_agent)
     app.state.chloe_agent = chloe_agent
 
     # Profile-pipeline path (SOCIAL_PIPELINE_ACCOUNTS) — same JessicaPipeline
     # instance already backing WhatsApp. Empty/unset SOCIAL_PIPELINE_ACCOUNTS
-    # means this is registered but never used (ChloeAgent handles 100% of
+    # means this is registered but never used (PersonaAgent handles 100% of
     # IG/FB traffic, same as before this feature flag existed).
     set_social_pipeline(pipeline)
 
@@ -152,7 +153,7 @@ async def lifespan(app: FastAPI):
             continue
         ip_ig_id = os.environ.get(channel.user_id_env, "").strip()
         if ip_ig_id and os.environ.get(channel.token_env, "").strip():
-            agent = ChloeAgent(client=client, crm=crm, persona_path=str(ip.persona_path))
+            agent = PersonaAgent(client=client, crm=crm, persona_path=str(ip.persona_path))
             set_account_agent(ip_ig_id, agent)
             setattr(app.state, f"{ip.id}_agent", agent)
             logger.info("%s agent registered for IG account %s", ip.display_name, ip_ig_id)

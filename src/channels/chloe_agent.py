@@ -1,4 +1,7 @@
-"""Chloe / per-account IG+FB DM agents (separate route from Jessica pipeline).
+"""PersonaAgent — per-account IG+FB DM agents (separate route from Jessica pipeline).
+
+Formerly ``ChloeAgent`` (renamed 2026-07 — one class serves every IP, not
+just Chloe; ``ChloeAgent`` remains as a backwards-compat alias).
 
 Each account runs its own persona JSON:
   - Chloe (陳芷晴)  — default, data/ips/chloe/persona.json
@@ -12,7 +15,8 @@ Features:
   * One LLM call per turn.
 
 Persona config: ``data/ips/chloe/persona.json`` (env override CHLOE_PERSONA_PATH).
-Per-account persona: pass ``persona_path`` to ChloeAgent constructor.
+Per-account persona: pass ``persona_path`` to the PersonaAgent constructor
+(``src.ips.registry.get(ip_id).persona_path`` is the canonical source).
 """
 
 from __future__ import annotations
@@ -85,8 +89,12 @@ def load_persona() -> ChloePersona:
     return _load_persona(str(p), mtime)
 
 
-class ChloeAgent:
-    """Single-LLM-call social DM agent. Greeting-first, CRM-backed."""
+class PersonaAgent:
+    """Single-LLM-call social DM agent. Greeting-first, CRM-backed.
+
+    One instance per IP/account — the persona JSON (constructor
+    ``persona_path``, or the Chloe default) is the only thing that varies.
+    """
 
     def __init__(self, client, crm, *, persona_path: str | None = None) -> None:
         # client: src.llm.LLMClient ; crm: CRM repo (same instance as pipeline)
@@ -209,6 +217,10 @@ class ChloeAgent:
             )
         except Exception:  # noqa: BLE001
             logger.exception("[chloe] CRM persist failed for %s", crm_key)
+
+
+# Backwards-compat alias — the class was named ChloeAgent until 2026-07.
+ChloeAgent = PersonaAgent
 
 
 # ---------------------------------------------------------------------------

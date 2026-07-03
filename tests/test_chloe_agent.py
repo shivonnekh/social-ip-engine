@@ -9,7 +9,7 @@ from datetime import datetime
 import pytest
 
 from src.channels import chloe_agent, meta_client, meta_webhook
-from src.channels.chloe_agent import ChloeAgent, _split_bubbles, load_persona
+from src.channels.chloe_agent import PersonaAgent, _split_bubbles, load_persona
 from src.channels.meta_events import IncomingDM
 
 
@@ -95,7 +95,7 @@ class _FakeCRM:
 @pytest.mark.asyncio
 async def test_first_touch_greets_first():
     crm = _FakeCRM(history=[])  # new user
-    agent = ChloeAgent(client=_FakeClient("你可以多飲暖水 🌿"), crm=crm)
+    agent = PersonaAgent(client=_FakeClient("你可以多飲暖水 🌿"), crm=crm)
     reply = await agent.respond(crm_key="ig_123", user_message="我成日攰")
 
     persona = load_persona()
@@ -113,7 +113,7 @@ async def test_returning_user_no_greeting():
     hist = [ConversationMessage(role="user", content="hi", at=datetime.utcnow()),
             ConversationMessage(role="chloe", content="你好", at=datetime.utcnow())]
     crm = _FakeCRM(history=hist)
-    agent = ChloeAgent(client=_FakeClient("飲多啲水啦 😊"), crm=crm)
+    agent = PersonaAgent(client=_FakeClient("飲多啲水啦 😊"), crm=crm)
     reply = await agent.respond(crm_key="ig_123", user_message="仲係攰")
 
     persona = load_persona()
@@ -142,7 +142,7 @@ async def test_whatsapp_cta_gated_by_turns():
     # Early conversation (2 turns) → no nudge
     crm_early = _FakeCRM(history=hist(2))
     client_early = _FakeClient("飲多啲水 🌿")
-    await ChloeAgent(client=client_early, crm=crm_early).respond(
+    await PersonaAgent(client=client_early, crm=crm_early).respond(
         crm_key="ig_e", user_message="仲係攰")
     sys_early = client_early.messages.calls[0]["system"]
     assert persona.cta_nudge.strip()[:8] not in sys_early  # nudge absent
@@ -150,7 +150,7 @@ async def test_whatsapp_cta_gated_by_turns():
     # Deep conversation (>= cta_after_turns) → nudge present
     crm_deep = _FakeCRM(history=hist(persona.cta_after_turns))
     client_deep = _FakeClient("不如試下…")
-    await ChloeAgent(client=client_deep, crm=crm_deep).respond(
+    await PersonaAgent(client=client_deep, crm=crm_deep).respond(
         crm_key="ig_d", user_message="想知多啲")
     sys_deep = client_deep.messages.calls[0]["system"]
     assert "wa.me" in sys_deep and len(sys_deep) > len(sys_early)
@@ -166,7 +166,7 @@ async def test_llm_failure_falls_back_to_cta():
             @staticmethod
             async def create(**_): raise RuntimeError("llm down")
     crm = _FakeCRM(history=[1])  # returning, so no greeting noise
-    agent = ChloeAgent(client=_BoomClient(), crm=crm)
+    agent = PersonaAgent(client=_BoomClient(), crm=crm)
     reply = await agent.respond(crm_key="ig_9", user_message="hello")
     assert any("wa.me" in b or "WhatsApp" in b for b in reply.bubbles)
 
@@ -244,3 +244,10 @@ async def test_dm_keyword_guide_short_circuits_chloe(monkeypatch, tmp_path):
     assert chloe_called == []                       # LLM skipped
     assert texts == [("U1", "懶人包俾你 🌿")]          # canned text
     assert images == [("U1", "https://x/p1.png"), ("U1", "https://x/p2.png")]
+
+
+def test_chloe_agent_alias_is_persona_agent() -> None:
+    """Backwards-compat: ChloeAgent must remain importable as an alias."""
+    from src.channels.chloe_agent import ChloeAgent
+
+    assert ChloeAgent is PersonaAgent
