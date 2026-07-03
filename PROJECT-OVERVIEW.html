@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social IP Engine — Project Overview</title>
+<style>
+  :root{
+    --ink:#1a1a2e; --muted:#5b6072; --line:#e7e9f0;
+    --brand:#5b4bff; --brand2:#8a63ff; --soft:#f6f5ff;
+    --green:#12a150; --amber:#c47f00; --card:#ffffff;
+    --bg:#f4f4f9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+
+  /* Hero */
+  header{
+    background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 100%);
+    color:#fff; padding:64px 0 72px; position:relative; overflow:hidden;
+  }
+  header::after{
+    content:""; position:absolute; right:-80px; top:-80px;
+    width:320px; height:320px; border-radius:50%;
+    background:rgba(255,255,255,.08);
+  }
+  header .wrap{position:relative; z-index:1}
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:2px; font-size:12px;
+    font-weight:700; opacity:.85; margin-bottom:14px;
+  }
+  header h1{font-size:42px; line-height:1.15; margin-bottom:16px; font-weight:800}
+  header p.lede{font-size:19px; max-width:640px; opacity:.94}
+  .status-pill{
+    display:inline-flex; align-items:center; gap:8px; margin-top:26px;
+    background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.3);
+    padding:8px 16px; border-radius:100px; font-size:14px; font-weight:600;
+  }
+  .dot{width:9px;height:9px;border-radius:50%;background:#5dffa0;box-shadow:0 0 0 4px rgba(93,255,160,.25)}
+
+  /* Sections */
+  section{padding:52px 0}
+  h2{font-size:26px; margin-bottom:8px; font-weight:800}
+  .sub{color:var(--muted); font-size:16px; margin-bottom:32px; max-width:680px}
+
+  /* What it does — steps */
+  .flow{display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
+  .step{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:26px 22px; position:relative;
+  }
+  .step .num{
+    width:34px;height:34px;border-radius:10px; display:flex;align-items:center;justify-content:center;
+    background:var(--soft); color:var(--brand); font-weight:800; font-size:15px; margin-bottom:14px;
+  }
+  .step h3{font-size:17px; margin-bottom:6px}
+  .step p{font-size:14.5px; color:var(--muted)}
+  .arrow{text-align:center;color:var(--brand);font-size:22px;align-self:center}
+
+  /* Personas */
+  .cards{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+  .persona{
+    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px;
+  }
+  .persona .avatar{
+    width:52px;height:52px;border-radius:14px; display:flex;align-items:center;justify-content:center;
+    font-size:24px; margin-bottom:16px;
+  }
+  .persona.jackie .avatar{background:#fff0e6}
+  .persona.chloe .avatar{background:#eef0ff}
+  .persona h3{font-size:20px; margin-bottom:2px}
+  .persona .lang{font-size:13px; color:var(--muted); font-weight:600; margin-bottom:14px}
+  .persona p{font-size:14.5px; color:var(--muted)}
+  .tag{display:inline-block;background:var(--soft);color:var(--brand);font-size:12px;font-weight:700;
+    padding:4px 10px;border-radius:8px;margin-top:14px}
+
+  /* Value grid */
+  .value{display:grid; grid-template-columns:repeat(2,1fr); gap:18px}
+  .v{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;gap:14px}
+  .v .ico{font-size:22px}
+  .v h4{font-size:16px;margin-bottom:3px}
+  .v p{font-size:14px;color:var(--muted)}
+
+  /* Roadmap */
+  .road{display:flex; gap:0; align-items:stretch; flex-wrap:wrap}
+  .phase{flex:1; min-width:170px; text-align:center; padding:22px 16px; position:relative}
+  .phase .badge{
+    display:inline-block; font-size:12px; font-weight:700; padding:4px 12px; border-radius:100px; margin-bottom:12px;
+  }
+  .badge.live{background:#e6f7ee;color:var(--green)}
+  .badge.next{background:#fff6e5;color:var(--amber)}
+  .badge.later{background:#eef0f5;color:var(--muted)}
+  .phase h4{font-size:16px;margin-bottom:4px}
+  .phase p{font-size:13.5px;color:var(--muted)}
+  .phase:not(:last-child)::after{
+    content:"›"; position:absolute; right:-6px; top:50%; transform:translateY(-50%);
+    color:var(--line); font-size:26px;
+  }
+
+  /* Highlight band */
+  .band{background:var(--soft); border-radius:20px; padding:36px; text-align:center}
+  .band h2{margin-bottom:10px}
+  .band p{color:var(--muted); max-width:620px; margin:0 auto; font-size:16px}
+
+  footer{padding:40px 0 60px; text-align:center; color:var(--muted); font-size:13px}
+  .divider{height:1px;background:var(--line);margin:0 auto;max-width:960px}
+
+  @media(max-width:720px){
+    header h1{font-size:32px}
+    .flow,.cards,.value{grid-template-columns:1fr}
+    .arrow{transform:rotate(90deg)}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Project Overview</div>
+    <h1>Social IP Engine</h1>
+    <p class="lede">An AI system that lets our content-creator personalities reply to their social media audience automatically — instantly, on-brand, and in the right language, around the clock.</p>
+    <div class="status-pill"><span class="dot"></span> Live on Instagram &amp; Facebook</div>
+  </div>
+</header>
+
+<!-- WHAT IT DOES -->
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="sub">When a follower comments or sends a private message to one of our creator accounts, the system understands it and replies in the creator's own voice — no staff member needs to be online.</p>
+    <div class="flow">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>A follower reaches out</h3>
+        <p>They leave a comment on a post or send a direct message to the creator's page.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>The system understands it</h3>
+        <p>It reads the message and works out what the person is really asking about.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>It replies as the creator</h3>
+        <p>A warm, on-brand answer is sent back in seconds — publicly or as a private message.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PERSONAS -->
+<section>
+  <div class="wrap">
+    <h2>Who it speaks as</h2>
+    <p class="sub">Each creator personality has its own voice, language, and style. The system keeps every reply consistent with that identity.</p>
+    <div class="cards">
+      <div class="persona jackie">
+        <div class="avatar">🎬</div>
+        <h3>Jackie Chan TCM</h3>
+        <div class="lang">English · Main personality</div>
+        <p>Shares traditional wellness guidance and answers audience questions in a friendly, approachable English voice.</p>
+        <span class="tag">Live</span>
+      </div>
+      <div class="persona chloe">
+        <div class="avatar">🌸</div>
+        <h3>Chloe · 陳芷晴</h3>
+        <div class="lang">Cantonese · Local audience</div>
+        <p>Connects with a Cantonese-speaking community with natural, everyday local language and a caring tone.</p>
+        <span class="tag">Live</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHY IT MATTERS -->
+<section>
+  <div class="wrap">
+    <h2>Why it matters</h2>
+    <p class="sub">The engine turns social media engagement into something we can scale — without adding headcount for every new account or platform.</p>
+    <div class="value">
+      <div class="v"><div class="ico">⚡</div><div><h4>Instant replies, 24/7</h4><p>Followers get answered in seconds, at any hour, never left waiting.</p></div></div>
+      <div class="v"><div class="ico">🎯</div><div><h4>Always on-brand</h4><p>Every reply matches the creator's personality and stays within our guidelines.</p></div></div>
+      <div class="v"><div class="ico">🌏</div><div><h4>Multi-language</h4><p>English and Cantonese today, with room to add more voices and markets.</p></div></div>
+      <div class="v"><div class="ico">📈</div><div><h4>Scales without extra staff</h4><p>New creators and platforms plug into the same engine — no rebuild needed.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section>
+  <div class="wrap">
+    <h2>Where it's going</h2>
+    <p class="sub">Built to grow across platforms one at a time, each reusing the same foundation.</p>
+    <div class="road">
+      <div class="phase">
+        <span class="badge live">● Live now</span>
+        <h4>Instagram &amp; Facebook</h4>
+        <p>Comments and private messages fully handled.</p>
+      </div>
+      <div class="phase">
+        <span class="badge next">Next</span>
+        <h4>Messenger</h4>
+        <p>Extending private conversations to Facebook Messenger.</p>
+      </div>
+      <div class="phase">
+        <span class="badge later">Later</span>
+        <h4>TikTok</h4>
+        <p>Bringing the same engine to a new, fast-growing audience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BAND -->
+<section>
+  <div class="wrap">
+    <div class="band">
+      <h2>The big picture</h2>
+      <p>One engine, many personalities, every platform. Social IP Engine lets our creator brands stay responsive and engaging at a scale that would be impossible to staff by hand — and it's already working in the real world today.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Social IP Engine — Project Overview · Prepared July 2026</div>
+</footer>
+
+</body>
+</html>

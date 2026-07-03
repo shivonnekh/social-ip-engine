@@ -490,3 +490,7 @@ Still open:
 - 2 skip-marked cta_nudge orphan tests in test_chloe_agent.py.
 - Phase 1 (IP Registry) not started; D5 (is Chloe actively fed content?) unanswered.
 - My manual DM to Irene is NOT in prod CRM (sent via Graph API directly).
+
+## Session — 2026-07-03 (Phase 2 merge executed)
+What happened: ai-tcm-ip merged INTO social-ip-engine as studio/ (git subtree, history preserved). Dead server code → docs/legacy/ai-tcm-ip-server/; infographics → studio/assets/infographics/; .env copied to studio/.env (gitignored). GitHub repo shivonnekh/ai-tcm-ip ARCHIVED (read-only); local folder renamed _archived-ai-tcm-ip (contains gitignored campaigns/_generated media — don't delete without checking). launchd auto-fanout job NOT installed (plist was repo-only). All Notion content work now happens in social-ip-engine/studio/ — scripts find studio/.env automatically. 758 tests green post-merge. Integration plan copied to docs/INTEGRATION-PLAN.html (canonical copy).
+Still open: Phase 1 (IP Registry — replace 4 hardcoded dicts), Phase 3 (notion-sync auto-copies infographics), 04:44 mass re-send trigger unidentified, guides_sent TOCTOU race, D5 (Chloe content feed?).

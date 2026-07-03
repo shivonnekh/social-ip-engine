@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social IP Platform — Integration Plan (social-ip-engine × ai-tcm-ip)</title>
+<style>
+  :root {
+    --ink: #2b2b2b; --paper: #faf8f4; --card: #ffffff;
+    --accent: #2e6e5e; --accent-soft: #e4efe9;
+    --warn-bg: #fdf3e7; --warn-border: #e8a94f;
+    --danger-bg: #fbeaea; --danger-border: #c94f4f;
+    --ok-bg: #eaf4ec; --ok-border: #58a06a;
+    --muted: #6f6a62; --line: #e5e0d6;
+    --code-bg: #f2efe8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Helvetica Neue", "PingFang HK", "Noto Sans CJK TC", sans-serif;
+    color: var(--ink); background: var(--paper);
+    margin: 0; line-height: 1.6;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 28px 80px; }
+  header.hero {
+    background: linear-gradient(135deg, #1f4d42, #2e6e5e);
+    color: #fff; padding: 48px 28px 40px; margin-bottom: 8px;
+  }
+  header.hero .wrap { padding: 0 28px; }
+  header.hero h1 { font-size: 30px; margin: 0 0 8px; }
+  header.hero p.sub { margin: 0; opacity: .85; font-size: 15px; max-width: 760px; }
+  header.hero .meta { margin-top: 18px; font-size: 13px; opacity: .7; }
+  h2 {
+    font-size: 22px; margin: 48px 0 12px; color: var(--accent);
+    border-bottom: 2px solid var(--line); padding-bottom: 8px;
+  }
+  h3 { font-size: 17px; margin: 28px 0 8px; }
+  h4 { font-size: 15px; margin: 20px 0 6px; }
+  p { margin: 8px 0; }
+  .toc {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px 24px; margin-top: 24px;
+  }
+  .toc ol { margin: 6px 0 0; padding-left: 22px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; background: var(--card); }
+  th, td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  tr:nth-child(even) td { background: #fcfbf8; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px;
+  }
+  pre {
+    background: #22302b; color: #e8f0ec; padding: 16px 20px; border-radius: 10px;
+    overflow-x: auto; font-size: 12.5px; line-height: 1.55;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+  .callout { border-radius: 10px; padding: 14px 18px; margin: 16px 0; border-left: 5px solid; }
+  .callout.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .callout.danger { background: var(--danger-bg); border-color: var(--danger-border); }
+  .callout.ok { background: var(--ok-bg); border-color: var(--ok-border); }
+  .callout.info { background: var(--accent-soft); border-color: var(--accent); }
+  .callout .tag { font-weight: 700; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .pill { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-right: 6px; }
+  .pill.l0 { background: #e8e4f5; color: #5b4a9e; }
+  .pill.l1 { background: #e2eff7; color: #2a6b93; }
+  .pill.done { background: var(--ok-bg); color: #2f7a44; }
+  .pill.gap { background: var(--danger-bg); color: #a13030; }
+  .pill.partial { background: var(--warn-bg); color: #9c6410; }
+  .pill.future { background: #eeeeee; color: #666; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; }
+  .card h4 { margin-top: 0; }
+  .flow {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 20px; margin: 16px 0; overflow-x: auto;
+  }
+  .muted { color: var(--muted); font-size: 13px; }
+  .phase {
+    background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--accent);
+    border-radius: 10px; padding: 18px 22px; margin: 18px 0;
+  }
+  .phase h3 { margin: 0 0 4px; }
+  .phase .est { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  ul { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  .check li { list-style: none; position: relative; }
+  .check li::before { content: "☐"; position: absolute; left: -22px; color: var(--accent); }
+  footer { margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Social IP Platform — Integration Plan</h1>
+    <p class="sub">Consolidating <strong>social-ip-engine</strong> (live reply service, formerly TCM-Jessica) and <strong>ai-tcm-ip</strong> (content factory) into one cohesive multi-IP, multi-platform system: content goes out, comments and DMs get answered by the IP — Instagram today, Messenger and TikTok next.</p>
+    <div class="meta">Prepared by Shello · updated 2026-07-03 (v2 — social-only strategy) · Based on a full audit of both repos</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#strategy">Strategy (v2) — what changed</a></li>
+    <li><a href="#diagnosis">Diagnosis — why it feels fragmented</a></li>
+    <li><a href="#target">Target architecture — two reply layers, many platforms</a></li>
+    <li><a href="#policy">IP reply policy — what the personas say and never say</a></li>
+    <li><a href="#registry">The IP Registry — single source of persona truth</a></li>
+    <li><a href="#repo">Repo consolidation — folder structure &amp; mechanics</a></li>
+    <li><a href="#bridge">Content → reply bridge — full automation</a></li>
+    <li><a href="#phases">Migration phases</a></li>
+    <li><a href="#platforms">Platform expansion — Messenger, then TikTok</a></li>
+    <li><a href="#risks">Risks &amp; what NOT to do</a></li>
+    <li><a href="#decisions">Open decisions</a></li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="strategy">1. Strategy (v2) — what changed</h2>
+
+<table>
+  <tr><th>v1 assumption</th><th>v2 reality (2026-07-03)</th></tr>
+  <tr><td>Deep WhatsApp sales funnel is the conversion endpoint; IG hands off to it with tracking</td><td><strong>No WhatsApp funnel.</strong> The business is the social layer itself: content + comment replies + DM support, answered directly by the IP. No off-platform push, ever.</td></tr>
+  <tr><td>Multiple brand IPs incl. external media partnerships</td><td><strong>One main IP: Jackie Chan TCM</strong> (@jackiechan.tcm, English). Chloe (陳芷晴, Cantonese) exists as a second persona. New IPs are added when ready — the architecture must make that a config exercise.</td></tr>
+  <tr><td>Growth axis = more IPs</td><td><strong>Growth axis = more platforms.</strong> Instagram is live; Messenger is next (most of the code already exists); TikTok after that. The same IP answers everywhere.</td></tr>
+  <tr><td>Legacy WhatsApp stack is the strategic core</td><td>Legacy WhatsApp stack (deep pipeline, sales tools, broadcaster, booking) is <strong>parked</strong> — kept in the codebase, not built upon, and its always-on services should be switched off (see Decision D2).</td></tr>
+</table>
+
+<div class="callout info">
+  <span class="tag">Positioning (internal only — never stated publicly)</span>
+  The operation behaves like an online, text-only wellness support service fronted by content-creator IPs. Publicly, each IP is just a TCM content creator answering followers. If anyone asks about a physical clinic, in-person visits, or bookings: <em>"not at the moment — I offer guidance and support right here by text."</em> This is now encoded in both persona prompts (shipped 2026-07-03).
+</div>
+
+<!-- ================================================================ -->
+<h2 id="diagnosis">2. Diagnosis — why it feels fragmented</h2>
+
+<p>The two-layer reply system you want <strong>already exists and is live</strong> — canned keyword replies for comments, a persona agent for DMs. What's broken is configuration sprawl and the disconnect from the content factory. Verified in code:</p>
+
+<h3>2.1 Persona truth is split across ≥6 places</h3>
+<table>
+  <tr><th>Where</th><th>Repo</th><th>What it holds</th></tr>
+  <tr><td><code>data/personas/jackie.json</code>, <code>chloe.json</code></td><td>social-ip-engine</td><td>DM persona: system prompt, greetings, language, brand policy</td></tr>
+  <tr><td><code>src/channels/comment_rules.py :: _ACCOUNT_LANGUAGE</code></td><td>social-ip-engine</td><td>Hardcoded dict: IG account id → language</td></tr>
+  <tr><td><code>src/notion_sync.py :: _IP_ACCOUNT_MAP</code></td><td>social-ip-engine</td><td>Hardcoded dict: IP name → (IG account id, language)</td></tr>
+  <tr><td><code>src/channels/meta_client.py</code> token map</td><td>social-ip-engine</td><td>Hardcoded dict: IG account id → env var names for tokens</td></tr>
+  <tr><td><code>render.yaml</code> env vars (<code>JACKIE_*</code>, <code>CHLOE_*</code>…)</td><td>both repos</td><td>Per-persona secrets, named per-persona (doesn't scale)</td></tr>
+  <tr><td>Notion <strong>👤 IP Registry</strong> DB</td><td>ai-tcm-ip</td><td>Voice config (voice_id, speed, pitch), reference face photos, Active flag</td></tr>
+</table>
+<div class="callout danger">
+  <span class="tag">Concrete cost</span>
+  Onboarding <strong>one</strong> new IP today = edits in 5+ hardcoded dicts across two repos, new env var names, a Notion row, and a persona JSON — with nothing enforcing consistency. Adding a <strong>platform</strong> (Messenger, TikTok) multiplies the same sprawl.
+</div>
+
+<h3>2.2 DM copy lives in three different schemas</h3>
+<table>
+  <tr><th>Artifact</th><th>Repo</th><th>Status</th></tr>
+  <tr><td>Notion <strong>Content Library / Production Tracker</strong> (First DM, infographic brief)</td><td>ai-tcm-ip</td><td><span class="pill done">authoring source</span></td></tr>
+  <tr><td><code>server/dm_map.json</code> (+ <code>export_dm_map.py</code>)</td><td>ai-tcm-ip</td><td><span class="pill gap">dead-end duplicate</span> — feeds only the never-deployed <code>server/webhook.py</code></td></tr>
+  <tr><td><code>data/channels/comment_responses.json</code></td><td>social-ip-engine</td><td><span class="pill done">the LIVE rules</span> — different schema from both of the above</td></tr>
+</table>
+
+<h3>2.3 The content → reply bridge is half-manual</h3>
+<ul>
+  <li><span class="pill done">automated</span> <code>POST /admin/notion-sync</code> drafts a keyword rule when a Production Tracker row flips to ✅ Published.</li>
+  <li><span class="pill gap">manual</span> Infographics generated in ai-tcm-ip (<code>server/static/infographics/&lt;brand&gt;/&lt;keyword&gt;.png</code>) must be <strong>hand-copied</strong> into TCM-Jessica's <code>data/media/guides/</code> and hand-wired into <code>image_urls</code>.</li>
+  <li><span class="pill gap">duplicated</span> <code>scripts/notion_ids.json</code> is copy-pasted between repos and kept in sync by memory.</li>
+</ul>
+
+<h3>2.4 Dead weight</h3>
+<ul>
+  <li><code>ai-tcm-ip/server/</code> (webhook.py, dm_map.json, its render.yaml) — never was the live system; caused a real "which repo is live?" incident on 2026-07-01. <span class="pill done">Confirmed 2026-07-03: no zombie Render service exists</span> — but the files still mislead every future session. Archive them.</li>
+  <li><code>campaigns/</code> in ai-tcm-ip mixes two naming conventions (numbered <code>01-tonsil-stone</code> and slug-based).</li>
+  <li>The legacy WhatsApp stack (deep pipeline, sales/booking tools, proactive broadcaster) belongs to a discontinued line of business but is still deployed — see Decision D2.</li>
+</ul>
+
+<!-- ================================================================ -->
+<h2 id="target">3. Target architecture — two reply layers, many platforms</h2>
+
+<p>Design principle: <strong>one IP, one brain, many platforms.</strong> Reply depth is fixed at two layers; platforms plug in as thin adapters around the same shared core (<code>meta_webhook.py</code> already works this way for IG + FB).</p>
+
+<div class="flow">
+<pre>
+                  ┌─────────────────────────────────────────────┐
+                  │        CONTENT FACTORY  (studio/)           │
+                  │  Notion board → image → voice → video       │
+                  │  + DM copy + infographic per concept        │
+                  └──────────────────┬──────────────────────────┘
+                                     │  publish (auto-sync, §7)
+                                     ▼
+   ┌─────────────────────────────────────────────────────────────────┐
+   │                    LIVE REPLY SERVICE  (src/)                   │
+   │                                                                 │
+   │   platform adapters:  [Instagram ✅]  [Messenger ◐]  [TikTok ▢] │
+   │                │              │             │                   │
+   │                └──────────────┴─────────────┘                   │
+   │                               │  shared webhook core            │
+   │                ┌──────────────┴──────────────┐                  │
+   │                ▼                             ▼                  │
+   │        ┌──────────────┐             ┌──────────────┐            │
+   │        │ L0 · CANNED  │   keyword   │ L1 · PERSONA │            │
+   │        │ comment rule │ ──────────▶ │  DM agent    │            │
+   │        │ → DM + guide │             │ 1 LLM call   │            │
+   │        │   no LLM     │             │ per-IP prompt│            │
+   │        └──────────────┘             └──────────────┘            │
+   │                                                                 │
+   │              ONE CRM spans all platforms per user               │
+   └─────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
+<table>
+  <tr><th>Layer</th><th>Surface</th><th>Engine</th><th>Cost/turn</th><th>Status</th></tr>
+  <tr>
+    <td><span class="pill l0">L0 · Canned</span></td>
+    <td>Comments</td>
+    <td><code>comment_rules.py</code> — keyword match → private reply + infographic + public ack. No LLM. <em>Since 2026-07-02: bare-keyword-only in DMs + per-user dedup (<code>guides_sent</code>) — genuine questions always reach L1.</em></td>
+    <td>$0</td>
+    <td><span class="pill done">live</span></td>
+  </tr>
+  <tr>
+    <td><span class="pill l1">L1 · Persona</span></td>
+    <td>DMs</td>
+    <td><code>ChloeAgent</code> → generalize to <code>PersonaAgent</code>. One LLM call: per-IP persona prompt + last 16 CRM messages. No tools, no sales machinery, no off-platform push.</td>
+    <td>~$0.001</td>
+    <td><span class="pill partial">live; needs config-driven multi-IP</span></td>
+  </tr>
+</table>
+
+<div class="callout info">
+  <span class="tag">What happened to the deep pipeline?</span>
+  The Planner→Specialists→Writer stack, sales tools, booking flow, and broadcaster stay in the codebase but are <strong>parked</strong>: not part of the reply strategy, not extended, not refactored. The dormant <code>SOCIAL_PIPELINE_ACCOUNTS</code> escape hatch (KB-grounded DM replies with automatic fallback to PersonaAgent) also stays as-is — zero cost, tested fallback net. If a future strategy needs depth again, it's there; until then it is code, not product.
+</div>
+
+<!-- ================================================================ -->
+<h2 id="policy">4. IP reply policy — what the personas say and never say</h2>
+
+<table>
+  <tr><th>Rule</th><th>Where enforced</th></tr>
+  <tr><td>The IP is a standalone TCM content creator. Never mention other personas, practitioners, partners, or company structure.</td><td><code>brand_policy</code> + system prompt (both personas)</td></tr>
+  <tr><td>No commerce: no products, no prices, no appointments.</td><td>persona prompts</td></tr>
+  <tr><td>No off-platform push — the conversation stays where the user is.</td><td>persona prompts</td></tr>
+  <tr><td><strong>"Do you have a clinic / can I book / where are you?" → "Not at the moment — I offer guidance and support right here by text."</strong> One light sentence, no elaboration, no promises of future openings.</td><td>persona prompts <span class="pill done">shipped 2026-07-03</span></td></tr>
+  <tr><td>General wellness guidance only — no diagnosis, no dosages. Tongue-photo comments are informational reads only.</td><td>persona prompts</td></tr>
+  <tr><td>Off-topic → brief warm redirect back to TCM wellness.</td><td>persona prompts</td></tr>
+</table>
+<p class="muted">These live in each IP's persona file and move into the IP Registry in Phase 1 — one place, versioned, reviewed like code.</p>
+
+<!-- ================================================================ -->
+<h2 id="registry">5. The IP Registry — single source of persona truth</h2>
+
+<p>One folder per IP under <code>data/ips/</code>. Every hardcoded dict from §2.1 is replaced by a loader that reads these files. <strong>Notion's 👤 IP Registry stays the human authoring UI</strong>; a sync script materializes it into versioned JSON (Notion → git, one direction).</p>
+
+<pre><code>data/ips/
+├── jackie/
+│   ├── ip.json          # identity + wiring (below)
+│   └── persona.json     # DM system prompt, greetings (today's data/personas/jackie.json)
+└── chloe/</code></pre>
+
+<h4><code>ip.json</code> — the complete wiring for one IP</h4>
+<pre><code>{
+  "id": "jackie",
+  "display_name": "Jackie Chan TCM",
+  "language": "en",                        // drives comment-rule language gate
+  "active": true,
+
+  "channels": {                            // ← the platform expansion axis
+    "instagram": {
+      "account_id": "17841417304649448",
+      "token_env": "IG_TOKEN_JACKIE",      // replaces meta_client.py hardcoded map
+      "comments": "canned",                // L0 on
+      "dms": "persona"                     // L1 on ("off" | "persona" | "pipeline")
+    },
+    "messenger": { "page_id": "…", "token_env": "FB_TOKEN_JACKIE",
+                   "comments": "canned", "dms": "persona" },
+    "tiktok":    { "enabled": false }      // future — same shape
+  },
+
+  "content": {                             // consumed by studio/ scripts
+    "voice_id": "elderly_man",
+    "speed": 1.2, "pitch": 0,
+    "tts_language": "English",
+    "notion_ip_page": "&lt;IP Registry row id&gt;",
+    "infographic_brand_slug": "jackie"
+  }
+}</code></pre>
+
+<div class="callout ok">
+  <span class="tag">Payoff</span>
+  Adding an IP <em>or</em> lighting up a platform for an existing IP becomes: <strong>1 Notion row / 1 config block + tokens in Render env. Zero code changes.</strong> The loader validates every <code>ip.json</code> at startup — a malformed IP can't take down the others.
+</div>
+
+<!-- ================================================================ -->
+<h2 id="repo">6. Repo consolidation — structure &amp; mechanics</h2>
+
+<h3>6.1 Direction: ai-tcm-ip moves INTO social-ip-engine as <code>studio/</code></h3>
+<table>
+  <tr><th>Option</th><th>Verdict</th><th>Why</th></tr>
+  <tr><td><strong>A. Fold ai-tcm-ip into social-ip-engine as <code>studio/</code></strong></td><td><span class="pill done">RECOMMENDED</span></td><td>social-ip-engine is the production trunk: live Render service, Meta webhook subscriptions, Postgres, 758-test suite, real followers. Moving the local-only content tooling in is near-zero risk. Moving production out would be all risk.</td></tr>
+  <tr><td>B. New third repo, migrate both</td><td>✗</td><td>New Render service = new webhook URLs = re-verify every Meta subscription for zero benefit.</td></tr>
+  <tr><td>C. Keep two repos, formalize the contract</td><td>✗ (fallback)</td><td>Two repos sharing one Notion board and one persona set is a standing invitation for drift — see the 2026-07-01 "which repo is live?" incident.</td></tr>
+</table>
+
+<h3>6.2 Target folder structure</h3>
+<pre><code>social-ip-engine/                  # renamed 2026-07-03 ✅ (D3 resolved)
+│
+├── src/                           # ── THE DEPLOYED SERVICE (only thing Render builds)
+│   ├── channels/                  #    L0+L1: shared webhook core, comment_rules,
+│   │   ├── persona_agent.py       #    ChloeAgent → PersonaAgent (config-driven, per-IP)
+│   │   ├── instagram.py  facebook.py        # platform adapters (thin)
+│   │   └── tiktok.py              #    future adapter, same shape
+│   ├── ips/                       #    NEW: registry loader + schema validation
+│   ├── crm/                       #    one CRM across platforms
+│   ├── notion_sync.py             #    extended per §7
+│   ├── legacy/                    #    parked WhatsApp stack (whatsapp/, agents/,
+│   │                              #    orchestrator/, broadcaster/) — see D2
+│   └── web.py
+│
+├── data/
+│   ├── ips/                       #    NEW: the IP Registry (§5) — replaces data/personas/
+│   ├── channels/comment_responses.json
+│   ├── knowledge_base/            #    TCM education cards (used if pipeline path ever re-enabled)
+│   └── media/guides/              #    infographics served at /media/guides (auto-synced, §7)
+│
+├── studio/                        # ── CONTENT FACTORY (moved from ai-tcm-ip; NEVER deployed)
+│   ├── scripts/                   #    notion_fanout / notion_image / notion_video / notion_watch /
+│   │                              #    notion_prompts / gen_voice_clip / batch_infographic_gen / sync_ips
+│   ├── assets/                    #    faces, clinic-bg, covers
+│   ├── campaigns/                 #    per-concept outputs (_generated stays gitignored)
+│   ├── notion_ids.json            #    THE single copy — src/notion_sync.py reads this same file
+│   └── voice_config.yaml
+│
+├── docs/legacy/                   #    ai-tcm-ip/server archived here (webhook.py, dm_map.json)
+├── tests/
+├── render.yaml                    # + buildFilter (below)
+└── CLAUDE.md                      # merged — one brain, no more repo confusion
+</code></pre>
+<p class="muted">Moving the parked WhatsApp stack under <code>src/legacy/</code> is optional tidying (Phase 2) — imports keep working via re-export shims; do it only if tests stay green with a mechanical move.</p>
+
+<h3>6.3 Render config — keep content commits from redeploying the bot</h3>
+<pre><code># render.yaml addition
+services:
+  - type: web
+    name: social-ip-engine
+    ...
+    buildFilter:
+      paths: [src/**, data/**, render.yaml, pyproject.toml]
+      ignoredPaths: [studio/**, docs/**]</code></pre>
+<div class="callout warn">
+  <span class="tag">Landmine — learned the hard way</span>
+  When touching <code>render.yaml</code>, <strong><code>IG_ENABLED</code> / <code>FB_ENABLED</code> MUST stay <code>sync: false</code></strong> — a literal <code>value:</code> gets re-applied by blueprint sync on every deploy and silently kills all IG processing (the 2026-07-01/02 multi-day outage). Auto-deploy webhook is broken anyway — deploys go through the Render API (key now in <code>.env</code> as <code>RENDER_API_KEY</code>).
+</div>
+
+<h3>6.4 Git mechanics — preserve ai-tcm-ip history</h3>
+<pre><code>cd "/Users/shivonne/Claude Code/social-ip-engine"
+git checkout -b feat/studio-merge
+git remote add tcmip "/Users/shivonne/Claude Code/ai-tcm-ip"
+git fetch tcmip
+git merge -s ours --no-commit --allow-unrelated-histories tcmip/main
+git read-tree --prefix=studio/ -u tcmip/main
+git commit -m "feat: merge ai-tcm-ip into studio/ (history preserved)"
+git remote remove tcmip
+# then: archive the ai-tcm-ip GitHub repo (Settings → Archive) with a pointer README</code></pre>
+
+<!-- ================================================================ -->
+<h2 id="bridge">7. Content → reply bridge — full automation</h2>
+
+<div class="cols">
+  <div class="card">
+    <h4>Today (half-manual)</h4>
+    <ol>
+      <li>Notion row → ✅ Published</li>
+      <li><code>notion-sync</code> auto-drafts keyword rule ✅</li>
+      <li>Infographic: hand-copy PNG between repos ✋</li>
+      <li>Hand-edit <code>image_urls</code> in the rule ✋</li>
+      <li>Spot-check rule language ✋ (mechanical templating gotcha)</li>
+      <li><code>dm_map.json</code> drifts as a third copy ✋</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h4>Target (one-touch)</h4>
+    <ol>
+      <li>Notion row → ✅ Published</li>
+      <li><code>notion-sync</code> drafts the rule ✅</li>
+      <li>…AND pulls the infographic from the row's 📊 DM Infographic toggle → saves to <code>data/media/guides/</code> → wires <code>image_urls</code> automatically ✅ (same repo now — a file copy, not a cross-repo ritual)</li>
+      <li>…AND runs a language-consistency check → flags mismatches to the sync report instead of shipping them ✅</li>
+      <li><code>dm_map.json</code> + <code>export_dm_map.py</code> deleted — Notion is the only authoring source ✅</li>
+    </ol>
+  </div>
+</div>
+<p class="muted">Everything extends the existing <code>src/notion_sync.py</code> (stdlib-only, idempotent). The only reason step 3 was impossible before is that the PNG lived in a different repo.</p>
+
+<!-- ================================================================ -->
+<h2 id="phases">8. Migration phases</h2>
+
+<p>Ordered so production is never bet on a refactor. Every phase is independently shippable and leaves the full suite green (758 passing as of 2026-07-03).</p>
+
+<div class="phase">
+  <h3>Phase 0 — Safety &amp; cleanup</h3>
+  <div class="est">~half a day · zero risk</div>
+  <ul class="check">
+    <li>Tag both repos: <code>pre-integration-2026-07</code>. Snapshot production Postgres (note: free-tier 90-day expiry — verify date).</li>
+    <li>Baseline probe: signed synthetic webhook → confirm status is not <code>disabled</code>.</li>
+    <li>Resolve Decision D2 (legacy WhatsApp services on/off) — it changes what Phase 2 archives.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 1 — IP Registry inside social-ip-engine</h3>
+  <div class="est">~1 day · behavior-neutral refactor</div>
+  <ul class="check">
+    <li>Create <code>data/ips/{jackie,chloe}/ip.json</code> + move persona JSONs alongside; <code>src/ips/registry.py</code> loader with startup schema validation.</li>
+    <li>Replace the 4 hardcoded dicts with registry lookups. <strong>Assert-identical tests first</strong>: snapshot current dict outputs, prove the registry returns the same mappings.</li>
+    <li>Rename <code>ChloeAgent</code> → <code>PersonaAgent</code> (constructor takes an IP record; behavior byte-identical).</li>
+    <li><code>persona_dry_run_social.py</code> + full pytest before deploy.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 2 — Repo merge + dead-code archive</h3>
+  <div class="est">~1 day · no production code changes</div>
+  <ul class="check">
+    <li>Git subtree merge per §6.4 → <code>studio/</code>.</li>
+    <li>Archive to <code>docs/legacy/</code>: <code>server/webhook.py</code>, <code>dm_map.json</code>, <code>export_dm_map.py</code>, ai-tcm-ip's <code>render.yaml</code>. Delete <code>server/</code>.</li>
+    <li>Normalize campaign folder naming (slug convention — D4).</li>
+    <li>Single <code>studio/notion_ids.json</code>; point <code>src/notion_sync.py</code> at it.</li>
+    <li>Add <code>buildFilter</code> (§6.3 — mind the IG_ENABLED landmine). Manual deploy + probe after.</li>
+    <li>Merge the two CLAUDE.md files; archive the ai-tcm-ip GitHub repo with a pointer README.</li>
+    <li>Optional: move parked WhatsApp stack → <code>src/legacy/</code> (only if mechanical + green).</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 3 — Bridge automation</h3>
+  <div class="est">~1 day</div>
+  <ul class="check">
+    <li>Extend <code>notion_sync.py</code>: pull 📊 DM Infographic → <code>data/media/guides/&lt;keyword&gt;-page-1.png</code> → auto-wire <code>image_urls</code>.</li>
+    <li>Language-consistency check on drafted rules (flag, don't block).</li>
+    <li><code>sync_ips.py</code>: Notion IP Registry → <code>data/ips/*/ip.json</code>, one-way, git-reviewed. Studio scripts read voice/face config through it.</li>
+    <li>Retire the manual copy step from the runbook.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 4 — Messenger activation</h3>
+  <div class="est">~1–2 days (most code exists)</div>
+  <ul class="check">
+    <li><code>facebook.py</code> adapter + shared <code>meta_webhook</code> core already handle FB events — wire Jackie's FB Page into <code>ip.json → channels.messenger</code>, tokens in Render env.</li>
+    <li>Comment rules: reuse the same keyword rules (schema already platform-agnostic via <code>platform</code> field on events).</li>
+    <li>CRM key namespacing: verify <code>fb_</code> vs <code>ig_</code> prefixes keep users distinct per platform.</li>
+    <li>End-to-end: FB comment → canned DM; FB DM question → PersonaAgent reply; synthetic probe for <code>FB_ENABLED</code>.</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <h3>Phase 5 — TikTok (scoping first)</h3>
+  <div class="est">scope: ~half a day research before committing</div>
+  <ul class="check">
+    <li>TikTok's official APIs for comment management + DMs are far more restricted than Meta's — scope what's actually possible (Business API comment replies exist; DM automation is limited/regional).</li>
+    <li>Design the adapter to the same shape as <code>instagram.py</code>/<code>facebook.py</code>; content side already produces 9:16 video natively.</li>
+    <li>Decide: official API vs. manual-assisted workflow (agent drafts replies, human posts) if API access is blocked.</li>
+  </ul>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="platforms">9. Platform expansion — the axis that matters</h2>
+
+<table>
+  <tr><th>Platform</th><th>Comments (L0)</th><th>DMs (L1)</th><th>Effort</th></tr>
+  <tr><td><strong>Instagram</strong></td><td><span class="pill done">live</span></td><td><span class="pill done">live</span></td><td>—</td></tr>
+  <tr><td><strong>Facebook / Messenger</strong></td><td><span class="pill partial">code exists, not wired</span></td><td><span class="pill partial">code exists, not wired</span></td><td>~1–2 days (Phase 4)</td></tr>
+  <tr><td><strong>TikTok</strong></td><td><span class="pill future">API-dependent</span></td><td><span class="pill future">API-restricted</span></td><td>scope first (Phase 5)</td></tr>
+</table>
+<p>Once the IP Registry exists, every platform is: adapter file + <code>channels.&lt;platform&gt;</code> block per IP + tokens. The reply brain (L0 rules + L1 persona + CRM) is shared and doesn't change.</p>
+
+<!-- ================================================================ -->
+<h2 id="risks">10. Risks &amp; what NOT to do</h2>
+
+<table>
+  <tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr>
+  <tr><td>IG/FB processing silently dies via <code>IG_ENABLED</code>/<code>FB_ENABLED</code> blueprint reset on render.yaml changes</td><td>HIGH</td><td>Keep <code>sync: false</code>; synthetic-webhook probe after every deploy (now scripted); on the phase checklists.</td></tr>
+  <tr><td>Repo merge confuses the Render build</td><td>MED</td><td><code>studio/</code> has its own requirements.txt, never referenced by the service build; <code>buildFilter</code> excludes it; Phase 2 ends with manual deploy + probe.</td></tr>
+  <tr><td>Canned keyword rules hijack genuine DM questions (2026-07-02 incident)</td><td>—</td><td><span class="pill done">fixed + deployed</span>: bare-keyword-only trigger (EN + CJK) + <code>guides_sent</code> dedup + 29 regression tests. Residual: <code>guides_sent</code> read-modify-write race under duplicate webhook delivery — cleanup in Phase 1.</td></tr>
+  <tr><td>Backfill scripts re-sending old guides (04:44 mass re-send, trigger still unidentified)</td><td>MED</td><td>Investigate before running any backfill again; dedup now limits blast radius to one send per user per keyword.</td></tr>
+  <tr><td>Notion IP Registry and <code>ip.json</code> drift</td><td>LOW</td><td>One-way sync + git diff review; ip.json is what production reads, so drift is visible.</td></tr>
+  <tr><td>Postgres free tier expiry</td><td>MED</td><td>Check expiry in Phase 0.</td></tr>
+</table>
+
+<h3>Do NOT</h3>
+<ul>
+  <li>Do not extend or build on the parked WhatsApp stack — it's code, not product.</li>
+  <li>Do not let any persona mention clinics, bookings, prices, other personas, or push users off-platform — policy lives in the persona files, not in people's memories.</li>
+  <li>Do not remove the PersonaAgent fallback net around the dormant pipeline path — tested safety floor.</li>
+  <li>Do not create a new Render service or move webhook URLs — every Meta subscription would need re-verification.</li>
+  <li>Do not let studio scripts import from <code>src/</code> or vice versa except via the two sanctioned seams: <code>data/ips/</code> (registry) and <code>notion_sync.py</code> (publish bridge).</li>
+  <li>Do not hardcode any IP's account id, token name, or language in Python — if you're typing an account id into a <code>.py</code> file after Phase 1, the design has failed.</li>
+  <li>Do not run local backfill scripts for anything conversational — <code>POST /admin/backfill-comments</code> (real CRM) only.</li>
+</ul>
+
+<!-- ================================================================ -->
+<h2 id="decisions">11. Open decisions</h2>
+
+<table>
+  <tr><th>#</th><th>Decision</th><th>My recommendation</th></tr>
+  <tr><td>D1</td><td><s>Zombie Render service?</s></td><td><span class="pill done">RESOLVED 2026-07-03</span> — only <code>tcm-jessica</code> exists. Remaining action: archive ai-tcm-ip's stale <code>render.yaml</code> in Phase 2 so it can't mislead again.</td></tr>
+  <tr><td>D2</td><td><strong>Legacy WhatsApp services are still running</strong> — the WhatsApp poller and the proactive broadcaster (weekly tips, follow-ups, re-engagement) still message the old customer list on behalf of a discontinued business line.</td><td><strong>Switch them off</strong> (<code>WA_POLL_ENABLED=false</code> + disable broadcaster loop). Proactively messaging a former partner's customers is a liability, not an asset. Data stays in Postgres untouched. Needs your explicit go — it's a production behavior change.</td></tr>
+  <tr><td>D3</td><td><s>Rename the repo?</s></td><td><span class="pill done">RESOLVED 2026-07-03</span> — renamed to <code>social-ip-engine</code> (GitHub + local folder + Render display name). Public URL stays <code>tcm-jessica.onrender.com</code> until a custom domain is attached (users never see it). Also verified: the service is NOT blueprint-attached, so render.yaml is documentation only.</td></tr>
+  <tr><td>D4</td><td>Campaign folder naming: numbered or slug?</td><td>Slug — matches the keyword system, survives reordering.</td></tr>
+  <tr><td>D5</td><td>Is Chloe (陳芷晴) still an active IP, or is Jackie the only one being fed content?</td><td>Her IG bot stays live either way (it costs nothing); but if she's not getting new content, mark her <code>active: false</code> in the Registry so studio fan-out skips her.</td></tr>
+</table>
+
+<footer>
+  Prepared by Shello · v2 2026-07-03 (social-only strategy; supersedes v1 funnel plan) · Sources: full audit of both repos, live Graph API thread inspection, 2026-07-02 incident fix (deployed).
+</footer>
+
+</div>
+</body>
+</html>

@@ -3767,3 +3767,19 @@
 - Jackie 和 Chloe 的 persona prompt 都加了你那条规则 —— 问诊所/预约 → 一句"暂时没有，我在这里用文字帮你"，轻轻带过，不解释、不承诺以后会开。测试全绿，正在部署。
 - - Jackie / Chloe 遇到"有没有诊所/可以预约吗" → 一句"暂时没有，我在这里用文字帮你"
 
+
+## 2026-07-03 11:39 — social-ip-engine
+
+### Architecture Decisions
+- 1. **Persona truth is split across 6+ places** — 4 hardcoded account-id dicts in TCM-Jessica alone, plus persona JSONs, plus Notion. Onboarding Ming Pao today = editing all of them.
+
+### Decisions & Reasoning
+- 2. **The "only for opening a conversation" guard failed** because the backfill sends never persisted to production CRM — prod thinks she's a brand-new user every time, so canned keeps firing.
+- 你其实**已经有**你想要的两层系统了——`ChloeAgent` 就是浅层（一次 LLM 调用，没有销售流程），WhatsApp 那套 Planner→Specialists→Writer 就是深层。乱的不是架构，是配线：
+- 3. **IG → WhatsApp 的转化交接根本不存在** — 代码里一行 `wa.me` 都没有。用户从 IG 到 WhatsApp，CRM 完全不知道他是哪个 IP、哪条内容带来的
+- L1 检测到购买/预约/想深入诊断的意图 → 丢一条带 **REF code** 的 wa.me 链接（比如 `[MPCA-eye]`）→ 用户点过去，Jessica 解析 REF 写进 CRM → 第一句话就能接上"你喺 IG 睇咗眼乾嗰条片系咪？"，而且从此**每个 IP、每条内容的转化率都能直接从 CRM 查出来**。这是整个计划里最值钱的一块。
+- ai-tcm-ip 整个搬进 TCM-Jessica 当 `studio/` 文件夹（git subtree，历史保留）。生产服务不动、webhook 不动、Meta 订阅不用重新验证。`render.yaml` 加 buildFilter，内容侧的 commit 不会触发重新部署。合并后 notion-sync 可以自动把 infographic 拷进 `data/media/guides/`——你现在手动搬图那一步直接消失。
+- D1 你现在打开 dashboard 十秒就能确认。要不要我直接用刚才那个 API key 查？
+- Jackie 和 Chloe 的 persona prompt 都加了你那条规则 —— 问诊所/预约 → 一句"暂时没有，我在这里用文字帮你"，轻轻带过，不解释、不承诺以后会开。测试全绿，正在部署。
+- - Jackie / Chloe 遇到"有没有诊所/可以预约吗" → 一句"暂时没有，我在这里用文字帮你"
+
