@@ -54,6 +54,27 @@ _DEFAULT_PATH: Final[str] = str(
 )
 
 
+def _expected_language(account_id: str | None) -> str:
+    """Expected content language for a business account ("" = unregistered).
+
+    IG accounts come from the IP registry (``data/ips/*/ip.json`` via
+    ``src.ips.registry``). The Facebook Page is registered via env
+    (``FB_PAGE_ID`` + ``FB_PAGE_LANGUAGE``) because the page id is
+    deployment config rather than a code-time constant — fold this into
+    the registry once ``channels.messenger`` blocks exist in ip.json.
+    """
+    if not account_id:
+        return ""
+    lang = ip_registry.account_language(account_id)
+    if lang:
+        return lang
+    fb_page_id = os.environ.get("FB_PAGE_ID", "").strip()
+    if fb_page_id and account_id == fb_page_id:
+        return os.environ.get("FB_PAGE_LANGUAGE", "").strip().lower()
+    return ""
+
+
+
 @dataclass(frozen=True)
 class CommentReply:
     """One canned (or agent-routed) keyword rule (applies to comments AND DMs)."""
@@ -166,23 +187,33 @@ def _account_allowed(rule: CommentReply, account_id: str | None) -> bool:
 def match(text: str, *, account_id: str | None = None) -> CommentReply | None:
     """Return the first matching rule allowed for this receiving account.
 
-    Language gate: if the account belongs to a registered IP (see
-    ``data/ips/*/ip.json`` via ``src.ips.registry``) and the rule has a
-    ``language`` field that differs from that IP's language, the rule is
-    BLOCKED regardless of keyword/account match — a HARD GATE, logged as
-    an error. This prevents Jackie (English) from ever serving Cantonese
-    images, even if comment_responses.json is misconfigured.
+    Language gate: a rule with a ``language`` field is only served to an
+    account whose registered expected language (``_expected_language`` —
+    IP registry for IG, FB_PAGE_ID/FB_PAGE_LANGUAGE env for Facebook)
+    matches. Mismatches AND unregistered accounts are BLOCKED — fail
+    closed, because before this an FB page id missing from the language
+    map would have been served the first (possibly wrong-language) rule.
+    Rules with no ``language`` field pass through (backwards compat).
+    This prevents Jackie (English) from ever serving Cantonese images,
+    even if comment_responses.json is misconfigured.
     """
     haystack = (text or "").lower()
-    expected_lang = ip_registry.account_language(account_id)
+    expected_lang = _expected_language(account_id)
     for rule in load_rules():
         if not (rule.keyword and rule.keyword in haystack):
             continue
         if not _account_allowed(rule, account_id):
             continue
-        # Hard language gate — both sides must declare a language for the check
-        # to fire. A rule with no language field passes through (backwards compat).
-        if expected_lang and rule.language and rule.language != expected_lang:
+        if rule.language and not expected_lang:
+            logger.error(
+                "[comment_rules] LANGUAGE BLOCK (unregistered account) "
+                "keyword=%r rule_lang=%r account=%s — register the account's "
+                "language (data/ips/*/ip.json or FB_PAGE_ID+FB_PAGE_LANGUAGE) "
+                "before serving language-tagged rules",
+                rule.keyword, rule.language, account_id,
+            )
+            continue
+        if rule.language and rule.language != expected_lang:
             logger.error(
                 "[comment_rules] LANGUAGE BLOCK keyword=%r rule_lang=%r "
                 "account_expected=%r account=%s — rule skipped",
