@@ -86,6 +86,7 @@ GRAPH_VERSION = os.environ.get("META_GRAPH_VERSION", "v23.0").strip()
 JACKIE_COMMENT_ACCESS_TOKEN = (
     os.environ.get("JACKIE_IG_ACCESS_TOKEN", "").strip()
     or os.environ.get("JACKIE_PAGE_ACCESS_TOKEN", "").strip()
+    or os.environ.get("IG_PAGE_ACCESS_TOKEN_JACKIE", "").strip()
 )
 JACKIE_COMMENT_REPLY = os.environ.get(
     "JACKIE_COMMENT_REPLY",
@@ -104,6 +105,7 @@ BRANDS = {
         "ids": {
             os.environ.get("CHLOE_IG_ID", "").strip(),
             os.environ.get("CHLOE_PAGE_ID", "").strip(),
+            os.environ.get("IG_USER_ID", "").strip(),  # legacy medical-agent var
         },
     },
     "jackie": {
@@ -111,6 +113,7 @@ BRANDS = {
         "ids": {
             os.environ.get("JACKIE_IG_ID", "").strip(),
             os.environ.get("JACKIE_PAGE_ID", "").strip(),
+            os.environ.get("IG_USER_ID_JACKIE", "").strip(),  # medical-agent var
         },
     },
 }
@@ -126,10 +129,12 @@ BRAND_ACCESS_TOKENS = {
     "Jackie Chan": (
         os.environ.get("JACKIE_IG_ACCESS_TOKEN", "").strip()
         or os.environ.get("JACKIE_PAGE_ACCESS_TOKEN", "").strip()
+        or os.environ.get("IG_PAGE_ACCESS_TOKEN_JACKIE", "").strip()  # medical-agent var
     ),
-    "陳芷晴/Jessica": (
+    "Chloe Chan": (
         os.environ.get("CHLOE_IG_ACCESS_TOKEN", "").strip()
         or os.environ.get("CHLOE_PAGE_ACCESS_TOKEN", "").strip()
+        or os.environ.get("IG_PAGE_ACCESS_TOKEN", "").strip()  # medical-agent var
     ),
 }
 

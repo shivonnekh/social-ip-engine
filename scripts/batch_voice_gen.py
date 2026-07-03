@@ -245,6 +245,7 @@ def extract_shots(row_id: str) -> list[dict]:
         for b in blocks[shot_idx:next_idx]:
             if b["type"] == "audio":
                 shot["has_audio"] = True
+                shot["audio_block_id"] = b["id"]
                 break
 
     return shots
@@ -415,7 +416,8 @@ def place_audio_block(page_id: str, after_block_id: str, file_upload_id: str) ->
 
 def process_row(row_id: str, title: str, *,
                 voice_config: dict | None = None,
-                dry_run: bool = False) -> dict:
+                dry_run: bool = False,
+                force: bool = False) -> dict:
     """Generate voice clips for all shots in a Production row.
 
     voice_config: IP voice config dict. If None, auto-reads from the row's IP
@@ -435,9 +437,18 @@ def process_row(row_id: str, title: str, *,
     done = skipped = 0
     for i, shot in enumerate(shots, 1):
         if shot["has_audio"]:
-            print(f"    Shot {i} ({shot['title'][:30]}): audio exists — skip")
-            skipped += 1
-            continue
+            if not force:
+                print(f"    Shot {i} ({shot['title'][:30]}): audio exists — skip")
+                skipped += 1
+                continue
+            # --force: delete existing audio block, then regenerate
+            audio_bid = shot.get("audio_block_id")
+            if audio_bid and not dry_run:
+                try:
+                    ncall("DELETE", f"/blocks/{audio_bid}")
+                    print(f"    Shot {i} ({shot['title'][:30]}): deleted old audio ✓")
+                except Exception as exc:
+                    print(f"    Shot {i}: failed to delete old audio: {exc}")
 
         text = shot["text"].strip()
         if not text or text.startswith("<add to"):
@@ -487,18 +498,30 @@ def main() -> None:
                      help="Process rows for ALL active IPs")
     parser.add_argument("--dry-run", action="store_true",
                         help="Preview only — no TTS calls, no writes")
+    parser.add_argument("--force", action="store_true",
+                        help="Delete existing audio blocks and regenerate (e.g. after voice_id change)")
+    parser.add_argument("--emotion", metavar="EMOTION",
+                        help="Override emotion for this run (e.g. happy, excited, neutral). "
+                             "Overrides IP Registry value without changing it.")
     args = parser.parse_args()
 
     ids = json.loads(IDS_PATH.read_text(encoding="utf-8"))
     total_done = total_skipped = 0
 
+    def _apply_emotion(cfg: dict) -> dict:
+        """Return a new config dict with emotion overridden if --emotion was passed."""
+        if args.emotion:
+            return {**cfg, "emotion": args.emotion}
+        return cfg
+
     # ── Single row ─────────────────────────────────────────────────────────────
     if args.row:
         row_id = args.row.replace("-", "")
         _, ip_name, cfg = _row_ip_config(row_id)
+        cfg = _apply_emotion(cfg)
         title = _page_title(ncall("GET", f"/pages/{row_id}"))
-        print(f"▶ {title}  [{ip_name}]  voice={cfg['voice_id']}")
-        result = process_row(row_id, title, voice_config=cfg, dry_run=args.dry_run)
+        print(f"▶ {title}  [{ip_name}]  voice={cfg['voice_id']}  emotion={cfg.get('emotion') or 'default'}")
+        result = process_row(row_id, title, voice_config=cfg, dry_run=args.dry_run, force=args.force)
         total_done += result.get("done", 0)
         total_skipped += result.get("skipped", 0)
 
@@ -506,15 +529,15 @@ def main() -> None:
     elif args.ip:
         ip_page = find_ip_by_name(ids, args.ip)
         ip_name = _page_title(ip_page)
-        cfg = _ip_voice_config_from_page(ip_page)
+        cfg = _apply_emotion(_ip_voice_config_from_page(ip_page))
         if not cfg["voice_id"]:
             sys.exit(f"[error] IP '{ip_name}' has no voice_id in registry")
         rows = find_rows_for_ip(ids, ip_page["id"])
-        print(f"IP: {ip_name}  voice={cfg['voice_id']}  ({len(rows)} rows)\n")
+        print(f"IP: {ip_name}  voice={cfg['voice_id']}  emotion={cfg.get('emotion') or 'default'}  ({len(rows)} rows)\n")
         for page in rows:
             title = _page_title(page)
             print(f"▶ {title}")
-            result = process_row(page["id"], title, voice_config=cfg, dry_run=args.dry_run)
+            result = process_row(page["id"], title, voice_config=cfg, dry_run=args.dry_run, force=args.force)
             total_done += result.get("done", 0)
             total_skipped += result.get("skipped", 0)
             print()
@@ -542,7 +565,7 @@ def main() -> None:
                 title = _page_title(page)
                 print(f"▶ {title}")
                 result = process_row(page["id"], title, voice_config=cfg,
-                                     dry_run=args.dry_run)
+                                     dry_run=args.dry_run, force=args.force)
                 total_done += result.get("done", 0)
                 total_skipped += result.get("skipped", 0)
                 print()

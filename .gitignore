@@ -10,6 +10,7 @@ server/.env
 *.mov
 campaigns/**/voice/
 campaigns/**/video/
+campaigns/**/images/
 
 # Python
 __pycache__/
@@ -19,9 +20,6 @@ venv/
 
 # OS
 .DS_Store
-
-# Generated AI images (regenerable)
-campaigns/_generated/
 
 # Playwright MCP debug logs
 .playwright-mcp/

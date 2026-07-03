@@ -56,6 +56,130 @@ def call(method: str, path: str, body: dict | None = None, retries: int = 5) -> 
     sys.exit("[error] exhausted retries")
 
 
+def _env(key: str) -> str:
+    v = os.environ.get(key, "").strip()
+    if v:
+        return v
+    envp = Path(__file__).resolve().parent.parent / ".env"
+    if envp.exists():
+        for line in envp.read_text(encoding="utf-8").splitlines():
+            if line.strip().startswith(key + "="):
+                return line.split("=", 1)[1].strip()
+    return ""
+
+
+def _openai_chat(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 40) -> str:
+    key = _env("OPENAI_API_KEY")
+    if not key:
+        return ""
+    body = {"model": model, "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": max_tokens, "temperature": 0.8}
+    req = urllib.request.Request("https://api.openai.com/v1/chat/completions",
+                                 data=json.dumps(body).encode(),
+                                 headers={"Authorization": f"Bearer {key}",
+                                          "Content-Type": "application/json"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read().decode())["choices"][0]["message"]["content"].strip()
+    except Exception:
+        return ""
+
+
+def draft_title(hook: str, topic: str, lang: str = "") -> str:
+    """Short clickbait video title (a punchy viewer-facing question + one surprise emoji),
+    in the IP's language. Returns '' on any failure (caller leaves the field blank)."""
+    low = (lang or "").lower()
+    target = ("Cantonese (繁體中文, natural 口語粵語)" if "粤" in low or "cantonese" in low
+              else "Mandarin Chinese (简体)" if "普通" in low or "mandarin" in low
+              else "English")
+    prompt = (f"Write ONE very short clickbait title (3-8 words) for a Traditional Chinese Medicine "
+              f"short video. Topic: {topic}. Hook: {hook}. Write it in {target}. Make it a punchy "
+              f"question spoken directly to the viewer. End with exactly ONE surprise emoji "
+              f"(😱 😳 😮 😴 😣). Output ONLY the title — no quotes, no extra text.")
+    return _openai_chat(prompt).strip().strip('"').strip()
+
+
+_TRANSLATE_LANGS = ("粤", "cantonese", "普通", "mandarin", "spanish", "arabic",
+                    "indonesian", "vietnamese", "thai", "hindi", "portuguese")
+
+
+def _translate_lines(lines: list[str], lang: str) -> list[str]:
+    """Translate per-shot script lines into the IP language (commas avoided for TTS).
+
+    English / unknown language / no API key → returns the source lines unchanged
+    (so English IPs use the storyboard lines verbatim, and we never blank out).
+    """
+    import re
+    low = (lang or "").lower()
+    if not lines or not any(k in low for k in _TRANSLATE_LANGS):
+        return lines
+    target = ("Cantonese (繁體中文, natural spoken 口語粵語)" if "粤" in low or "cantonese" in low
+              else "Mandarin Chinese (简体)" if "普通" in low or "mandarin" in low
+              else lang)
+    numbered = "\n".join(f"{i + 1}. {ln}" for i, ln in enumerate(lines))
+    prompt = (f"Translate each numbered line into {target} for a SPOKEN Traditional Chinese Medicine "
+              f"short video. Keep the SAME number of lines and the same numbering. Natural spoken tone. "
+              f"IMPORTANT: use natural punctuation so the text-to-speech has real pauses and rhythm — "
+              f"commas (，) for short breaths, full stops (。) at sentence ends, question marks (？) for "
+              f"questions. Do NOT replace punctuation with spaces. "
+              f"Translate EVERY line including the final call-to-action; in that CTA line keep ONLY "
+              f"the single English keyword word itself untranslated (e.g. the word 'teeth') and "
+              f"translate the rest of the sentence. "
+              f"Output ONLY the numbered lines.\n\n{numbered}")
+    out = _openai_chat(prompt, max_tokens=700)
+    if not out:
+        return lines
+    parsed = []
+    for ln in out.splitlines():
+        m = re.match(r"^\s*\d+[.):、]\s*(.+)", ln)
+        if m:
+            parsed.append(m.group(1).strip())
+    return parsed if len(parsed) == len(lines) else lines
+
+
+def script_lines_for_ip(concept_id: str, ip_id: str | None) -> list[str]:
+    """Per-shot voice lines from the concept's Shot Guide, in the IP's language.
+
+    Returns ONE entry per shot — empty string for shots with no voice line.
+    This preserves positional alignment: script_lines[i] == shot i's voice line.
+    """
+    lines = [s.get("line", "").strip() for s in parse_storyboard(concept_id)]
+    lang = ip_language(ip_id) if ip_id else ""
+    # Only translate non-empty lines; empty (no-voice) slots stay empty
+    voiced = [ln for ln in lines if ln]
+    translated = _translate_lines(voiced, lang)
+    # Re-insert empty slots back into their original positions
+    result: list[str] = []
+    t_iter = iter(translated)
+    for ln in lines:
+        result.append(next(t_iter) if ln else "")
+    return result
+
+
+def apply_script_property(row_id: str, force: bool = False) -> str:
+    """Fill a Production row's Script property (ONE LINE PER SHOT, IP language).
+
+    Source of truth for apply_shot_plan's per-shot voice. Safe: only writes when
+    the Script property is empty unless force=True.
+    """
+    page = call("GET", f"/pages/{row_id}")
+    concept_id = _relation_id(page, "Content")
+    ip_id = _relation_id(page, "IP")
+    if not concept_id:
+        return "no-content"
+    current = "".join(t["plain_text"] for t in
+                      page["properties"].get("Script", {}).get("rich_text", []))
+    if current.strip() and not force:
+        return "exists"
+    lines = script_lines_for_ip(concept_id, ip_id)
+    if not lines:
+        return "no-lines"
+    script = "\n".join(lines)[:2000]
+    call("PATCH", f"/pages/{row_id}",
+         {"properties": {"Script": {"rich_text": _rt(script)}}})
+    return f"script set ({len(lines)} shots)"
+
+
 def _rt(t): return [{"type": "text", "text": {"content": t}}]
 def _txt(block) -> str:
     t = block["type"]
@@ -120,23 +244,51 @@ def _primary_beat(visual: str) -> str:
 
 
 def build_prompt(persona: str, visual: str) -> str:
-    """One shot = ONE single frame. The doctor's identity is locked only when the
-    doctor is in the frame. Other people (e.g. a patient) appear when the scene
-    calls for it — we never blanket-ban extra people."""
+    """One shot = ONE single frame. Setting is derived from the visual description —
+    not hardcoded. Street/outdoor shots use natural light; clinic shots use clinic light.
+    People (patient, guest, bystander) appear only when the scene explicitly describes them."""
     v = visual.lower()
-    has_doctor = any(k in v for k in ("doctor", "to camera", "looking at camera",
-                                      "talking", "presenter", "gestur", "smile"))
+
+    # Derive setting from the visual — don't hardcode clinic for every shot
+    _street_kws = ("street", "road", "pavement", "sidewalk", "outdoor", "city",
+                   "high street", "brick", "shopfront", "pedestrian", "western",
+                   "london", "new york", "market", "corner", "crowd", "walking",
+                   "leaning against", "coffee in hand")
+    _clinic_kws = ("clinic", "consultation", "counter", "herbal", "wooden desk",
+                   "tcm", "medicine cabinet", "treatment room")
+
+    is_street = any(k in v for k in _street_kws)
+    is_clinic = any(k in v for k in _clinic_kws)
+    # Only EXTREME close-ups (ECU) have an invisible background — "close-up" alone still shows setting
+    is_ecu = any(k in v for k in ("ecu", "extreme close-up", "extreme close up",
+                                   "extreme closeup", "macro shot"))
+
+    if is_ecu and not is_clinic:
+        setting = "Setting: extremely shallow depth of field, background fully blurred — focus is 100% on the subject in frame."
+    elif is_street and not is_clinic:
+        setting = "Setting: natural outdoor daylight, Western city street, shallow depth of field. No clinic, no indoor setting."
+    elif is_clinic:
+        setting = "Setting: warm, traditional Chinese-medicine clinic lighting, shallow depth of field."
+    else:
+        setting = "Setting: shallow depth of field, natural lighting."
+
+    # Doctor identity only locked when they're actually in the scene
+    has_doctor = any(k in v for k in ("jackie", "doctor", "to camera", "looking at camera",
+                                      "talking", "presenter", "gestur", "smile", "he explains",
+                                      "he leans", "he turns", "he spots", "he approaches",
+                                      "he looks", "he reaches", "he mimes"))
+
     lines = [
         "One single photorealistic vertical 9:16 frame — a single moment. "
         "No split screen, no collage, no before/after, no multiple panels.",
-        "Setting: warm, traditional Chinese-medicine clinic lighting, shallow depth of field.",
+        setting,
         f"SCENE: {visual}",
     ]
     if has_doctor:
-        lines.append(f"The doctor must be the EXACT same person as the reference photo "
-                     f"({persona}) — same face, hair, age.")
-    lines.append("Include only the people the scene describes (a patient may appear when the "
-                 "scene needs one). No on-screen text, no watermark.")
+        lines.append(f"The main character must be the EXACT same person as the reference photo "
+                     f"({persona}) — same face, hair, age, ethnicity.")
+    lines.append("Include only the people explicitly described in the scene. "
+                 "No extra faces, no on-screen text, no watermark.")
     return "\n".join(lines)
 
 
@@ -335,7 +487,9 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
     # one line per shot. Storyboard line is only a fallback if Script is missing/misaligned.
     script_text = "".join(t["plain_text"] for t in
                           page["properties"].get("Script", {}).get("rich_text", []))
-    script_lines = [ln.strip() for ln in script_text.split("\n") if ln.strip()]
+    # Keep empty lines — they mark no-voice shots and maintain positional alignment with shots[].
+    # Do NOT strip leading/trailing blanks: the first '' may be Shot 1's silent slot.
+    script_lines = [ln.strip() for ln in script_text.split("\n")]
     if rebuild:
         _wipe_all(row_id)
 

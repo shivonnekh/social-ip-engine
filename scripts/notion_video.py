@@ -31,6 +31,39 @@ import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def _slugify(s: str) -> str:
+    """Lowercase ASCII slug: strip emoji/non-ASCII, replace punctuation with hyphens."""
+    s = re.sub(r"[^\x00-\x7F]+", "", s)          # strip emoji + non-ASCII
+    s = re.sub(r"[^a-z0-9\s-]", "", s.lower())   # keep alnum, space, hyphen
+    s = re.sub(r"[\s-]+", "-", s).strip("-")
+    return s or "unknown"
+
+
+def _campaign_workdir(row_id: str) -> Path:
+    """Return campaigns/<content-slug>/<ip-slug>/ for this Production row."""
+    page = ncall(f"/pages/{row_id}")
+
+    content_slug = "unknown"
+    content_rel = page["properties"].get("Content", {}).get("relation", [])
+    if content_rel:
+        cp = ncall(f"/pages/{content_rel[0]['id']}")
+        for prop in cp["properties"].values():
+            if prop.get("type") == "title":
+                content_slug = _slugify("".join(t["plain_text"] for t in prop["title"]))
+                break
+
+    ip_slug = "unknown"
+    ip_rel = page["properties"].get("IP", {}).get("relation", [])
+    if ip_rel:
+        ip_page = ncall(f"/pages/{ip_rel[0]['id']}")
+        for prop in ip_page["properties"].values():
+            if prop.get("type") == "title":
+                ip_slug = _slugify("".join(t["plain_text"] for t in prop["title"]))
+                break
+
+    return ROOT / "campaigns" / content_slug / ip_slug
 DREAMINA = os.path.expanduser("~/.local/bin/dreamina")
 NOTION = "https://api.notion.com/v1"
 
@@ -95,26 +128,61 @@ def upload_to_notion(path, content_type, fname):
     return o["id"]
 
 
-def place_video_in_shot(row_id, shot_title, mp4):
-    """Put a shot's video in a '🎬 Video here' toggle under that shot (after its 即梦 prompt)."""
-    anchor, in_s, expect, has = None, False, False, False
+def place_video_in_shot(row_id, shot_title, mp4, regen=False):
+    """Put a shot's video in a toggle under that shot.
+
+    Normal mode: fills the existing empty '🎬 Video here' toggle, skips if already has video.
+    Regen mode (regen=True): always appends a new '🎬 Video (regen)' toggle — never touches
+    existing content.
+    """
+    anchor, in_s, expect = None, False, False
+    toggle_id, toggle_has_video, last_video_toggle_id = None, False, None
+
     for b in _children(row_id):
         t, tx = b["type"], _txt(b)
         if t == "heading_3":
             in_s = (tx == shot_title)
+            toggle_id, toggle_has_video, last_video_toggle_id = None, False, None
         elif in_s and t == "toggle" and "Video here" in tx:
-            has = True
+            toggle_id = b["id"]
+            last_video_toggle_id = b["id"]
+            if b.get("has_children"):
+                kids = _children(b["id"])
+                toggle_has_video = any(k["type"] == "video" for k in kids)
         elif in_s and t == "paragraph" and "即梦" in tx:
             expect = True
         elif in_s and expect and t == "code":
             anchor = b["id"]; expect = False
-    if has:
-        return "exists"
+
     fid = upload_to_notion(mp4, "video/mp4", "shot.mp4")
+    video_block = {"object": "block", "type": "video",
+                   "video": {"type": "file_upload", "file_upload": {"id": fid}}}
+
+    if regen:
+        # Always create a NEW toggle after the last existing video toggle (or after 即梦 code)
+        label = "🎬 Video (regen)"
+        after_id = last_video_toggle_id or anchor
+        toggle = {"object": "block", "type": "toggle", "toggle": {
+            "rich_text": [{"type": "text", "text": {"content": label}}],
+            "children": [video_block]}}
+        body = {"children": [toggle]}
+        if after_id:
+            body["after"] = after_id
+        ncall_w("PATCH", f"/blocks/{row_id}/children", body)
+        return "regen-added"
+
+    # Normal mode
+    if toggle_has_video:
+        return "exists"  # already has a real video — skip
+
+    if toggle_id:
+        ncall_w("PATCH", f"/blocks/{toggle_id}/children", {"children": [video_block]})
+        return "filled-toggle"
+
+    # No toggle yet — create one after the 即梦 code block
     toggle = {"object": "block", "type": "toggle", "toggle": {
         "rich_text": [{"type": "text", "text": {"content": "🎬 Video here"}}],
-        "children": [{"object": "block", "type": "video",
-                      "video": {"type": "file_upload", "file_upload": {"id": fid}}}]}}
+        "children": [video_block]}}
     body = {"children": [toggle]}
     if anchor:
         body["after"] = anchor
@@ -145,29 +213,38 @@ def _block_file_url(b):
 
 
 def read_row_shots(row_id):
-    """[{title, image_url, audio_url, motion}] pulled from the Notion row."""
+    """[{title, image_url, audio_url, jimeng, has_video}] pulled from the Notion row."""
     shots, cur, label = [], None, None
     for b in _children(row_id):
         t, tx = b["type"], _txt(b)
         if t == "heading_3" and tx.lower().startswith("shot"):
-            cur = {"title": tx, "image_url": None, "audio_url": None, "jimeng": ""}
+            cur = {"title": tx, "image_url": None, "audio_url": None,
+                   "jimeng": "", "has_video": False}
             shots.append(cur); label = None
         elif cur is None:
             continue
         elif t == "paragraph" and ("Image prompt" in tx or "Voice script" in tx or "即梦" in tx):
             label = tx
         elif t == "code" and label and "即梦" in label:
-            cur["jimeng"] = tx  # the FULL Notion 即梦 prompt (resolved before sending)
+            cur["jimeng"] = tx
         elif t == "toggle" and "Image here" in tx and b.get("has_children"):
             for c in _children(b["id"]):
                 if c["type"] == "image":
                     cur["image_url"] = _block_file_url(c); break
+        elif t == "toggle" and "Video here" in tx and b.get("has_children"):
+            # Check if the video toggle already has a real video inside
+            kids = _children(b["id"])
+            if any(k["type"] == "video" for k in kids):
+                cur["has_video"] = True
         elif t == "audio":
             cur["audio_url"] = _block_file_url(b)
     return shots
 
 
-def _download(url, out):
+def _download(url, out, force=False):
+    """Download url → out. Skip if already exists locally UNLESS force=True."""
+    if not force and Path(out).exists():
+        return out
     urllib.request.urlretrieve(url, out)
     return out
 
@@ -186,28 +263,81 @@ def _dreamina(args):
         return {"_raw": r.stdout, "_err": r.stderr}
 
 
-def compose_jimeng_prompt(jimeng_text: str) -> str:
-    """Resolve the Notion 即梦 prompt into a real API prompt: drop the {{图片}} line
-    (it becomes --image) and the {{对白}} variable (becomes --audio), keep the
-    画面/动作 + lip-sync instruction + 运镜 + disclaimer as the text prompt."""
+def compose_i2v_prompt(jimeng_text: str) -> str:
+    """Extract visual/motion instructions for image2video.
+    Strips audio-native headers, {{图片}}, {{对白}} variables — keeps 分镜 directions + 运镜."""
+    skip_keywords = ("音频驱动", "Audio Native", "数字人视频", "AI-digital-human")
     out = []
     for ln in jimeng_text.splitlines():
+        if any(kw in ln for kw in skip_keywords):
+            continue
         if "{{图片}}" in ln:
             continue
         if "{{对白}}" in ln:
-            ln = ln.split("{{对白}}")[0].rstrip("：: ") + "（配音已上传）"
+            # keep the surrounding description, drop the variable
+            ln = ln.replace("{{对白}}", "").strip(" ：: ，,")
+            if not ln:
+                continue
         if ln.strip():
             out.append(ln)
     return "\n".join(out)
 
 
-def submit_shot(img, aud, jimeng_text, model):
+def submit_shot_multimodal(img, aud, jimeng_text, model):
+    """Submit multimodal2video — image + audio → lip-sync talking-head video."""
     dur = max(4, min(15, round(_dur(aud)) or 5))
-    prompt = compose_jimeng_prompt(jimeng_text) or "数字人对口型自然说话，9:16竖屏"
+    prompt = compose_i2v_prompt(jimeng_text) or "医生自然讲解，轻微点头眨眼，摄影机缓慢推入，9:16竖屏"
     res = _dreamina(["multimodal2video", "--image", img, "--audio", aud,
                      "--prompt", prompt, "--ratio", "9:16", "--duration", str(dur),
                      "--model_version", model, "--poll", "0"])
     return res.get("submit_id"), res
+
+
+def submit_shot_image2video(img, aud, jimeng_text, model):
+    """Fallback: image2video (no lip sync) — for B-roll shots or two-person frames.
+    Returns (submit_id, res). Audio must be mixed in via mix_audio() after download."""
+    dur = max(4, min(15, round(_dur(aud)) or 5))
+    prompt = compose_i2v_prompt(jimeng_text) or "画面自然流动，摄影机缓慢推入，9:16竖屏"
+    res = _dreamina(["image2video", "--image", img,
+                     "--prompt", prompt, "--duration", str(dur),
+                     "--model_version", model, "--poll", "0"])
+    return res.get("submit_id"), res
+
+
+def mix_audio(video_path: str, audio_path: str, out_path: str) -> str:
+    """Overlay audio onto a silent video, replacing any existing audio track."""
+    subprocess.run([
+        "ffmpeg", "-y", "-i", video_path, "-i", audio_path,
+        "-map", "0:v:0", "-map", "1:a:0",
+        "-c:v", "copy", "-c:a", "aac", "-shortest", out_path
+    ], capture_output=True, check=True)
+    return out_path
+
+
+def ken_burns(img_path: str, audio_path: str, out_path: str) -> str:
+    """Last-resort fallback: slow zoom-in Ken Burns over static image + audio.
+    Works for any image regardless of content (no 即梦 submission needed)."""
+    dur = max(4, min(15, round(_dur(audio_path)) or 5))
+    # zoompan: slow push-in from 1.0x to 1.05x over the clip duration
+    frames = dur * 25
+    subprocess.run([
+        "ffmpeg", "-y",
+        "-loop", "1", "-i", img_path,
+        "-i", audio_path,
+        "-filter_complex",
+        f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+        f"zoompan=z='min(zoom+0.0005,1.05)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={frames}:s=1080x1920:fps=25[v]",
+        "-map", "[v]", "-map", "1:a",
+        "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+        "-c:a", "aac", "-shortest",
+        "-t", str(dur), out_path
+    ], capture_output=True, check=True)
+    return out_path
+
+
+def submit_shot(img, aud, jimeng_text, model):
+    """Submit multimodal2video. Returns (submit_id, res)."""
+    return submit_shot_multimodal(img, aud, jimeng_text, model)
 
 
 def _video_url(d):
@@ -253,47 +383,133 @@ def main():
     ap.add_argument("--model", default="seedance2.0fast_vip")  # _vip skips the queue (maestro)
     ap.add_argument("--submit-only", action="store_true", help="submit tasks, save submit_ids, exit")
     ap.add_argument("--collect", action="store_true", help="skip submit; download+concat from saved submit_ids")
+    ap.add_argument("--regen", action="store_true", help="regenerate all shots even if videos exist; appends new '🎬 Video (regen)' toggles alongside old ones")
+    ap.add_argument("--shot", type=int, default=None, metavar="N", help="process only shot N (useful for targeted retry)")
     args = ap.parse_args()
 
-    workdir = ROOT / "campaigns" / "_generated" / args.row
-    workdir.mkdir(parents=True, exist_ok=True)
-    ids_path = workdir / "video_submits.json"
+    workdir = _campaign_workdir(args.row)
+    (workdir / "voice").mkdir(parents=True, exist_ok=True)
+    (workdir / "images").mkdir(parents=True, exist_ok=True)
+    (workdir / "video").mkdir(parents=True, exist_ok=True)
+    ids_path = workdir / "video" / "video_submits.json"
 
     shots = read_row_shots(args.row)
     print(f"shots: {len(shots)}")
 
-    if not args.collect:
-        submits = []
-        for i, s in enumerate(shots, 1):
-            if not s["image_url"] or not s["audio_url"]:
-                print(f"  Shot {i}: MISSING image/audio — skip"); continue
-            img = _download(s["image_url"], str(workdir / f"shot{i}.png"))
-            aud = _download(s["audio_url"], str(workdir / f"shot{i}.mp3"))
-            sid, res = submit_shot(img, aud, s["jimeng"], args.model)
-            print(f"  Shot {i}: submit_id={sid} credits={res.get('credit_count')}")
-            submits.append({"shot": i, "title": s["title"], "submit_id": sid})
-        ids_path.write_text(json.dumps(submits, indent=2))
-        print(f"saved submit ids -> {ids_path}")
-        if args.submit_only:
-            return 0
+    vdir = workdir / "video"
+    idir = workdir / "images"
+    adir = workdir / "voice"
 
-    submits = json.loads(ids_path.read_text())
+    # --collect: poll existing submit IDs and download (no new submissions)
+    if args.collect:
+        submits = json.loads(ids_path.read_text())
+        mp4s = [str(vdir / f"shot{s['shot']}.mp4")
+                for s in submits if Path(vdir / f"shot{s['shot']}.mp4").exists()]
+        for s in submits:
+            out = str(vdir / f"shot{s['shot']}.mp4")
+            if Path(out).exists():
+                print(f"  Shot {s['shot']}: already downloaded — skip"); continue
+            print(f"  polling shot {s['shot']} ({s['submit_id']}) ...")
+            if poll_download(s["submit_id"], out):
+                mp4s.append(out)
+                status = place_video_in_shot(args.row, s.get("title", ""), out) if s.get("title") else "no-title"
+                print(f"    ✅ {out} | Notion: {status}")
+            else:
+                print(f"    ❌ shot {s['shot']} failed/no video")
+        if mp4s:
+            final = str(vdir / "final.mp4")
+            concat(sorted(mp4s), final)
+            print(f"🎬 final video -> {final}")
+        else:
+            print("no shots ready")
+        return 0
+
+    # Download ALL assets immediately while Notion S3 URLs are still fresh.
+    # Notion presigned URLs expire in ~1h — shots 3-4 would 403 if we download on-demand
+    # after 40+ minutes of polling shots 1-2.
+    print("  pre-downloading images + audio...")
+    for i, s in enumerate(shots, 1):
+        if args.shot and i != args.shot:
+            continue
+        skip_existing = s.get("has_video") and not args.regen
+        if skip_existing or not s["image_url"] or not s["audio_url"]:
+            continue
+        _download(s["image_url"], str(idir / f"shot{i}.png"))
+        _download(s["audio_url"], str(adir / f"shot{i}.mp3"), force=True)  # always re-fetch audio from Notion
+        print(f"    Shot {i}: assets ready")
+
+    # Default: submit ONE at a time → poll → place → next (avoids queue throttling)
     mp4s = []
-    for s in submits:
-        out = str(workdir / f"shot{s['shot']}.mp4")
-        print(f"  polling shot {s['shot']} ({s['submit_id']}) ...")
-        if poll_download(s["submit_id"], out):
+    submits = []
+    for i, s in enumerate(shots, 1):
+        if args.shot and i != args.shot:
+            # targeted retry — skip other shots but count their existing mp4s for concat
+            suffix = "_regen" if args.regen else ""
+            for candidate in [str(vdir / f"shot{i}{suffix}.mp4"), str(vdir / f"shot{i}.mp4")]:
+                if Path(candidate).exists():
+                    mp4s.append(candidate); break
+            continue
+        if s.get("has_video") and not args.regen:
+            print(f"  Shot {i}: video already in Notion — skip")
+            # still count existing mp4 for final concat
+            existing = str(vdir / f"shot{i}.mp4")
+            if Path(existing).exists():
+                mp4s.append(existing)
+            continue
+        if not s["image_url"] or not s["audio_url"]:
+            print(f"  Shot {i}: MISSING image/audio — skip"); continue
+
+        img = str(idir / f"shot{i}.png")   # always use local (pre-downloaded above)
+        aud = str(adir / f"shot{i}.mp3")   # always re-fetched from Notion above
+        suffix = "_regen" if args.regen else ""
+        out = str(vdir / f"shot{i}{suffix}.mp4")
+
+        sid, res = submit_shot(img, aud, s["jimeng"], args.model)
+        print(f"  Shot {i}: submit_id={sid} credits={res.get('credit_count')}")
+        submits.append({"shot": i, "title": s["title"], "submit_id": sid})
+        ids_path.write_text(json.dumps(submits, indent=2))  # save after each submit
+
+        if args.submit_only:
+            continue
+
+        # Poll immediately — one at a time
+        print(f"  polling shot {i} ({sid}) ...")
+        if poll_download(sid, out):
             mp4s.append(out)
-            status = place_video_in_shot(args.row, s.get("title", ""), out) if s.get("title") else "no-title"
+            status = place_video_in_shot(args.row, s["title"], out, regen=args.regen)
             print(f"    ✅ {out} | Notion: {status}")
         else:
-            print(f"    ❌ shot {s['shot']} failed/no video")
-    if len(mp4s) == len(submits) and mp4s:
-        final = str(workdir / "final.mp4")
-        concat(mp4s, final)
-        print(f"🎬 final video -> {final}")
-    else:
-        print("not all shots ready — run --collect again later")
+            # multimodal2video failed (e.g. two-person frame, B-roll, no face) — fall back to image2video
+            print(f"    ❌ shot {i} multimodal failed — falling back to image2video ...")
+            sid_fb, res_fb = submit_shot_image2video(img, aud, s["jimeng"], args.model)
+            print(f"    ↪️  fallback submit_id={sid_fb} credits={res_fb.get('credit_count')}")
+            if sid_fb:
+                out_silent = str(vdir / f"shot{i}{suffix}_i2v_raw.mp4")
+                if poll_download(sid_fb, out_silent):
+                    mix_audio(out_silent, aud, out)
+                    mp4s.append(out)
+                    status = place_video_in_shot(args.row, s["title"], out, regen=args.regen)
+                    print(f"    ✅ fallback (image2video+audio) {out} | Notion: {status}")
+                else:
+                    # image2video also failed — last resort: Ken Burns ffmpeg
+                    print(f"    ❌ shot {i} image2video failed — Ken Burns fallback ...")
+                    try:
+                        ken_burns(img, aud, out)
+                        mp4s.append(out)
+                        status = place_video_in_shot(args.row, s["title"], out, regen=args.regen)
+                        print(f"    ✅ Ken Burns (ffmpeg) {out} | Notion: {status}")
+                    except Exception as e:
+                        print(f"    ❌ shot {i} Ken Burns also failed: {e}")
+            else:
+                print(f"    ❌ shot {i} fallback submit failed — skipping")
+
+    if not args.submit_only:
+        if mp4s:
+            final = str(vdir / "final.mp4")
+            concat(sorted(mp4s), final)
+            print(f"🎬 final video -> {final}")
+        else:
+            print("no shots completed")
     return 0
 
 

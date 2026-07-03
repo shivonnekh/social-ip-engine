@@ -24,6 +24,7 @@ import base64
 import json
 import mimetypes
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -32,6 +33,28 @@ import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def _slugify(s: str) -> str:
+    """Lowercase ASCII slug: strip emoji/non-ASCII, replace punctuation with hyphens."""
+    s = re.sub(r"[^\x00-\x7F]+", "", s)          # strip emoji + non-ASCII
+    s = re.sub(r"[^a-z0-9\s-]", "", s.lower())   # keep alnum, space, hyphen
+    s = re.sub(r"[\s-]+", "-", s).strip("-")
+    return s or "unknown"
+
+
+def _campaign_workdir(page: dict, ip_name: str) -> Path:
+    """Return campaigns/<content-slug>/<ip-slug>/ for this Production row."""
+    content_slug = "unknown"
+    content_rel = page["properties"].get("Content", {}).get("relation", [])
+    if content_rel:
+        cp = ncall("GET", f"/pages/{content_rel[0]['id']}")
+        for prop in cp["properties"].values():
+            if prop.get("type") == "title":
+                content_slug = _slugify("".join(t["plain_text"] for t in prop["title"]))
+                break
+    ip_slug = _slugify(ip_name) if ip_name else "unknown"
+    return ROOT / "campaigns" / content_slug / ip_slug
 
 
 def _load_env() -> None:
@@ -209,7 +232,7 @@ def main():
     if not shots:
         sys.exit("[error] no image prompts found in row body")
 
-    outdir = ROOT / "campaigns" / "_generated" / args.row
+    outdir = _campaign_workdir(page, ip_name) / "images"
     outdir.mkdir(parents=True, exist_ok=True)
     def _img_prompt_code_id(shot_title):
         """The 🖼️ Image prompt code block id for a shot — we anchor the image toggle after it."""
@@ -244,14 +267,14 @@ def main():
         toggle_id, has_img = _image_toggle(s["title"])
         if has_img:
             print(f"  Shot {i}: image already present — skip"); continue
-        is_person = "same person" in s["prompt"].lower()
-        refs = (ip_refs if is_person else []) + ([bg] if bg else [])
+        # Always include IP face refs — doctor identity must match the IP's reference photos
+        refs = ip_refs + ([bg] if bg else [])
         out_path = str(outdir / f"shot{i}.png")
         if args.reuse and Path(out_path).exists():
             print(f"  Shot {i}: reuse local image {out_path}")
             out = out_path
         else:
-            print(f"  Shot {i}: {'person+bg' if is_person else 'scene'} | refs={len(refs)} | gen from THIS shot's Notion prompt")
+            print(f"  Shot {i}: person+bg | refs={len(refs)} | gen from THIS shot's Notion prompt")
             if args.dry_run:
                 continue
             out = gen_image(s["prompt"], refs, out_path)

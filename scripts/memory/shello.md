@@ -276,3 +276,69 @@ Started as "why hasn't the eye post comment been replied to" and turned into dis
 ### Still open
 - `dm_map.json` staleness — regenerate via `export_dm_map.py` if anyone actually starts relying on it again.
 - No automated image bridge (ai-tcm-ip infographic → TCM-Jessica media/guides) — still manual per keyword.
+
+## Session — 2026-07-02/03 (voice clone + Building Muscle full pipeline)
+
+### What happened
+Completed two things: (1) voice cloning Jackie Chan's actual voice via MiniMax, (2) ran the full idea→image→voice→video pipeline on "Building Muscle × Jackie Chan".
+
+### Decisions
+- **Jackie's voice cloned from `tcm.m4a`** (12.8s, ~/Downloads) → `jackie_chan_clone`. Then user uploaded a clearer screen recording (`ScreenRecording_07-02-2026 16-28-09_1.MP4`, 9.5s) — too short alone, so concatenated both → 22s combined → `jackie_chan_clone_v2`. IP Registry now points to `jackie_chan_clone_v2`.
+- **MiniMax voice clone flow**: POST `/v1/files/upload` (purpose=voice_clone, WAV only, min ~10s) → POST `/v1/voice_clone` (voice_id + file_id) → use voice_id in t2a_v2. Cannot overwrite existing voice_id — must use new ID.
+- **`--force` flag added to `batch_voice_gen.py`**: deletes existing audio blocks and regenerates. Essential when voice_id changes. Also now stores `audio_block_id` in extract_shots for deletion.
+- **Image prompt camera angles**: enriched Building Muscle shots with distinct angles — Shot 1: 仰角中景, Shot 2: 斜侧面近景 (failed lip-sync → regenerated frontal), Shot 3: 俯角 overhead with ingredients, Shot 4: 特写 tight close-up. Outfit anchor baked in (white TCM coat, dark shirt).
+- **Side-angle images break 即梦 lip-sync**: Shot 2's 3/4 side angle caused multimodal2video to fail → Ken Burns fallback. Fix: regenerate image with ~15° off-axis (nearly frontal) → lip-sync succeeded on retry.
+- **即梦 prompts need to match the still image angle** — updated all 4 with specific 运镜 matching the generated stills.
+- **Lip-sync requires frontal face** — never use profile/side-angle images as multimodal2video input.
+
+### Still open
+- Building Muscle voice not yet regenned with `jackie_chan_clone_v2` (still on v1) — user asked but session ended before confirming
+- Shot 2 regen video landed in `🎬 Video (regen)` toggle — hasn't been concat'd into a new final.mp4 yet
+- All other Jackie rows still have `jackie_chan_clone` (v1) voice — may want to batch regen with `--force --ip Jackie`
+
+---
+
+## 🔁 Production Tracker — Stage Update Protocol (PERMANENT RULE)
+
+After every asset generation step, ALWAYS do ALL THREE:
+1. Save assets locally to `campaigns/<slug>/<ip-slug>/`
+2. Upload assets into the Notion page body immediately (do NOT leave local-only)
+3. Tick checkboxes + update Stage
+
+**Stage transitions:**
+- Voice + Image both done → tick `🎨 Image` + `🎙️ Voice`, Stage = `🎬 Video`
+- Video done → tick `🎬 Video`, Stage = `⏳ Editing` (Shivonne edits manually after)
+- Shivonne publishes → she manually sets Stage = `✅ Published`
+
+**Notion upload structure (confirmed working):**
+- Images → append image block inside `🖼️ Image here` toggle: `PATCH /blocks/{toggle_id}/children`
+- Audio → append audio block after voice script code block: `PATCH /blocks/{page_id}/children` with `"after": voice_code_block_id`
+- File upload flow: `POST /v1/file_uploads` → `POST upload_url` (needs `Authorization` + `Notion-Version: 2022-06-28` headers on BOTH calls)
+- Block types: `{"type":"image","image":{"type":"file_upload","file_upload":{"id":fid}}}` / same for audio
+
+**Reusable scripts:**
+- `scripts/upload_anxiety_assets.py` — template for per-row upload logic (copy + adapt block IDs)
+
+Jackie Chan voice params (latest clone):
+- `voice_id`: `jackie_chan_clone_v2`
+- `speed`: 1.2, `pitch`: 0, `language boost`: English
+- Model: `speech-2.8-hd`, format: mp3, 32000Hz
+
+## Session — 2026-07-03
+
+### What happened
+Production Tracker cleanup + Constant Anxiety × Jackie Chan asset generation.
+
+### Decisions
+- Migraine → ✅ Published (was 🟢 Ready to Publish, all assets done)
+- Yellow Teeth × Jackie → ✅ Published (was stuck at 💡 Idea, all assets done)
+- Building Muscle × Jackie → 🟢 Ready to Publish (final.mp4 exists locally, not yet posted)
+- Tonsil Stone, Dry Eyes × Jackie → confirmed already ✅ Published
+- Constant Anxiety × Jackie → generated voice (jackie_chan_clone_v2) + images (4 shots, varied angles) in parallel. Script: `scripts/gen_anxiety_assets.py`. Output: `campaigns/constant-anxiety/jackie-chan-en/`. Stage → 🎬 Video, 🎨+🎙️ ticked.
+- Image prompts enhanced per shot: Hook=low-angle medium CU, Physical Signs=gesture medium shot, Herbal Fix=3/4 angle herbs foreground, CTA=tight close-up.
+
+### Still open
+- Constant Anxiety → needs video run (即梦), then stage → ⏳ Editing
+- Period Pain × Jackie → Stage is 🎬 Video but 🎨 missing — needs images first
+- Stomach × Jackie → all assets ✅ but Stage stuck at 💡 Idea — confirm if published
+- Tongue Diagnosis × Jackie + Chloe → 💡 Idea, nothing started yet
