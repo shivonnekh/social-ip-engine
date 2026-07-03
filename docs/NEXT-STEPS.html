@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>下次回来看这个 — Social IP Engine 待办</title>
+<style>
+  body { font-family: -apple-system, "PingFang HK", "Noto Sans CJK TC", sans-serif;
+         max-width: 860px; margin: 0 auto; padding: 40px 24px; color: #2b2b2b;
+         background: #faf8f4; line-height: 1.7; }
+  h1 { color: #2e6e5e; font-size: 26px; }
+  h2 { color: #2e6e5e; font-size: 19px; border-bottom: 2px solid #e5e0d6;
+       padding-bottom: 6px; margin-top: 36px; }
+  code { background: #f2efe8; padding: 1px 6px; border-radius: 4px;
+         font-family: Menlo, monospace; font-size: 13px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; background: #fff; }
+  th, td { border: 1px solid #e5e0d6; padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: #e4efe9; }
+  .box { background: #fff; border: 1px solid #e5e0d6; border-left: 5px solid #2e6e5e;
+         border-radius: 10px; padding: 16px 20px; margin: 16px 0; }
+  .warn { border-left-color: #e8a94f; background: #fdf3e7; }
+  .step { font-weight: 700; color: #2e6e5e; }
+  .muted { color: #6f6a62; font-size: 13px; }
+  ol li, ul li { margin: 6px 0; }
+</style>
+</head>
+<body>
+
+<h1>📌 下次回来看这个（2026-07-03 存档）</h1>
+<p class="muted">Shello 留 · 所有代码已上线运行，这里只剩需要你人工做的事 + 现状速查</p>
+
+<h2>0. 现状一句话</h2>
+<div class="box">
+  项目已合并成一个：<strong><code>social-ip-engine</code></strong>（原 TCM-Jessica + ai-tcm-ip）。<br>
+  做 Notion 内容 → 开 <code>social-ip-engine</code>，脚本在 <code>studio/scripts/</code>。<br>
+  IG 机器人正常运行；发布已全自动（标 ✅ Published 就完事）；加新 IP 只需建配置文件夹，零代码。<br>
+  848 个测试全绿 · WhatsApp 旧业务已关停钉死 · 旧文件夹 <code>_archived-ai-tcm-ip</code> 确认不要旧素材后可删。
+</div>
+
+<h2>1. 唯一的人工待办：开通 Messenger（想开时才做，约 20 分钟）</h2>
+<p>代码全部就绪并已上线，只差 Meta 后台的钥匙。完整手册在
+<code>social-ip-engine/docs/MESSENGER-ACTIVATION.md</code>，概要如下：</p>
+
+<table>
+  <tr><th>步骤</th><th>做什么</th><th>在哪里</th></tr>
+  <tr><td class="step">1</td><td>给 Jackie 的 Facebook Page 生成 <strong>long-lived Page token</strong>，权限勾：<code>pages_messaging</code>、<code>pages_manage_engagement</code>、<code>pages_read_engagement</code></td><td>Meta App dashboard</td></tr>
+  <tr><td class="step">2</td><td>Messenger webhook 回调填 <code>https://tcm-jessica.onrender.com/webhook/facebook</code>（verify token 用现有的 <code>META_VERIFY_TOKEN</code>），Page 订阅 <code>messages</code> + <code>feed</code></td><td>Meta App dashboard</td></tr>
+  <tr><td class="step">3</td><td>填 4 个环境变量：<code>FB_PAGE_ID</code>、<code>FB_PAGE_ACCESS_TOKEN</code>、<code>FB_PAGE_LANGUAGE=en</code>（Jackie 是英文号，<strong>这个必填</strong>，不填带语言标签的规则不会发）、（可选）<code>FB_APP_SECRET</code></td><td>Render dashboard → social-ip-engine → Environment</td></tr>
+  <tr><td class="step">4</td><td><strong>最后</strong>才把 <code>FB_ENABLED=true</code>（dashboard 里设，永远不要写死进 render.yaml）</td><td>Render dashboard</td></tr>
+  <tr><td class="step">5</td><td>验证：终端跑 <code>python3 scripts/fb_probe.py</code>（期望输出 <code>ignored</code>；出 <code>disabled</code> = 第 4 步没生效）→ 发一条测试关键词评论 → 发一条真问题私信</td><td>本地终端 + FB</td></tr>
+</table>
+
+<div class="box warn">
+  <strong>回滚开关：</strong>出任何问题，Render dashboard 把 <code>FB_ENABLED=false</code> 即刻止血，IG 完全不受影响。
+</div>
+
+<h2>2. 想加新 IP 的时候（零代码）</h2>
+<ol>
+  <li>复制 <code>data/ips/jackie/</code> 整个文件夹，改名成新 IP</li>
+  <li>改 <code>ip.json</code>（IG 账号 ID、语言、token 环境变量名、声音配置）和 <code>persona.json</code>（人设 prompt、打招呼语）</li>
+  <li>Render dashboard 填对应 token → 部署 → 完成</li>
+</ol>
+
+<h2>3. 其他挂着的小事（不急）</h2>
+<ul>
+  <li><strong>TikTok</strong>：还没开始，先要半天调研 API 限制（计划 Phase 5）</li>
+  <li><strong>7月2日 04:44 批量重发之谜</strong>：当时是什么触发了 backfill 重跑没查出来 —— 在跑任何 backfill 之前先告诉 Shello 查一下</li>
+  <li><strong>Chloe 还喂内容吗？</strong>：如果不喂了，把她 <code>ip.json</code> 里 <code>active</code> 改 false，fan-out 就会跳过她</li>
+  <li><strong>Postgres 免费版有 90 天到期</strong>：记得看一眼 Render dashboard 的 DB 到期日</li>
+</ul>
+
+<h2>4. 文件地图</h2>
+<table>
+  <tr><th>要找什么</th><th>在哪</th></tr>
+  <tr><td>整合计划全文（v2）</td><td><code>social-ip-engine/docs/INTEGRATION-PLAN.html</code></td></tr>
+  <tr><td>Messenger 开通手册</td><td><code>social-ip-engine/docs/MESSENGER-ACTIVATION.md</code></td></tr>
+  <tr><td>项目总览</td><td><code>social-ip-engine/PROJECT-OVERVIEW.html</code></td></tr>
+  <tr><td>Notion 内容脚本</td><td><code>social-ip-engine/studio/scripts/</code>（用法不变，.env 已就位）</td></tr>
+  <tr><td>IP 配置档案</td><td><code>social-ip-engine/data/ips/</code></td></tr>
+  <tr><td>旧 ai-tcm-ip 素材（生成的视频/音频）</td><td><code>_archived-ai-tcm-ip/campaigns/_generated/</code>（没搬进 git，删文件夹前先确认）</td></tr>
+</table>
+
+<p class="muted">存档时间：2026-07-03 · 对应 commit：main @ 最新 · 有问题回来叫 Shello，session memory 里全都记着。</p>
+
+</body>
+</html>
