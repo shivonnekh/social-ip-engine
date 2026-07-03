@@ -259,5 +259,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/anxiety-page-1.png"
     ]
+  },
+  {
+    "keyword": "stomach",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Warming a cold weak stomach is the whole game here 🍵\n\nQuick check so I send the right plan — is your stomach pain better with warmth and worse with cold/raw food?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM stomach guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🍵 Stomach pain after meals? Warm a cold, weak stomach",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/stomach-page-1.png"
+    ]
   }
 ]
