@@ -57,9 +57,13 @@ services:
       - key: CHATDADDY_WEBHOOK_SECRET
         sync: false
 
-      # ── WhatsApp tuning (optional, defaults applied) ────────
+      # ── WhatsApp: OFF — legacy business line discontinued (2026-07-03).
+      # Hardcoded "false" so blueprint sync ENFORCES off (the same mechanism
+      # that caused the IG_ENABLED outage now works in our favour).
       - key: WA_POLL_ENABLED
-        value: "true"
+        value: "false"
+      - key: BROADCAST_ENABLED
+        value: "false"
       - key: WA_POLL_INTERVAL_S
         value: "5"
       - key: WA_BUBBLE_DELAY_MIN
