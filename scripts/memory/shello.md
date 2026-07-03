@@ -508,3 +508,28 @@ Still open:
 - meta_webhook._account_profile_loaders() still hardcodes jackie (dormant pipeline path) — fold into registry later
 - scripts/backfill_comments.py hardcodes DEFAULT_ACCOUNT_ID
 - 04:44 mass re-send trigger still unidentified; guides_sent TOCTOU race; D5 (Chloe content feed?)
+
+## Session — 2026-07-03 (notion-sync resurrection + pre-flight + gimmick content)
+What happened: Created the male-ED gimmick concept (No.52 "🍆 No Morning Wood") — talked her out of the literal condom-of-water image (IG/TikTok account-restriction risk to the comment→DM engine) into an eggplant-half-mast gag; DETOX-structure script (Hook→pain→solution→CTA) + DM protocol. Then a deep debugging chain that revealed her notion-sync auto-wiring had NEVER run in prod.
+
+Decisions / shipped:
+- **notion-sync was dead in prod — 3 env vars never set on Render**: NOTION_SYNC_SECRET (webhooks 401'd — saw them in Render logs from Notion IP 131.149.232.x), NOTION_KEY (502 "not set"), GITHUB_PUSH_TOKEN (rules written but not persisted → lost on deploy). All now set + verified by BEHAVIOR (200, tracker read 26 rows, git_push ok, commit landed).
+- **Setting a Render env var does NOT auto-apply** — needs a manual deploy (POST /deploys) to inject into the running process. Auto-deploy webhook still broken.
+- **ngrok bug**: PUBLIC_BASE_URL on Render was a stale ngrok dev tunnel; public_media_url() reads it BEFORE JESSICA_BASE_URL → every auto-wired DM infographic got a dead URL. Fixed → tcm-jessica.onrender.com.
+- **Feature shipped (1ed1482)**: generate-infographic-from-Brief when a row has no DM-Infographic-toggle image (src/notion_infographic_gen.py); PNGs now pushed to git (were vanishing on deploy). Reviewer-hardened: threadpool (240s gen was going to block async endpoint), on-disk dedup (no re-spend on retry), per-run cap NOTION_SYNC_MAX_GENERATIONS=5. Opt-out via NOTION_SYNC_GENERATE_IMAGES=0.
+- **Pre-flight (ce8248f)**: _WIREABLE_STAGES = {🟢 Ready to Publish, ✅ Published}. Arms keyword+DM+infographic at Ready (testable before post goes out); Published = safety net. Idempotent.
+- muscle post (💪, live on IG, only comment was @davidafterwork) wired + URL fixed + richer 4-section infographic committed. David answered.
+
+Still open:
+- **USER ACTION**: re-point Notion Automation trigger from ✅ Published → 🟢 Ready to Publish (webhook URL + X-Sync-Secret unchanged).
+- git_publish.py _REMOTE still says TCM-Jessica.git (works via GitHub redirect — low priority).
+- PAT github_pat_11BRLC... is in .env + Render GITHUB_PUSH_TOKEN (Contents:write, social-ip-engine only, exposed in this chat — rotate if paranoid).
+- Slug filename collision (pre-existing, download+gen branches) — different keywords sanitizing to same slug overwrite each other's PNG. Not fixed.
+- No.52 vitality post not published; will auto-wire (with generated infographic now) when she flips it to Ready.
+
+## Session addendum — 2026-07-03 (E2E verified + docs)
+- VERIFIED live end-to-end: flipped rows to 🟢 Ready to Publish → Notion webhook hit /admin/notion-sync (200, from Notion IP 131.149.232.x, seen in Render logs) → auto-wired tongue/anxiety/stomach rules WITH infographics at correct onrender URLs → server git-pushed (ec0746b). stomach-page-1.png loads 200.
+- Confirmed generate-from-Brief path works: ran notion_infographic_gen.find_infographic_brief + generate_png on vitality No.52's real Brief in isolation → clean on-brand image (walnuts/韭菜/生薑肉桂茶). vitality itself won't re-wire via webhook (already hand-wired → dedup skips).
+- Confirmed 3-layer idempotency answers user's "bounce stage won't re-run" Q: row-id state (git-persisted) → keyword dedup → image reuse. Only re-wires if rule deleted/keyword changed.
+- Gotcha for testing: Notion "Stage is set to X" trigger only fires on an actual CHANGE. Re-selecting the same value = no webhook. Test by flipping a NON-Ready row → Ready.
+- Updated docs/content-flow-diagram.html (her HTML): trigger ✅ Published → 🟢 Ready to Publish pre-flight throughout + new §⑤ (rule fields table, generate-from-Brief, 3-layer idempotency, durability). English.

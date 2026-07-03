@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Social IP · Content Flow Diagram</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "default", flowchart: { useMaxWidth: true, curve: "basis" } });</script>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --card: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --line: #e3e3df;
+    --accent: #2d6a4f;
+    --accent-soft: #d8f3dc;
+    --blue: #2f5fa8;
+    --blue-soft: #dce8fb;
+    --warn: #c44d3a;
+    --warn-soft: #fce4dc;
+    --amber: #a8710a;
+    --amber-soft: #fbeecd;
+    --code-bg: #f4f1ed;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "PingFang HK", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header { margin-bottom: 2rem; }
+  h1 { font-size: 1.8rem; margin: 0 0 0.35rem; }
+  h2 { font-size: 1.3rem; margin: 2.75rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 1.05rem; margin: 1.5rem 0 0.6rem; color: var(--accent); }
+  .sub { color: var(--muted); font-size: 0.98rem; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0 1.5rem; }
+  .pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.85rem; font-weight: 500; }
+  .pill.blue { background: var(--blue-soft); color: var(--blue); }
+  .pill.green { background: var(--accent-soft); color: var(--accent); }
+  .pill.amber { background: var(--amber-soft); color: var(--amber); }
+  .pill.red { background: var(--warn-soft); color: var(--warn); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 1.1rem 1.25rem; display: flex; flex-direction: column;
+  }
+  .card h4 { margin: 0 0 0.5rem; font-size: 1.02rem; display: flex; align-items: center; gap: 0.5rem; }
+  .card p { margin: 0.25rem 0; font-size: 0.92rem; color: var(--ink); }
+  .card ul { margin: 0.4rem 0 0; padding-left: 1.1rem; font-size: 0.9rem; }
+  .card li { margin: 0.25rem 0; }
+  .card.border-blue { border-top: 3px solid var(--blue); }
+  .card.border-green { border-top: 3px solid var(--accent); }
+  .card.border-amber { border-top: 3px solid var(--amber); }
+  .card.border-red { border-top: 3px solid var(--warn); }
+
+  table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.92rem; }
+  th, td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: #f4f1ed; font-weight: 600; }
+  code { background: var(--code-bg); padding: 0.05rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+
+  .mermaid { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; }
+
+  .callout { background: var(--warn-soft); border: 1px solid #f1c3b4; border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.92rem; margin: 1rem 0; }
+  .callout.amber { background: var(--amber-soft); border-color: #edd6a0; }
+  .callout b { color: var(--warn); }
+  .callout.amber b { color: var(--amber); }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 1rem 0; }
+  .steps li { counter-increment: step; position: relative; padding: 0.6rem 0 0.6rem 2.6rem; border-bottom: 1px dashed var(--line); font-size: 0.95rem; }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 0.5rem;
+    width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+  }
+  .steps .tag { display: inline-block; margin-left: 0.5rem; font-size: 0.75rem; padding: 0.05rem 0.5rem; border-radius: 999px; }
+  .steps .tag.blue { background: var(--blue-soft); color: var(--blue); }
+  .steps .tag.green { background: var(--accent-soft); color: var(--accent); }
+  .steps .tag.amber { background: var(--amber-soft); color: var(--amber); }
+
+  footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>👨‍⚕️ Social IP · Content Flow Diagram</h1>
+  <p class="sub">A simplified map for the production team — from an idea in Notion to a real Instagram follower getting an AI DM reply in seconds. Goal: see at a glance what a human does, what runs automatically, and where the real bottlenecks are.</p>
+  <div class="legend">
+    <span class="pill blue">🧑‍🎨 CC (Content Creator) owns this</span>
+    <span class="pill green">🤖 Automated (system / AI)</span>
+    <span class="pill amber">🖐️ Manual review checkpoint</span>
+  </div>
+</header>
+
+<h2>① The big picture: two stages, two systems</h2>
+<p class="sub">Stage 1 is "making the content" (Notion + the Studio tooling — mostly automated, with human review gates). Stage 2 is "the content goes live and auto-engages" (the real Instagram bot, <code>social-ip-engine</code> — fully automated). These are <b>two separate systems</b>, connected by one real webhook bridge.</p>
+
+<div class="mermaid">
+flowchart TD
+  classDef cc fill:#dce8fb,stroke:#2f5fa8,color:#2f5fa8,font-weight:600;
+  classDef auto fill:#d8f3dc,stroke:#2d6a4f,color:#2d6a4f,font-weight:600;
+  classDef check fill:#fbeecd,stroke:#a8710a,color:#a8710a,font-weight:600;
+
+  A["🧑‍🎨 CC writes the concept\nNotion Content Library\nTopic / Hook / CTA / Shot Guide"]:::cc
+  B["🤖 Auto fan-out per IP\nJackie (English) / Jessica (Cantonese)"]:::auto
+  C["🤖 Auto-derive image / voice / video prompts"]:::auto
+  D["🤖 AI generates the still frame\ngpt-image-2"]:::auto
+  E{"🖐️ Human checks the image"}:::check
+  F["🤖 AI voice + Dreamina video generation"]:::auto
+  G{"🖐️ Human checks the final video"}:::check
+  I["🧑‍🎨 CC flips Notion Stage to\n'🟢 Ready to Publish'\n(pre-flight: arm BEFORE posting)"]:::cc
+
+  J["🤖 Notion Automation fires a real webhook\nPOST /admin/notion-sync"]:::auto
+  K["🤖 Auto-drafts the keyword + DM + public reply\nlive instantly, no redeploy"]:::auto
+  L["🤖 Auto-attaches the infographic\nreuse uploaded image OR generate from Brief"]:::auto
+  Q{"🖐️ CC test-comments it\n(funnel is live to try before the post is)"}:::check
+  H["🧑‍🎨 CC publishes to Instagram\n+ flips Stage to '✅ Published'\n(the post just goes out — already armed)"]:::cc
+  M["👀 Followers see the Reel on Instagram\ncomment the keyword"]:::cc
+  N["🤖 Meta webhook pushes the comment\nin real time"]:::auto
+  O["🤖 Keyword match → auto DM + infographic sent"]:::auto
+  P["🤖 AI persona agent takes over the chat\nChloe / Jackie, with memory"]:::auto
+
+  A --> B --> C --> D --> E
+  E -- not OK, revise prompt --> C
+  E -- OK, tick 🎨 --> F --> G
+  G -- not OK --> C
+  G -- OK --> I
+  I ==real webhook==> J --> K --> L --> Q
+  Q -- funnel works --> H
+  H --> M --> N --> O --> P
+</div>
+
+<div class="callout amber">
+  <b>The bottleneck isn't automation — it's judgment.</b> The remaining manual steps are <b>human review gates</b> (is the image OK? is the final video OK? does the funnel reply correctly?). Everything else — keyword, DM copy, public reply, and the infographic — is fully automatic.
+</div>
+<div class="callout">
+  <b>New as of 2026-07-03 — the pre-flight model.</b> The keyword → DM funnel is now armed at <b>🟢 Ready to Publish</b>, <b>before</b> the post goes live — so you can test-comment your own post and confirm it replies correctly <b>before</b> a real follower ever sees it. <code>✅ Published</code> then just posts the Reel (it's already armed), and still works as a safety net if a row jumps straight to Published. See section ⑤.
+</div>
+
+<h2>② Who owns what</h2>
+<div class="grid">
+  <div class="card border-blue">
+    <h4>🧑‍🎨 CC (Content Creator)</h4>
+    <ul>
+      <li>Comes up with the idea: Topic / Hook / CTA (the keyword to comment)</li>
+      <li>Writes the <b>Shot Guide</b> — the single source of truth for everything downstream. The more cinematic and specific it is, the better the AI-generated image and video turn out</li>
+      <li>Reviews the AI-generated image and final video, sends it back for a prompt tweak if it's off</li>
+      <li>Flips the Notion status to "🟢 Ready to Publish" — this <b>arms</b> the whole comment → DM funnel (keyword, DM, public reply, infographic) so it can be tested before going live</li>
+      <li>Publishes the final video to Instagram + flips to "✅ Published" — at this point the post just goes out, already armed</li>
+    </ul>
+  </div>
+  <div class="card border-green">
+    <h4>🤖 Automated (system / AI)</h4>
+    <ul>
+      <li>Fans one idea out into a production row per IP (Jackie / Jessica)</li>
+      <li>Derives the image prompt, voice script, and video prompt from the Shot Guide</li>
+      <li>Calls the AI image model (gpt-image-2), AI voice (MiniMax), AI video (Dreamina/即梦)</li>
+      <li>The moment Notion flips to "🟢 Ready to Publish", a real webhook fires and auto-drafts the keyword, DM copy, and public reply</li>
+      <li>Auto-attaches the infographic image — reuses one already uploaded in Notion, or generates one on the spot from the Infographic Brief if none exists</li>
+      <li>Persists everything (rule + image) to git, so nothing is lost on the next deploy; already-processed rows are never re-run or re-generated</li>
+      <li>When a real follower comments the keyword, sends the DM automatically and hands the conversation to the AI persona agent</li>
+    </ul>
+  </div>
+  <div class="card border-amber">
+    <h4>🖐️ Manual review checkpoints (still need human eyes)</h4>
+    <ul>
+      <li>Is the AI-generated still frame clear and on-message enough, no weird distortion?</li>
+      <li>Does the final video flow well — lip-sync and expression look natural?</li>
+      <li>These are the only two places a human needs to look at every single piece of content</li>
+    </ul>
+  </div>
+</div>
+
+<h2>③ How the technical flow works</h2>
+
+<h3>(a) How the image gets generated</h3>
+<ol class="steps">
+  <li>CC writes the "🎥 Shot Guide" in Notion — rich and cinematic (action, camera moves, cuts). This is the single source of truth <span class="tag blue">CC</span></li>
+  <li>The system automatically extracts <b>just the first beat</b> of the Shot Guide into a one-line "image prompt" (a single still frame) <span class="tag green">automated</span></li>
+  <li>The system pulls this IP's reference face photos + a clinic background from Notion and sends them to the AI image model (gpt-image-2) <span class="tag green">automated</span></li>
+  <li>The generated image is placed back into the right Notion block, and the row gets ticked "🎨 image done" <span class="tag green">automated</span></li>
+  <li>A human glances at the image — is it clear enough, any distortion? <span class="tag amber">manual review</span></li>
+</ol>
+
+<h3>(b) How it connects to the keyword rule (comment → DM)</h3>
+<ol class="steps">
+  <li>When the content is ready, CC flips the Production Tracker row's Stage to "🟢 Ready to Publish" in Notion — this arms the funnel <b>before</b> the post goes live <span class="tag blue">CC</span></li>
+  <li>That status change fires a real <b>Notion Automation webhook</b> straight to <code>social-ip-engine</code>'s <code>POST /admin/notion-sync</code> — Notion pushes to us, we don't poll for it <span class="tag green">automated</span></li>
+  <li>The system drafts the keyword, the DM copy, and the public reply, and writes it straight into the live rule file <span class="tag green">automated</span></li>
+  <li>The rule is live immediately — <b>no redeploy needed</b>, Instagram can match it right away <span class="tag green">automated</span></li>
+  <li>The infographic image is attached automatically too: if one is already uploaded into the row's "📊 DM Infographic" toggle, it's downloaded and wired in; if not, but an "Infographic Brief" exists on the content page, the system generates one on the spot (capped at 5 generations per sync run, to bound image-API spend on a bulk publish) <span class="tag green">automated</span></li>
+  <li>CC can now test-comment their own post to confirm the DM + infographic fire correctly — <b>before</b> publishing. Then flip to "✅ Published" and post <span class="tag blue">CC</span></li>
+</ol>
+
+<h3>(c) Is it a webhook, or Notion polling an agent? — two different mechanisms, don't mix them up</h3>
+<table>
+  <tr><th>Connection</th><th>Mechanism</th><th>Real-time?</th><th>What it's for</th></tr>
+  <tr>
+    <td><b>Studio tooling ↔ Notion</b><br><span style="color:var(--muted); font-size:0.85em;">content-authoring stage</span></td>
+    <td>Polling — a script checks Notion on a timer</td>
+    <td>No, every few minutes</td>
+    <td>Detects "ready to fan out," "needs images," etc., and kicks off image / voice / video generation</td>
+  </tr>
+  <tr>
+    <td><b>social-ip-engine ↔ Notion</b><br><span style="color:var(--muted); font-size:0.85em;">at Ready to Publish (pre-flight)</span></td>
+    <td><b>Real webhook</b> — Notion Automation calls <code>POST /admin/notion-sync</code> the moment Stage flips</td>
+    <td><b>Yes, instant</b></td>
+    <td>Drafts the keyword + DM + public reply and attaches/generates the infographic, the moment "Stage = 🟢 Ready to Publish" happens (also fires on ✅ Published as a safety net)</td>
+  </tr>
+  <tr>
+    <td><b>Instagram ↔ social-ip-engine</b><br><span style="color:var(--muted); font-size:0.85em;">live audience interaction</span></td>
+    <td><b>Real webhook</b> (Meta pushes to us)</td>
+    <td><b>Yes, instant</b></td>
+    <td>The moment someone comments or DMs, Meta notifies the system, which decides on the spot whether and how to reply</td>
+  </tr>
+</table>
+<div class="callout">
+  <b>Where it's easy to get confused:</b> Two of the three connections are real, instant webhooks (Notion Publish → keyword sync, and Instagram → the bot). Only the very first stage — the Studio content-authoring tooling checking Notion for new work — is a polling loop, and that's the one place a few minutes of lag is expected and normal.
+</div>
+
+<h2>④ How it shows up on Instagram</h2>
+<div class="grid">
+  <div class="card border-blue">
+    <h4>1️⃣ Reel goes live</h4>
+    <p>A 9:16 short video with a clear CTA — "comment '[keyword]' for more." This is the entry point for everything downstream.</p>
+  </div>
+  <div class="card border-green">
+    <h4>2️⃣ A follower comments the keyword</h4>
+    <p>The system gets Meta's webhook notification instantly, matches the comment text against the keyword rule table — a match sends an <b>automatic DM right away</b>, and optionally a public acknowledgement reply on the comment thread.</p>
+  </div>
+  <div class="card border-amber">
+    <h4>3️⃣ No keyword match = silence</h4>
+    <p>This is intentional — the system will <b>never</b> DM a stranger just because they left any comment. No match, no reply, by design.</p>
+  </div>
+  <div class="card border-green">
+    <h4>4️⃣ The conversation continues in DM</h4>
+    <p>Once the follower replies in DM, it's no longer a canned message — the AI persona agent (Chloe or Jackie) takes over, referencing prior chat history, and keeps the conversation going like a real person would.</p>
+  </div>
+</div>
+
+<h2>⑤ What shipped on 2026-07-03 — the pre-flight upgrade</h2>
+<p class="sub">The auto-sync existed but had never actually run in production (three config values were missing on the server). It's now live, hardened, and moved to a pre-flight model. Here's what changed.</p>
+
+<h3>(a) One flip to 🟢 Ready to Publish wires the whole funnel</h3>
+<p class="sub">A single webhook writes one complete comment → DM rule. Nothing here is manual.</p>
+<table>
+  <tr><th>Field</th><th>What it does</th><th>Where it comes from (auto)</th></tr>
+  <tr><td><code>keyword</code></td><td>The word a follower comments to trigger the reply</td><td>The row's CTA</td></tr>
+  <tr><td><code>dm_text</code></td><td>The private DM sent, in the IP's voice (Jackie / Chloe)</td><td>The row's First-DM copy</td></tr>
+  <tr><td><code>image_urls</code></td><td>The infographic attached to the DM</td><td>The "📊 DM Infographic" toggle, <b>or auto-generated from the Brief</b></td></tr>
+  <tr><td><code>public_ack</code></td><td>The public reply posted on the comment thread ("sent you a DM 👀")</td><td>Auto-templated</td></tr>
+  <tr><td><code>accounts</code></td><td>Which IP account the rule applies to</td><td>The IP relation</td></tr>
+</table>
+
+<h3>(b) Infographics generate themselves — no manual upload needed</h3>
+<div class="grid">
+  <div class="card border-green">
+    <h4>🖼️ Image already in Notion</h4>
+    <p>If you dropped a PNG into the row's "📊 DM Infographic" toggle, it's downloaded and wired in as-is.</p>
+  </div>
+  <div class="card border-green">
+    <h4>🤖 No image? Generated from the Brief</h4>
+    <p>If the row has an "Infographic Brief" but no image, the system generates one on the spot (gpt-image-2) from that Brief and attaches it. Capped at 5 generations per sync run to bound spend on a bulk publish.</p>
+  </div>
+  <div class="card border-amber">
+    <h4>🖐️ Why pre-flight matters here</h4>
+    <p>Because arming happens at Ready to Publish, you get to <b>look at the auto-generated image</b> and test the DM before the post is live — instead of discovering a bad image after it's already replying to strangers.</p>
+  </div>
+</div>
+
+<h3>(c) Bounce the stage all you like — it never re-runs</h3>
+<p class="sub">Drag a row Ready → Idea → Ready again? It will <b>not</b> re-wire or re-generate. Three independent guards make "already done stays done" safe:</p>
+<ol class="steps">
+  <li><b>Row-level</b> — every processed row is recorded in a state file that's saved to git, so it survives redeploys. A re-flip is skipped on the very first check <span class="tag green">main guard</span></li>
+  <li><b>Keyword-level</b> — even if that state were lost, a rule for the same keyword already existing is skipped, so no duplicate <span class="tag green">backup guard</span></li>
+  <li><b>Image-level</b> — even if both above failed, an already-generated PNG is reused, never re-generated, so it never re-spends on the image API <span class="tag green">cost guard</span></li>
+</ol>
+<div class="callout">
+  The <b>only</b> time a row re-wires is if you deliberately delete its rule or change its keyword — i.e. when you actually want a fresh one, never by accident.
+</div>
+
+<h3>(d) Durability — nothing vanishes on deploy anymore</h3>
+<p class="sub">The server runs on ephemeral disk: a redeploy rebuilds from GitHub. Previously an auto-wired rule (and its image) could disappear on the next unrelated deploy. Fixed:</p>
+<ul>
+  <li>Auto-wired rules + the infographic PNGs are now <b>committed and pushed to git</b> by the server itself, so they persist across every deploy.</li>
+  <li>Three server config values that were silently missing — the webhook auth secret, the Notion API key, and the git push token — are now set, so the whole loop actually runs and self-persists.</li>
+  <li>A stale developer tunnel URL that was breaking every DM's image link was corrected to the real production URL.</li>
+</ul>
+
+<h2>💡 Two things worth discussing with the team</h2>
+<ol class="steps">
+  <li><b>Image / video review</b> is still 100% eyeballed one by one. Worth defining a simple "obviously reject" checklist (face distortion, message clarity) to cut down back-and-forth revision rounds <span class="tag amber">manual checkpoint</span></li>
+  <li><b>Notion → studio tooling is still polling</b> (a few minutes of lag before a new concept gets picked up for fan-out). If the team wants that tighter, it's worth discussing switching it to a real trigger too, the same way the Publish step already works</li>
+</ol>
+
+<footer>
+  social-ip-engine · content-flow-diagram.html · generated 2026-07-03 · updated 2026-07-03 (§⑤ pre-flight upgrade: Ready-to-Publish trigger, auto-generated infographics, 3-layer idempotency, git durability) · sources: <code>studio/CLAUDE.md</code>, <code>CLAUDE.md §3.10</code>, <code>src/channels/</code>, <code>src/notion_sync.py</code>, <code>src/notion_sync_media.py</code>, <code>src/notion_infographic_gen.py</code>, <code>src/web.py</code>
+</footer>
+
+</div>
+</body>
+</html>
