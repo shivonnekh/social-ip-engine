@@ -77,6 +77,15 @@ _DEFAULT_BASE_BY_PLATFORM: Final[dict[Platform, str]] = {
     "facebook": "https://graph.facebook.com",
 }
 
+# Public comment replies use a DIFFERENT edge per platform:
+#   * Instagram comment nodes expose ``POST /{ig-comment-id}/replies``.
+#   * Facebook Page comment nodes have NO /replies edge — replying is
+#     ``POST /{comment-id}/comments`` (a comment on the comment).
+_COMMENT_REPLY_EDGE: Final[dict[Platform, str]] = {
+    "instagram": "replies",
+    "facebook": "comments",
+}
+
 
 @dataclass(frozen=True)
 class SendResult:
@@ -201,7 +210,7 @@ async def reply_to_comment(
         logger.warning("[meta] %s token unset — cannot reply to comment", platform)
         return SendResult(False, "no token")
 
-    url = _graph_url(platform, comment_id + "/replies")
+    url = _graph_url(platform, f"{comment_id}/{_COMMENT_REPLY_EDGE[platform]}")
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT_S) as client:
             resp = await client.post(

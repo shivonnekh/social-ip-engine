@@ -53,13 +53,40 @@ _DEFAULT_PATH: Final[str] = str(
 
 
 # Maps account ID → expected content language.
-# This is a HARD GATE — a rule whose `language` field doesn't match this
-# map will be silently skipped and logged as an error, even if it would
-# otherwise match the keyword and account. Prevents cross-language image sends.
+# This is a HARD GATE — a rule whose `language` field doesn't match the
+# account's expected language is skipped and logged as an error, even if it
+# would otherwise match the keyword and account. Language-tagged rules also
+# fail CLOSED for accounts with no registered language (see
+# ``_expected_language``). Prevents cross-language image sends.
 _ACCOUNT_LANGUAGE: dict[str, str] = {
+    # ── Instagram accounts ──
     "17841417304649448": "en",   # jackiechan.tcm  → English only
     "17841424706900394": "yue",  # chloechan.cccc  → Cantonese only
+    # ── Facebook Pages ──
+    # FB page ids are deployment config, not fixed at code time — register
+    # the live Page via env instead of editing this dict:
+    #     FB_PAGE_ID=<page id>   FB_PAGE_LANGUAGE=en|yue
+    # (resolved in ``_expected_language``). Integrator note: fold both this
+    # dict and the env lookup into the IP registry once src/ips/ lands.
 }
+
+
+def _expected_language(account_id: str | None) -> str:
+    """Expected content language for a business account ("" = unregistered).
+
+    Static IG ids come from ``_ACCOUNT_LANGUAGE``; the Facebook Page is
+    registered via env (``FB_PAGE_ID`` + ``FB_PAGE_LANGUAGE``) because the
+    page id is deployment config rather than a code-time constant.
+    """
+    if not account_id:
+        return ""
+    lang = _ACCOUNT_LANGUAGE.get(account_id, "")
+    if lang:
+        return lang
+    fb_page_id = os.environ.get("FB_PAGE_ID", "").strip()
+    if fb_page_id and account_id == fb_page_id:
+        return os.environ.get("FB_PAGE_LANGUAGE", "").strip().lower()
+    return ""
 
 
 @dataclass(frozen=True)
@@ -174,22 +201,32 @@ def _account_allowed(rule: CommentReply, account_id: str | None) -> bool:
 def match(text: str, *, account_id: str | None = None) -> CommentReply | None:
     """Return the first matching rule allowed for this receiving account.
 
-    Language gate: if the account has a registered expected language (see
-    ``_ACCOUNT_LANGUAGE``) and the rule has a ``language`` field that
-    differs, the rule is BLOCKED regardless of keyword/account match.
+    Language gate: a rule with a ``language`` field is only served to an
+    account whose registered expected language (``_expected_language``)
+    matches. Mismatches AND unregistered accounts are BLOCKED — fail
+    closed, because before this an FB page id missing from the language
+    map would have been served the first (possibly wrong-language) rule.
+    Rules with no ``language`` field pass through (backwards compat).
     This prevents Jackie (English) from ever serving Cantonese images,
     even if comment_responses.json is misconfigured.
     """
     haystack = (text or "").lower()
-    expected_lang = _ACCOUNT_LANGUAGE.get(account_id or "", "")
+    expected_lang = _expected_language(account_id)
     for rule in load_rules():
         if not (rule.keyword and rule.keyword in haystack):
             continue
         if not _account_allowed(rule, account_id):
             continue
-        # Hard language gate — both sides must declare a language for the check
-        # to fire. A rule with no language field passes through (backwards compat).
-        if expected_lang and rule.language and rule.language != expected_lang:
+        if rule.language and not expected_lang:
+            logger.error(
+                "[comment_rules] LANGUAGE BLOCK (unregistered account) "
+                "keyword=%r rule_lang=%r account=%s — register the account's "
+                "language (_ACCOUNT_LANGUAGE or FB_PAGE_ID+FB_PAGE_LANGUAGE) "
+                "before serving language-tagged rules",
+                rule.keyword, rule.language, account_id,
+            )
+            continue
+        if rule.language and rule.language != expected_lang:
             logger.error(
                 "[comment_rules] LANGUAGE BLOCK keyword=%r rule_lang=%r "
                 "account_expected=%r account=%s — rule skipped",
