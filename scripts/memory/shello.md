@@ -494,3 +494,17 @@ Still open:
 ## Session — 2026-07-03 (Phase 2 merge executed)
 What happened: ai-tcm-ip merged INTO social-ip-engine as studio/ (git subtree, history preserved). Dead server code → docs/legacy/ai-tcm-ip-server/; infographics → studio/assets/infographics/; .env copied to studio/.env (gitignored). GitHub repo shivonnekh/ai-tcm-ip ARCHIVED (read-only); local folder renamed _archived-ai-tcm-ip (contains gitignored campaigns/_generated media — don't delete without checking). launchd auto-fanout job NOT installed (plist was repo-only). All Notion content work now happens in social-ip-engine/studio/ — scripts find studio/.env automatically. 758 tests green post-merge. Integration plan copied to docs/INTEGRATION-PLAN.html (canonical copy).
 Still open: Phase 1 (IP Registry — replace 4 hardcoded dicts), Phase 3 (notion-sync auto-copies infographics), 04:44 mass re-send trigger unidentified, guides_sent TOCTOU race, D5 (Chloe content feed?).
+
+## Session — 2026-07-03 PM (Phases 1+3+4 shipped via parallel agents)
+What happened: 3 agents in parallel worktrees built Phase 1 (IP Registry), Phase 3 (notion-sync media automation), Phase 4 (FB/Messenger prep). Merged 1→3→4, deployed, probe green. 848 tests passing (was 758).
+Decisions:
+- IP config single source: data/ips/{jackie,chloe}/ip.json + persona.json, loaded by src/ips/registry.py (frozen dataclasses, import-time validation). The 4 hardcoded dicts are GONE. data/personas/ no longer exists.
+- ChloeAgent renamed PersonaAgent (module still chloe_agent.py, ChloeAgent alias kept).
+- Language gate semantics CHANGED: unregistered account + language-tagged rule = BLOCKED (fail closed). IG langs from registry; FB via FB_PAGE_ID+FB_PAGE_LANGUAGE env until channels.messenger lands in ip.json.
+- notion-sync now auto-pulls 📊 DM Infographic from Production Tracker row → data/media/guides/ → image_urls (idempotent via notion_media_state.json, sig-rotation aware); language-mismatch = warning not block; infographic failure never blocks the rule.
+- Phase 4 fixed 2 latent bugs: FB public comment reply used IG's /replies edge (would 400) → per-platform edge; language-gate fail-open hole → fail closed. scripts/fb_probe.py + docs/MESSENGER-ACTIVATION.md ready.
+Still open:
+- Messenger activation = HUMAN steps (Meta dashboard token + webhook subscribe + 4 Render env vars + FB_ENABLED=true last) — runbook: docs/MESSENGER-ACTIVATION.md
+- meta_webhook._account_profile_loaders() still hardcodes jackie (dormant pipeline path) — fold into registry later
+- scripts/backfill_comments.py hardcodes DEFAULT_ACCOUNT_ID
+- 04:44 mass re-send trigger still unidentified; guides_sent TOCTOU race; D5 (Chloe content feed?)
