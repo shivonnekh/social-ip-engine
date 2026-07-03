@@ -591,3 +591,66 @@ def test_sync_once_attaches_infographic(tmp_path: Path, monkeypatch: pytest.Monk
         "https://tcm-jessica.onrender.com/media/guides/sleep-page-1.png"
     ]
     assert (tmp_path / "guides" / "sleep-page-1.png").read_bytes() == FAKE_PNG
+
+
+@pytest.mark.parametrize(
+    ("stage", "expect_added"),
+    [
+        ("🟢 Ready to Publish", 1),  # pre-flight: arm before the post goes out
+        ("✅ Published", 1),  # safety net: still wireable
+        ("💡 Idea", 0),  # not ready — skipped, retried next sync
+        ("🎨 Image", 0),
+    ],
+)
+def test_sync_once_wires_on_ready_or_published_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, stage: str, expect_added: int
+) -> None:
+    """A row wires at 'Ready to Publish' OR 'Published'; earlier stages are skipped."""
+    from src import notion_sync
+
+    ids_path = tmp_path / "notion_ids.json"
+    ids_path.write_text(json.dumps({"prod_db": "db-1"}), encoding="utf-8")
+    rules_path = tmp_path / "comment_responses.json"
+    monkeypatch.setattr(notion_sync, "_IDS_PATH", ids_path)
+    monkeypatch.setattr(notion_sync, "_RULES_PATH", rules_path)
+    monkeypatch.setattr(notion_sync, "_STATE_PATH", tmp_path / "notion_sync_state.json")
+    monkeypatch.setattr(nsm, "MEDIA_DIR", tmp_path / "guides")
+    monkeypatch.setattr(nsm, "STATE_PATH", tmp_path / "notion_media_state.json")
+
+    row = {
+        "id": "prod-row-1",
+        "properties": {
+            "Stage": {"select": {"name": stage}},
+            "Content": {"relation": [{"id": "content-1"}]},
+            "IP": {"relation": [{"id": "ip-1"}]},
+        },
+    }
+    pages = {
+        "/pages/content-1": {
+            "id": "content-1",
+            "properties": {
+                "Name": {"type": "title", "title": [{"plain_text": "Sleep Guide"}]},
+                "CTA": {"rich_text": [{"plain_text": 'Comment "sleep" below'}]},
+            },
+        },
+        "/pages/ip-1": {
+            "id": "ip-1",
+            "properties": {"IP": {"type": "title", "title": [{"plain_text": "Jackie Chan (EN)"}]}},
+        },
+    }
+    children = {
+        "content-1": [
+            {"id": "h1", "type": "heading_3", "heading_3": _rt("First DM")},
+            {"id": "c1", "type": "code", "code": _rt("Wind down with sour date tea.")},
+        ],
+        "prod-row-1": [],  # no toggle image; generation disabled below → text-only
+    }
+
+    monkeypatch.setenv("NOTION_SYNC_GENERATE_IMAGES", "0")
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+
+    result = notion_sync.sync_once()
+
+    assert len(result["added"]) == expect_added

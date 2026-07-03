@@ -11,7 +11,9 @@ rule to ``data/channels/comment_responses.json`` — which is exactly how the
 This module closes that gap without merging the two repos: it reads
 Production Tracker directly (stdlib ``urllib``, no ai-tcm-ip import needed —
 these are separate Render deployments) and, the moment a row's ``Stage``
-flips to ``✅ Published``, mechanically drafts + wires a keyword rule here.
+reaches ``🟢 Ready to Publish`` (or ``✅ Published`` as a safety net),
+mechanically drafts + wires a keyword rule here — so the DM funnel is armed
+and testable BEFORE the post actually goes out.
 
 WHAT IT DOES NOT DO
 --------------------
@@ -52,6 +54,12 @@ _STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_sync_state.json"
 
 NOTION_API = "https://api.notion.com/v1"
 _STOP_WORDS = {"comment", "the", "word", "below", "type", "now"}
+
+# Stages at which a row is "armable" — we wire its keyword + DM + infographic.
+# Pre-flight model: arm at "Ready to Publish" so everything is live and testable
+# BEFORE the post goes out; "Published" stays wireable as a safety net (idempotent
+# — whichever stage fires first wires it, the later one is skipped as processed).
+_WIREABLE_STAGES = frozenset({"🟢 Ready to Publish", "✅ Published"})
 
 _VOICE_TEMPLATE = {
     "en": (
@@ -250,8 +258,8 @@ def sync_once() -> dict[str, Any]:
 
         props = row["properties"]
         stage = (props.get("Stage", {}).get("select") or {}).get("name", "")
-        if stage != "✅ Published":
-            continue  # not published yet — leave unmarked, check again next sync
+        if stage not in _WIREABLE_STAGES:
+            continue  # not ready yet — leave unmarked, check again next sync
 
         content_rel = props.get("Content", {}).get("relation") or []
         ip_rel = props.get("IP", {}).get("relation") or []
