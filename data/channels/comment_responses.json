@@ -2,7 +2,9 @@
   {
     "keyword": "teeth",
     "language": "en",
-    "accounts": ["17841417304649448"],
+    "accounts": [
+      "17841417304649448"
+    ],
     "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nThe banana-peel + baking soda trick is great for surface stains ✨ Rub the inside of a banana peel on your teeth for 2 minutes, then brush with a pinch of baking soda — do this 2-3x a week, not daily (baking soda is abrasive on enamel if overused).\n\nQuick check so I can point you right — is your yellowing more on the surface, or deeper and grey-ish?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/teeth-page-1.png"
@@ -199,5 +201,18 @@
     "use_agent": false,
     "_source": "notion_sync",
     "_notion_title": "🦷 Yellow Teeth (Baking Soda + Banana Peel)"
+  },
+  {
+    "keyword": "vitality",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nMorning wood is basically your body's check-engine light for kidney yang 🔥 When that inner fire runs low it shows up everywhere — cold feet, weak lower back, low drive, no stamina.\n\nStart here: walnuts, chives (韭菜), and a warm ginger + cinnamon tea — all eaten warm and cooked. Early nights, and cut the cold drinks that drain the tank.\n\nQuick check so I can point you right — is it more low energy + always cold, or more about drive + stamina?\n\nTell me more about what you're experiencing 👇",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/vitality-page-1.png"
+    ],
+    "public_ack": "Sent you the kidney-yang food guide — check your DM! 🌿",
+    "use_agent": false
   }
 ]
