@@ -16,8 +16,9 @@ flips to ``✅ Published``, mechanically drafts + wires a keyword rule here.
 WHAT IT DOES NOT DO
 --------------------
 - Does not generate infographic images (that still requires ai-tcm-ip's
-  GPT-image pipeline). New keywords land as text-only DMs; images are added
-  by hand afterward (copy into ``data/media/guides/`` + add ``image_urls``).
+  GPT-image pipeline). Already-generated images uploaded to the row's
+  "📊 DM Infographic" toggle ARE auto-fetched (see ``notion_sync_media``);
+  rows without one land as text-only DMs.
 - Does not touch anything outside ``comment_responses.json`` +
   ``notion_sync_state.json``.
 
@@ -40,6 +41,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
+
+from src import notion_sync_media
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 _IDS_PATH = REPO_ROOT / "scripts" / "notion_ids.json"
@@ -229,6 +232,7 @@ def sync_once() -> dict[str, Any]:
     added: list[str] = []
     skipped: list[str] = []
     errors: list[str] = []
+    warnings: list[str] = []
 
     rules: list[dict] = _load_json(_RULES_PATH, [])
     existing_keys = {(r.get("keyword"), tuple(r.get("accounts") or [])) for r in rules}
@@ -287,6 +291,9 @@ def sync_once() -> dict[str, Any]:
             continue
 
         rule = _draft_rule(keyword, title, first_dm, language, account_id)
+        # Phase 3 hook: infographic attach + language check (never raises).
+        rule, rule_warnings = notion_sync_media.enrich_rule(rule, row_id, _children)
+        warnings.extend(rule_warnings)
         rules.append(rule)
         existing_keys.add(key)
         state_set.add(row_id)
@@ -301,5 +308,6 @@ def sync_once() -> dict[str, Any]:
         "added": added,
         "skipped": skipped,
         "errors": errors,
+        "warnings": warnings,
         "rules_changed": bool(added),
     }
