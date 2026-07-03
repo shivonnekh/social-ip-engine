@@ -1,8 +1,16 @@
-# ai-tcm-ip — AI TCM Content Engine
+# studio/ — Content Factory (formerly the ai-tcm-ip repo)
+
+> **Merged into `social-ip-engine` on 2026-07-03** (git history preserved).
+> Run all scripts FROM THIS FOLDER (`cd studio/`) — they load `studio/.env`.
+> This folder is NEVER deployed; it is local tooling only.
+> The old repo `shivonnekh/ai-tcm-ip` is archived; the old local folder is
+> `_archived-ai-tcm-ip` (delete once you're comfortable).
+> Dead server code (webhook.py, dm_map.json) → `../docs/legacy/ai-tcm-ip-server/`.
+> Generated infographics now live in `studio/assets/infographics/`.
 
 Multi-IP short-form video factory for TCM marketing. Pipeline: **idea → image → voice → video**, orchestrated through a Notion board and a set of `scripts/notion_*.py` helpers.
 
-## ⚠️ This repo does NOT run the live Instagram bot — a separate repo does
+## ⚠️ This folder does NOT run the live Instagram bot — `../src/` does
 
 **`social-ip-engine`** (formerly TCM-Jessica; `/Users/shivonne/Claude Code/social-ip-engine`, `github.com/shivonnekh/social-ip-engine`, deployed at `https://tcm-jessica.onrender.com`) is a completely separate, unrelated live-production repo — Jackie's and Chloe's real Instagram comment→DM auto-reply, plus Jessica's WhatsApp bot for 心宜中醫. Confused these twice in one session (2026-07-01/02) — burned real time investigating this repo's dead-code `server/webhook.py` (never deployed, was never the live thing) before finding the actual live system. Do not assume a "webhook"/"comment reply" ask is about this repo's `server/` folder — it almost certainly means social-ip-engine.
 
