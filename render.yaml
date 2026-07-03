@@ -1,4 +1,10 @@
-# Render deployment for TCM-Jessica.
+# Render deployment for social-ip-engine (formerly TCM-Jessica).
+# NOTE: service renamed in dashboard 2026-07-03; public URL remains
+# https://tcm-jessica.onrender.com (subdomain is fixed at creation —
+# will be superseded by a custom domain later).
+# NOTE: this service is NOT attached to a Render blueprint (verified
+# 2026-07-03 via API) — this yaml is documentation + bootstrap only;
+# live env vars are managed in the dashboard.
 #
 # Free plan with keep-alive ping:
 #   - Free web service ($0/month) + free Postgres ($0/month, 1GB, persistent).
@@ -13,7 +19,7 @@ databases:
 
 services:
   - type: web
-    name: tcm-jessica
+    name: social-ip-engine
     runtime: python
     region: singapore
     # Upgraded free → starter on 2026-06-03. Starter does not spin down,

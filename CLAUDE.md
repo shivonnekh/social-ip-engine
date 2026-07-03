@@ -6,32 +6,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 1. Project Identity
 
-**TCM-Jessica** is a WhatsApp-native TCM (Traditional Chinese Medicine) wellness sales & care agent for **心宜中醫 (Care Plus)** clinic. Jessica is a warm, gentle, conversational character — *not* a doctor, but a knowledgeable guide who helps users understand their 體質 (constitution), recommends 湯水 (herbal soups) and 藥膏 (ointments), and books clinic appointments.
+**social-ip-engine** (renamed from TCM-Jessica on 2026-07-03; local path
+`/Users/shivonne/Claude Code/social-ip-engine`, GitHub
+`shivonnekh/social-ip-engine` — old URLs redirect) is a **multi-IP,
+multi-platform social reply service**: AI content-creator personas answer
+Instagram comments (canned keyword rules, L0) and DMs (one-call persona
+agent, L1). Messenger is next; TikTok after that.
 
-- Language: **HK Cantonese 口語** only — never 書面語, never Mandarin phrasing.
-- Tone: gentle, warm, human, slightly playful. NOT clinical, NOT pushy.
-- Customer: HK consumers using WhatsApp, mixed ages, mostly health-curious / lightly symptomatic.
-- Sales channel: WhatsApp via ChatDaddy IM API. Order link: `wa.me/85252417448`.
+**Active IPs:** Jackie Chan TCM (`jackiechan.tcm`, English — main IP) and
+Chloe/陳芷晴 (`chloechan.cccc`, Cantonese). See `data/personas/*.json`.
 
-### Why a Standalone Project (and not part of dr-baba-agent)
+**Reply policy (all IPs):** standalone content creators. No clinic, no
+commerce, no prices, no bookings, no off-platform push. If asked about a
+physical clinic / in-person consult: "not at the moment — text guidance
+and support right here." Encoded in the persona prompts.
 
-Jessica was previously embedded inside `dr-baba-agent` as one of 50 tenant configs. We split her out because:
+**Strategy doc:** `/Users/shivonne/Claude Code/TCM-INTEGRATION-PLAN.html`
+(v2, 2026-07-03) — plan to fold the `ai-tcm-ip` content factory into this
+repo as `studio/` and go multi-platform.
 
-1. **Observability** — inside dr-baba-agent, Jessica's traces are mixed with 47 cancer pipelines. We can't cleanly see: "for this user, which agent fired, which tool ran, which card was read, what the final reply was." This project's #1 architectural goal is **per-turn step-level traceability**.
-2. **Different architecture** — Dr. Baba is a single card-driven retrieval pipeline. Jessica is a **multi-agent orchestration** (Planner → Specialists → Writer) with **parallel specialist calls**. Trying to retrofit that into Dr. Baba's pipeline was creating coupling debt.
-3. **Independent deployment** — 心宜中醫 should be able to ship Jessica without coordinating with cancer education releases.
+### ⚠️ Everything WhatsApp-related below is LEGACY (parked)
 
-What we **share** with `dr-baba-agent` (ported, then evolved independently):
-- ChatDaddy WhatsApp client + auth flow + bubble-split logic
-- Message buffer / merge logic (combining rapid-fire user messages before responding)
-- TCM knowledge base cards (~30 cards: soups, constitution, FAQ)
-- Paid product catalog (10 soups + 3 ointments from 心宜中醫)
+The original product in this repo — a WhatsApp sales & care agent
+("Jessica") for a clinic partner — was **discontinued in July 2026**
+(partnership ended). The deep pipeline (Planner→Specialists→Writer),
+sales/booking tools, and broadcaster remain in the codebase but are
+**parked: do not extend, do not build on them.**
 
-Reference legacy code in `src/sales_legacy/` and `docs/legacy/` — **do not import from these**, they are read-only references during the rewrite.
+- `WA_POLL_ENABLED=false` + `BROADCAST_ENABLED=false` — enforced in the
+  Render dashboard AND render.yaml (2026-07-03). Do not re-enable.
+- Sections 2, 3.1–3.9, and the WhatsApp parts of 4–10 below describe this
+  legacy stack. They are kept accurate for archaeology, not direction.
+- The LIVE product is §3.10 (Social Channels) + the persona files + the
+  comment rules. When in doubt, that's the code that matters.
 
 ---
 
-## 2. Architecture (Big Picture)
+## 2. Architecture (Big Picture) — LEGACY (WhatsApp stack, parked)
 
 ```
                           WhatsApp (ChatDaddy IM API)
@@ -252,7 +263,7 @@ Proactive outreach — 10 channels, all sharing one 6h asyncio loop in `schedule
 
 All gated by `_within_send_window()` (HKT 09:00-21:00) and `is_blocked(phone)`.
 
-### 3.10 Social Channels — Instagram / Facebook (`src/channels/`)
+### 3.10 Social Channels — Instagram / Facebook (`src/channels/`) — ✅ THE LIVE PRODUCT
 
 Two personas share this surface: **Chloe/陳芷晴** (`chloechan.cccc`, IG id `17841424706900394`, Cantonese, default agent) and **Jackie** (`jackiechan.tcm`, IG id `17841417304649448`, English). `src/channels/meta_webhook.py` is the shared core (verify → parse → dedup → dispatch) behind thin `instagram.py`/`facebook.py` routers.
 
@@ -379,7 +390,7 @@ Also expose a **live trace viewer** (simple FastAPI + HTML) at `/trace/<turn_id>
   **Auto-deploy webhook is currently broken** — push to main does not
   trigger deploy. Workaround: `POST /v1/services/{id}/deploys` via Render
   API. See `docs/DEPLOYMENT.md`.
-- **Test:** pytest (523 passing as of 2026-05-26).
+- **Test:** pytest (758 passing + 2 skipped as of 2026-07-03).
 
 ---
 
