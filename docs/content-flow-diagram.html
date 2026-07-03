@@ -2,308 +2,655 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Social IP · Content Flow Diagram</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: "default", flowchart: { useMaxWidth: true, curve: "basis" } });</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social IP · Content Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fafaf7;
-    --card: #ffffff;
-    --ink: #1a1a1a;
-    --muted: #6b6b6b;
-    --line: #e3e3df;
-    --accent: #2d6a4f;
-    --accent-soft: #d8f3dc;
-    --blue: #2f5fa8;
-    --blue-soft: #dce8fb;
-    --warn: #c44d3a;
-    --warn-soft: #fce4dc;
-    --amber: #a8710a;
-    --amber-soft: #fbeecd;
-    --code-bg: #f4f1ed;
+    --bg: #f5f6f2;
+    --surface: #ffffff;
+    --ink: #1c2320;
+    --muted: #6a746d;
+    --line: #e2e4dd;
+
+    --green: #1e6f52;
+    --green-soft: #ddf1e6;
+    --blue: #2b5cad;
+    --blue-soft: #dfe9fa;
+    --amber: #9d6b06;
+    --amber-soft: #f9edcf;
+    --red: #b6482f;
+
+    --hero-a: #12362a;
+    --hero-b: #1c4a3a;
+    --hero-c: #16324e;
+
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", "PingFang SC", sans-serif;
+    --font-display: "Fraunces", Georgia, serif;
   }
+
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    background: var(--bg); color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "PingFang HK", "PingFang SC", "Microsoft YaHei", sans-serif;
-    line-height: 1.6;
-    padding: 2rem 1.5rem 4rem;
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+  body { font-family: var(--font-body); color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; }
+
+  /* ============ deck ============ */
+  .deck {
+    display: flex;
+    width: 100vw; height: 100vh;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
   }
-  .wrap { max-width: 1100px; margin: 0 auto; }
-  header { margin-bottom: 2rem; }
-  h1 { font-size: 1.8rem; margin: 0 0 0.35rem; }
-  h2 { font-size: 1.3rem; margin: 2.75rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--line); }
-  h3 { font-size: 1.05rem; margin: 1.5rem 0 0.6rem; color: var(--accent); }
-  .sub { color: var(--muted); font-size: 0.98rem; }
-
-  .legend { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0 1.5rem; }
-  .pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.85rem; font-weight: 500; }
-  .pill.blue { background: var(--blue-soft); color: var(--blue); }
-  .pill.green { background: var(--accent-soft); color: var(--accent); }
-  .pill.amber { background: var(--amber-soft); color: var(--amber); }
-  .pill.red { background: var(--warn-soft); color: var(--warn); }
-
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
-  .card {
-    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-    padding: 1.1rem 1.25rem; display: flex; flex-direction: column;
+  .deck::-webkit-scrollbar { display: none; }
+  .slide {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 3.5rem 4vw 5rem;
+    position: relative;
   }
-  .card h4 { margin: 0 0 0.5rem; font-size: 1.02rem; display: flex; align-items: center; gap: 0.5rem; }
-  .card p { margin: 0.25rem 0; font-size: 0.92rem; color: var(--ink); }
-  .card ul { margin: 0.4rem 0 0; padding-left: 1.1rem; font-size: 0.9rem; }
-  .card li { margin: 0.25rem 0; }
-  .card.border-blue { border-top: 3px solid var(--blue); }
-  .card.border-green { border-top: 3px solid var(--accent); }
-  .card.border-amber { border-top: 3px solid var(--amber); }
-  .card.border-red { border-top: 3px solid var(--warn); }
 
-  table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.92rem; }
-  th, td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-  th { background: #f4f1ed; font-weight: 600; }
-  code { background: var(--code-bg); padding: 0.05rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
-
-  .mermaid { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; }
-
-  .callout { background: var(--warn-soft); border: 1px solid #f1c3b4; border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.92rem; margin: 1rem 0; }
-  .callout.amber { background: var(--amber-soft); border-color: #edd6a0; }
-  .callout b { color: var(--warn); }
-  .callout.amber b { color: var(--amber); }
-
-  .steps { counter-reset: step; list-style: none; padding: 0; margin: 1rem 0; }
-  .steps li { counter-increment: step; position: relative; padding: 0.6rem 0 0.6rem 2.6rem; border-bottom: 1px dashed var(--line); font-size: 0.95rem; }
-  .steps li:last-child { border-bottom: none; }
-  .steps li::before {
-    content: counter(step); position: absolute; left: 0; top: 0.5rem;
-    width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
-    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+  /* slide header */
+  .s-head { text-align: center; margin-bottom: 2.2rem; }
+  .s-kicker {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--green); margin-bottom: 0.4rem;
   }
-  .steps .tag { display: inline-block; margin-left: 0.5rem; font-size: 0.75rem; padding: 0.05rem 0.5rem; border-radius: 999px; }
-  .steps .tag.blue { background: var(--blue-soft); color: var(--blue); }
-  .steps .tag.green { background: var(--accent-soft); color: var(--accent); }
-  .steps .tag.amber { background: var(--amber-soft); color: var(--amber); }
+  .s-title { font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2.1rem); font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+  .s-note { color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem; }
 
-  footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+  /* ============ slide 1 · title ============ */
+  .slide.title {
+    background:
+      radial-gradient(1100px 520px at 85% -10%, rgba(94,178,145,0.30), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(78,128,192,0.26), transparent 60%),
+      linear-gradient(130deg, var(--hero-a) 0%, var(--hero-b) 55%, var(--hero-c) 100%);
+    color: #fff;
+  }
+  .slide.title::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+    background-size: 26px 26px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 80%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 80%);
+    pointer-events: none;
+  }
+  .title .kicker {
+    display: flex; align-items: center; gap: 0.55rem;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+    color: #a9d6c3; margin-bottom: 1.2rem;
+  }
+  .title .kicker::before, .title .kicker::after { content: ""; width: 28px; height: 1px; background: #6fae94; }
+  .title h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 700;
+    line-height: 1.1; text-align: center; letter-spacing: -0.01em;
+    margin: 0 0 1.1rem; max-width: 21ch;
+  }
+  .title .sub { color: rgba(255,255,255,0.8); font-size: 1.02rem; text-align: center; max-width: 52ch; margin: 0 0 2rem; }
+  .title .legend { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+  .title .pill {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 1rem; border-radius: 999px; font-size: 0.86rem; font-weight: 500;
+    background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.22);
+    backdrop-filter: blur(4px);
+  }
+  .title .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot.blue { background: #7fa8e8; } .dot.green { background: #6fd0a5; } .dot.amber { background: #ecc164; }
+  .scroll-hint {
+    position: absolute; bottom: 4.5rem; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.65); font-size: 0.82rem; letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 0.5rem;
+    animation: nudge 2s ease-in-out infinite;
+  }
+  @keyframes nudge { 0%,100% { transform: translateX(-50%); } 50% { transform: translateX(calc(-50% + 8px)); } }
+
+  /* ============ flow nodes ============ */
+  .flow-frame {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 2.2rem 2.4rem;
+    box-shadow: 0 18px 44px rgba(28,35,32,0.09), 0 2px 6px rgba(28,35,32,0.04);
+    max-width: 1200px; width: 100%;
+    position: relative;
+  }
+  .flow-frame::before {
+    content: attr(data-label);
+    position: absolute; top: -0.75rem; left: 1.6rem;
+    background: var(--ink); color: #fff;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.28rem 0.85rem; border-radius: 999px;
+  }
+  .frow { display: flex; align-items: stretch; justify-content: center; }
+  .frow + .down-link { margin: 0.4rem 0; }
+
+  .node {
+    flex: 1 1 0; min-width: 0; max-width: 175px;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 1rem 0.6rem 0.9rem;
+    border-radius: 16px;
+    border: 1.5px solid transparent;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .node:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(28,35,32,0.10); }
+  .node .ico {
+    width: 46px; height: 46px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.35rem; margin-bottom: 0.55rem;
+    background: #fff; box-shadow: 0 2px 8px rgba(28,35,32,0.10);
+  }
+  .node .lbl { font-size: 0.83rem; font-weight: 650; line-height: 1.3; }
+  .node .cap { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; line-height: 1.35; }
+  .node .who {
+    position: absolute; top: -0.55rem; right: 0.55rem;
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
+    padding: 0.1rem 0.5rem; border-radius: 999px;
+  }
+  .node.cc    { background: var(--blue-soft);  border-color: #c8d9f3; }
+  .node.auto  { background: var(--green-soft); border-color: #c2e4d2; }
+  .node.check { background: var(--amber-soft); border-color: #eeddb0; }
+  .node.cc .who    { background: var(--blue);  color: #fff; }
+  .node.auto .who  { background: var(--green); color: #fff; }
+  .node.check .who { background: var(--amber); color: #fff; }
+  .node.check { border-style: dashed; }
+
+  /* arrows between nodes */
+  .arr { flex: 0 0 34px; display: flex; align-items: center; position: relative; }
+  .arr::before {
+    content: ""; flex: 1; height: 3px; border-radius: 2px;
+    background: repeating-linear-gradient(90deg, #b9c6be 0 7px, transparent 7px 13px);
+    background-size: 13px 3px;
+    animation: flowdash 0.9s linear infinite;
+  }
+  .arr::after {
+    content: ""; width: 0; height: 0;
+    border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+    border-left: 7px solid #9fb0a6;
+  }
+  @keyframes flowdash { to { background-position: 13px 0; } }
+
+  /* connector from row 1 to row 2 (snake) */
+  .down-link { display: flex; justify-content: flex-end; padding-right: 72px; }
+  .down-link .elbow {
+    width: 3px; height: 26px; border-radius: 2px;
+    background: repeating-linear-gradient(180deg, #b9c6be 0 7px, transparent 7px 13px);
+    background-size: 3px 13px;
+    animation: flowdashv 0.9s linear infinite;
+    position: relative;
+  }
+  .down-link .elbow::after {
+    content: ""; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 7px solid #9fb0a6;
+  }
+  @keyframes flowdashv { to { background-position: 0 13px; } }
+
+  /* bridge chip between systems */
+  .bridge {
+    align-self: center; margin: 0 0.4rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    flex: 0 0 auto;
+  }
+  .bridge .bolt {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--hero-b), var(--hero-c));
+    color: #ffd76a; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(18,54,42,0.35);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  .bridge .blbl { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; white-space: nowrap; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+
+  /* mini legend under flows */
+  .mini-legend { display: flex; gap: 1.1rem; justify-content: center; margin-top: 1.6rem; font-size: 0.78rem; color: var(--muted); }
+  .mini-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .sw { width: 12px; height: 12px; border-radius: 4px; }
+  .sw.blue { background: var(--blue-soft); border: 1.5px solid #c8d9f3; }
+  .sw.green { background: var(--green-soft); border: 1.5px solid #c2e4d2; }
+  .sw.amber { background: var(--amber-soft); border: 1.5px dashed var(--amber); }
+
+  /* callout strip */
+  .strip {
+    margin-top: 1.4rem; max-width: 860px;
+    display: flex; gap: 0.7rem; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--green);
+    border-radius: 12px; padding: 0.75rem 1.1rem;
+    font-size: 0.88rem; box-shadow: 0 2px 8px rgba(28,35,32,0.05);
+  }
+  .strip.amber { border-left-color: var(--amber); }
+  .strip.red { border-left-color: var(--red); }
+  .strip b { color: var(--green); }
+  .strip.amber b { color: var(--amber); }
+  .strip.red b { color: var(--red); }
+
+  /* ============ column cards (who owns what) ============ */
+  .cols { display: flex; gap: 1.2rem; max-width: 1150px; width: 100%; }
+  .col {
+    flex: 1;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 1.5rem 1.5rem 1.4rem;
+    box-shadow: 0 10px 28px rgba(28,35,32,0.07);
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .col:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(28,35,32,0.11); }
+  .col .big-ico {
+    width: 56px; height: 56px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+    margin-bottom: 0.9rem;
+  }
+  .col.c-blue .big-ico { background: var(--blue-soft); }
+  .col.c-green .big-ico { background: var(--green-soft); }
+  .col.c-amber .big-ico { background: var(--amber-soft); }
+  .col h3 { font-size: 1.05rem; font-weight: 700; margin: 0 0 0.7rem; }
+  .col ul { margin: 0; padding: 0; list-style: none; }
+  .col li { font-size: 0.87rem; padding: 0.45rem 0 0.45rem 1.5rem; position: relative; border-bottom: 1px dashed var(--line); }
+  .col li:last-child { border-bottom: none; }
+  .col li::before { content: "→"; position: absolute; left: 0.1rem; font-weight: 700; }
+  .col.c-blue li::before { color: var(--blue); }
+  .col.c-green li::before { color: var(--green); }
+  .col.c-amber li::before { color: var(--amber); }
+  .col .count {
+    position: absolute; top: 1.3rem; right: 1.4rem;
+    font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; color: var(--line);
+  }
+
+  /* ============ wiring slide ============ */
+  .wires { display: flex; flex-direction: column; gap: 1rem; max-width: 900px; width: 100%; }
+  .wire {
+    display: grid; grid-template-columns: 200px 1fr 200px; align-items: center; gap: 1.2rem;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.1rem 1.5rem;
+    box-shadow: 0 6px 20px rgba(28,35,32,0.06);
+    transition: transform 0.2s ease;
+  }
+  .wire:hover { transform: translateX(6px); }
+  .wire .end { font-size: 0.92rem; font-weight: 650; display: flex; align-items: center; gap: 0.55rem; }
+  .wire .end:last-child { justify-content: flex-end; text-align: right; }
+  .wire .mid { text-align: center; position: relative; }
+  .wire .mid .line { height: 3px; border-radius: 2px; }
+  .wire.hot .mid .line {
+    background: repeating-linear-gradient(90deg, var(--green) 0 8px, transparent 8px 15px);
+    background-size: 15px 3px;
+    animation: flowdash2 0.7s linear infinite;
+  }
+  @keyframes flowdash2 { to { background-position: 15px 0; } }
+  .wire.slow .mid .line { background: repeating-linear-gradient(90deg, #c9ceca 0 4px, transparent 4px 10px); }
+  .wire .mid .tagline {
+    position: absolute; top: -0.85rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+    padding: 0.15rem 0.7rem; border-radius: 999px; white-space: nowrap;
+  }
+  .wire.hot .tagline { background: var(--green-soft); color: var(--green); }
+  .wire.slow .tagline { background: #ececea; color: var(--muted); }
+  .wire .mid .sub2 { font-size: 0.72rem; color: var(--muted); margin-top: 0.55rem; }
+
+  /* ============ guards slide ============ */
+  .guards { display: flex; gap: 1.2rem; max-width: 1000px; width: 100%; }
+  .guard {
+    flex: 1; text-align: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 1.7rem 1.3rem 1.5rem;
+    box-shadow: 0 10px 28px rgba(28,35,32,0.07);
+    position: relative;
+    transition: transform 0.2s ease;
+  }
+  .guard:hover { transform: translateY(-5px); }
+  .guard .shield {
+    width: 62px; height: 62px; margin: 0 auto 0.8rem;
+    border-radius: 50%; background: var(--green-soft);
+    display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+  }
+  .guard h3 { margin: 0 0 0.35rem; font-size: 1rem; }
+  .guard p { margin: 0; font-size: 0.84rem; color: var(--muted); }
+  .guard .glabel {
+    display: inline-block; margin-top: 0.8rem;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--green-soft); color: var(--green);
+    padding: 0.2rem 0.7rem; border-radius: 999px;
+  }
+
+  /* ============ nav chrome ============ */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--blue), var(--green), var(--amber));
+    z-index: 1000; transition: width 120ms ease;
+  }
+  .dots {
+    position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 0.55rem; z-index: 1000;
+    background: rgba(255,255,255,0.85); backdrop-filter: blur(8px);
+    padding: 0.5rem 0.8rem; border-radius: 999px;
+    border: 1px solid var(--line); box-shadow: 0 4px 16px rgba(28,35,32,0.10);
+  }
+  .dots button {
+    width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0;
+    background: #cfd4cf; cursor: pointer; transition: all 0.2s ease;
+  }
+  .dots button.active { background: var(--green); width: 26px; border-radius: 5px; }
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid var(--line); background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(6px);
+    font-size: 1rem; color: var(--ink); cursor: pointer; z-index: 1000;
+    box-shadow: 0 4px 14px rgba(28,35,32,0.12);
+    transition: transform 0.15s ease, background 0.15s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .navbtn:hover { background: #fff; transform: translateY(-50%) scale(1.08); }
+  .navbtn.prev { left: 1rem; } .navbtn.next { right: 1rem; }
+  .slide-count {
+    position: fixed; top: 1.1rem; right: 1.3rem; z-index: 1000;
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+    background: rgba(255,255,255,0.85); backdrop-filter: blur(6px);
+    border: 1px solid var(--line); border-radius: 999px; padding: 0.25rem 0.8rem;
+  }
+  .slide.title ~ * .slide-count { color: #fff; }
+
+  /* reveal per slide */
+  .slide > * { opacity: 0; transform: translateY(16px); transition: opacity 0.55s ease, transform 0.55s ease; }
+  .slide.on > * { opacity: 1; transform: translateY(0); }
+  .slide.on > *:nth-child(1) { transition-delay: 0.05s; }
+  .slide.on > *:nth-child(2) { transition-delay: 0.15s; }
+  .slide.on > *:nth-child(3) { transition-delay: 0.25s; }
+  .slide.on > *:nth-child(4) { transition-delay: 0.35s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .slide > * { opacity: 1; transform: none; }
+  }
+
+  /* ============ small screens: fall back to vertical ============ */
+  @media (max-width: 900px) {
+    html, body { overflow: auto; }
+    .deck { flex-direction: column; height: auto; overflow: visible; scroll-snap-type: none; }
+    .slide { flex: none; height: auto; min-height: 60vh; padding: 3rem 1.2rem; }
+    .frow { flex-wrap: wrap; gap: 0.6rem; }
+    .arr, .down-link { display: none; }
+    .node { flex: 1 1 40%; max-width: none; }
+    .cols, .guards { flex-direction: column; }
+    .wire { grid-template-columns: 1fr; gap: 0.5rem; text-align: center; }
+    .wire .end:last-child { justify-content: center; text-align: center; }
+    .navbtn, .dots { display: none; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div id="progress-bar"></div>
+<div class="slide-count"><span id="cur">1</span> / <span id="total">7</span></div>
+<button class="navbtn prev" aria-label="Previous slide">←</button>
+<button class="navbtn next" aria-label="Next slide">→</button>
+<div class="dots" id="dots"></div>
 
-<header>
-  <h1>👨‍⚕️ Social IP · Content Flow Diagram</h1>
-  <p class="sub">A simplified map for the production team — from an idea in Notion to a real Instagram follower getting an AI DM reply in seconds. Goal: see at a glance what a human does, what runs automatically, and where the real bottlenecks are.</p>
+<div class="deck" id="deck">
+
+<!-- ============ 1 · TITLE ============ -->
+<section class="slide title">
+  <div class="kicker">social-ip-engine · production team briefing</div>
+  <h1>From a Notion idea to an AI DM reply</h1>
+  <p class="sub">What a human does, what runs automatically, and where the review gates are — in 6 slides.</p>
   <div class="legend">
-    <span class="pill blue">🧑‍🎨 CC (Content Creator) owns this</span>
-    <span class="pill green">🤖 Automated (system / AI)</span>
-    <span class="pill amber">🖐️ Manual review checkpoint</span>
+    <span class="pill"><span class="dot blue"></span>🧑‍🎨 CC owns this</span>
+    <span class="pill"><span class="dot green"></span>🤖 Automated</span>
+    <span class="pill"><span class="dot amber"></span>🖐️ Review gate</span>
   </div>
-</header>
+  <div class="scroll-hint">scroll →</div>
+</section>
 
-<h2>① The big picture: two stages, two systems</h2>
-<p class="sub">Stage 1 is "making the content" (Notion + the Studio tooling — mostly automated, with human review gates). Stage 2 is "the content goes live and auto-engages" (the real Instagram bot, <code>social-ip-engine</code> — fully automated). These are <b>two separate systems</b>, connected by one real webhook bridge.</p>
+<!-- ============ 2 · STAGE 1 FLOW ============ -->
+<section class="slide">
+  <div class="s-head">
+    <div class="s-kicker">Stage 1 · Studio + Notion</div>
+    <h2 class="s-title">Making the content</h2>
+    <p class="s-note">Mostly automated — humans only look at two review gates.</p>
+  </div>
+  <div class="flow-frame" data-label="Content factory">
+    <div class="frow">
+      <div class="node cc"><span class="who">CC</span><span class="ico">💡</span><span class="lbl">Idea in Notion</span><span class="cap">Topic · Hook · CTA · Shot Guide</span></div>
+      <div class="arr"></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">🔀</span><span class="lbl">Fan-out per IP</span><span class="cap">Jackie EN · Chloe 粵</span></div>
+      <div class="arr"></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">✍️</span><span class="lbl">Derive prompts</span><span class="cap">image · voice · video</span></div>
+      <div class="arr"></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">🎨</span><span class="lbl">Still frame</span><span class="cap">gpt-image-2</span></div>
+    </div>
+    <div class="down-link"><div class="elbow"></div></div>
+    <div class="frow">
+      <div class="node check"><span class="who">GATE</span><span class="ico">👁️</span><span class="lbl">Image check</span><span class="cap">off? ↩ revise prompt</span></div>
+      <div class="arr"></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">🎬</span><span class="lbl">Voice + video</span><span class="cap">MiniMax · Dreamina</span></div>
+      <div class="arr"></div>
+      <div class="node check"><span class="who">GATE</span><span class="ico">👁️</span><span class="lbl">Video check</span><span class="cap">lip-sync natural?</span></div>
+      <div class="arr"></div>
+      <div class="node cc"><span class="who">CC</span><span class="ico">🟢</span><span class="lbl">Ready to Publish</span><span class="cap">one flip arms it all</span></div>
+    </div>
+  </div>
+  <div class="mini-legend">
+    <span><span class="sw blue"></span>CC</span>
+    <span><span class="sw green"></span>Automated</span>
+    <span><span class="sw amber"></span>Review gate</span>
+  </div>
+</section>
 
-<div class="mermaid">
-flowchart TD
-  classDef cc fill:#dce8fb,stroke:#2f5fa8,color:#2f5fa8,font-weight:600;
-  classDef auto fill:#d8f3dc,stroke:#2d6a4f,color:#2d6a4f,font-weight:600;
-  classDef check fill:#fbeecd,stroke:#a8710a,color:#a8710a,font-weight:600;
+<!-- ============ 3 · STAGE 2 FLOW ============ -->
+<section class="slide">
+  <div class="s-head">
+    <div class="s-kicker">Stage 2 · social-ip-engine</div>
+    <h2 class="s-title">One flip arms the whole funnel</h2>
+    <p class="s-note">🟢 Ready to Publish fires a real webhook — everything below is instant, no redeploy.</p>
+  </div>
+  <div class="flow-frame" data-label="Pre-flight · armed before the post is live">
+    <div class="frow">
+      <div class="node cc"><span class="who">CC</span><span class="ico">🟢</span><span class="lbl">Stage flipped</span><span class="cap">in Notion</span></div>
+      <div class="bridge"><div class="bolt">⚡</div><div class="blbl">webhook</div></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">🔑</span><span class="lbl">Keyword + DM + reply</span><span class="cap">drafted &amp; live instantly</span></div>
+      <div class="arr"></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">📊</span><span class="lbl">Infographic</span><span class="cap">reuse upload or generate from Brief</span></div>
+      <div class="arr"></div>
+      <div class="node check"><span class="who">GATE</span><span class="ico">🧪</span><span class="lbl">CC test-comments</span><span class="cap">funnel works before going live</span></div>
+      <div class="arr"></div>
+      <div class="node cc"><span class="who">CC</span><span class="ico">📱</span><span class="lbl">Publish Reel</span><span class="cap">✅ Published — already armed</span></div>
+    </div>
+  </div>
+  <div class="strip"><span>🆕</span><div><b>Pre-flight model (2026-07-03):</b> test your own funnel <b>before</b> a real follower ever sees the post. ✅ Published is just the safety net.</div></div>
+</section>
 
-  A["🧑‍🎨 CC writes the concept\nNotion Content Library\nTopic / Hook / CTA / Shot Guide"]:::cc
-  B["🤖 Auto fan-out per IP\nJackie (English) / Jessica (Cantonese)"]:::auto
-  C["🤖 Auto-derive image / voice / video prompts"]:::auto
-  D["🤖 AI generates the still frame\ngpt-image-2"]:::auto
-  E{"🖐️ Human checks the image"}:::check
-  F["🤖 AI voice + Dreamina video generation"]:::auto
-  G{"🖐️ Human checks the final video"}:::check
-  I["🧑‍🎨 CC flips Notion Stage to\n'🟢 Ready to Publish'\n(pre-flight: arm BEFORE posting)"]:::cc
+<!-- ============ 4 · LIVE ON INSTAGRAM ============ -->
+<section class="slide">
+  <div class="s-head">
+    <div class="s-kicker">Live · real followers</div>
+    <h2 class="s-title">What happens on Instagram</h2>
+    <p class="s-note">Meta pushes every comment to us in real time.</p>
+  </div>
+  <div class="flow-frame" data-label="Comment → DM funnel">
+    <div class="frow">
+      <div class="node cc"><span class="who">FAN</span><span class="ico">👀</span><span class="lbl">Sees the Reel</span><span class="cap">"comment [keyword] for more"</span></div>
+      <div class="arr"></div>
+      <div class="node cc"><span class="who">FAN</span><span class="ico">💬</span><span class="lbl">Comments keyword</span></div>
+      <div class="bridge"><div class="bolt">⚡</div><div class="blbl">Meta webhook</div></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">📩</span><span class="lbl">Auto DM + infographic</span><span class="cap">+ public "sent you a DM 👀"</span></div>
+      <div class="arr"></div>
+      <div class="node auto"><span class="who">AUTO</span><span class="ico">🤖</span><span class="lbl">AI persona takes over</span><span class="cap">Chloe / Jackie · with memory</span></div>
+    </div>
+  </div>
+  <div class="strip amber"><span>🤫</span><div><b>No keyword match = silence, by design.</b> The system never DMs a stranger for just any comment.</div></div>
+</section>
 
-  J["🤖 Notion Automation fires a real webhook\nPOST /admin/notion-sync"]:::auto
-  K["🤖 Auto-drafts the keyword + DM + public reply\nlive instantly, no redeploy"]:::auto
-  L["🤖 Auto-attaches the infographic\nreuse uploaded image OR generate from Brief"]:::auto
-  Q{"🖐️ CC test-comments it\n(funnel is live to try before the post is)"}:::check
-  H["🧑‍🎨 CC publishes to Instagram\n+ flips Stage to '✅ Published'\n(the post just goes out — already armed)"]:::cc
-  M["👀 Followers see the Reel on Instagram\ncomment the keyword"]:::cc
-  N["🤖 Meta webhook pushes the comment\nin real time"]:::auto
-  O["🤖 Keyword match → auto DM + infographic sent"]:::auto
-  P["🤖 AI persona agent takes over the chat\nChloe / Jackie, with memory"]:::auto
+<!-- ============ 5 · WHO OWNS WHAT ============ -->
+<section class="slide">
+  <div class="s-head">
+    <div class="s-kicker">Ownership</div>
+    <h2 class="s-title">Who owns what</h2>
+  </div>
+  <div class="cols">
+    <div class="col c-blue">
+      <div class="count">4</div>
+      <div class="big-ico">🧑‍🎨</div>
+      <h3>CC does</h3>
+      <ul>
+        <li>Idea: Topic / Hook / CTA</li>
+        <li>Shot Guide — source of truth</li>
+        <li>Approve image &amp; video</li>
+        <li>Flip 🟢 → test → publish</li>
+      </ul>
+    </div>
+    <div class="col c-green">
+      <div class="count">5</div>
+      <div class="big-ico">🤖</div>
+      <h3>System does</h3>
+      <ul>
+        <li>Fan-out · prompts · image · voice · video</li>
+        <li>Keyword + DM + reply on 🟢 flip</li>
+        <li>Infographic: reuse or generate</li>
+        <li>Persist everything to git</li>
+        <li>DM followers &amp; run the chat</li>
+      </ul>
+    </div>
+    <div class="col c-amber">
+      <div class="count">2</div>
+      <div class="big-ico">🖐️</div>
+      <h3>Human eyes only here</h3>
+      <ul>
+        <li>Still frame clear, no distortion?</li>
+        <li>Video flows, lip-sync natural?</li>
+      </ul>
+    </div>
+  </div>
+  <div class="strip amber"><span>⚖️</span><div><b>The bottleneck isn't automation — it's judgment.</b> Only the two review gates need a human every time.</div></div>
+</section>
 
-  A --> B --> C --> D --> E
-  E -- not OK, revise prompt --> C
-  E -- OK, tick 🎨 --> F --> G
-  G -- not OK --> C
-  G -- OK --> I
-  I ==real webhook==> J --> K --> L --> Q
-  Q -- funnel works --> H
-  H --> M --> N --> O --> P
+<!-- ============ 6 · WIRING ============ -->
+<section class="slide">
+  <div class="s-head">
+    <div class="s-kicker">Under the hood</div>
+    <h2 class="s-title">Webhook or polling?</h2>
+    <p class="s-note">Two of three connections are instant. Only the first one lags — and that's fine.</p>
+  </div>
+  <div class="wires">
+    <div class="wire slow">
+      <div class="end">🏭 Studio tooling</div>
+      <div class="mid"><div class="tagline">🐢 polling · every few min</div><div class="line"></div><div class="sub2">detects new work → kicks off generation</div></div>
+      <div class="end">Notion 📄</div>
+    </div>
+    <div class="wire hot">
+      <div class="end">📄 Notion 🟢 flip</div>
+      <div class="mid"><div class="tagline">⚡ real webhook · instant</div><div class="line"></div><div class="sub2">POST /admin/notion-sync → wires the funnel</div></div>
+      <div class="end">social-ip-engine 🤖</div>
+    </div>
+    <div class="wire hot">
+      <div class="end">📸 Instagram</div>
+      <div class="mid"><div class="tagline">⚡ real webhook · instant</div><div class="line"></div><div class="sub2">every comment / DM pushed by Meta</div></div>
+      <div class="end">social-ip-engine 🤖</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · GUARDS ============ -->
+<section class="slide">
+  <div class="s-head">
+    <div class="s-kicker">Safety · shipped 2026-07-03</div>
+    <h2 class="s-title">Bounce the stage all you like — it never re-runs</h2>
+    <p class="s-note">Three independent guards + everything persisted to git, so nothing vanishes on deploy.</p>
+  </div>
+  <div class="guards">
+    <div class="guard">
+      <div class="shield">🛡️</div>
+      <h3>Row guard</h3>
+      <p>Processed rows recorded in a git-saved state file. Re-flips are skipped instantly.</p>
+      <span class="glabel">main guard</span>
+    </div>
+    <div class="guard">
+      <div class="shield">🔑</div>
+      <h3>Keyword guard</h3>
+      <p>A rule for the same keyword already exists? Skipped. No duplicates, ever.</p>
+      <span class="glabel">backup guard</span>
+    </div>
+    <div class="guard">
+      <div class="shield">💰</div>
+      <h3>Image guard</h3>
+      <p>Generated PNGs are reused, never re-generated. No double spend on the image API.</p>
+      <span class="glabel">cost guard</span>
+    </div>
+  </div>
+  <div class="strip"><span>🔒</span><div>A row only re-wires if you <b>deliberately</b> delete its rule or change its keyword — never by accident.</div></div>
+</section>
+
 </div>
 
-<div class="callout amber">
-  <b>The bottleneck isn't automation — it's judgment.</b> The remaining manual steps are <b>human review gates</b> (is the image OK? is the final video OK? does the funnel reply correctly?). Everything else — keyword, DM copy, public reply, and the infographic — is fully automatic.
-</div>
-<div class="callout">
-  <b>New as of 2026-07-03 — the pre-flight model.</b> The keyword → DM funnel is now armed at <b>🟢 Ready to Publish</b>, <b>before</b> the post goes live — so you can test-comment your own post and confirm it replies correctly <b>before</b> a real follower ever sees it. <code>✅ Published</code> then just posts the Reel (it's already armed), and still works as a safety net if a row jumps straight to Published. See section ⑤.
-</div>
+<script>
+(function () {
+  var deck = document.getElementById("deck");
+  var slides = Array.prototype.slice.call(deck.querySelectorAll(".slide"));
+  var dotsWrap = document.getElementById("dots");
+  var bar = document.getElementById("progress-bar");
+  var cur = document.getElementById("cur");
+  document.getElementById("total").textContent = slides.length;
 
-<h2>② Who owns what</h2>
-<div class="grid">
-  <div class="card border-blue">
-    <h4>🧑‍🎨 CC (Content Creator)</h4>
-    <ul>
-      <li>Comes up with the idea: Topic / Hook / CTA (the keyword to comment)</li>
-      <li>Writes the <b>Shot Guide</b> — the single source of truth for everything downstream. The more cinematic and specific it is, the better the AI-generated image and video turn out</li>
-      <li>Reviews the AI-generated image and final video, sends it back for a prompt tweak if it's off</li>
-      <li>Flips the Notion status to "🟢 Ready to Publish" — this <b>arms</b> the whole comment → DM funnel (keyword, DM, public reply, infographic) so it can be tested before going live</li>
-      <li>Publishes the final video to Instagram + flips to "✅ Published" — at this point the post just goes out, already armed</li>
-    </ul>
-  </div>
-  <div class="card border-green">
-    <h4>🤖 Automated (system / AI)</h4>
-    <ul>
-      <li>Fans one idea out into a production row per IP (Jackie / Jessica)</li>
-      <li>Derives the image prompt, voice script, and video prompt from the Shot Guide</li>
-      <li>Calls the AI image model (gpt-image-2), AI voice (MiniMax), AI video (Dreamina/即梦)</li>
-      <li>The moment Notion flips to "🟢 Ready to Publish", a real webhook fires and auto-drafts the keyword, DM copy, and public reply</li>
-      <li>Auto-attaches the infographic image — reuses one already uploaded in Notion, or generates one on the spot from the Infographic Brief if none exists</li>
-      <li>Persists everything (rule + image) to git, so nothing is lost on the next deploy; already-processed rows are never re-run or re-generated</li>
-      <li>When a real follower comments the keyword, sends the DM automatically and hands the conversation to the AI persona agent</li>
-    </ul>
-  </div>
-  <div class="card border-amber">
-    <h4>🖐️ Manual review checkpoints (still need human eyes)</h4>
-    <ul>
-      <li>Is the AI-generated still frame clear and on-message enough, no weird distortion?</li>
-      <li>Does the final video flow well — lip-sync and expression look natural?</li>
-      <li>These are the only two places a human needs to look at every single piece of content</li>
-    </ul>
-  </div>
-</div>
+  var isMobile = window.matchMedia("(max-width: 900px)").matches;
+  var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-<h2>③ How the technical flow works</h2>
+  // dots
+  slides.forEach(function (_, i) {
+    var b = document.createElement("button");
+    b.setAttribute("aria-label", "Slide " + (i + 1));
+    b.addEventListener("click", function () { goTo(i); });
+    dotsWrap.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
 
-<h3>(a) How the image gets generated</h3>
-<ol class="steps">
-  <li>CC writes the "🎥 Shot Guide" in Notion — rich and cinematic (action, camera moves, cuts). This is the single source of truth <span class="tag blue">CC</span></li>
-  <li>The system automatically extracts <b>just the first beat</b> of the Shot Guide into a one-line "image prompt" (a single still frame) <span class="tag green">automated</span></li>
-  <li>The system pulls this IP's reference face photos + a clinic background from Notion and sends them to the AI image model (gpt-image-2) <span class="tag green">automated</span></li>
-  <li>The generated image is placed back into the right Notion block, and the row gets ticked "🎨 image done" <span class="tag green">automated</span></li>
-  <li>A human glances at the image — is it clear enough, any distortion? <span class="tag amber">manual review</span></li>
-</ol>
+  function index() {
+    return Math.round(deck.scrollLeft / deck.clientWidth);
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: prefersReduced ? "auto" : "smooth" });
+  }
 
-<h3>(b) How it connects to the keyword rule (comment → DM)</h3>
-<ol class="steps">
-  <li>When the content is ready, CC flips the Production Tracker row's Stage to "🟢 Ready to Publish" in Notion — this arms the funnel <b>before</b> the post goes live <span class="tag blue">CC</span></li>
-  <li>That status change fires a real <b>Notion Automation webhook</b> straight to <code>social-ip-engine</code>'s <code>POST /admin/notion-sync</code> — Notion pushes to us, we don't poll for it <span class="tag green">automated</span></li>
-  <li>The system drafts the keyword, the DM copy, and the public reply, and writes it straight into the live rule file <span class="tag green">automated</span></li>
-  <li>The rule is live immediately — <b>no redeploy needed</b>, Instagram can match it right away <span class="tag green">automated</span></li>
-  <li>The infographic image is attached automatically too: if one is already uploaded into the row's "📊 DM Infographic" toggle, it's downloaded and wired in; if not, but an "Infographic Brief" exists on the content page, the system generates one on the spot (capped at 5 generations per sync run, to bound image-API spend on a bulk publish) <span class="tag green">automated</span></li>
-  <li>CC can now test-comment their own post to confirm the DM + infographic fire correctly — <b>before</b> publishing. Then flip to "✅ Published" and post <span class="tag blue">CC</span></li>
-</ol>
+  function sync() {
+    var i = index();
+    dots.forEach(function (d, j) { d.classList.toggle("active", j === i); });
+    cur.textContent = i + 1;
+    var max = deck.scrollWidth - deck.clientWidth;
+    bar.style.width = (max > 0 ? (deck.scrollLeft / max) * 100 : 0) + "%";
+    slides.forEach(function (s, j) { if (j <= i) s.classList.add("on"); });
+  }
+  deck.addEventListener("scroll", sync, { passive: true });
+  sync();
+  slides[0].classList.add("on");
 
-<h3>(c) Is it a webhook, or Notion polling an agent? — two different mechanisms, don't mix them up</h3>
-<table>
-  <tr><th>Connection</th><th>Mechanism</th><th>Real-time?</th><th>What it's for</th></tr>
-  <tr>
-    <td><b>Studio tooling ↔ Notion</b><br><span style="color:var(--muted); font-size:0.85em;">content-authoring stage</span></td>
-    <td>Polling — a script checks Notion on a timer</td>
-    <td>No, every few minutes</td>
-    <td>Detects "ready to fan out," "needs images," etc., and kicks off image / voice / video generation</td>
-  </tr>
-  <tr>
-    <td><b>social-ip-engine ↔ Notion</b><br><span style="color:var(--muted); font-size:0.85em;">at Ready to Publish (pre-flight)</span></td>
-    <td><b>Real webhook</b> — Notion Automation calls <code>POST /admin/notion-sync</code> the moment Stage flips</td>
-    <td><b>Yes, instant</b></td>
-    <td>Drafts the keyword + DM + public reply and attaches/generates the infographic, the moment "Stage = 🟢 Ready to Publish" happens (also fires on ✅ Published as a safety net)</td>
-  </tr>
-  <tr>
-    <td><b>Instagram ↔ social-ip-engine</b><br><span style="color:var(--muted); font-size:0.85em;">live audience interaction</span></td>
-    <td><b>Real webhook</b> (Meta pushes to us)</td>
-    <td><b>Yes, instant</b></td>
-    <td>The moment someone comments or DMs, Meta notifies the system, which decides on the spot whether and how to reply</td>
-  </tr>
-</table>
-<div class="callout">
-  <b>Where it's easy to get confused:</b> Two of the three connections are real, instant webhooks (Notion Publish → keyword sync, and Instagram → the bot). Only the very first stage — the Studio content-authoring tooling checking Notion for new work — is a polling loop, and that's the one place a few minutes of lag is expected and normal.
-</div>
+  if (!isMobile) {
+    // vertical wheel → horizontal scroll
+    deck.addEventListener("wheel", function (e) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        deck.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
 
-<h2>④ How it shows up on Instagram</h2>
-<div class="grid">
-  <div class="card border-blue">
-    <h4>1️⃣ Reel goes live</h4>
-    <p>A 9:16 short video with a clear CTA — "comment '[keyword]' for more." This is the entry point for everything downstream.</p>
-  </div>
-  <div class="card border-green">
-    <h4>2️⃣ A follower comments the keyword</h4>
-    <p>The system gets Meta's webhook notification instantly, matches the comment text against the keyword rule table — a match sends an <b>automatic DM right away</b>, and optionally a public acknowledgement reply on the comment thread.</p>
-  </div>
-  <div class="card border-amber">
-    <h4>3️⃣ No keyword match = silence</h4>
-    <p>This is intentional — the system will <b>never</b> DM a stranger just because they left any comment. No match, no reply, by design.</p>
-  </div>
-  <div class="card border-green">
-    <h4>4️⃣ The conversation continues in DM</h4>
-    <p>Once the follower replies in DM, it's no longer a canned message — the AI persona agent (Chloe or Jackie) takes over, referencing prior chat history, and keeps the conversation going like a real person would.</p>
-  </div>
-</div>
+    // keyboard
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); goTo(index() + 1); }
+      if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); goTo(index() - 1); }
+      if (e.key === "Home") { e.preventDefault(); goTo(0); }
+      if (e.key === "End") { e.preventDefault(); goTo(slides.length - 1); }
+    });
 
-<h2>⑤ What shipped on 2026-07-03 — the pre-flight upgrade</h2>
-<p class="sub">The auto-sync existed but had never actually run in production (three config values were missing on the server). It's now live, hardened, and moved to a pre-flight model. Here's what changed.</p>
-
-<h3>(a) One flip to 🟢 Ready to Publish wires the whole funnel</h3>
-<p class="sub">A single webhook writes one complete comment → DM rule. Nothing here is manual.</p>
-<table>
-  <tr><th>Field</th><th>What it does</th><th>Where it comes from (auto)</th></tr>
-  <tr><td><code>keyword</code></td><td>The word a follower comments to trigger the reply</td><td>The row's CTA</td></tr>
-  <tr><td><code>dm_text</code></td><td>The private DM sent, in the IP's voice (Jackie / Chloe)</td><td>The row's First-DM copy</td></tr>
-  <tr><td><code>image_urls</code></td><td>The infographic attached to the DM</td><td>The "📊 DM Infographic" toggle, <b>or auto-generated from the Brief</b></td></tr>
-  <tr><td><code>public_ack</code></td><td>The public reply posted on the comment thread ("sent you a DM 👀")</td><td>Auto-templated</td></tr>
-  <tr><td><code>accounts</code></td><td>Which IP account the rule applies to</td><td>The IP relation</td></tr>
-</table>
-
-<h3>(b) Infographics generate themselves — no manual upload needed</h3>
-<div class="grid">
-  <div class="card border-green">
-    <h4>🖼️ Image already in Notion</h4>
-    <p>If you dropped a PNG into the row's "📊 DM Infographic" toggle, it's downloaded and wired in as-is.</p>
-  </div>
-  <div class="card border-green">
-    <h4>🤖 No image? Generated from the Brief</h4>
-    <p>If the row has an "Infographic Brief" but no image, the system generates one on the spot (gpt-image-2) from that Brief and attaches it. Capped at 5 generations per sync run to bound spend on a bulk publish.</p>
-  </div>
-  <div class="card border-amber">
-    <h4>🖐️ Why pre-flight matters here</h4>
-    <p>Because arming happens at Ready to Publish, you get to <b>look at the auto-generated image</b> and test the DM before the post is live — instead of discovering a bad image after it's already replying to strangers.</p>
-  </div>
-</div>
-
-<h3>(c) Bounce the stage all you like — it never re-runs</h3>
-<p class="sub">Drag a row Ready → Idea → Ready again? It will <b>not</b> re-wire or re-generate. Three independent guards make "already done stays done" safe:</p>
-<ol class="steps">
-  <li><b>Row-level</b> — every processed row is recorded in a state file that's saved to git, so it survives redeploys. A re-flip is skipped on the very first check <span class="tag green">main guard</span></li>
-  <li><b>Keyword-level</b> — even if that state were lost, a rule for the same keyword already existing is skipped, so no duplicate <span class="tag green">backup guard</span></li>
-  <li><b>Image-level</b> — even if both above failed, an already-generated PNG is reused, never re-generated, so it never re-spends on the image API <span class="tag green">cost guard</span></li>
-</ol>
-<div class="callout">
-  The <b>only</b> time a row re-wires is if you deliberately delete its rule or change its keyword — i.e. when you actually want a fresh one, never by accident.
-</div>
-
-<h3>(d) Durability — nothing vanishes on deploy anymore</h3>
-<p class="sub">The server runs on ephemeral disk: a redeploy rebuilds from GitHub. Previously an auto-wired rule (and its image) could disappear on the next unrelated deploy. Fixed:</p>
-<ul>
-  <li>Auto-wired rules + the infographic PNGs are now <b>committed and pushed to git</b> by the server itself, so they persist across every deploy.</li>
-  <li>Three server config values that were silently missing — the webhook auth secret, the Notion API key, and the git push token — are now set, so the whole loop actually runs and self-persists.</li>
-  <li>A stale developer tunnel URL that was breaking every DM's image link was corrected to the real production URL.</li>
-</ul>
-
-<h2>💡 Two things worth discussing with the team</h2>
-<ol class="steps">
-  <li><b>Image / video review</b> is still 100% eyeballed one by one. Worth defining a simple "obviously reject" checklist (face distortion, message clarity) to cut down back-and-forth revision rounds <span class="tag amber">manual checkpoint</span></li>
-  <li><b>Notion → studio tooling is still polling</b> (a few minutes of lag before a new concept gets picked up for fan-out). If the team wants that tighter, it's worth discussing switching it to a real trigger too, the same way the Publish step already works</li>
-</ol>
-
-<footer>
-  social-ip-engine · content-flow-diagram.html · generated 2026-07-03 · updated 2026-07-03 (§⑤ pre-flight upgrade: Ready-to-Publish trigger, auto-generated infographics, 3-layer idempotency, git durability) · sources: <code>studio/CLAUDE.md</code>, <code>CLAUDE.md §3.10</code>, <code>src/channels/</code>, <code>src/notion_sync.py</code>, <code>src/notion_sync_media.py</code>, <code>src/notion_infographic_gen.py</code>, <code>src/web.py</code>
-</footer>
-
-</div>
+    // nav buttons
+    document.querySelector(".navbtn.prev").addEventListener("click", function () { goTo(index() - 1); });
+    document.querySelector(".navbtn.next").addEventListener("click", function () { goTo(index() + 1); });
+  } else {
+    // mobile: reveal all
+    slides.forEach(function (s) { s.classList.add("on"); });
+  }
+})();
+</script>
 </body>
 </html>
