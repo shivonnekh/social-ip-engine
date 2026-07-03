@@ -473,3 +473,20 @@ Diagnosed + fixed a real production outage (comments/DMs going unreplied), then 
 - Shadow-mode / full Chloe cutover for the PersonaProfile pipeline not started — only Jackie is wired, and only behind a flag that isn't flipped on yet either.
 - `notion_sync.py` source-language verification — real gap, not yet fixed at the tool level.
 - `_comment_via_agent()` (the pre-existing, separately-dormant comment path that calls `pipeline.run_turn` directly with no profile) still mis-voices IG comments if any rule ever sets `use_agent: true` — none do today, confirmed, but it's a live landmine if someone adds one without knowing this.
+
+## Session — 2026-07-02/03 (incident fix + strategy pivot + rename)
+What happened: Fixed the DM keyword-hijack incident (Irene/yellowpalm999 got the canned eye guide 5x incl. as "reply" to a real question — manually answered her as Jackie via Graph API, then shipped _is_bare_keyword_trigger keyword-remainder heuristic + guides_sent dedup, 29 regression tests, deployed). Then a full strategy pivot and project rename.
+Decisions:
+- STRATEGY v2: no WhatsApp funnel, no Ming Pao, forget Jessica/心宜中醫 (partnership ended). Product = multi-IP multi-platform social reply: L0 canned comments + L1 persona DMs. Growth axis = platforms (IG live → Messenger next → TikTok). Plan: /Users/shivonne/Claude Code/TCM-INTEGRATION-PLAN.html (v2).
+- RENAMED: TCM-Jessica → social-ip-engine (GitHub w/ redirect, local folder, Render display name). URL stays tcm-jessica.onrender.com (fixed at creation; custom domain later).
+- Service is NOT blueprint-attached (verified via API) — render.yaml is docs only, real env flags live in dashboard. The "blueprint resets IG_ENABLED" mechanism no longer exists, keep the probe habit anyway.
+- WhatsApp poller + broadcaster OFF and pinned (dashboard WA_POLL_ENABLED=false, BROADCAST_ENABLED=false + hardcoded false in render.yaml).
+- Personas: both now answer clinic/booking asks with "not at the moment — text support here" (jackie.json + chloe.json, deployed).
+- RENDER_API_KEY saved in social-ip-engine/.env (user explicitly approved, don't ask again). Also in ~/.render/cli.yaml.
+- Probe recipe: signed synthetic webhook POST to /webhook/instagram, empty changes → expect {"status":"ignored"} (="enabled+verified"); "disabled" = the bad state.
+Still open:
+- 04:44 (07-02) mass re-send trigger never identified — investigate before ANY backfill run.
+- guides_sent TOCTOU race (review MEDIUM) — fix in Phase 1.
+- 2 skip-marked cta_nudge orphan tests in test_chloe_agent.py.
+- Phase 1 (IP Registry) not started; D5 (is Chloe actively fed content?) unanswered.
+- My manual DM to Irene is NOT in prod CRM (sent via Graph API directly).
