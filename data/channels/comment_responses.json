@@ -229,5 +229,35 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/muscle-page-1.png"
     ]
+  },
+  {
+    "keyword": "tongue",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Tongue diagnosis is one of the most accurate tools in TCM — your tongue tells me more than a blood test in 30 seconds.\n\nQuick check — what does YOUR tongue look like right now?\nA) White coating (damp, gut sluggish)\nB) Yellow coating (heat, inflammation)\nC) Red tongue, thin coat (liver heat, poor sleep)\nD) Pale tongue (blood deficiency, fatigue)\n\nTell me which one — I'll send you the exact remedy for your type 🌿\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM tongue guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "👅 Tongue Never Lies — 30-Second TCM Diagnosis",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/tongue-page-1.png"
+    ]
+  },
+  {
+    "keyword": "anxiety",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Heart-Liver imbalance is one of the most common root causes of anxiety I see 💚\n\nYour 4-week anxiety reset — start this week:\n• Evening tea at 6pm: Sour jujube seeds (酸棗仁) + Lily bulb (百合) + Mimosa flower (合歡花) — steep 15 min\n• No screens after 9pm: screen light aggravates Liver Yang and keeps the mind up\n• 5 intentional sighs before bed: moves stuck Liver Qi, signals nervous system to downshift\n\nDo you notice your anxiety more in your chest (tight/heavy), your stomach (unsettled), or your head (racing thoughts)?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM anxiety guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "😮‍💨 Constant Anxiety? Your Heart and Liver Are Out of Sync",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/anxiety-page-1.png"
+    ]
   }
 ]
