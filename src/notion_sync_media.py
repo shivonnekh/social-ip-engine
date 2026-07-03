@@ -39,6 +39,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from src import notion_infographic_gen
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MEDIA_DIR = REPO_ROOT / "data" / "media" / "guides"
 STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_media_state.json"
@@ -46,6 +48,7 @@ STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_media_state.json"
 DEFAULT_BASE_URL = "https://tcm-jessica.onrender.com"
 _BASE_URL_ENV_VARS = ("PUBLIC_BASE_URL", "JESSICA_BASE_URL")
 _TOGGLE_MARKER = "dm infographic"
+_GENERATED_MARKER = "generated:"
 _TOGGLE_TYPES = ("toggle", "heading_1", "heading_2", "heading_3")
 _DOWNLOAD_TIMEOUT_S = 30
 
@@ -203,12 +206,59 @@ def public_media_url(filename: str) -> str:
 # -------------------------------------------------------------- entry point
 
 
+def _generate_infographic(
+    slug: str,
+    keyword: str,
+    content_page_id: str,
+    children_fn: ChildrenFn,
+    media_dir: Path,
+    state_path: Path,
+) -> tuple[dict[str, str] | None, str]:
+    """Generate a PNG from the content page's Infographic Brief.
+
+    Returns ``(image_urls_patch, note)``. ``image_urls_patch`` is ``None`` when
+    there was no Brief to generate from (caller ships text-only); otherwise it
+    is the ``{"image_urls": [...]}`` patch to apply. May raise — the caller
+    (``_attach_infographic``) is inside ``enrich_rule``'s catch-all."""
+    brief = notion_infographic_gen.find_infographic_brief(content_page_id, children_fn)
+    if not brief:
+        return None, (
+            f"no_infographic: '{keyword}' — no toggle image and no Brief to generate from"
+        )
+
+    filename = f"{slug}-page-1.png"
+    dest = media_dir / filename
+    state = _load_state(state_path)
+
+    # Dedup: if we already generated this slug's PNG (and it survived on disk),
+    # never re-pay the image API — just re-attach. Guards against a re-run after
+    # a mid-loop crash where the keyword rule wasn't yet persisted.
+    if dest.exists() and str(state.get(slug, "")).startswith(_GENERATED_MARKER):
+        return {"image_urls": [public_media_url(filename)]}, (
+            f"generated_infographic: '{keyword}' — reused existing generated image"
+        )
+
+    png = notion_infographic_gen.generate_png(brief)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dest.with_suffix(dest.suffix + ".part")
+    tmp.write_bytes(png)
+    tmp.replace(dest)
+
+    _save_state(state_path, {**state, slug: f"{_GENERATED_MARKER}{len(png)}"})
+    return {"image_urls": [public_media_url(filename)]}, (
+        f"generated_infographic: '{keyword}' — created from Brief"
+    )
+
+
 def _attach_infographic(
     rule: dict[str, Any],
     row_page_id: str,
     children_fn: ChildrenFn,
     media_dir: Path,
     state_path: Path,
+    *,
+    content_page_id: str | None = None,
+    generate: bool = False,
 ) -> tuple[dict[str, Any], list[str]]:
     """Try to wire an infographic into a copy of ``rule``. May raise —
     ``enrich_rule`` owns the catch-everything guarantee."""
@@ -219,6 +269,13 @@ def _attach_infographic(
 
     source = find_infographic_source(row_page_id, children_fn)
     if source is None:
+        if generate and content_page_id:
+            patch, note = _generate_infographic(
+                slug, keyword, content_page_id, children_fn, media_dir, state_path
+            )
+            if patch is None:
+                return rule, [note]
+            return {**rule, **patch}, [note]
         return rule, [f"no_infographic: '{keyword}' — no DM Infographic toggle/image on row"]
 
     filename = f"{slug}-page-1.png"
@@ -238,6 +295,8 @@ def enrich_rule(
     row_page_id: str,
     children_fn: ChildrenFn,
     *,
+    content_page_id: str | None = None,
+    generate: bool = False,
     media_dir: Path | None = None,
     state_path: Path | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
@@ -246,6 +305,10 @@ def enrich_rule(
     Returns ``(new_rule, warnings)``. NEVER raises and NEVER mutates the
     input — on any failure the original rule ships unchanged and the problem
     lands in ``warnings`` (surfaced in the /admin/notion-sync response).
+
+    When the row has no infographic in its "DM Infographic" toggle and
+    ``generate`` is set (with a ``content_page_id``), the image is generated
+    from the content page's "Infographic Brief" instead of shipping text-only.
     """
     warnings: list[str] = []
     enriched = rule
@@ -256,6 +319,8 @@ def enrich_rule(
             children_fn,
             MEDIA_DIR if media_dir is None else media_dir,
             STATE_PATH if state_path is None else state_path,
+            content_page_id=content_page_id,
+            generate=generate,
         )
         warnings.extend(notes)
     except Exception as exc:  # broad by design — sync must survive anything here

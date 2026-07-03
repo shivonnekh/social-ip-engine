@@ -332,6 +332,131 @@ def test_enrich_rule_children_fn_crash_never_raises(media_paths: tuple[Path, Pat
     assert any("infographic_failed" in w for w in warnings)
 
 
+# --------------------------------------------- generate-if-missing (Phase 4)
+
+CONTENT_ID = "content-1"
+
+
+def test_enrich_rule_generates_when_no_toggle_image(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """No toggle image + generate=True + a Brief → PNG is generated + attached."""
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: "draw it")
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", lambda *_a, **_k: FAKE_PNG)
+
+    original = _rule()
+    enriched, warnings = nsm.enrich_rule(
+        original,
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=True,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+
+    assert enriched["image_urls"][0].endswith("/media/guides/sleep-page-1.png")
+    assert (media_dir / "sleep-page-1.png").read_bytes() == FAKE_PNG
+    assert any("generated_infographic" in w for w in warnings)
+    assert "image_urls" not in original  # never mutates its input
+
+
+def test_enrich_rule_generation_dedup_skips_second_call(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A second enrich for the same slug reuses the PNG — no re-spend on the API."""
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: "draw it")
+    calls: list[int] = []
+
+    def _gen(*_a, **_k):
+        calls.append(1)
+        return FAKE_PNG
+
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", _gen)
+    kwargs = dict(
+        content_page_id=CONTENT_ID, generate=True, media_dir=media_dir, state_path=state_path
+    )
+
+    nsm.enrich_rule(_rule(), ROW_ID, _children_fn({ROW_ID: []}), **kwargs)
+    enriched, warnings = nsm.enrich_rule(_rule(), ROW_ID, _children_fn({ROW_ID: []}), **kwargs)
+
+    assert len(calls) == 1  # generated once, reused the second time
+    assert enriched["image_urls"][0].endswith("/media/guides/sleep-page-1.png")
+    assert any("reused existing generated image" in w for w in warnings)
+
+
+def test_enrich_rule_generate_no_brief_ships_text_only(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: None)
+
+    enriched, warnings = nsm.enrich_rule(
+        _rule(),
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=True,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+
+    assert "image_urls" not in enriched
+    assert any("no toggle image and no Brief" in w for w in warnings)
+
+
+def test_enrich_rule_generate_disabled_ships_text_only(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """generate=False (default): even with a Brief, never spend on the image API."""
+    media_dir, state_path = media_paths
+
+    def _should_not_call(*_a, **_k):  # pragma: no cover - asserts it isn't reached
+        raise AssertionError("generate_png must not be called when generate=False")
+
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", _should_not_call)
+
+    enriched, warnings = nsm.enrich_rule(
+        _rule(),
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=False,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+
+    assert "image_urls" not in enriched
+    assert any("no_infographic" in w for w in warnings)
+
+
+def test_enrich_rule_generation_failure_never_raises(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: "brief")
+
+    def _boom(*_a, **_k):
+        raise nsm.notion_infographic_gen.InfographicGenError("api down")
+
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", _boom)
+
+    enriched, warnings = nsm.enrich_rule(
+        _rule(),
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=True,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+
+    assert "image_urls" not in enriched
+    assert any("infographic_failed" in w for w in warnings)
+
+
 # --------------------------------------------- sync_once hook integration
 
 

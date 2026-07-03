@@ -400,17 +400,31 @@ async def admin_notion_sync(request: Request) -> JSONResponse:
     if not expected or request.headers.get("X-Sync-Secret", "") != expected:
         return JSONResponse({"error": "unauthorized"}, status_code=401)
 
+    from starlette.concurrency import run_in_threadpool
+
     from src import git_publish, notion_sync
 
     try:
-        result = notion_sync.sync_once()
+        # sync_once() does blocking I/O (Notion API, image download, and now
+        # OpenAI image generation up to a few minutes) — never run it on the
+        # event loop or it stalls webhooks/health checks for the whole worker.
+        result = await run_in_threadpool(notion_sync.sync_once)
     except notion_sync.NotionSyncError as exc:
         logger.exception("[notion-sync] failed")
         return JSONResponse({"error": str(exc)}, status_code=502)
 
     if result["rules_changed"]:
+        # Persist the rules, the processed-row state, the media-attach state,
+        # AND the infographic PNGs themselves — git_publish only pushes what it
+        # is handed, and an image left off git vanishes on the next deploy.
+        paths = [
+            "data/channels/comment_responses.json",
+            "data/channels/notion_sync_state.json",
+            "data/channels/notion_media_state.json",
+            *result.get("media_paths", []),
+        ]
         push = git_publish.push_paths(
-            ["data/channels/comment_responses.json", "data/channels/notion_sync_state.json"],
+            paths,
             message=f"chore: notion-sync — {len(result['added'])} new keyword rule(s)",
         )
         result["git_push"] = push

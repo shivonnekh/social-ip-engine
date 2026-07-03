@@ -234,9 +234,14 @@ def sync_once() -> dict[str, Any]:
     skipped: list[str] = []
     errors: list[str] = []
     warnings: list[str] = []
+    added_rule_objs: list[dict] = []
 
     rules: list[dict] = _load_json(_RULES_PATH, [])
     existing_keys = {(r.get("keyword"), tuple(r.get("accounts") or [])) for r in rules}
+
+    generate_enabled = _generate_images_enabled()
+    generation_cap = _generation_cap()
+    generations_done = 0
 
     for row in rows:
         row_id = row["id"]
@@ -292,10 +297,23 @@ def sync_once() -> dict[str, Any]:
             continue
 
         rule = _draft_rule(keyword, title, first_dm, language, account_id)
-        # Phase 3 hook: infographic attach + language check (never raises).
-        rule, rule_warnings = notion_sync_media.enrich_rule(rule, row_id, _children)
+        # Phase 3/4 hook: infographic attach (or generate from Brief) + language
+        # check (never raises). The DM Infographic toggle lives on the prod row;
+        # the Infographic Brief (generation source) lives on the content page.
+        # Generation is capped per run so a bulk publish can't burst image spend.
+        allow_generate = generate_enabled and generations_done < generation_cap
+        rule, rule_warnings = notion_sync_media.enrich_rule(
+            rule,
+            row_id,
+            _children,
+            content_page_id=content_rel[0]["id"],
+            generate=allow_generate,
+        )
+        if any("generated_infographic" in w and "created from Brief" in w for w in rule_warnings):
+            generations_done += 1
         warnings.extend(rule_warnings)
         rules.append(rule)
+        added_rule_objs.append(rule)
         existing_keys.add(key)
         state_set.add(row_id)
         added.append(f"{row_id}: added '{keyword}' ({language}, {title})")
@@ -311,4 +329,41 @@ def sync_once() -> dict[str, Any]:
         "errors": errors,
         "warnings": warnings,
         "rules_changed": bool(added),
+        "media_paths": _media_paths_for(added_rule_objs),
     }
+
+
+def _generate_images_enabled() -> bool:
+    """Whether to generate an infographic when a row has no toggle image.
+
+    On by default; set ``NOTION_SYNC_GENERATE_IMAGES=0`` to disable (e.g. to
+    avoid image-API spend during a bulk backfill)."""
+    return os.environ.get("NOTION_SYNC_GENERATE_IMAGES", "1").strip() != "0"
+
+
+def _generation_cap() -> int:
+    """Max infographics to GENERATE per sync run — bounds image-API spend if a
+    bulk edit flips many rows to Published at once. Rows over the cap wire
+    text-only this run and get their image on a later sync. Override with
+    ``NOTION_SYNC_MAX_GENERATIONS`` (default 5)."""
+    raw = os.environ.get("NOTION_SYNC_MAX_GENERATIONS", "5").strip()
+    try:
+        return max(0, int(raw))
+    except ValueError:
+        return 5
+
+
+def _media_paths_for(added_rules: list[dict]) -> list[str]:
+    """Repo-relative paths of infographic PNGs referenced by newly-added rules
+    that actually exist on disk — so the caller can persist them to git
+    (``git_publish`` only pushes what it is handed). Deduped, order-stable."""
+    paths: list[str] = []
+    for rule in added_rules:
+        for url in rule.get("image_urls", []):
+            filename = url.rsplit("/", 1)[-1]
+            if not filename:
+                continue
+            rel = f"data/media/guides/{filename}"
+            if (REPO_ROOT / rel).exists() and rel not in paths:
+                paths.append(rel)
+    return paths
