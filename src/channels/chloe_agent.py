@@ -1,8 +1,8 @@
 """Chloe / per-account IG+FB DM agents (separate route from Jessica pipeline).
 
 Each account runs its own persona JSON:
-  - Chloe (陳芷晴)  — default, data/personas/chloe.json
-  - Jackie          — jackiechan.tcm, data/personas/jackie.json
+  - Chloe (陳芷晴)  — default, data/ips/chloe/persona.json
+  - Jackie          — jackiechan.tcm, data/ips/jackie/persona.json
 
 Features:
   * Greeting-first — every NEW conversation opens with the persona's intro bubbles.
@@ -11,7 +11,7 @@ Features:
   * Reuses shared CRM (namespaced ig_<id>/fb_<id>) for conversation history.
   * One LLM call per turn.
 
-Persona config: ``data/personas/chloe.json`` (env override CHLOE_PERSONA_PATH).
+Persona config: ``data/ips/chloe/persona.json`` (env override CHLOE_PERSONA_PATH).
 Per-account persona: pass ``persona_path`` to ChloeAgent constructor.
 """
 
@@ -32,7 +32,8 @@ from src.crm.models import ConversationMessage
 logger = logging.getLogger("channels.chloe")
 
 _DEFAULT_PERSONA_PATH: Final[str] = str(
-    Path(__file__).resolve().parent.parent.parent / "data" / "personas" / "chloe.json"
+    Path(__file__).resolve().parent.parent.parent
+    / "data" / "ips" / "chloe" / "persona.json"
 )
 _HISTORY_WINDOW: Final[int] = 16
 

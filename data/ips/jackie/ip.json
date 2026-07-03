@@ -1,0 +1,23 @@
+{
+  "id": "jackie",
+  "display_name": "Jackie Chan TCM",
+  "language": "en",
+  "active": true,
+  "aliases": [],
+  "channels": {
+    "instagram": {
+      "account_id": "17841417304649448",
+      "token_env": "IG_PAGE_ACCESS_TOKEN_JACKIE",
+      "user_id_env": "IG_USER_ID_JACKIE",
+      "comments": "canned",
+      "dms": "persona"
+    }
+  },
+  "content": {
+    "voice_id": "elderly_man",
+    "speed": 1.2,
+    "pitch": 0,
+    "tts_language": "English",
+    "infographic_brand_slug": "jackie"
+  }
+}

@@ -169,7 +169,7 @@ def test_jackie_json_still_has_fields_chloe_agent_reads() -> None:
     """Existing fields ChloeAgent depends on must survive untouched."""
     import json
 
-    data = json.loads(Path("data/personas/jackie.json").read_text(encoding="utf-8"))
+    data = json.loads(Path("data/ips/jackie/persona.json").read_text(encoding="utf-8"))
     for field in (
         "display_name",
         "greeting_bubbles",
@@ -185,7 +185,7 @@ def test_jackie_json_still_has_fields_chloe_agent_reads() -> None:
 def test_chloe_json_still_has_fields_chloe_agent_reads() -> None:
     import json
 
-    data = json.loads(Path("data/personas/chloe.json").read_text(encoding="utf-8"))
+    data = json.loads(Path("data/ips/chloe/persona.json").read_text(encoding="utf-8"))
     for field in (
         "display_name",
         "greeting_bubbles",

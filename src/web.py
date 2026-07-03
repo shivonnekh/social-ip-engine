@@ -137,7 +137,7 @@ async def lifespan(app: FastAPI):
     # Jackie Chan TCM (jackiechan.tcm, IG id 17841417304649448)
     _jackie_ig_id = os.environ.get("IG_USER_ID_JACKIE", "").strip()
     if _jackie_ig_id and os.environ.get("IG_PAGE_ACCESS_TOKEN_JACKIE", "").strip():
-        _jackie_persona = str(ROOT / "data" / "personas" / "jackie.json")
+        _jackie_persona = str(ROOT / "data" / "ips" / "jackie" / "persona.json")
         jackie_agent = ChloeAgent(client=client, crm=crm, persona_path=_jackie_persona)
         set_account_agent(_jackie_ig_id, jackie_agent)
         app.state.jackie_agent = jackie_agent

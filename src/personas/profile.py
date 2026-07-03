@@ -31,7 +31,7 @@ from typing import Final
 
 logger = logging.getLogger("personas.profile")
 
-_DATA_DIR: Final[Path] = Path(__file__).resolve().parent.parent.parent / "data" / "personas"
+_IPS_DIR: Final[Path] = Path(__file__).resolve().parent.parent.parent / "data" / "ips"
 
 _VALID_LANGUAGES: Final[frozenset[str]] = frozenset({"yue", "en"})
 
@@ -175,7 +175,7 @@ def _jessica_greeting_content() -> tuple[tuple[str, ...], str]:
 
 
 # -----------------------------------------------------------------------
-# Jackie / Chloe — loaders reading data/personas/{jackie,chloe}.json.
+# Jackie / Chloe — loaders reading data/ips/{jackie,chloe}/persona.json.
 # These personas exclude commerce specialists (Sales, Appointment) and
 # are tongue-read-only. NOT wired into any live dispatch path in Phase 0.
 #
@@ -188,13 +188,13 @@ def _jessica_greeting_content() -> tuple[tuple[str, ...], str]:
 
 
 def load_jackie_profile(path: Path | None = None) -> PersonaProfile:
-    """Load Jackie's profile from data/personas/jackie.json (or ``path``)."""
-    return _load_json_persona(path or (_DATA_DIR / "jackie.json"), key="jackie")
+    """Load Jackie's profile from data/ips/jackie/persona.json (or ``path``)."""
+    return _load_json_persona(path or (_IPS_DIR / "jackie" / "persona.json"), key="jackie")
 
 
 def load_chloe_profile(path: Path | None = None) -> PersonaProfile:
-    """Load Chloe's profile from data/personas/chloe.json (or ``path``)."""
-    return _load_json_persona(path or (_DATA_DIR / "chloe.json"), key="chloe")
+    """Load Chloe's profile from data/ips/chloe/persona.json (or ``path``)."""
+    return _load_json_persona(path or (_IPS_DIR / "chloe" / "persona.json"), key="chloe")
 
 
 def _load_json_persona(path: Path, *, key: str) -> PersonaProfile:

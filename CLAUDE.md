@@ -14,7 +14,7 @@ Instagram comments (canned keyword rules, L0) and DMs (one-call persona
 agent, L1). Messenger is next; TikTok after that.
 
 **Active IPs:** Jackie Chan TCM (`jackiechan.tcm`, English — main IP) and
-Chloe/陳芷晴 (`chloechan.cccc`, Cantonese). See `data/personas/*.json`.
+Chloe/陳芷晴 (`chloechan.cccc`, Cantonese). See `data/ips/*/persona.json` (per-IP config: `data/ips/*/ip.json`, loaded by `src/ips/registry.py`).
 
 **Reply policy (all IPs):** standalone content creators. No clinic, no
 commerce, no prices, no bookings, no off-platform push. If asked about a
@@ -271,7 +271,7 @@ Two personas share this surface: **Chloe/陳芷晴** (`chloechan.cccc`, IG id `1
 `comment_rules.py` matches a keyword substring in a comment against `data/channels/comment_responses.json` (array format — same keyword can exist twice, once per account/language, gated by `_ACCOUNT_LANGUAGE`). A match → `send_private_reply` (the DM) + optional public ack on the thread. No LLM call unless a rule sets `"use_agent": true` (none do today — that path exists but is effectively untested against real traffic, see gotcha below). **No rule match = silent, by design** — never auto-DMs a stranger just because they commented.
 
 **DM replies (two parallel systems — know which one is live):**
-- **`ChloeAgent`** (`chloe_agent.py`) — the ONLY thing actually serving live DM traffic today. One LLM call per turn: persona JSON (`data/personas/{jackie,chloe}.json`) system prompt + last 16 CRM messages, no knowledge-base grounding. Greeting-first (keyed off "does the CRM row exist," not history-empty — a persist hiccup reading empty history must never cause a repeat greeting).
+- **`ChloeAgent`** (`chloe_agent.py`) — the ONLY thing actually serving live DM traffic today. One LLM call per turn: persona JSON (`data/ips/{jackie,chloe}/persona.json`) system prompt + last 16 CRM messages, no knowledge-base grounding. Greeting-first (keyed off "does the CRM row exist," not history-empty — a persist hiccup reading empty history must never cause a repeat greeting).
 - **Profile-pipeline path** (`src/personas/profile.py` + the shared `JessicaPipeline`, Planner→Specialists→Writer, KB-grounded) — built 2026-07-01/02, functionally correct (verified via `scripts/persona_dry_run_social.py`), but **dormant in production** unless an account id is in the `SOCIAL_PIPELINE_ACCOUNTS` env var. On ANY exception it falls back to `ChloeAgent` automatically — the fallback net is real, tested (`tests/test_dispatch_dm_profile_pipeline.py`), don't remove it when extending this path.
 
 **Notion → keyword auto-sync:** `POST /admin/notion-sync` (shared secret `X-Sync-Secret` header) reads Production Tracker directly (stdlib only, no import from `ai-tcm-ip` — separate repo/deploy), drafts a keyword rule the moment a row's `Stage` flips to `✅ Published`, writes straight to `comment_responses.json` (takes effect immediately, no redeploy — `comment_rules.load_rules()` reloads on file mtime) and best-effort pushes to git for durability (`GITHUB_PUSH_TOKEN`). `src/notion_sync.py`. Idempotent via `data/channels/notion_sync_state.json`.

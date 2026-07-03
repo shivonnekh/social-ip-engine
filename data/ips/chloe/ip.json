@@ -1,0 +1,23 @@
+{
+  "id": "chloe",
+  "display_name": "Chloe 陳芷晴",
+  "language": "yue",
+  "active": true,
+  "aliases": ["jessica"],
+  "channels": {
+    "instagram": {
+      "account_id": "17841424706900394",
+      "token_env": "IG_PAGE_ACCESS_TOKEN",
+      "user_id_env": "IG_USER_ID",
+      "comments": "canned",
+      "dms": "persona"
+    }
+  },
+  "content": {
+    "voice_id": "Cantonese_GentleLady",
+    "speed": 1.0,
+    "pitch": 1,
+    "tts_language": "Chinese,Yue",
+    "infographic_brand_slug": "chloe"
+  }
+}
