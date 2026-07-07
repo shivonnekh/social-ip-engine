@@ -45,6 +45,29 @@ from src.channels.instagram import set_pipeline as set_ig_pipeline
 # WhatsApp channel removed — not routing IG/Messenger events to WhatsApp.
 # Consultation layer removed — Jessica partnership ended.
 
+# Nothing in this codebase ever called logging.basicConfig() (or configured
+# the root logger any other way), despite render.yaml setting LOG_LEVEL=INFO
+# since day one. Python's logging module falls back to `logging.lastResort`
+# when no handler exists anywhere in a logger's propagation chain — a bare
+# StreamHandler fixed at WARNING. Net effect: every logger.info() call in
+# this entire app (rule matches, dispatch decisions, the reconciliation
+# loop's own startup line, etc.) has been silently swallowed in production
+# since forever; only WARNING/ERROR/exception calls ever reached Render's
+# log stream. Discovered 2026-07-07 while verifying the anxiety-comment fix
+# deploy: the reconciliation sweep's "loop started" INFO log never showed
+# up despite a clean startup. This is the actual root cause of why so much
+# of this app's own diagnostic logging has been invisible — fixing it here
+# makes LOG_LEVEL do what render.yaml already (mistakenly) assumed it did.
+logging.basicConfig(
+    level=os.environ.get("LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    force=True,  # basicConfig() is a no-op if the root logger already has
+                 # a handler from ANYTHING that imported/ran before this
+                 # module (another library, an odd import order, etc.) —
+                 # force=True guarantees our level always wins rather than
+                 # silently inheriting whatever came first.
+)
+
 logger = logging.getLogger("web")
 
 ROOT = Path(__file__).resolve().parent.parent
