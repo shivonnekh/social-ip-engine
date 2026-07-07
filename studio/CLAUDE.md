@@ -53,14 +53,42 @@ Shot N · ~Xs · beat
   🎬 Video here   (empty toggle — drop the video here)
 ```
 
+### Trailer sections (after the last shot — synced at fan-out since 2026-07-06)
+```
+🖼️ Cover Photo
+  🖼️ Cover prompt (thumbnail → GPT)          [code]  — build_cover_prompt(): scroll-stopping frame, top third reserved for title overlay
+  🖼️ Cover here   (empty toggle — drop the cover here)
+📊 DM Infographic
+  🖼️ Infographic prompt (→ GPT image gen)    [code]  — copied from the Content page's "🖼️ Infographic Brief" by fetch_infographic_brief()
+```
+Older rows were backfilled with `scripts/backfill_cover_dm_prompts.py`
+(append-only + idempotent — safe on rows holding media, unlike a rebuild).
+
 ## Scripts (`scripts/`)
 - `notion_fanout.py --content "<name>"` — explode a concept into 1 Production row per ACTIVE IP (dedup, auto-runs apply_shot_plan).
 - `notion_watch.py [--loop N]` — auto fan-out when Concept Status = "✅ Ready to fan-out" → flips to "🚀 Fanned out".
 - `notion_prompts.py --backfill [--force]` — (re)build per-shot prompts on Production rows. Core: `apply_shot_plan(row, rebuild=True)` wipes+rebuilds the body. ⚠️ rebuild is DESTRUCTIVE — wipes uploaded images/audio/video. Don't run on rows that already hold media.
 - `notion_image.py --row <id> [--shot N] [--reuse]` — pull IP reference faces FROM Notion + a clinic bg → `gpt-image-2` → place each still in its "🖼️ Image here" toggle → tick 🎨.
-- `notion_video.py --row <id>` — 即梦 video: per shot, pull image+audio+即梦prompt from Notion → `dreamina multimodal2video` → download → place in "🎬 Video here" → ffmpeg concat final.
-- `gen_voice_clip.py` — MiniMax TTS. Voice config per IP (see voice_config.yaml + IP Registry).
+- `notion_video.py --row <id>` — 即梦 video: per shot, pull image+audio+即梦prompt from Notion → `dreamina multimodal2video` → download → place in "🎬 Video here" → ffmpeg concat final (merge is already automatic here — no separate manual "merge" step needed).
+- `add_karaoke_captions.py --row <id> [--upload] [--script <path>]` — burns word-level karaoke-highlight captions (white base, current word yellow) onto that row's merged `final.mp4` → `final_karaoke.mp4`. Added 2026-07-07 to replace the previous ad-hoc process (JianYing CLI drafts kept failing to open). **Uses moviepy, NOT ffmpeg's `ass`/`subtitles`/`drawtext` filters** — this machine's ffmpeg build has no libass/freetype support (`ffmpeg -filters` shows neither). Word timing comes from local `openai-whisper` (`word_timestamps=True`) run directly against the merged video's audio. Pass `--script <path-to-txt>` with the KNOWN correct VO script to fix Whisper mishearings (e.g. it transcribed "cramps" as "crampus" in the period-pain campaign) while keeping Whisper's timestamps — see `align_to_known_script()`. `--upload` pushes the result to the row's **"Production Video" page PROPERTY** (not a body block) — the exact property social-ip-engine's live Reels auto-publish reads (`src/notion_publish.py::_extract_video_url`), so a captioned row is then one Stage-flip away from going live. Caches the Whisper transcript as `words.json` next to the video (gitignored, `campaigns/**/video/`) — pass `--retranscribe` to force a redo.
+- `gen_voice_clip.py` — MiniMax TTS. Voice config per IP (see voice_config.yaml + IP Registry). Low-level single-clip tool — for a whole Production row use `batch_voice_gen.py --row <id>` instead (reads each shot's Voice script property, calls this per shot).
 - `notion_assets.json` — clinic backgrounds + (optional) face overrides.
+
+### Pipeline orchestrators (`pipeline_common.py` + 3 stage scripts, added 2026-07-07)
+Chains the tools above across every IP under a Content concept, at the 3 points Shivonne actually wants to review by hand — nothing more is automated than that; see each script's own module docstring for the full reasoning. Each accepts `--content "<name>"` / `--content-id <id>` (every row for that concept) or `--row <id>` (just one). **Run from anywhere — no `cd studio` needed** (every path is anchored via `Path(__file__)`, not cwd; verified by running from the repo root).
+
+1. **After you approve the Script** → `generate_assets.py --content "<name>"` — fans out to every active IP (`notion_fanout.py`), then runs `notion_image.py` + `batch_voice_gen.py` for every resulting row.
+2. **After you review image + voice** → `generate_all_videos.py --content "<name>"` — runs `notion_video.py` (video-gen + auto-merge) for every row under that content.
+3. **After you review the video** → `finalize_all_videos.py --content "<name>"` — runs `add_karaoke_captions.py --upload` for every row, landing the captioned final video straight in each row's "Production Video" property.
+
+Each stage subprocess-invokes the existing single-row tools exactly as if typed by hand (no reimplementation, no drift risk) and NEVER lets one row's failure abort the rest of the batch — a clear ✅/❌ summary prints per row at the end, so a partial failure can't be missed, and only the failed rows need re-running. **None of the 3 stages ever touch Stage** — flipping to `🟢 Ready to Publish` / `✅ Published` (which is what actually triggers the social-ip-engine automations below) stays a deliberate, manual, in-Notion decision, on purpose: it's the one action in this whole chain that's genuinely hard to reverse (a live Instagram post), so it's the one thing no script does on your behalf.
+
+### The full content pipeline — what's automated vs manual (updated 2026-07-07)
+Content Library Script review (manual, by you) → `generate_assets.py` (fan-out + image + voice, one command) → **you review image/voice** → `generate_all_videos.py` (video-gen, one command) → **you review video** → `finalize_all_videos.py` (captions + upload, one command) → **you review the final captioned video, then drag Stage yourself.** `batch_infographic_gen.py` (for the DM infographic) is separate/unrelated to this chain — run it whenever, it just needs to land in "📊 DM Infographic" before the row goes live.
+
+Automation only starts once a human drags **Stage** in the social-ip-engine-side Production Tracker:
+- `🟢 Ready to Publish` → Notion Automation → `POST /admin/notion-sync` — auto-drafts the comment-keyword DM rule, auto-FETCHES (doesn't generate) whatever's already in "📊 DM Infographic".
+- `✅ Published` → Notion Automation → `POST /admin/notion-publish` — auto-generates/reuses a cover photo if missing, then actually publishes the "Production Video" file live to Instagram.
 
 ## Voice (MiniMax)
 - English IP (Jackie): `voice_id=jackie_chan_clone_v2, speed=1.2, pitch=0` — **custom voice clone, NOT a preset**. IP Registry is source of truth.
