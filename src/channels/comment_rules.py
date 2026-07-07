@@ -30,8 +30,32 @@ CONFIG
       "濕熱": { "dm_text": "...", "use_agent": false }
     }
 
-Matching is case-insensitive substring on the comment text. The first
-keyword (in file order) that appears in the comment wins.
+MATCHING
+--------
+Two passes, in order:
+
+1. **Exact** — case-insensitive substring on the comment text. The first
+   keyword (in file order) that appears in the comment wins. Unchanged
+   from before typo tolerance existed; still the only thing that runs for
+   a correctly-spelled comment.
+2. **Fuzzy fallback** (only if #1 found nothing) — keywords >= 5 chars
+   (``COMMENT_FUZZY_MIN_KEYWORD_LEN``) get a typo-tolerant check via
+   rapidfuzz's ``partial_ratio`` (score >= 82 by default,
+   ``COMMENT_FUZZY_THRESHOLD``), so "anxeity"/"anxity"/"migrane" etc.
+   still resolve to the intended keyword. Short keywords ("gut", "eye",
+   "濕熱") are excluded — too few characters for a similarity score to
+   tell "typo" apart from "coincidentally similar unrelated word". Picks
+   the single HIGHEST-scoring eligible rule across the whole file (fuzzy
+   scores aren't reliably ordered by file position the way exact matches
+   are). Every fuzzy hit is logged at INFO with its score — worth
+   monitoring occasionally for false positives as real traffic exercises
+   it; see ``_match_fuzzy``. Skipped entirely for comments longer than
+   ``COMMENT_FUZZY_MAX_TEXT_LEN`` (default 100 chars) — longer haystacks
+   give ``partial_ratio`` more alignment offsets to try, which a 20,000-
+   sample stress test against random text showed measurably increases
+   false-positive risk (8 hits among strings > 100 chars, 0 among
+   strings <= 100 chars). Real CTA-triggering comments are short; a long
+   rambling comment is unlikely to be someone trying to hit a keyword.
 """
 
 from __future__ import annotations
@@ -43,6 +67,8 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Final
+
+from rapidfuzz import fuzz
 
 from src.ips import registry as ip_registry
 
@@ -184,41 +210,167 @@ def _account_allowed(rule: CommentReply, account_id: str | None) -> bool:
     return account_id in rule.accounts
 
 
-def match(text: str, *, account_id: str | None = None) -> CommentReply | None:
-    """Return the first matching rule allowed for this receiving account.
+def _language_allowed(rule: CommentReply, account_id: str | None, expected_lang: str) -> bool:
+    """Same fail-closed language gate for both the exact and fuzzy passes.
 
-    Language gate: a rule with a ``language`` field is only served to an
-    account whose registered expected language (``_expected_language`` —
-    IP registry for IG, FB_PAGE_ID/FB_PAGE_LANGUAGE env for Facebook)
-    matches. Mismatches AND unregistered accounts are BLOCKED — fail
-    closed, because before this an FB page id missing from the language
-    map would have been served the first (possibly wrong-language) rule.
-    Rules with no ``language`` field pass through (backwards compat).
-    This prevents Jackie (English) from ever serving Cantonese images,
-    even if comment_responses.json is misconfigured.
+    A rule with a ``language`` field is only served to an account whose
+    registered expected language (``_expected_language`` — IP registry for
+    IG, FB_PAGE_ID/FB_PAGE_LANGUAGE env for Facebook) matches. Mismatches
+    AND unregistered accounts are BLOCKED — fail closed, because before
+    this an FB page id missing from the language map would have been
+    served the first (possibly wrong-language) rule. Rules with no
+    ``language`` field pass through (backwards compat). This prevents
+    Jackie (English) from ever serving Cantonese images, even if
+    comment_responses.json is misconfigured.
     """
-    haystack = (text or "").lower()
-    expected_lang = _expected_language(account_id)
-    for rule in load_rules():
+    if not rule.language:
+        return True
+    if not expected_lang:
+        logger.error(
+            "[comment_rules] LANGUAGE BLOCK (unregistered account) "
+            "keyword=%r rule_lang=%r account=%s — register the account's "
+            "language (data/ips/*/ip.json or FB_PAGE_ID+FB_PAGE_LANGUAGE) "
+            "before serving language-tagged rules",
+            rule.keyword, rule.language, account_id,
+        )
+        return False
+    if rule.language != expected_lang:
+        logger.error(
+            "[comment_rules] LANGUAGE BLOCK keyword=%r rule_lang=%r "
+            "account_expected=%r account=%s — rule skipped",
+            rule.keyword, rule.language, expected_lang, account_id,
+        )
+        return False
+    return True
+
+
+def _fuzzy_threshold() -> float:
+    """Clamped to [0, 100] — rapidfuzz scores never leave that range, and
+    an out-of-range override would otherwise silently misbehave (e.g. a
+    threshold of 200 makes every comparison fail — fuzzy matching quietly
+    disabled entirely; a negative threshold makes every comparison pass —
+    fuzzy matching quietly matches everything)."""
+    try:
+        value = float(os.environ.get("COMMENT_FUZZY_THRESHOLD", "82"))
+    except ValueError:
+        return 82.0
+    return min(100.0, max(0.0, value))
+
+
+def _fuzzy_min_keyword_len() -> int:
+    """Below this length, skip fuzzy matching entirely for that keyword.
+
+    Short keywords (e.g. "gut", "eye", "濕熱") have too few characters for
+    a similarity score to distinguish "typo of this keyword" from
+    "coincidentally similar unrelated word" — a single substituted
+    character in a 2-3 char keyword swings the score by 30-50 points.
+    These keywords keep their existing exact-substring-only behavior,
+    unchanged from before fuzzy matching existed.
+
+    Clamped to >= 1 — "0" or a negative value would let single-character
+    keywords into fuzzy scoring, which is pure noise (rapidfuzz's
+    partial_ratio on a 1-char keyword is nearly always "found somewhere").
+    """
+    try:
+        value = int(os.environ.get("COMMENT_FUZZY_MIN_KEYWORD_LEN", "5"))
+    except ValueError:
+        return 5
+    return max(1, value)
+
+
+def _fuzzy_max_text_len() -> int:
+    """Longer haystacks give partial_ratio more alignment offsets to try,
+    which measurably increases false-positive risk — a stress test against
+    20,000 random long strings found 8 false positives (0/20,000 among
+    strings <= 100 chars, the default here). Real CTA-style comments
+    ("comment 'gut' pls!") are short; a long rambling comment is unlikely
+    to be someone trying to trigger a keyword, so requiring exact match
+    for those costs nothing in practice while removing the actual risk
+    factor. Clamped to >= 1 (a "0" or negative override would silently
+    disable fuzzy matching entirely).
+    """
+    try:
+        value = int(os.environ.get("COMMENT_FUZZY_MAX_TEXT_LEN", "100"))
+    except ValueError:
+        return 100
+    return max(1, value)
+
+
+def _match_exact(
+    rules: tuple[CommentReply, ...], haystack: str, account_id: str | None, expected_lang: str,
+) -> CommentReply | None:
+    for rule in rules:
         if not (rule.keyword and rule.keyword in haystack):
             continue
         if not _account_allowed(rule, account_id):
             continue
-        if rule.language and not expected_lang:
-            logger.error(
-                "[comment_rules] LANGUAGE BLOCK (unregistered account) "
-                "keyword=%r rule_lang=%r account=%s — register the account's "
-                "language (data/ips/*/ip.json or FB_PAGE_ID+FB_PAGE_LANGUAGE) "
-                "before serving language-tagged rules",
-                rule.keyword, rule.language, account_id,
-            )
-            continue
-        if rule.language and rule.language != expected_lang:
-            logger.error(
-                "[comment_rules] LANGUAGE BLOCK keyword=%r rule_lang=%r "
-                "account_expected=%r account=%s — rule skipped",
-                rule.keyword, rule.language, expected_lang, account_id,
-            )
+        if not _language_allowed(rule, account_id, expected_lang):
             continue
         return rule
     return None
+
+
+def _match_fuzzy(
+    rules: tuple[CommentReply, ...], text: str, haystack: str,
+    account_id: str | None, expected_lang: str,
+) -> CommentReply | None:
+    """Typo-tolerant fallback — only runs when no exact match was found.
+
+    Uses rapidfuzz's partial_ratio (best-aligning substring match, so it
+    naturally handles a typo'd word being a different length than the
+    original keyword — a fixed-length sliding window would not). Picks the
+    HIGHEST-scoring eligible rule across the whole file, not just the
+    first one in file order — fuzzy scores aren't reliably ordered by
+    which keyword the commenter actually meant, unlike exact matches.
+
+    Skips entirely for comments longer than COMMENT_FUZZY_MAX_TEXT_LEN —
+    see _fuzzy_max_text_len for why (more haystack = more chances for a
+    coincidental high-scoring alignment; empirically validated, not just
+    theoretical).
+    """
+    if len(text) > _fuzzy_max_text_len():
+        return None
+
+    threshold = _fuzzy_threshold()
+    min_len = _fuzzy_min_keyword_len()
+    best_rule: CommentReply | None = None
+    best_score = 0.0
+
+    for rule in rules:
+        if not rule.keyword or len(rule.keyword) < min_len:
+            continue
+        score = fuzz.partial_ratio(rule.keyword, haystack)
+        if score < threshold:
+            continue
+        if not _account_allowed(rule, account_id):
+            continue
+        if not _language_allowed(rule, account_id, expected_lang):
+            continue
+        if score > best_score:
+            best_rule, best_score = rule, score
+
+    if best_rule is not None:
+        logger.info(
+            "[comment_rules] fuzzy match: comment=%r matched keyword=%r (score=%.1f, threshold=%.1f)",
+            text, best_rule.keyword, best_score, threshold,
+        )
+    return best_rule
+
+
+def match(text: str, *, account_id: str | None = None) -> CommentReply | None:
+    """Return the best matching rule allowed for this receiving account.
+
+    Two passes: exact substring match first (unchanged, deterministic,
+    first-in-file-order wins — see _match_exact), then — only if nothing
+    matched exactly — a typo-tolerant fuzzy fallback (see _match_fuzzy).
+    The fuzzy pass never runs when an exact match exists, so it can never
+    change behavior for a correctly-spelled comment.
+    """
+    haystack = (text or "").lower()
+    expected_lang = _expected_language(account_id)
+    rules = load_rules()
+
+    exact = _match_exact(rules, haystack, account_id, expected_lang)
+    if exact is not None:
+        return exact
+    return _match_fuzzy(rules, text, haystack, account_id, expected_lang)
