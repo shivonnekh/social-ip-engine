@@ -85,7 +85,34 @@ class IncomingComment:
 
     @property
     def is_reply_to_comment(self) -> bool:
-        return bool(self.parent_id) and self.parent_id != self.comment_id
+        """True only for a genuine nested reply (a comment on a comment).
+
+        Instagram and Facebook disagree on what ``parent_id`` means for a
+        plain top-level comment: IG leaves it blank; Facebook Page "feed"
+        webhooks set it to the **post's own id** for every comment, reply
+        or not (confirmed against a real production payload, 2026-07-07 —
+        a genuinely top-level FB comment arrived with
+        ``parent_id == post_id``, and the Graph API's own ``parent`` field
+        for that comment was empty). A parent_id that merely equals the
+        post/media id is NOT a reply — only a parent_id pointing at a
+        DIFFERENT comment is. Without this, every single Facebook comment
+        was misclassified as a reply and silently skipped — comment→DM
+        never fired once on FB despite the webhook wiring being correct.
+
+        Fails CLOSED when ``media_id`` couldn't be parsed (rare payload
+        gap, see the ``from`` object comment in ``_parse_changes`` for a
+        precedent): an unparsed media_id means we cannot positively prove
+        parent_id points at the post, so a top-level comment in that
+        situation degrades to being treated as a reply (skipped, no DM)
+        rather than risking a false negative that DMs into a real nested
+        reply thread. A missed DM is recoverable via backfill; spamming a
+        reply thread is not.
+        """
+        if not self.parent_id or self.parent_id == self.comment_id:
+            return False
+        if self.media_id and self.parent_id == self.media_id:
+            return False
+        return True
 
 
 MetaEvent = IncomingDM | IncomingComment
