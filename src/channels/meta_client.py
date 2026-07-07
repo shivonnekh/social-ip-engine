@@ -34,6 +34,7 @@ Credentials (per platform):
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from dataclasses import dataclass
@@ -48,6 +49,13 @@ logger = logging.getLogger("channels.meta_client")
 
 _DEFAULT_VERSION: Final[str] = "v25.0"
 _TIMEOUT_S: Final[float] = 15.0
+# Shorter timeout for the 'from' backfill fetch specifically: it now runs
+# inside a spawned background task (never blocks the webhook's 200 OK to
+# Meta — see meta_webhook._dispatch_comment), but a background task hanging
+# for 15s per missing-from comment is still wasted worker time for a
+# best-effort diagnostic recovery. Fail fast; /admin/backfill-comments is
+# the durable fallback if this misses.
+_BACKFILL_TIMEOUT_S: Final[float] = 5.0
 
 # Per-platform env var names: (access-token var, sender-id var).
 # Per-ACCOUNT credential env var names come from the IP registry
@@ -254,6 +262,64 @@ async def list_recent_media(
         logger.warning("[meta] list media failed HTTP %d: %s", resp.status_code, resp.text[:200])
         return []
     return resp.json().get("data", [])
+
+
+async def get_comment_from(
+    comment_id: str, *, platform: Platform = "instagram", account_id: str | None = None,
+) -> tuple[str, str]:
+    """GET /{comment_id}?fields=from — backfill the commenter's id/username
+    when the webhook payload omitted the ``from`` object entirely (an
+    intermittent Meta gap, observed on Reels comments — see
+    ``meta_events._parse_changes``). Read-only, single comment.
+
+    Returns ``("", "")`` on any failure (missing creds, transport error,
+    non-200, or the comment genuinely has no ``from``, e.g. deleted
+    commenter) — callers must treat that as "still unknown", not raise.
+    """
+    creds = _creds(platform, account_id)
+    if not creds.token:
+        logger.warning(
+            "[meta] missing %s token — cannot backfill 'from' for comment %s",
+            platform, comment_id,
+        )
+        return "", ""
+
+    url = _graph_url(platform, comment_id)
+    try:
+        async with httpx.AsyncClient(timeout=_BACKFILL_TIMEOUT_S) as client:
+            resp = await client.get(
+                url, params={"fields": "from", "access_token": creds.token},
+            )
+    except httpx.HTTPError as exc:
+        logger.warning(
+            "[meta] comment backfill transport error for %s: %s", comment_id, exc
+        )
+        return "", ""
+
+    if resp.status_code != 200:
+        logger.warning(
+            "[meta] comment backfill failed HTTP %d for %s: %s",
+            resp.status_code, comment_id, resp.text[:200],
+        )
+        return "", ""
+
+    try:
+        from_obj = resp.json().get("from") or {}
+    except (json.JSONDecodeError, ValueError):
+        logger.warning(
+            "[meta] comment backfill for %s returned non-JSON body: %s",
+            comment_id, resp.text[:200],
+        )
+        return "", ""
+
+    from_id = str(from_obj.get("id", "")).strip()
+    from_username = str(from_obj.get("username", "")).strip()
+    if not from_id:
+        logger.warning(
+            "[meta] comment backfill for %s returned no 'from.id' — comment "
+            "may be genuinely author-less (e.g. deleted account)", comment_id,
+        )
+    return from_id, from_username
 
 
 async def list_comments(

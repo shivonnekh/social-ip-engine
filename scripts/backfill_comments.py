@@ -48,7 +48,7 @@ except ImportError:
 
 from src.channels import meta_client  # noqa: E402
 from src.channels.meta_events import IncomingComment  # noqa: E402
-from src.channels.meta_webhook import handle_comment  # noqa: E402
+from src.channels.meta_webhook import handle_comment, is_own_comment  # noqa: E402
 
 DEFAULT_ACCOUNT_ID = "17841417304649448"  # jackiechan.tcm
 
@@ -79,6 +79,13 @@ async def _backfill_media(media_id: str, account_id: str) -> None:
             media_id=media_id,
             recipient_id=account_id,
         )
+        if is_own_comment(comment):
+            # Our own public_ack replies show up in list_comments() too — a
+            # rule's keyword can legitimately appear inside our own ack text
+            # (e.g. "...anxiety guide..." vs the "anxiety" rule), so without
+            # this guard a re-run would misfire the rule against ourselves.
+            print(f"  skip (own comment): [{username or from_id}] {text!r}")
+            continue
         print(f"  -> [{username or from_id}] {text!r}")
         await handle_comment(comment, pipeline=None)  # type: ignore[arg-type]
 

@@ -354,7 +354,7 @@ async def admin_backfill_comments(request: Request) -> JSONResponse:
 
     from src.channels import meta_client
     from src.channels.meta_events import IncomingComment
-    from src.channels.meta_webhook import handle_comment
+    from src.channels.meta_webhook import handle_comment, is_own_comment
 
     account_id = body.get("account_id", _DEFAULT_BACKFILL_ACCOUNT)
     pipeline: JessicaPipeline = request.app.state.pipeline
@@ -377,6 +377,13 @@ async def admin_backfill_comments(request: Request) -> JSONResponse:
                 media_id=media_id,
                 recipient_id=account_id,
             )
+            if is_own_comment(comment):
+                # Our own public_ack replies come back from list_comments()
+                # too — a rule keyword can legitimately appear inside our own
+                # ack text (e.g. "...anxiety guide..." matching the "anxiety"
+                # rule), so skip them or a re-run misfires the rule on itself.
+                processed.append(f"{comment_id}: SKIPPED (own comment) {raw.get('text', '')!r}")
+                continue
             await handle_comment(comment, pipeline)  # real CRM — persists correctly
             processed.append(f"{comment_id}: {raw.get('text', '')!r}")
         summary[media_id] = processed
@@ -415,12 +422,16 @@ async def admin_notion_sync(request: Request) -> JSONResponse:
 
     if result["rules_changed"]:
         # Persist the rules, the processed-row state, the media-attach state,
-        # AND the infographic PNGs themselves — git_publish only pushes what it
-        # is handed, and an image left off git vanishes on the next deploy.
+        # the wired-checkbox retry state, AND the infographic PNGs themselves
+        # — git_publish only pushes what it is handed, and anything left off
+        # git vanishes on the next deploy. push_paths() silently skips any
+        # path that doesn't exist locally (e.g. no pending checkbox retries
+        # this run), so it's safe to always list it here.
         paths = [
             "data/channels/comment_responses.json",
             "data/channels/notion_sync_state.json",
             "data/channels/notion_media_state.json",
+            "data/channels/notion_wired_pending.json",
             *result.get("media_paths", []),
         ]
         push = git_publish.push_paths(
@@ -429,10 +440,16 @@ async def admin_notion_sync(request: Request) -> JSONResponse:
         )
         result["git_push"] = push
     else:
-        # Still persist state (rows we decided to skip permanently) even
-        # with no new rules, so we don't re-check them every trigger.
+        # Still persist state (rows we decided to skip permanently, and any
+        # checkbox retry that resolved) even with no new rules, so we don't
+        # re-check them — or re-attempt an already-fixed checkbox — every
+        # trigger.
         push = git_publish.push_paths(
-            ["data/channels/notion_sync_state.json"], message="chore: notion-sync — state update",
+            [
+                "data/channels/notion_sync_state.json",
+                "data/channels/notion_wired_pending.json",
+            ],
+            message="chore: notion-sync — state update",
         )
         result["git_push"] = push
 

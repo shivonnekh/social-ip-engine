@@ -121,6 +121,38 @@ def test_parse_skips_message_without_mid():
     assert parse_meta_webhook(payload) == []
 
 
+@pytest.mark.unit
+def test_parse_comment_missing_from_kept_with_warning(caplog):
+    """Meta intermittently omits the ``from`` object on comment webhooks
+    (observed on Reels — the 2026-07-06/07 anxiety-post incident). Previously
+    this ``continue``'d silently and the WHOLE event vanished with zero log
+    output anywhere. Now: keep the event (comment_id is enough to act on,
+    from_id="" signals the dispatch layer to attempt a Graph API backfill)
+    and log loudly so the drop is diagnosable without Graph API archaeology.
+    """
+    payload = _comment_payload(cid="c99")
+    del payload["entry"][0]["changes"][0]["value"]["from"]
+
+    with caplog.at_level("WARNING", logger="channels.meta_events"):
+        events = parse_meta_webhook(payload)
+
+    assert len(events) == 1
+    ev = events[0]
+    assert isinstance(ev, IncomingComment)
+    assert ev.comment_id == "c99"
+    assert ev.from_id == ""
+    assert any("missing 'from' object" in r.message for r in caplog.records)
+
+
+@pytest.mark.unit
+def test_parse_comment_missing_comment_id_dropped():
+    """Unlike a missing ``from``, a missing comment_id is truly unusable —
+    we can't dedup or reply-target without it — so this one stays dropped."""
+    payload = _comment_payload()
+    del payload["entry"][0]["changes"][0]["value"]["id"]
+    assert parse_meta_webhook(payload) == []
+
+
 # ---------------------------------------------------------------------------
 # Signature verification
 # ---------------------------------------------------------------------------
@@ -500,3 +532,156 @@ async def test_process_post_disabled_short_circuits():
         raw=b"{}", signature_header="", pipeline=None, enabled=False,
     )
     assert status == 200 and body["status"] == "disabled"
+
+
+@pytest.mark.unit
+def test_process_post_disabled_logs_warning(caplog):
+    """The disabled/ignored branches used to return 200 with ZERO log
+    output — indistinguishable from a genuinely-empty webhook ping. That
+    silence is what made the 2026-07-06/07 anxiety-comment drop take a full
+    Graph API investigation to diagnose instead of a log grep."""
+    import asyncio
+
+    with caplog.at_level("WARNING", logger="channels.meta_webhook"):
+        asyncio.run(meta_webhook.process_post(
+            raw=b"{}", signature_header="", pipeline=None, enabled=False,
+        ))
+    assert any("webhook disabled" in r.message for r in caplog.records)
+
+
+@pytest.mark.asyncio
+async def test_process_post_no_events_logs_info(caplog, monkeypatch):
+    # Dev-mode signature bypass requires an empty secret — isolate explicitly
+    # (matches the convention above) rather than relying on ambient env,
+    # since importing scripts.backfill_comments elsewhere in the suite loads
+    # the real .env (including a real META_APP_SECRET) at collection time.
+    monkeypatch.setenv("META_APP_SECRET", "")
+    with caplog.at_level("INFO", logger="channels.meta_webhook"):
+        body, status = await meta_webhook.process_post(
+            raw=b'{"object": "instagram", "entry": []}',
+            signature_header="", pipeline=None, enabled=True,
+        )
+    assert status == 200 and body["status"] == "ignored"
+    assert any("zero actionable events" in r.message for r in caplog.records)
+
+
+# ---------------------------------------------------------------------------
+# Comment 'from' backfill (Meta intermittently omits it — see meta_events)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_process_post_backfills_missing_from_then_dispatches(monkeypatch, tmp_path):
+    """End-to-end: webhook payload arrives with NO 'from' object (the exact
+    2026-07-06/07 shape). process_post should recover it via one Graph API
+    call and still dispatch to handle_comment — not silently drop it."""
+    monkeypatch.setenv("META_APP_SECRET", "")
+    cfg = tmp_path / "rules.json"
+    cfg.write_text(json.dumps({
+        "anxiety": {"dm_text": "anxiety guide", "public_ack": "sent!"},
+    }), encoding="utf-8")
+    monkeypatch.setenv("COMMENT_RESPONSES_PATH", str(cfg))
+    comment_rules._load_raw.cache_clear()
+    monkeypatch.setattr(meta_webhook, "_MEDIA_PAUSE_S", 0.0)
+    monkeypatch.setattr(meta_webhook, "_seen_ids", type(meta_webhook._seen_ids)())
+
+    async def fake_get_comment_from(comment_id, *, platform="instagram", account_id=None):
+        assert comment_id == "c_missing_from"
+        return "U_rajesh", "rajeshnaidu"
+
+    private, public = [], []
+
+    async def fake_priv(cid, text, *, platform="instagram", **_):
+        private.append((cid, text)); return meta_client.SendResult(True)
+
+    async def fake_pub(cid, text, *, platform="instagram", **_):
+        public.append((cid, text)); return meta_client.SendResult(True)
+
+    monkeypatch.setattr(meta_client, "get_comment_from", fake_get_comment_from)
+    monkeypatch.setattr(meta_client, "send_private_reply", fake_priv)
+    monkeypatch.setattr(meta_client, "reply_to_comment", fake_pub)
+
+    payload = {
+        "object": "instagram",
+        "entry": [{
+            "id": "17841417304649448",
+            "changes": [{
+                "field": "comments",
+                "value": {"id": "c_missing_from", "text": "Anxiety",
+                          "media": {"id": "media42"}},
+            }],
+        }],
+    }
+
+    class _FakePipeline:
+        _crm = None
+
+    body, status = await meta_webhook.process_post(
+        raw=json.dumps(payload).encode(), signature_header="",
+        pipeline=_FakePipeline(), enabled=True,
+    )
+    assert status == 200 and body["count"] == 1
+    for task in list(meta_webhook._bg_tasks):
+        await task
+
+    assert private == [("c_missing_from", "anxiety guide")]
+    assert public == [("c_missing_from", "sent!")]
+
+
+@pytest.mark.asyncio
+async def test_process_post_drops_when_backfill_also_fails(monkeypatch, caplog):
+    monkeypatch.setenv("META_APP_SECRET", "")
+
+    async def fake_get_comment_from(comment_id, *, platform="instagram", account_id=None):
+        return "", ""  # Graph API also couldn't recover it
+
+    monkeypatch.setattr(meta_client, "get_comment_from", fake_get_comment_from)
+    monkeypatch.setattr(meta_webhook, "_seen_ids", type(meta_webhook._seen_ids)())
+
+    payload = {
+        "object": "instagram",
+        "entry": [{
+            "id": "17841417304649448",
+            "changes": [{
+                "field": "comments",
+                "value": {"id": "c_still_missing", "text": "Anxiety",
+                          "media": {"id": "media42"}},
+            }],
+        }],
+    }
+
+    class _FakePipeline:
+        _crm = None
+
+    with caplog.at_level("WARNING", logger="channels.meta_webhook"):
+        body, status = await meta_webhook.process_post(
+            raw=json.dumps(payload).encode(), signature_header="",
+            pipeline=_FakePipeline(), enabled=True,
+        )
+        # The backfill attempt (and its failure) now happens inside the
+        # spawned background task — process_post itself never awaits the
+        # Graph API call, so it still reports the event as "queued" (a
+        # task was scheduled) even though that task goes on to drop it.
+        # This is the fix for the reviewer's HIGH finding: a slow/timed-out
+        # Graph API backfill must never delay Meta's 200 OK.
+        assert status == 200 and body["count"] == 1
+        for task in list(meta_webhook._bg_tasks):
+            await task
+    assert any("still no 'from_id'" in r.message for r in caplog.records)
+
+
+@pytest.mark.unit
+def test_is_own_comment_matches_business_account_ids(monkeypatch):
+    monkeypatch.setenv("IG_USER_ID_JACKIE", "17841417304649448")
+    own = IncomingComment(
+        platform="instagram", comment_id="ack1", text="I've sent you the guide!",
+        from_id="17841417304649448", from_username="jackiechan.tcm",
+        media_id="media42", recipient_id="17841417304649448",
+    )
+    stranger = IncomingComment(
+        platform="instagram", comment_id="c1", text="Anxiety",
+        from_id="1329310679416362", from_username="davidafterwork",
+        media_id="media42", recipient_id="17841417304649448",
+    )
+    assert meta_webhook.is_own_comment(own) is True
+    assert meta_webhook.is_own_comment(stranger) is False

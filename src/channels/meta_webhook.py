@@ -19,6 +19,7 @@ and the image DM is sent right after that bubble.
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 import hashlib
 import hmac
 import json
@@ -243,7 +244,19 @@ def is_duplicate(event_id: str) -> bool:
     return False
 
 
-def _is_own_comment(comment: IncomingComment) -> bool:
+def is_own_comment(comment: IncomingComment) -> bool:
+    """True when ``comment`` was authored by one of our own business
+    accounts (e.g. a public_ack reply we posted) rather than a real user.
+
+    Public (not underscore-prefixed) because it's now a real cross-module
+    contract: the live webhook path (below) AND both comment-backfill tools
+    (``scripts/backfill_comments.py``, ``POST /admin/backfill-comments`` in
+    ``src/web.py``) all need it — those tools replay a media's FULL comment
+    list via the Graph API, which includes our own ack replies, and an ack's
+    text can legitimately contain a rule's keyword substring (e.g. "...
+    anxiety guide..." matching the "anxiety" rule) — without this guard a
+    replay misfires the rule against ourselves.
+    """
     own_ids = {
         os.environ.get("IG_USER_ID", "").strip(),
         os.environ.get("IG_USER_ID_JACKIE", "").strip(),
@@ -252,6 +265,9 @@ def _is_own_comment(comment: IncomingComment) -> bool:
     }
     own_ids.discard("")
     return bool(comment.from_id and comment.from_id in own_ids)
+
+
+_is_own_comment = is_own_comment  # back-compat alias — prefer the public name above
 
 
 def _comment_intent_key(comment: IncomingComment) -> str:
@@ -307,6 +323,12 @@ async def process_post(
     Meta doesn't disable the subscription on transient downstream issues.
     """
     if not enabled:
+        # Silent by design from Meta's POV (still 200 so it doesn't disable
+        # the subscription) but NOT silent in our own logs anymore — this
+        # exact "no error anywhere, events just vanish" shape caused a
+        # multi-day outage on 2026-07-01/02 (see CLAUDE.md). One line here
+        # would have cut that from days to minutes.
+        logger.warning("[meta] webhook disabled — dropping payload (200 OK returned to Meta)")
         return {"status": "disabled"}, 200
 
     if not verify_signature(raw, signature_header, secret=app_secret):
@@ -319,6 +341,7 @@ async def process_post(
 
     events = parse_meta_webhook(payload)
     if not events:
+        logger.info("[meta] webhook payload parsed to zero actionable events — ignoring")
         return {"status": "ignored"}, 200
 
     if pipeline is None:
@@ -333,14 +356,63 @@ async def process_post(
             _spawn(handle_dm(event, pipeline))
             queued += 1
         elif isinstance(event, IncomingComment):
-            if event.is_reply_to_comment or _is_own_comment(event):
+            # These two checks need only comment_id/parent_id — never Graph
+            # API I/O — so they stay synchronous here, same ordering
+            # guarantee as before (protects against a duplicate webhook
+            # delivery racing itself across concurrent requests).
+            if event.is_reply_to_comment:
+                logger.info("[meta] comment %s: is a reply-to-comment — skipping", event.comment_id)
                 continue
             if is_duplicate(event.comment_id):
+                logger.info("[meta] comment %s: duplicate delivery — skipping", event.comment_id)
                 continue
-            _spawn(handle_comment(event, pipeline))
+            # from_id may be missing (see meta_events._parse_changes) and
+            # recovering it needs a Graph API round trip — do that + the
+            # remaining from_id-dependent check (is_own_comment) inside the
+            # spawned background task instead of awaiting it here, so a slow
+            # or timed-out Graph call never delays the 200 OK we owe Meta.
+            _spawn(_dispatch_comment(event, pipeline))
             queued += 1
 
     return {"status": "queued", "count": queued}, 200
+
+
+async def _dispatch_comment(comment: IncomingComment, pipeline: JessicaPipeline) -> None:
+    """Background entry point for one comment event: backfill ``from`` if
+    the webhook omitted it, apply the from_id-dependent own-comment guard,
+    then run the real handler. Runs off the request path (see process_post)
+    so a slow/timed-out Graph API backfill call never blocks Meta's ack."""
+    if not comment.from_id:
+        comment = await _backfill_comment_from(comment)
+        if not comment.from_id:
+            logger.warning(
+                "[meta] comment %s: still no 'from_id' after Graph API "
+                "backfill attempt — dropping (cannot dedup-by-user or "
+                "build a CRM key safely)", comment.comment_id,
+            )
+            return
+    if is_own_comment(comment):
+        logger.info("[meta] comment %s: is our own comment — skipping", comment.comment_id)
+        return
+    await handle_comment(comment, pipeline)
+
+
+async def _backfill_comment_from(comment: IncomingComment) -> IncomingComment:
+    """Recover a missing ``from`` via one Graph API GET when Meta's webhook
+    payload omitted it (see ``meta_events._parse_changes``). Returns the same
+    event unchanged (still empty ``from_id``) if the fetch can't recover it —
+    callers must handle that case, this never raises.
+    """
+    from_id, from_username = await meta_client.get_comment_from(
+        comment.comment_id, platform=comment.platform, account_id=comment.recipient_id or None,
+    )
+    if not from_id:
+        return comment
+    logger.info(
+        "[meta] comment %s: backfilled from_id=%s via Graph API (webhook omitted it)",
+        comment.comment_id, from_id,
+    )
+    return dataclasses.replace(comment, from_id=from_id, from_username=from_username)
 
 
 # ---------------------------------------------------------------------------
@@ -639,7 +711,7 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
     know what the lead wants. Only ``use_agent: true`` rules run the
     pipeline. No matching rule ⇒ we stay silent (don't auto-DM strangers).
     """
-    if comment.is_reply_to_comment or _is_own_comment(comment):
+    if comment.is_reply_to_comment or is_own_comment(comment):
         logger.info("[meta] ignoring own/reply comment %s", comment.comment_id)
         return
     if not await _claim_webhook_event(comment.comment_id, "comment", pipeline):

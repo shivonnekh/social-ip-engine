@@ -26,8 +26,11 @@ Two webhook families are handled:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Final, Literal
+
+logger = logging.getLogger("channels.meta_events")
 
 Platform = Literal["instagram", "facebook"]
 
@@ -67,7 +70,10 @@ class IncomingComment:
     platform: Platform
     comment_id: str      # dedup key + private-reply target
     text: str
-    from_id: str         # commenter id
+    from_id: str         # commenter id — "" when Meta's webhook payload
+                          # omitted the ``from`` object (see _parse_changes);
+                          # the dispatch layer attempts a Graph API backfill
+                          # fetch before giving up on the event.
     from_username: str    # commenter handle (IG only; "" on FB)
     media_id: str        # the post/reel the comment is on
     parent_id: str = ""  # set when this comment replies to another comment
@@ -174,9 +180,27 @@ def _parse_changes(entry: dict, platform: Platform) -> list[IncomingComment]:
             continue
 
         comment_id = _as_str(value.get("comment_id") or value.get("id"))
+        if not comment_id:
+            continue  # cannot dedup or reply without this — truly unusable
+
         from_id = _nested_str(value, "from", "id")
-        if not comment_id or not from_id:
-            continue
+        if not from_id:
+            # Meta intermittently omits the ``from`` object on comment
+            # webhooks (observed on Reels comments in particular) — comment
+            # 18106725341009296 / 18084177590449031 (2026-07-06/07) shipped
+            # with no ``from`` at all while a sibling comment on the same
+            # media, seconds apart, had it. Previously this ``continue``'d
+            # silently here, which meant the WHOLE event vanished with zero
+            # logging anywhere (not even the disabled/ignored 200-OK path
+            # logs) — undiagnosable without pulling the comment back out via
+            # the Graph API by hand. Keep the event (comment_id is enough to
+            # act on) and let the dispatch layer (meta_webhook.py) attempt a
+            # one-off Graph API fetch to backfill ``from`` before giving up.
+            logger.warning(
+                "[meta] comment %s: webhook payload missing 'from' object "
+                "(media=%s) — passing through for backfill fetch",
+                comment_id, _nested_str(value, "media", "id") or value.get("post_id"),
+            )
 
         out.append(
             IncomingComment(
