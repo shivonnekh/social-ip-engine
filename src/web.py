@@ -28,6 +28,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.admin_views import router as admin_router
+from src.agents.base import SpecialistName
 from src.agents.registry import build_specialist_registry
 from src.crm.repo_factory import open_crm_repo, resolve_database_url
 from src.ips import registry as ip_registry
@@ -154,6 +155,7 @@ async def lifespan(app: FastAPI):
         set_chloe_agent,
         set_social_pipeline,
     )
+    from src.channels.unmatched_comment import set_unmatched_comment_deps
 
     chloe_agent = PersonaAgent(client=client, crm=crm,
                                persona_path=os.environ.get("CHLOE_PERSONA_PATH"))
@@ -166,26 +168,53 @@ async def lifespan(app: FastAPI):
     # IG/FB traffic, same as before this feature flag existed).
     set_social_pipeline(pipeline)
 
+    # Unmatched-comment reply path (no keyword rule matched) — ships dark,
+    # UNMATCHED_COMMENT_REPLY_ENABLED defaults OFF (see
+    # src/channels/unmatched_comment.py). Registered unconditionally so the
+    # DI wiring itself is always correct; the module's own master flag is
+    # what actually gates behavior.
+    set_unmatched_comment_deps(client, specialists[SpecialistName.FAQ])
+
     # Per-account persona agents for every other active IP in the registry
-    # (e.g. Jackie for jackiechan.tcm). Keyed by the RUNTIME value of the
-    # IP's user-id env var — matches the webhook's recipient_id.
+    # (e.g. Jackie for jackiechan.tcm), across EVERY platform channel that
+    # IP declares — not just Instagram. Keyed by the RUNTIME value of each
+    # channel's user-id env var — matches the webhook's recipient_id.
+    #
+    # Iterating ip_registry.persona_dm_channels() (rather than hardcoding
+    # ip.channels.get("instagram")) is a hard-learned fix, not a style
+    # choice: this loop used to only ever check "instagram", so when
+    # Jackie's Facebook Page went live it was never registered here —
+    # _get_agent() found nothing for the FB Page's account id and silently
+    # fell back to the DEFAULT agent (Chloe, Cantonese), so an
+    # English-only persona's Facebook DMs replied in Cantonese to a real
+    # user (caught live, 2026-07-07). One PersonaAgent instance per IP is
+    # still shared across all of that IP's channels — the persona doesn't
+    # change per platform, only which account id routes to it does.
     for ip in ip_registry.all_ips():
         if not ip.active or ip.id == _DEFAULT_DM_IP:
             continue
-        channel = ip.channels.get("instagram")
-        if channel is None or channel.dms != "persona":
+        persona_channels = ip_registry.persona_dm_channels(ip)
+        if not persona_channels:
             continue
-        ip_ig_id = os.environ.get(channel.user_id_env, "").strip()
-        if ip_ig_id and os.environ.get(channel.token_env, "").strip():
-            agent = PersonaAgent(client=client, crm=crm, persona_path=str(ip.persona_path))
-            set_account_agent(ip_ig_id, agent)
+        agent = PersonaAgent(client=client, crm=crm, persona_path=str(ip.persona_path))
+        registered_any = False
+        for channel in persona_channels:
+            account_id = os.environ.get(channel.user_id_env, "").strip()
+            if account_id and os.environ.get(channel.token_env, "").strip():
+                set_account_agent(account_id, agent)
+                registered_any = True
+                logger.info(
+                    "%s agent registered for account %s (%s)",
+                    ip.display_name, account_id, channel.user_id_env,
+                )
+            else:
+                logger.warning(
+                    "%s credentials (%s/%s) not set — that channel's DMs "
+                    "will fall back to the default agent",
+                    ip.display_name, channel.token_env, channel.user_id_env,
+                )
+        if registered_any:
             setattr(app.state, f"{ip.id}_agent", agent)
-            logger.info("%s agent registered for IG account %s", ip.display_name, ip_ig_id)
-        else:
-            logger.warning(
-                "%s IG credentials (%s/%s) not set — DMs will fall back to the default agent",
-                ip.display_name, channel.token_env, channel.user_id_env,
-            )
 
     background_tasks: list[asyncio.Task] = []
 
@@ -203,6 +232,15 @@ async def lifespan(app: FastAPI):
     # each via asyncio.gather(..., return_exceptions=True)).
     from src.notion_publish_runner import resume_in_flight
     background_tasks.append(asyncio.create_task(resume_in_flight()))
+
+    # Daily sweep so a row deferred by a future Publish Date actually gets
+    # published once that date arrives (the live webhook above only fires
+    # ONCE, when Stage flips — see notion_publish_scheduler module
+    # docstring for why that leaves a gap this loop fills). Opt-in via
+    # NOTION_PUBLISH_SCHEDULE_ENABLED (default off); the loop itself checks
+    # the flag and returns immediately (logged, not silent) if unset.
+    from src.notion_publish_scheduler import start_publish_schedule_loop
+    background_tasks.append(asyncio.create_task(start_publish_schedule_loop()))
 
     try:
         yield
@@ -524,62 +562,37 @@ async def admin_notion_publish(request: Request) -> JSONResponse:
     if not expected or not hmac.compare_digest(provided, expected):
         return JSONResponse({"error": "unauthorized"}, status_code=401)
 
-    from starlette.concurrency import run_in_threadpool
-
     from src import notion_publish
-    from src.notion_publish_runner import resume_in_flight, run_publish_job
+    from src.notion_publish_runner import plan_and_dispatch
 
-    # Resume anything left "in_flight" from a prior crash/deploy FIRST, so a
-    # stuck row from a previous run gets a fresh task before we plan new
-    # ones — mirrors notion_sync's "retry pending checkbox before scanning
-    # for new rows" ordering.
-    try:
-        resumed_count = await resume_in_flight()
-    except notion_publish.NotionSyncError as exc:
-        # Covers LedgerCorruptError too (a subclass) — a corrupt ledger must
-        # refuse to proceed rather than silently resuming zero jobs (which
-        # would look identical to "nothing was in flight").
-        logger.exception("[notion-publish] resume failed")
-        return JSONResponse({"error": str(exc)}, status_code=502)
-
-    try:
-        # plan_publishes() does blocking I/O (Notion API, cover resolve/
-        # generate) — never run it on the event loop, same reasoning as
-        # notion_sync.sync_once() via run_in_threadpool.
-        result = await run_in_threadpool(notion_publish.plan_publishes)
-    except notion_publish.NotionSyncError as exc:
-        logger.exception("[notion-publish] planning failed")
-        return JSONResponse({"error": str(exc)}, status_code=502)
-
-    # Each job's own background task pushes its ledger mutations to git
-    # itself as it progresses (see notion_publish_runner._update_ledger) —
-    # this endpoint does NOT wait for Meta's processing time, it only waits
-    # for the (fast, local) planning step above, then returns immediately.
     # Tasks are held on app.state so they aren't garbage-collected mid-run
     # (asyncio only holds a weak reference to a task with no other owner)
-    # and so a slow shutdown can still see/cancel them if needed.
+    # and so a slow shutdown can still see/cancel them if needed. The SAME
+    # list is used across every call to this endpoint (survives across
+    # requests, not just within one).
     live_tasks = getattr(request.app.state, "notion_publish_tasks", None)
     if live_tasks is None:
         live_tasks = []
         request.app.state.notion_publish_tasks = live_tasks
-    for job in result["jobs"]:
-        task = asyncio.create_task(run_publish_job(job))
-        live_tasks.append(task)
-        task.add_done_callback(lambda t, tasks=live_tasks: tasks.remove(t) if t in tasks else None)
+
+    # plan_and_dispatch() does the resume-in-flight -> plan -> spawn
+    # sequence — shared with the daily schedule sweep
+    # (notion_publish_scheduler.py) so both triggers dispatch through the
+    # exact same code path. Covers LedgerCorruptError too (a NotionSyncError
+    # subclass) — a corrupt ledger, or a planning failure, must surface
+    # loudly as a 502 rather than silently look like "nothing to do."
+    try:
+        result = await plan_and_dispatch(task_sink=live_tasks)
+    except notion_publish.NotionSyncError as exc:
+        logger.exception("[notion-publish] resume/plan failed")
+        return JSONResponse({"error": str(exc)}, status_code=502)
 
     logger.info(
         "[notion-publish] checked=%d claimed=%d resumed=%d skipped=%d errors=%d",
-        result["checked"], len(result["jobs"]), resumed_count,
+        result["checked"], len(result["claimed"]), result["resumed"],
         len(result["skipped"]), len(result["errors"]),
     )
-    return JSONResponse({
-        "checked": result["checked"],
-        "claimed": [job.row_id for job in result["jobs"]],
-        "resumed": resumed_count,
-        "skipped": result["skipped"],
-        "errors": result["errors"],
-        "warnings": result["warnings"],
-    })
+    return JSONResponse(result)
 
 
 @app.post("/api/dev-chat")

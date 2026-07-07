@@ -7,6 +7,7 @@ to a live Instagram account. All Notion/Meta traffic is faked; no network.
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -22,7 +23,12 @@ def _rt(text: str) -> dict:
     return [{"plain_text": text}]
 
 
-def _row(row_id: str = ROW_ID, stage: str = "✅ Published", video_url: str = "https://s3.example/v.mp4?sig=abc") -> dict:
+def _row(
+    row_id: str = ROW_ID,
+    stage: str = "✅ Published",
+    video_url: str = "https://s3.example/v.mp4?sig=abc",
+    publish_date: str | None = None,
+) -> dict:
     props: dict = {
         "Stage": {"select": {"name": stage}},
         "Content": {"relation": [{"id": CONTENT_PAGE}]},
@@ -33,6 +39,8 @@ def _row(row_id: str = ROW_ID, stage: str = "✅ Published", video_url: str = "h
         props["Production Video"] = {"files": [{"type": kind, kind: {"url": video_url}}]}
     else:
         props["Production Video"] = {"files": []}
+    if publish_date is not None:
+        props["Publish Date"] = {"date": {"start": publish_date, "end": None, "time_zone": None}}
     return {"id": row_id, "properties": props}
 
 
@@ -246,6 +254,112 @@ def test_missing_production_video_is_skipped_and_retriable(paths, monkeypatch):
     # NOT claimed in the ledger — must be reconsidered next run once the video lands.
     ledger = json.loads(paths["state"].read_text()) if paths["state"].exists() else {}
     assert ROW_ID not in ledger
+
+
+def test_missing_publish_date_is_claimed_immediately_backward_compatible(paths, monkeypatch):
+    """A row with no ``Publish Date`` set (every row created before this
+    gate existed, or anyone who just wants "publish the moment Stage
+    flips") must behave exactly as before — no deferral."""
+    result = _plan([_row()], paths, monkeypatch)
+    assert len(result["jobs"]) == 1
+
+
+def test_future_publish_date_defers_and_is_not_claimed(paths, monkeypatch):
+    future = (datetime.now(UTC) + timedelta(days=5)).date().isoformat()
+    result = _plan([_row(publish_date=future)], paths, monkeypatch)
+    assert result["jobs"] == []
+    assert any("Publish Date not reached yet" in s for s in result["skipped"])
+    ledger = json.loads(paths["state"].read_text()) if paths["state"].exists() else {}
+    assert ROW_ID not in ledger  # not claimed — must be reconsidered on a later run
+
+
+def test_past_publish_date_is_claimed_normally(paths, monkeypatch):
+    past = (datetime.now(UTC) - timedelta(days=1)).date().isoformat()
+    result = _plan([_row(publish_date=past)], paths, monkeypatch)
+    assert len(result["jobs"]) == 1
+
+
+def test_todays_publish_date_in_hkt_is_claimed(paths, monkeypatch):
+    today_hkt = datetime.now(npub._HKT).date().isoformat()
+    result = _plan([_row(publish_date=today_hkt)], paths, monkeypatch)
+    assert len(result["jobs"]) == 1
+
+
+def test_publish_date_later_today_with_explicit_time_still_defers(paths, monkeypatch):
+    """A date-only Publish Date means 'eligible from 00:00 HKT that day,'
+    but an explicit future TIME today must still defer — the gate must
+    respect time, not just the calendar date, when the property carries one."""
+    future_today = (datetime.now(npub._HKT) + timedelta(hours=3)).isoformat()
+    result = _plan([_row(publish_date=future_today)], paths, monkeypatch)
+    assert result["jobs"] == []
+
+
+def test_deferred_row_sharing_video_still_blocked_as_duplicate_once_due(paths, monkeypatch):
+    """A deferred row (future Publish Date) sharing a video with a row that
+    publishes NOW must not slip past layer 2 (video-URL dedup) once its own
+    date arrives and it's reconsidered on a later run — the date gate and
+    the duplicate-post guard must compose correctly, not just each work in
+    isolation."""
+    future = (datetime.now(UTC) + timedelta(days=5)).date().isoformat()
+    row_eligible = _row(
+        row_id="row-eligible", video_url="https://s3.example/shared-defer.mp4?sig=aaa",
+    )
+    row_deferred = _row(
+        row_id="row-deferred", video_url="https://s3.example/shared-defer.mp4?sig=bbb",
+        publish_date=future,
+    )
+
+    # First run: the eligible row is claimed; the deferred row is untouched
+    # (not ledgered, not counted as a duplicate-video claim).
+    result1 = _plan([row_eligible, row_deferred], paths, monkeypatch)
+    assert {j.row_id for j in result1["jobs"]} == {"row-eligible"}
+    ledger = json.loads(paths["state"].read_text())
+    assert ledger["row-eligible"]["status"] == "in_flight"
+    assert "row-deferred" not in ledger
+
+    # Simulate the eligible row's Reel actually having gone live.
+    ledger["row-eligible"]["status"] = "published"
+    paths["state"].write_text(json.dumps(ledger))
+
+    # Second run: the deferred row's date has now passed, so it's
+    # reconsidered — but it shares the SAME underlying video (querystring
+    # differs, path doesn't), so layer 2 must still catch it as a
+    # duplicate, never publish it a second time under a different row.
+    past = (datetime.now(UTC) - timedelta(days=1)).date().isoformat()
+    row_deferred_now_due = _row(
+        row_id="row-deferred", video_url="https://s3.example/shared-defer.mp4?sig=ccc",
+        publish_date=past,
+    )
+    result2 = _plan([row_deferred_now_due], paths, monkeypatch)
+    assert result2["jobs"] == []
+    assert any("duplicate video" in s for s in result2["skipped"])
+
+
+def test_unparseable_publish_date_fails_open_with_warning(paths, monkeypatch):
+    """A parsing bug must never permanently block a row a human already
+    deliberately flipped to Published — fail OPEN (publish now) but leave
+    a visible warning so it gets noticed."""
+    result = _plan([_row(publish_date="not-a-real-date")], paths, monkeypatch)
+    assert len(result["jobs"]) == 1
+    assert any("unparseable Publish Date" in w for w in result["warnings"])
+
+
+def test_malformed_publish_date_shape_fails_open_and_never_aborts_the_batch(paths, monkeypatch):
+    """CRITICAL regression: a Publish Date property whose "date" value
+    isn't the expected dict shape (e.g. a list, from a corrupted Notion
+    response or a NOTION_PUBLISH_DATE_PROP override pointed at the wrong
+    property) must fail OPEN for that one row (still publish it, with a
+    warning) — and, just as importantly, must NOT raise out of
+    plan_publishes() and abort every OTHER row in the same batch."""
+    bad_row = _row(row_id="bad-row", video_url="https://s3.example/bad.mp4")
+    bad_row["properties"]["Publish Date"] = {"date": ["not", "a", "dict"]}
+    good_row = _row(row_id="good-row", video_url="https://s3.example/good.mp4")
+
+    result = _plan([bad_row, good_row], paths, monkeypatch)
+
+    claimed_ids = {j.row_id for j in result["jobs"]}
+    assert claimed_ids == {"bad-row", "good-row"}
+    assert any("unparseable Publish Date" in w for w in result["warnings"])
 
 
 def test_missing_content_or_ip_relation_is_skipped(paths, monkeypatch):

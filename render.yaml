@@ -234,3 +234,24 @@ services:
         value: "72"     # only re-check posts from the last 3 days
       - key: RECONCILE_MEDIA_LIMIT
         value: "10"     # cap Graph API calls per account per cycle
+
+      # ── Notion publish-date schedule sweep (src/notion_publish_scheduler.py) ──
+      # The live "go live" trigger (POST /admin/notion-publish) is
+      # event-driven — a Notion Automation calls it the instant Stage flips
+      # to "✅ Published". notion_publish.py also respects an optional
+      # "Publish Date" property, deferring a row whose date hasn't arrived
+      # yet — but a deferred row has no future Stage-change event to
+      # re-trigger it. This loop is that missing "somebody checks back":
+      # once a day at NOTION_PUBLISH_SCHEDULE_HOUR_HKT:MINUTE_HKT, it calls
+      # the SAME dispatch path as the live webhook. Default OFF — unlike
+      # RECONCILE_ENABLED above, this can create a REAL, irreversible new
+      # Instagram post, so a human should opt in deliberately rather than
+      # get it for free on the next deploy. sync:false so a dashboard "on"
+      # decision is never silently reset by a blueprint sync (same
+      # reasoning as IG_ENABLED/FB_ENABLED elsewhere in this file).
+      - key: NOTION_PUBLISH_SCHEDULE_ENABLED
+        sync: false
+      - key: NOTION_PUBLISH_SCHEDULE_HOUR_HKT
+        value: "9"      # 0-23, Asia/Hong_Kong time
+      - key: NOTION_PUBLISH_SCHEDULE_MINUTE_HKT
+        value: "0"      # 0-59

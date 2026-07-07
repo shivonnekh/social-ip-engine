@@ -64,7 +64,9 @@ import os
 from pathlib import Path
 from typing import Any
 
-from src import git_publish
+from starlette.concurrency import run_in_threadpool
+
+from src import git_publish, notion_publish
 from src.channels import ig_publish
 from src.notion_publish import (
     _STATE_PATH,
@@ -347,3 +349,59 @@ async def resume_in_flight(*, state_path: Path | None = None) -> int:
         if isinstance(outcome, Exception):
             logger.exception("[notion-publish] resume of %s raised", job.row_id)
     return len(jobs)
+
+
+async def plan_and_dispatch(*, task_sink: list[asyncio.Task[bool]] | None = None) -> dict[str, Any]:
+    """Resume in-flight jobs, plan newly-published rows, and spawn a
+    background ``asyncio.Task`` per newly-claimed job — the exact sequence
+    ``POST /admin/notion-publish`` in ``src/web.py`` used to do inline.
+
+    Extracted so BOTH the live, event-driven Notion Automation webhook
+    (fires the instant a row's Stage flips to "✅ Published") AND the daily
+    schedule sweep (``notion_publish_scheduler.py`` — catches any row
+    deferred by a future ``Publish Date`` that has since arrived, since
+    that deferred row has no future Stage-change event to re-trigger it)
+    share ONE dispatch code path. Two independent implementations of
+    "create the container, spawn the task" would be exactly the kind of
+    duplicated dispatch logic that risks the two triggers drifting apart
+    and, worse, someday disagreeing about the duplicate-post guard.
+
+    ``task_sink`` holds a strong reference to every spawned task for as
+    long as the caller needs (``asyncio`` only holds a WEAK reference to a
+    task with no other owner, so an unheld task can be garbage-collected
+    mid-publish). The webhook passes ``request.app.state.notion_publish_tasks``
+    (survives across requests); the scheduler passes its own module-level
+    list (survives across sweep cycles). If the caller doesn't care (e.g.
+    a one-off script), a fresh list is used internally so a spawned task is
+    never immediately eligible for GC before it even starts running.
+
+    Propagates any ``NotionSyncError`` (including ``LedgerCorruptError``)
+    raised by ``resume_in_flight`` or ``notion_publish.plan_publishes`` —
+    this function does not decide how to handle a planning failure; each
+    caller does (502 for the webhook, a logged error for the scheduler).
+    """
+    sink = task_sink if task_sink is not None else []
+
+    resumed_count = await resume_in_flight()
+
+    # plan_publishes() does blocking I/O (Notion API, cover resolve/
+    # generate) — never run it on the event loop.
+    result = await run_in_threadpool(notion_publish.plan_publishes)
+
+    for job in result["jobs"]:
+        task = asyncio.create_task(run_publish_job(job))
+        sink.append(task)
+        # No `s=sink` default-arg trick needed here (unlike the classic
+        # late-binding-in-a-loop footgun) — `sink` is one variable set once
+        # above the loop and never reassigned inside it, so a plain closure
+        # over it is unambiguous.
+        task.add_done_callback(lambda t: sink.remove(t) if t in sink else None)
+
+    return {
+        "checked": result["checked"],
+        "claimed": [job.row_id for job in result["jobs"]],
+        "resumed": resumed_count,
+        "skipped": result["skipped"],
+        "errors": result["errors"],
+        "warnings": result["warnings"],
+    }

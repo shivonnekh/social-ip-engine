@@ -70,7 +70,8 @@ import urllib.parse
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
+from zoneinfo import ZoneInfo
 
 from src import notion_publish_caption, notion_publish_media
 from src.notion_sync import (
@@ -87,6 +88,16 @@ from src.notion_sync import (
 REPO_ROOT = Path(__file__).resolve().parent.parent
 _IDS_PATH = REPO_ROOT / "scripts" / "notion_ids.json"
 _STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_publish_state.json"
+
+# Same operating-timezone convention as src/crm/repo.py's _HKT — this
+# business runs on Hong Kong time, so a date-only Publish Date ("no time
+# component set) is interpreted as "eligible from 00:00 HKT that day."
+_HKT: Final = ZoneInfo("Asia/Hong_Kong")
+
+# Notion property name read for optional scheduled publishing (see
+# _publish_date_eligible below). Override via NOTION_PUBLISH_DATE_PROP if
+# the Production Tracker column is ever renamed.
+_DEFAULT_PUBLISH_DATE_PROP = "Publish Date"
 
 _PUBLISH_STAGE = "✅ Published"
 _STATUS_IN_FLIGHT = "in_flight"
@@ -140,6 +151,56 @@ def _generation_cap() -> int:
 
 def _generate_covers_enabled() -> bool:
     return os.environ.get("NOTION_PUBLISH_GENERATE_COVERS", "1").strip() != "0"
+
+
+def _publish_date_prop() -> str:
+    return os.environ.get("NOTION_PUBLISH_DATE_PROP", "").strip() or _DEFAULT_PUBLISH_DATE_PROP
+
+
+def _publish_date_eligible(
+    props: dict[str, Any], *, now: datetime | None = None
+) -> tuple[bool, str | None]:
+    """Whether a row is due to go live RIGHT NOW, based on its optional
+    ``Publish Date`` property (name overridable via
+    ``NOTION_PUBLISH_DATE_PROP``).
+
+    Opt-in by design: a row with no ``Publish Date`` set — every row that
+    existed before this gate did, or anyone who just wants "publish the
+    instant Stage flips to ✅ Published" — is ALWAYS eligible. This
+    property never blocks the existing event-driven trigger unless a human
+    deliberately fills it in.
+
+    Returns ``(eligible, warning)``. ``warning`` is set ONLY on a parse
+    failure, and deliberately fails OPEN (treats the row as eligible
+    anyway) — a parsing bug must never silently and permanently block a
+    row a human already deliberately marked Published; it must surface
+    loudly instead (see the "warnings" list in plan_publishes' return
+    value) and still go live.
+    """
+    # The WHOLE extraction (not just the final fromisoformat parse) is
+    # inside this try — a malformed shape anywhere along the way (e.g.
+    # "date" being a list instead of a dict, from a corrupted Notion
+    # response or NOTION_PUBLISH_DATE_PROP pointed at the wrong property)
+    # must fail OPEN for this ONE row, same as a bad date string. Letting
+    # any of these raise uncaught would abort plan_publishes() entirely —
+    # stalling every OTHER row in the same batch, not just this one.
+    try:
+        date_field = (props.get(_publish_date_prop()) or {}).get("date")
+        if not date_field:
+            return True, None
+        start = str(date_field.get("start") or "").strip()
+        if not start:
+            return True, None
+        parsed = datetime.fromisoformat(start)
+    except (ValueError, TypeError, AttributeError, OverflowError) as exc:
+        return True, f"unparseable Publish Date ({exc!r}) — treating as eligible now"
+    if parsed.tzinfo is None:
+        # A date-only value ("YYYY-MM-DD") or a naive datetime — Notion's
+        # own workspace timezone context isn't preserved by this point, so
+        # we assume HKT (see module-level _HKT comment).
+        parsed = parsed.replace(tzinfo=_HKT)
+    reference = now if now is not None else datetime.now(_HKT)
+    return parsed <= reference, None
 
 
 def _stable_video_url(url: str) -> str:
@@ -312,6 +373,19 @@ def _plan_publishes_locked(
         stage = (props.get("Stage", {}).get("select") or {}).get("name", "")
         if stage != _PUBLISH_STAGE:
             continue  # only the real "go live" stage triggers this module
+
+        eligible, date_warning = _publish_date_eligible(props)
+        if date_warning:
+            warnings.append(f"{row_id}: {date_warning}")
+        if not eligible:
+            # Deliberately NOT written to the ledger — this row must be
+            # reconsidered on every future run (the daily schedule sweep in
+            # notion_publish_scheduler.py exists specifically to catch this,
+            # since the Notion Automation that calls this module only fires
+            # ONCE, at the moment Stage flips — there is no second event to
+            # re-trigger a deferred row once its date finally arrives).
+            skipped.append(f"{row_id}: Publish Date not reached yet — deferred")
+            continue
 
         content_rel = props.get("Content", {}).get("relation") or []
         ip_rel = props.get("IP", {}).get("relation") or []

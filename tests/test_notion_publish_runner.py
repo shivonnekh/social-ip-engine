@@ -507,3 +507,116 @@ async def test_run_publish_job_never_raises_on_negative_explicit_poll_override(
         _job(row_id="row-neg"), state_path=state_path, poll_interval_s=-5, poll_max_s=-5
     )
     assert ok is False  # clamped to 0/0 -> immediate timeout, not an infinite loop
+
+
+# --------------------------------------------------------- plan_and_dispatch
+#
+# The shared "resume in-flight -> plan newly-published rows -> spawn a
+# background task per new job" sequence, reused by BOTH
+# POST /admin/notion-publish (the live, event-driven Notion Automation
+# webhook) and the daily schedule sweep (notion_publish_scheduler.py) — one
+# code path, so the two triggers can never drift into two different ways to
+# dispatch a live Instagram publish.
+
+
+@pytest.mark.asyncio
+async def test_plan_and_dispatch_spawns_a_task_per_claimed_job(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src import notion_publish
+
+    job = _job(row_id="row-new")
+    monkeypatch.setattr(
+        notion_publish, "plan_publishes",
+        lambda **kw: {"checked": 1, "jobs": [job], "skipped": [], "errors": [], "warnings": []},
+    )
+
+    async def fake_resume(**kw):
+        return 0
+
+    spawned: list[str] = []
+
+    async def fake_run(j, **kw):
+        spawned.append(j.row_id)
+        return True
+
+    monkeypatch.setattr(runner, "resume_in_flight", fake_resume)
+    monkeypatch.setattr(runner, "run_publish_job", fake_run)
+
+    sink: list[asyncio.Task] = []
+    result = await runner.plan_and_dispatch(task_sink=sink)
+
+    assert result["claimed"] == ["row-new"]
+    assert result["checked"] == 1
+    assert result["resumed"] == 0
+    await asyncio.sleep(0)
+    await asyncio.sleep(0)
+    assert spawned == ["row-new"]
+
+
+@pytest.mark.asyncio
+async def test_plan_and_dispatch_calls_resume_before_plan(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src import notion_publish
+
+    order: list[str] = []
+
+    async def fake_resume(**kw):
+        order.append("resume")
+        return 3
+
+    def fake_plan(**kw):
+        order.append("plan")
+        return {"checked": 0, "jobs": [], "skipped": [], "errors": [], "warnings": []}
+
+    monkeypatch.setattr(runner, "resume_in_flight", fake_resume)
+    monkeypatch.setattr(notion_publish, "plan_publishes", fake_plan)
+
+    result = await runner.plan_and_dispatch(task_sink=[])
+
+    assert order == ["resume", "plan"]
+    assert result["resumed"] == 3
+
+
+@pytest.mark.asyncio
+async def test_plan_and_dispatch_propagates_planning_errors(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Callers (the webhook, the scheduler) decide how to handle a planning
+    failure — plan_and_dispatch itself must not swallow it."""
+    from src import notion_publish
+
+    async def fake_resume(**kw):
+        return 0
+
+    def boom(**kw):
+        raise notion_publish.NotionSyncError("simulated Notion outage")
+
+    monkeypatch.setattr(runner, "resume_in_flight", fake_resume)
+    monkeypatch.setattr(notion_publish, "plan_publishes", boom)
+
+    with pytest.raises(notion_publish.NotionSyncError):
+        await runner.plan_and_dispatch(task_sink=[])
+
+
+@pytest.mark.asyncio
+async def test_plan_and_dispatch_defaults_to_its_own_task_sink_when_none_given(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """No task_sink passed must not crash — the spawned task still needs a
+    strong reference held somewhere for its lifetime."""
+    from src import notion_publish
+
+    job = _job(row_id="row-no-sink")
+    monkeypatch.setattr(
+        notion_publish, "plan_publishes",
+        lambda **kw: {"checked": 1, "jobs": [job], "skipped": [], "errors": [], "warnings": []},
+    )
+
+    async def fake_resume(**kw):
+        return 0
+
+    async def fake_run(j, **kw):
+        return True
+
+    monkeypatch.setattr(runner, "resume_in_flight", fake_resume)
+    monkeypatch.setattr(runner, "run_publish_job", fake_run)
+
+    result = await runner.plan_and_dispatch()
+    assert result["claimed"] == ["row-no-sink"]
+    await asyncio.sleep(0)
