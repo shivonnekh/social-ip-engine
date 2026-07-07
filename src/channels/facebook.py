@@ -64,5 +64,6 @@ async def receive(request: Request) -> JSONResponse:
         pipeline=_pipeline_ref,
         enabled=_enabled(),
         app_secret=meta_webhook._fb_app_secret(),
+        platform="facebook",
     )
     return JSONResponse(body, status_code=status)

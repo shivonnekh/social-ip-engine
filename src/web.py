@@ -165,6 +165,13 @@ async def lifespan(app: FastAPI):
 
     background_tasks: list[asyncio.Task] = []
 
+    # IG comment reconciliation sweep — defense-in-depth backstop for the
+    # 2026-07-06/07 anxiety-comment class of bug (Meta silently omitting
+    # webhook data). Opt-out via RECONCILE_ENABLED=false; the loop itself
+    # checks the flag and returns immediately (logged, not silent) if off.
+    from src.channels.reconciliation import start_reconciliation_loop
+    background_tasks.append(asyncio.create_task(start_reconciliation_loop(pipeline)))
+
     try:
         yield
     finally:

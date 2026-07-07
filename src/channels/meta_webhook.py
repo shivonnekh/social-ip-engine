@@ -39,6 +39,7 @@ from src.channels.meta_events import (
     parse_meta_webhook,
 )
 from src.crm.models import ConversationMessage
+from src.ops_alert import send_ops_alert
 from src.orchestrator.pipeline import JessicaPipeline
 from src.personas.profile import PersonaProfile, load_jackie_profile
 
@@ -313,22 +314,34 @@ async def process_post(
     pipeline: JessicaPipeline | None,
     enabled: bool,
     app_secret: str | None = None,
+    platform: str = "unknown",
 ) -> tuple[dict, int]:
     """Verify + parse + dispatch. Returns ``(json_body, status_code)``.
 
     ``app_secret`` selects the platform secret for signature verification
     (Facebook passes the Meta app secret; Instagram leaves it ``None`` to use
-    the Instagram secret). The router just wraps the return value in a
-    ``JSONResponse``. We always prefer a 200 once the payload is authentic so
-    Meta doesn't disable the subscription on transient downstream issues.
+    the Instagram secret). ``platform`` is display-only (alert message /
+    debounce key) — it does not affect verification or dispatch. The router
+    just wraps the return value in a ``JSONResponse``. We always prefer a
+    200 once the payload is authentic so Meta doesn't disable the
+    subscription on transient downstream issues.
     """
     if not enabled:
         # Silent by design from Meta's POV (still 200 so it doesn't disable
         # the subscription) but NOT silent in our own logs anymore — this
         # exact "no error anywhere, events just vanish" shape caused a
         # multi-day outage on 2026-07-01/02 (see CLAUDE.md). One line here
-        # would have cut that from days to minutes.
-        logger.warning("[meta] webhook disabled — dropping payload (200 OK returned to Meta)")
+        # would have cut that from days to minutes. Also alert (debounced
+        # per platform — Meta redelivers in bursts) so someone finds out
+        # within the cooldown window instead of when a lead complains.
+        logger.warning("[meta] %s webhook disabled — dropping payload (200 OK returned to Meta)", platform)
+        _spawn(send_ops_alert(
+            f"webhook_disabled_{platform}",
+            f"🔴 {platform} webhook is DISABLED — inbound comments/DMs are being "
+            f"silently dropped (200 OK returned to Meta so the subscription "
+            f"stays alive, but nothing is being processed). Check "
+            f"{'IG_ENABLED' if platform == 'instagram' else 'FB_ENABLED'} in the Render dashboard.",
+        ))
         return {"status": "disabled"}, 200
 
     if not verify_signature(raw, signature_header, secret=app_secret):
@@ -389,6 +402,20 @@ async def _dispatch_comment(comment: IncomingComment, pipeline: JessicaPipeline)
                 "[meta] comment %s: still no 'from_id' after Graph API "
                 "backfill attempt — dropping (cannot dedup-by-user or "
                 "build a CRM key safely)", comment.comment_id,
+            )
+            # Rare (both the webhook AND a direct Graph API GET missing
+            # 'from' means something is genuinely wrong — deleted account,
+            # Meta API trouble, or a new failure mode this code doesn't
+            # know about yet) — worth a human looking, not just a log line.
+            # POST /admin/backfill-comments (media_ids=[comment.media_id])
+            # is the manual recovery path once someone sees this.
+            await send_ops_alert(
+                f"comment_dropped_{comment.comment_id}",
+                f"🟡 {comment.platform} comment {comment.comment_id} on media "
+                f"{comment.media_id} was dropped — webhook omitted 'from' "
+                f"AND a Graph API backfill fetch also couldn't recover it. "
+                f"Recover manually: POST /admin/backfill-comments "
+                f'{{"media_ids": ["{comment.media_id}"]}}',
             )
             return
     if is_own_comment(comment):

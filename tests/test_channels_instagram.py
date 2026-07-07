@@ -550,6 +550,32 @@ def test_process_post_disabled_logs_warning(caplog):
 
 
 @pytest.mark.asyncio
+async def test_process_post_disabled_fires_ops_alert(monkeypatch):
+    """Logging the outage isn't enough on its own (see the module-level test
+    above) — this locks in that a human actually gets pinged, debounced per
+    platform so Meta's redelivery bursts don't flood the channel."""
+    alerts = []
+
+    async def fake_alert(key, text):
+        alerts.append((key, text))
+
+    monkeypatch.setattr(meta_webhook, "send_ops_alert", fake_alert)
+
+    body, status = await meta_webhook.process_post(
+        raw=b"{}", signature_header="", pipeline=None, enabled=False,
+        platform="instagram",
+    )
+    for task in list(meta_webhook._bg_tasks):
+        await task
+
+    assert status == 200 and body["status"] == "disabled"
+    assert len(alerts) == 1
+    key, text = alerts[0]
+    assert key == "webhook_disabled_instagram"
+    assert "instagram" in text and "IG_ENABLED" in text
+
+
+@pytest.mark.asyncio
 async def test_process_post_no_events_logs_info(caplog, monkeypatch):
     # Dev-mode signature bypass requires an empty secret — isolate explicitly
     # (matches the convention above) rather than relying on ambient env,
@@ -635,7 +661,13 @@ async def test_process_post_drops_when_backfill_also_fails(monkeypatch, caplog):
     async def fake_get_comment_from(comment_id, *, platform="instagram", account_id=None):
         return "", ""  # Graph API also couldn't recover it
 
+    alerts = []
+
+    async def fake_alert(key, text):
+        alerts.append((key, text))
+
     monkeypatch.setattr(meta_client, "get_comment_from", fake_get_comment_from)
+    monkeypatch.setattr(meta_webhook, "send_ops_alert", fake_alert)
     monkeypatch.setattr(meta_webhook, "_seen_ids", type(meta_webhook._seen_ids)())
 
     payload = {
@@ -668,6 +700,10 @@ async def test_process_post_drops_when_backfill_also_fails(monkeypatch, caplog):
         for task in list(meta_webhook._bg_tasks):
             await task
     assert any("still no 'from_id'" in r.message for r in caplog.records)
+    assert len(alerts) == 1
+    key, text = alerts[0]
+    assert key == "comment_dropped_c_still_missing"
+    assert "c_still_missing" in text and "media42" in text
 
 
 @pytest.mark.unit

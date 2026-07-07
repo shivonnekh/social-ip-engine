@@ -61,5 +61,6 @@ async def receive(request: Request) -> JSONResponse:
         signature_header=request.headers.get("X-Hub-Signature-256", ""),
         pipeline=_pipeline_ref,
         enabled=_enabled(),
+        platform="instagram",
     )
     return JSONResponse(body, status_code=status)

@@ -201,3 +201,36 @@ services:
       # correctness). Omit and the sync still works, just non-durable.
       - key: GITHUB_PUSH_TOKEN
         sync: false
+
+      # ── Ops alerting (src/ops_alert.py) ──────────────────────
+      # Built after the 2026-07-06/07 anxiety-comment incident: logging a
+      # drop isn't enough if nobody's watching the logs. Paste a Slack
+      # "Incoming Webhook" URL (or any endpoint accepting POST {"text":..})
+      # here to get pinged when: (a) IG/FB webhook is disabled and dropping
+      # everything, or (b) a comment is dropped even after the Graph API
+      # backfill fetch. sync:false — same reasoning as every other
+      # dashboard-managed secret above. Until this is set, the code path is
+      # still live — it just no-ops (logs only), so this is safe to leave
+      # unset and fill in whenever.
+      - key: OPS_ALERT_WEBHOOK_URL
+        sync: false
+      - key: OPS_ALERT_COOLDOWN_S
+        value: "1800"   # 30 min — collapses a burst of the same failure into one alert
+
+      # ── IG comment reconciliation sweep (src/channels/reconciliation.py) ──
+      # Defense-in-depth backstop, independent of any specific bug: re-derives
+      # "what comments exist on our recent posts" from the Graph API on a
+      # schedule and replays anything not yet handled through the SAME
+      # handle_comment() used by the live webhook (DB-backed dedup makes
+      # replaying an already-handled comment a safe no-op, never a duplicate
+      # send). Defaults to ON — this is a new safety net, not a manual
+      # dashboard toggle with prior state to protect, so a plain `value:` is
+      # fine here (unlike IG_ENABLED/FB_ENABLED above).
+      - key: RECONCILE_ENABLED
+        value: "true"
+      - key: RECONCILE_INTERVAL_S
+        value: "14400"  # 4 hours
+      - key: RECONCILE_LOOKBACK_H
+        value: "72"     # only re-check posts from the last 3 days
+      - key: RECONCILE_MEDIA_LIMIT
+        value: "10"     # cap Graph API calls per account per cycle
