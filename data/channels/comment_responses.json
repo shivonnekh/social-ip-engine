@@ -274,5 +274,22 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/stomach-page-1.png"
     ]
+  },
+  {
+    "keyword": "pressure",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, thanks for asking! 🌿 Here's your point-location guide — all 3 pressure points, one message:\n\n📍 Hegu (LI4) — back of the hand, in the webbing between thumb and index finger. Press firmly for 60 seconds each hand. Great for tension headaches. Skip this one if you're pregnant.\n\n📍 Zusanli (ST36) — about four finger-widths below your kneecap, just outside the shin bone. Press firmly 1-2 minutes each leg. Helps bloating and sluggish digestion.\n\n📍 Shenmen (HT7) — inner wrist crease, on the pinky-finger side. Press gently for 1 minute each wrist, ideally 30 minutes before bed. Calms a racing mind.\n\nWhich one are you going to try first?",
+    "public_ack": "I've sent you the pressure-point guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "carousel_2026-07-07",
+    "_notion_title": "3 Pressure Points, 3 Everyday Problems (feed carousel)",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/carousel/pressure-points/slide-2-hegu.png",
+      "https://tcm-jessica.onrender.com/media/carousel/pressure-points/slide-3-zusanli.png",
+      "https://tcm-jessica.onrender.com/media/carousel/pressure-points/slide-4-shenmen.png"
+    ]
   }
 ]
