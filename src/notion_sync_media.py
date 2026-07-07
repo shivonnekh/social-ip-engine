@@ -35,6 +35,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -48,9 +49,13 @@ STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_media_state.json"
 DEFAULT_BASE_URL = "https://tcm-jessica.onrender.com"
 _BASE_URL_ENV_VARS = ("PUBLIC_BASE_URL", "JESSICA_BASE_URL")
 _TOGGLE_MARKER = "dm infographic"
+_INFOGRAPHIC_PROMPT_MARKER = "infographic prompt"
 _GENERATED_MARKER = "generated:"
 _TOGGLE_TYPES = ("toggle", "heading_1", "heading_2", "heading_3")
 _DOWNLOAD_TIMEOUT_S = 30
+NOTION_API = "https://api.notion.com/v1"
+_WRITE_BACK_FILENAME = "dm-infographic.png"
+_WRITE_BACK_TOGGLE_TEXT = "📊 DM Infographic here"
 
 # CJK ratio thresholds for detect_dm_language (see docstring there).
 _CJK_HI = 0.40
@@ -152,6 +157,204 @@ def find_infographic_source(row_page_id: str, children_fn: ChildrenFn) -> str | 
     return None
 
 
+# ------------------------------------------------------ write-back to Notion
+
+
+def _notion_key() -> str:
+    key = os.environ.get("NOTION_KEY", "").strip()
+    if not key:
+        raise MediaSyncError("NOTION_KEY not set")
+    return key
+
+
+def _notion_api_call(method: str, path: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
+    headers = {"Authorization": f"Bearer {_notion_key()}", "Notion-Version": "2022-06-28"}
+    data: bytes | None = None
+    if body is not None:
+        headers["Content-Type"] = "application/json"
+        data = json.dumps(body).encode("utf-8")
+    req = urllib.request.Request(f"{NOTION_API}{path}", data=data, headers=headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=_DOWNLOAD_TIMEOUT_S) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        # Read the response body BEFORE it's the generic "HTTP Error 403:
+        # Forbidden" str(exc) would give — Notion's actual error message
+        # (e.g. "token lacks insert capability") is what makes a stuck
+        # writeback_pending row diagnosable rather than a mystery.
+        detail = exc.read().decode(errors="replace")[:300]
+        raise MediaSyncError(f"Notion API {method} {path} failed: {exc.code} {detail}") from exc
+    except (urllib.error.URLError, OSError, TimeoutError, ValueError) as exc:
+        raise MediaSyncError(f"Notion API {method} {path} failed: {exc}") from exc
+
+
+def _upload_png_to_notion(png_bytes: bytes, filename: str) -> str:
+    """Two-step Notion file upload (create session, then multipart-POST the
+    bytes to the returned ``upload_url``). Returns the ``file_upload`` id to
+    reference from a block. Raises ``MediaSyncError`` on any failure.
+
+    ``filename`` is currently always the fixed constant
+    ``_WRITE_BACK_FILENAME`` — never user/keyword-derived — but is
+    sanitized here regardless (strip CR/LF/quotes) so a future caller can't
+    accidentally break the multipart header or smuggle extra form fields by
+    passing an unsanitized value through."""
+    safe_filename = re.sub(r'[\r\n"]', "", filename) or _WRITE_BACK_FILENAME
+    session = _notion_api_call(
+        "POST", "/file_uploads", {"filename": safe_filename, "content_type": "image/png"}
+    )
+    upload_url = session.get("upload_url")
+    file_id = session.get("id")
+    if not upload_url or not file_id:
+        raise MediaSyncError(f"unexpected /file_uploads response: {session!r}")
+
+    boundary = "----notionsyncmedia" + uuid.uuid4().hex
+    body = (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="file"; filename="{safe_filename}"\r\n'
+        "Content-Type: image/png\r\n\r\n"
+    ).encode("utf-8") + png_bytes + f"\r\n--{boundary}--\r\n".encode("utf-8")
+    headers = {
+        "Authorization": f"Bearer {_notion_key()}",
+        "Notion-Version": "2022-06-28",
+        "Content-Type": f"multipart/form-data; boundary={boundary}",
+    }
+    req = urllib.request.Request(upload_url, data=body, headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=_DOWNLOAD_TIMEOUT_S):
+            pass
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode(errors="replace")[:300]
+        raise MediaSyncError(f"Notion file upload (bytes) failed: {exc.code} {detail}") from exc
+    except (urllib.error.URLError, OSError, TimeoutError) as exc:
+        raise MediaSyncError(f"Notion file upload (bytes) failed: {exc}") from exc
+    return str(file_id)
+
+
+def _find_empty_dm_infographic_toggle(row_page_id: str, children_fn: ChildrenFn) -> str | None:
+    """id of an existing, genuinely EMPTY (no image inside yet) "DM
+    Infographic" toggle block, else ``None``. Restricted to
+    ``type == "toggle"`` specifically (unlike ``find_infographic_source``'s
+    broader ``_TOGGLE_TYPES`` match) — here we might CREATE new children
+    under whatever is returned, so we must never mistake the section's plain
+    (non-toggleable) ``heading_3`` for a real toggle block.
+
+    CRITICAL: must actually check for an existing image child, not just
+    match on the toggle's own text — ``PATCH .../blocks/{id}/children``
+    APPENDS rather than replaces, so returning an already-filled toggle here
+    would cause a second call (e.g. a retried/duplicate webhook, or crash
+    recovery re-running the dedup-reuse branch in ``_generate_infographic``)
+    to silently stack a second image inside the same toggle."""
+    for block in children_fn(row_page_id):
+        if block.get("type") != "toggle":
+            continue
+        if _TOGGLE_MARKER not in _block_plain_text(block).casefold():
+            continue
+        already_has_image = any(
+            child.get("type") == "image" for child in children_fn(block["id"])
+        )
+        if already_has_image:
+            continue
+        return block["id"]
+    return None
+
+
+def _find_dm_infographic_prompt_anchor(row_page_id: str, children_fn: ChildrenFn) -> str | None:
+    """id of the "📊 DM Infographic" section's prompt ``code`` block, to
+    insert a new toggle immediately after — else ``None`` (caller falls back
+    to appending at the end of the row)."""
+    in_section, want_code, anchor = False, False, None
+    for block in children_fn(row_page_id):
+        block_type = block.get("type", "")
+        text = _block_plain_text(block).casefold()
+        if block_type == "heading_3":
+            in_section = _TOGGLE_MARKER in text
+        elif in_section and block_type == "paragraph" and _INFOGRAPHIC_PROMPT_MARKER in text:
+            want_code = True
+        elif in_section and want_code and block_type == "code":
+            anchor = block["id"]
+            want_code = False
+    return anchor
+
+
+def write_infographic_to_row(row_page_id: str, png_bytes: bytes, children_fn: ChildrenFn) -> None:
+    """Upload ``png_bytes`` and place it in the row's "DM Infographic"
+    toggle — filling an existing (empty) one if present, else creating a new
+    "📊 DM Infographic here" toggle anchored right after the section's prompt
+    ``code`` block (or appended at the end of the row if that anchor can't be
+    found, e.g. an older row authored before this section existed).
+
+    Idempotent in practice, not just by caller convention: re-checks
+    ``find_infographic_source`` itself (cheap — no upload yet) and no-ops if
+    the row already has an image ANYWHERE by the time this runs. This
+    matters because the caller's own "confirmed no image yet" check can go
+    stale — a retried/duplicate webhook delivery, or crash-recovery
+    re-running ``_generate_infographic``'s dedup-reuse branch, can both reach
+    this function a second time for the same row. This guard is what makes a
+    second call a safe no-op instead of a duplicate image. It does NOT
+    protect against two calls racing in TRUE parallel (both could pass this
+    check before either PATCHes) — ``sync_once()`` has no cross-request lock
+    today; that would need a real mutex if concurrent webhook delivery for
+    the same row turns out to happen in practice.
+
+    Raises ``MediaSyncError`` on any failure; callers own the
+    catch-everything guarantee (mirrors every other write in this module)."""
+    if find_infographic_source(row_page_id, children_fn) is not None:
+        return  # already has an image somewhere — nothing to do
+
+    file_id = _upload_png_to_notion(png_bytes, _WRITE_BACK_FILENAME)
+    image_block = {
+        "object": "block",
+        "type": "image",
+        "image": {"type": "file_upload", "file_upload": {"id": file_id}},
+    }
+
+    existing_toggle_id = _find_empty_dm_infographic_toggle(row_page_id, children_fn)
+    if existing_toggle_id:
+        _notion_api_call(
+            "PATCH", f"/blocks/{existing_toggle_id}/children", {"children": [image_block]}
+        )
+        return
+
+    toggle_block = {
+        "object": "block",
+        "type": "toggle",
+        "toggle": {
+            "rich_text": [{"type": "text", "text": {"content": _WRITE_BACK_TOGGLE_TEXT}}],
+            "children": [image_block],
+        },
+    }
+    patch_body: dict[str, Any] = {"children": [toggle_block]}
+    anchor_id = _find_dm_infographic_prompt_anchor(row_page_id, children_fn)
+    if anchor_id:
+        patch_body["after"] = anchor_id
+    _notion_api_call("PATCH", f"/blocks/{row_page_id}/children", patch_body)
+
+
+def retry_write_back(
+    row_page_id: str, slug: str, children_fn: ChildrenFn, media_dir: Path | None = None
+) -> str | None:
+    """Retry a previously-failed ``write_infographic_to_row`` call using the
+    already-generated PNG cached locally at ``<slug>-page-1.png`` — no
+    re-generation, no re-fetch of the Content page's Brief needed.
+
+    Never raises: returns a warning string on failure (caller re-queues the
+    same row/slug for the next sync — see ``_WRITEBACK_PENDING_PATH`` in
+    ``notion_sync.py``), or ``None`` on success (caller drops it from the
+    pending set)."""
+    resolved_media_dir = MEDIA_DIR if media_dir is None else media_dir
+    dest = resolved_media_dir / f"{slug}-page-1.png"
+    if not dest.exists():
+        return (
+            f"writeback_retry_failed: '{slug}' — locally cached PNG is gone, "
+            "cannot retry without re-generating"
+        )
+    try:
+        write_infographic_to_row(row_page_id, dest.read_bytes(), children_fn)
+    except Exception as exc:  # noqa: BLE001 - must survive anything, see module docstring
+        return f"writeback_retry_failed: '{slug}' — {exc}"
+    return None
+
+
 # ----------------------------------------------------------------- download
 
 
@@ -206,25 +409,48 @@ def public_media_url(filename: str) -> str:
 # -------------------------------------------------------------- entry point
 
 
+def _try_write_back(
+    row_page_id: str, png_bytes: bytes, children_fn: ChildrenFn, keyword: str
+) -> str | None:
+    """Best-effort write-back of a generated infographic onto the Production
+    row's body, so it's visible in Notion without a human re-uploading it by
+    hand. Isolated in its OWN try/except (not the caller's) — a write-back
+    failure must never undo an already-successful generation; the rule still
+    ships with ``image_urls`` set either way. Returns a warning string on
+    failure, else ``None``."""
+    try:
+        write_infographic_to_row(row_page_id, png_bytes, children_fn)
+    except Exception as exc:  # noqa: BLE001 - must survive anything, see docstring
+        return f"infographic_writeback_failed: '{keyword}' — {exc}"
+    return None
+
+
 def _generate_infographic(
     slug: str,
     keyword: str,
+    row_page_id: str,
     content_page_id: str,
     children_fn: ChildrenFn,
     media_dir: Path,
     state_path: Path,
-) -> tuple[dict[str, str] | None, str]:
-    """Generate a PNG from the content page's Infographic Brief.
+    *,
+    write_back: bool = True,
+) -> tuple[dict[str, str] | None, list[str]]:
+    """Generate a PNG from the content page's Infographic Brief, and (unless
+    ``write_back=False``) place it back onto the Production row's body so a
+    human sees it in Notion without re-uploading it manually — see
+    ``write_infographic_to_row``.
 
-    Returns ``(image_urls_patch, note)``. ``image_urls_patch`` is ``None`` when
-    there was no Brief to generate from (caller ships text-only); otherwise it
-    is the ``{"image_urls": [...]}`` patch to apply. May raise — the caller
-    (``_attach_infographic``) is inside ``enrich_rule``'s catch-all."""
+    Returns ``(image_urls_patch, notes)``. ``image_urls_patch`` is ``None``
+    when there was no Brief to generate from (caller ships text-only);
+    otherwise it is the ``{"image_urls": [...]}`` patch to apply. ``notes``
+    is always a non-empty list. May raise — the caller (``_attach_infographic``)
+    is inside ``enrich_rule``'s catch-all."""
     brief = notion_infographic_gen.find_infographic_brief(content_page_id, children_fn)
     if not brief:
-        return None, (
+        return None, [
             f"no_infographic: '{keyword}' — no toggle image and no Brief to generate from"
-        )
+        ]
 
     filename = f"{slug}-page-1.png"
     dest = media_dir / filename
@@ -232,11 +458,18 @@ def _generate_infographic(
 
     # Dedup: if we already generated this slug's PNG (and it survived on disk),
     # never re-pay the image API — just re-attach. Guards against a re-run after
-    # a mid-loop crash where the keyword rule wasn't yet persisted.
+    # a mid-loop crash where the keyword rule wasn't yet persisted. Write-back
+    # is still attempted here — reaching this branch means the row STILL has
+    # no image in its body (see write_infographic_to_row's idempotency note),
+    # most likely because a prior run generated the PNG but crashed/failed
+    # before writing it back to Notion.
     if dest.exists() and str(state.get(slug, "")).startswith(_GENERATED_MARKER):
-        return {"image_urls": [public_media_url(filename)]}, (
-            f"generated_infographic: '{keyword}' — reused existing generated image"
-        )
+        notes = [f"generated_infographic: '{keyword}' — reused existing generated image"]
+        if write_back:
+            failure = _try_write_back(row_page_id, dest.read_bytes(), children_fn, keyword)
+            if failure:
+                notes.append(failure)
+        return {"image_urls": [public_media_url(filename)]}, notes
 
     png = notion_infographic_gen.generate_png(brief)
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -245,9 +478,12 @@ def _generate_infographic(
     tmp.replace(dest)
 
     _save_state(state_path, {**state, slug: f"{_GENERATED_MARKER}{len(png)}"})
-    return {"image_urls": [public_media_url(filename)]}, (
-        f"generated_infographic: '{keyword}' — created from Brief"
-    )
+    notes = [f"generated_infographic: '{keyword}' — created from Brief"]
+    if write_back:
+        failure = _try_write_back(row_page_id, png, children_fn, keyword)
+        if failure:
+            notes.append(failure)
+    return {"image_urls": [public_media_url(filename)]}, notes
 
 
 def _attach_infographic(
@@ -259,6 +495,7 @@ def _attach_infographic(
     *,
     content_page_id: str | None = None,
     generate: bool = False,
+    write_back: bool = True,
 ) -> tuple[dict[str, Any], list[str]]:
     """Try to wire an infographic into a copy of ``rule``. May raise —
     ``enrich_rule`` owns the catch-everything guarantee."""
@@ -270,12 +507,19 @@ def _attach_infographic(
     source = find_infographic_source(row_page_id, children_fn)
     if source is None:
         if generate and content_page_id:
-            patch, note = _generate_infographic(
-                slug, keyword, content_page_id, children_fn, media_dir, state_path
+            patch, notes = _generate_infographic(
+                slug,
+                keyword,
+                row_page_id,
+                content_page_id,
+                children_fn,
+                media_dir,
+                state_path,
+                write_back=write_back,
             )
             if patch is None:
-                return rule, [note]
-            return {**rule, **patch}, [note]
+                return rule, notes
+            return {**rule, **patch}, notes
         return rule, [f"no_infographic: '{keyword}' — no DM Infographic toggle/image on row"]
 
     filename = f"{slug}-page-1.png"
@@ -297,6 +541,7 @@ def enrich_rule(
     *,
     content_page_id: str | None = None,
     generate: bool = False,
+    write_back: bool = True,
     media_dir: Path | None = None,
     state_path: Path | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
@@ -309,6 +554,11 @@ def enrich_rule(
     When the row has no infographic in its "DM Infographic" toggle and
     ``generate`` is set (with a ``content_page_id``), the image is generated
     from the content page's "Infographic Brief" instead of shipping text-only.
+    When a fresh image is generated, ``write_back`` (on by default) also
+    places it back onto the Production row's body — see
+    ``write_infographic_to_row`` — so it's visible in Notion without a human
+    re-uploading it by hand every time. A write-back failure never affects
+    the rule shipping; it only adds a warning.
     """
     warnings: list[str] = []
     enriched = rule
@@ -321,6 +571,7 @@ def enrich_rule(
             STATE_PATH if state_path is None else state_path,
             content_page_id=content_page_id,
             generate=generate,
+            write_back=write_back,
         )
         warnings.extend(notes)
     except Exception as exc:  # broad by design — sync must survive anything here

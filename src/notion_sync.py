@@ -22,13 +22,37 @@ WHAT IT DOES NOT DO
   "📊 DM Infographic" toggle ARE auto-fetched (see ``notion_sync_media``);
   rows without one land as text-only DMs.
 - Does not touch anything outside ``comment_responses.json`` +
-  ``notion_sync_state.json``.
+  ``notion_sync_state.json`` — plus one Notion-side write-back, see below.
+
+VISUAL FEEDBACK ON THE BOARD
+-----------------------------
+The only prior signal that a row's DM got wired was a silent git commit
+(``chore: notion-sync — N new keyword rule(s)``). The moment a row's rule
+is appended to ``comment_responses.json``, ``_mark_wired`` PATCHes that
+same row's Notion checkbox property (default name "🔗 DM Wired", override
+with ``NOTION_WIRED_CHECKBOX_PROP``) to True — so the tick is visible on
+the Production Tracker itself, no git log needed. The column must already
+exist on the database as a Checkbox property (create it once in Notion;
+this module never alters the database schema). Best-effort: a missing
+column, expired token, or a raw transport error lands in ``warnings``,
+never blocks the rule from shipping — a checkbox failure on one row can
+never cost a DIFFERENT row in the same batch its already-drafted rule
+(``_mark_wired`` catches broadly, on purpose). Disable entirely with
+``NOTION_SYNC_MARK_WIRED=0``. A row whose checkbox PATCH fails is recorded
+in ``notion_wired_pending.json`` and retried automatically on every
+subsequent sync — never re-drafting the rule, only the checkbox — until it
+succeeds. Rows wired by earlier runs (before this feature existed) are NOT
+retro-ticked — ``notion_sync_state.json`` already marks them processed, so
+they're never revisited.
 
 STATE
 -----
-``data/channels/notion_sync_state.json`` — list of Production Tracker row
-ids already processed, so re-running (the webhook can fire more than once
-per edit) never double-adds a rule.
+- ``data/channels/notion_sync_state.json`` — list of Production Tracker row
+  ids already processed, so re-running (the webhook can fire more than once
+  per edit) never double-adds a rule.
+- ``data/channels/notion_wired_pending.json`` — row ids whose keyword rule
+  wired fine but the checkbox PATCH failed; retried each sync until it
+  succeeds (see "VISUAL FEEDBACK ON THE BOARD" above).
 
 Entry point: ``sync_once()``, called from ``POST /admin/notion-sync``
 in ``src/web.py``.
@@ -51,6 +75,23 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 _IDS_PATH = REPO_ROOT / "scripts" / "notion_ids.json"
 _RULES_PATH = REPO_ROOT / "data" / "channels" / "comment_responses.json"
 _STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_sync_state.json"
+# Row ids whose keyword rule wired fine but the Notion checkbox PATCH failed
+# (missing column, rate limit, stale token). Tracked SEPARATELY from
+# _STATE_PATH — a row here still gets retried on the next sync even though
+# its rule is already live and its row id is (correctly) in _STATE_PATH, so
+# the checkbox eventually catches up without ever re-drafting the rule.
+_WIRED_PENDING_PATH = REPO_ROOT / "data" / "channels" / "notion_wired_pending.json"
+# {row_id: slug} for rows whose infographic was generated + the keyword rule
+# shipped fine, but writing the image back onto the row's own Notion body
+# failed (network hiccup, token lacking file-upload capability, etc). Without
+# this, that failure is silently permanent — the row is never reconsidered
+# again (see notion_sync_media.write_infographic_to_row's docstring: it only
+# no-ops when the row ALREADY has an image, so a row that never got one stays
+# eligible for retry here). Mirrors _WIRED_PENDING_PATH's retry-on-next-sync
+# shape; separate file because the two failures are unrelated and a fix to
+# one integration capability (e.g. checkbox property missing) says nothing
+# about the other (e.g. file-upload capability missing).
+_WRITEBACK_PENDING_PATH = REPO_ROOT / "data" / "channels" / "notion_writeback_pending.json"
 
 NOTION_API = "https://api.notion.com/v1"
 _STOP_WORDS = {"comment", "the", "word", "below", "type", "now"}
@@ -60,6 +101,12 @@ _STOP_WORDS = {"comment", "the", "word", "below", "type", "now"}
 # BEFORE the post goes out; "Published" stays wireable as a safety net (idempotent
 # — whichever stage fires first wires it, the later one is skipped as processed).
 _WIREABLE_STAGES = frozenset({"🟢 Ready to Publish", "✅ Published"})
+
+# Notion checkbox property ticked on a row once its keyword rule is live —
+# see "VISUAL FEEDBACK ON THE BOARD" above. Property name is the Notion
+# column's display name (Notion's API addresses checkbox props by name,
+# not id). Override if you name the column differently.
+_DEFAULT_WIRED_PROP = "🔗 DM Wired"
 
 _VOICE_TEMPLATE = {
     "en": (
@@ -200,8 +247,16 @@ def _load_json(path: Path, default: Any) -> Any:
 
 
 def _save_json(path: Path, data: Any) -> None:
+    """Write ``data`` to ``path`` atomically (tmp file + rename) — same
+    pattern as ``notion_sync_media._download_image`` / ``_generate_infographic``.
+    A crash mid-write must never leave a half-written, corrupt
+    ``comment_responses.json`` on disk; ``os.replace`` is atomic on both
+    POSIX and Windows, so readers always see either the old or the new
+    content in full, never a partial file."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp = path.with_suffix(path.suffix + ".part")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(path)
 
 
 def _draft_rule(keyword: str, title: str, first_dm: str, language: str, account_id: str) -> dict:
@@ -250,6 +305,41 @@ def sync_once() -> dict[str, Any]:
     generate_enabled = _generate_images_enabled()
     generation_cap = _generation_cap()
     generations_done = 0
+    mark_wired_enabled = _wired_checkbox_enabled()
+    # Row ids to PATCH the checkbox for — collected during the loop below but
+    # deliberately NOT ticked until after comment_responses.json is durably
+    # saved (see the comment at the bottom of the loop for why).
+    newly_wired_row_ids: list[str] = []
+
+    # Retry any row whose keyword rule wired (and was already durably saved)
+    # on a PRIOR run but the checkbox PATCH didn't (see _WIRED_PENDING_PATH
+    # doc above) — before scanning for new rows, so a transient Notion
+    # hiccup self-heals on the next webhook fire instead of leaving the
+    # board checkbox stuck un-ticked forever. Safe to tick immediately here
+    # (unlike newly_wired_row_ids below) because these rules were persisted
+    # to disk in a run that has already completed.
+    wired_pending: set[str] = set(_load_json(_WIRED_PENDING_PATH, []))
+    if mark_wired_enabled and wired_pending:
+        for pending_row_id in sorted(wired_pending):
+            retry_warning = _mark_wired(pending_row_id)
+            if retry_warning:
+                warnings.append(retry_warning)
+            else:
+                wired_pending.discard(pending_row_id)
+
+    # Same self-healing shape as wired_pending above, for the OTHER thing
+    # that can fail after a rule is already durably shipped: writing the
+    # generated infographic back onto the row's own Notion body (see
+    # _WRITEBACK_PENDING_PATH doc). Uses the locally-cached PNG — no need to
+    # re-generate or re-query the Content page's Brief.
+    writeback_pending: dict[str, str] = dict(_load_json(_WRITEBACK_PENDING_PATH, {}))
+    if writeback_pending:
+        for pending_row_id, pending_slug in sorted(writeback_pending.items()):
+            retry_warning = notion_sync_media.retry_write_back(pending_row_id, pending_slug, _children)
+            if retry_warning:
+                warnings.append(retry_warning)
+            else:
+                del writeback_pending[pending_row_id]
 
     for row in rows:
         row_id = row["id"]
@@ -309,6 +399,10 @@ def sync_once() -> dict[str, Any]:
         # check (never raises). The DM Infographic toggle lives on the prod row;
         # the Infographic Brief (generation source) lives on the content page.
         # Generation is capped per run so a bulk publish can't burst image spend.
+        # Phase 5: when a fresh image is generated, it's ALSO written back onto
+        # the row's body (write_infographic_to_row) — otherwise a human had to
+        # ask for it to be manually placed in Notion every single time. See
+        # notion_sync_media.write_infographic_to_row's docstring.
         allow_generate = generate_enabled and generations_done < generation_cap
         rule, rule_warnings = notion_sync_media.enrich_rule(
             rule,
@@ -316,9 +410,15 @@ def sync_once() -> dict[str, Any]:
             _children,
             content_page_id=content_rel[0]["id"],
             generate=allow_generate,
+            write_back=_write_back_infographic_enabled(),
         )
         if any("generated_infographic" in w and "created from Brief" in w for w in rule_warnings):
             generations_done += 1
+        if any("infographic_writeback_failed" in w for w in rule_warnings):
+            # The rule + generated PNG both shipped fine — only the Notion
+            # body write-back failed. Queue for retry next sync (see
+            # _WRITEBACK_PENDING_PATH doc) instead of losing this silently.
+            writeback_pending[row_id] = notion_sync_media.sanitize_keyword(keyword)
         warnings.extend(rule_warnings)
         rules.append(rule)
         added_rule_objs.append(rule)
@@ -326,9 +426,33 @@ def sync_once() -> dict[str, Any]:
         state_set.add(row_id)
         added.append(f"{row_id}: added '{keyword}' ({language}, {title})")
 
+        # DO NOT tick the Notion checkbox here. comment_responses.json isn't
+        # saved to disk until every row in this batch has been processed (see
+        # below) — ticking now would mean this row's checkbox says "wired"
+        # in Notion before the DM rule is actually durable. If a LATER row in
+        # this same run threw an uncaught exception, the process would crash
+        # before ever reaching the save, leaving this row's rule un-persisted
+        # but its checkbox already (and now permanently, wrongly) ticked.
+        # Defer the PATCH until after the save below succeeds instead.
+        if mark_wired_enabled:
+            newly_wired_row_ids.append(row_id)
+
     if added:
         _save_json(_RULES_PATH, rules)
     _save_json(_STATE_PATH, sorted(state_set))
+
+    # Only now — after comment_responses.json + notion_sync_state.json are
+    # both durably on disk — is it safe to tell Notion "this row is wired."
+    for row_id in newly_wired_row_ids:
+        mark_warning = _mark_wired(row_id)
+        if mark_warning:
+            warnings.append(mark_warning)
+            wired_pending.add(row_id)
+
+    if mark_wired_enabled:
+        _save_json(_WIRED_PENDING_PATH, sorted(wired_pending))
+
+    _save_json(_WRITEBACK_PENDING_PATH, writeback_pending)
 
     return {
         "checked": len(rows),
@@ -341,12 +465,66 @@ def sync_once() -> dict[str, Any]:
     }
 
 
+def _flag_enabled(env_var: str) -> bool:
+    """Shared on/off-toggle idiom for this module's feature flags: default ON,
+    set the env var to ``"0"`` to disable. Used by both
+    ``_wired_checkbox_enabled`` and ``_generate_images_enabled`` so the two
+    toggles can't drift apart."""
+    return os.environ.get(env_var, "1").strip() != "0"
+
+
+def _wired_checkbox_enabled() -> bool:
+    """Whether to tick the row's checkbox once its keyword rule is wired.
+
+    On by default. Set ``NOTION_SYNC_MARK_WIRED=0`` to disable — e.g. before
+    the Checkbox column exists on the database, so every row doesn't emit a
+    'column not found' warning on each sync."""
+    return _flag_enabled("NOTION_SYNC_MARK_WIRED")
+
+
+def _wired_checkbox_prop() -> str:
+    return os.environ.get("NOTION_WIRED_CHECKBOX_PROP", "").strip() or _DEFAULT_WIRED_PROP
+
+
+def _mark_wired(row_id: str) -> str | None:
+    """Best-effort tick ``row_id``'s checkbox property to True.
+
+    Returns a warning string on failure, ``None`` on success — NEVER raises,
+    on ANY exception (broad ``except Exception`` by design, same contract as
+    ``notion_sync_media.enrich_rule``). The keyword rule is already appended
+    to ``comment_responses.json`` by the time this runs, so a Notion-side
+    write failure — missing column, expired token, rate limit, or a raw
+    transport error (``_ncall`` only wraps ``HTTPError`` into
+    ``NotionSyncError``; DNS/connection failures surface as bare
+    ``URLError``) — must never propagate into ``sync_once()``'s loop. A
+    single row's checkbox failing must not cost every OTHER row in the same
+    run its already-drafted rule. Caller (``sync_once``) adds ``row_id`` to
+    the pending-retry set on failure, so this gets retried next sync."""
+    prop = _wired_checkbox_prop()
+    try:
+        _ncall("PATCH", f"/pages/{row_id}", {"properties": {prop: {"checkbox": True}}})
+    except Exception as exc:  # noqa: BLE001 - must survive anything, see docstring
+        return f"mark_wired_failed: row {row_id} ('{prop}') — {exc}"
+    return None
+
+
 def _generate_images_enabled() -> bool:
     """Whether to generate an infographic when a row has no toggle image.
 
     On by default; set ``NOTION_SYNC_GENERATE_IMAGES=0`` to disable (e.g. to
     avoid image-API spend during a bulk backfill)."""
-    return os.environ.get("NOTION_SYNC_GENERATE_IMAGES", "1").strip() != "0"
+    return _flag_enabled("NOTION_SYNC_GENERATE_IMAGES")
+
+
+def _write_back_infographic_enabled() -> bool:
+    """Whether a freshly-GENERATED infographic also gets written back onto
+    the Production row's body (so a human sees it in Notion without asking
+    for it manually). On by default; set
+    ``NOTION_SYNC_WRITE_BACK_INFOGRAPHIC=0`` to disable (e.g. if the Notion
+    integration's token is read-only, or the extra write traffic is
+    unwanted). Never affects whether the rule itself ships — only whether
+    the row body gets updated."""
+    return _flag_enabled("NOTION_SYNC_WRITE_BACK_INFOGRAPHIC")
 
 
 def _generation_cap() -> int:

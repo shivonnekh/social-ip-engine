@@ -669,3 +669,465 @@ def test_sync_once_wires_on_ready_or_published_only(
     result = notion_sync.sync_once()
 
     assert len(result["added"]) == expect_added
+
+
+# ----------------------------------------------------- write-back to Notion
+
+
+def _upload_session_response(file_id: str = "file-upload-1") -> dict:
+    return {"id": file_id, "upload_url": "https://api.notion.com/v1/file_uploads/file-upload-1/send"}
+
+
+def _fake_notion_write_urlopen(monkeypatch: pytest.MonkeyPatch, patch_calls: list[dict]):
+    """Fake urlopen that handles the THREE distinct calls write_infographic_to_row
+    makes: (1) POST /file_uploads -> JSON session, (2) POST upload_url ->
+    opaque ack, (3) PATCH .../blocks/.../children -> JSON ack. Records every
+    PATCH body for assertions."""
+
+    def fake(req: Any, timeout: float = 0) -> io.BytesIO:
+        url = req.full_url if isinstance(req, urllib.request.Request) else req
+        method = getattr(req, "get_method", lambda: "GET")()
+        if url.endswith("/file_uploads"):
+            return io.BytesIO(json.dumps(_upload_session_response()).encode())
+        if "file_uploads/file-upload-1/send" in url:
+            return io.BytesIO(b"{}")
+        if method == "PATCH":
+            body = json.loads(req.data.decode()) if req.data else {}
+            patch_calls.append({"url": url, "body": body})
+            return io.BytesIO(b"{}")
+        return io.BytesIO(b"{}")
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake)
+
+
+def test_find_empty_dm_infographic_toggle_matches_toggle_only():
+    tree = {
+        ROW_ID: [
+            {"id": "h1", "type": "heading_3", "heading_3": _rt("📊 DM Infographic")},
+            _toggle_block("📊 DM Infographic here", block_id="toggle-empty"),
+        ]
+    }
+    assert nsm._find_empty_dm_infographic_toggle(ROW_ID, _children_fn(tree)) == "toggle-empty"
+
+
+def test_find_empty_dm_infographic_toggle_ignores_section_heading():
+    """The section's own heading_3 must never be mistaken for a fillable
+    toggle — only a real ``type: toggle`` block qualifies."""
+    tree = {ROW_ID: [{"id": "h1", "type": "heading_3", "heading_3": _rt("📊 DM Infographic")}]}
+    assert nsm._find_empty_dm_infographic_toggle(ROW_ID, _children_fn(tree)) is None
+
+
+def test_find_dm_infographic_prompt_anchor_finds_code_block():
+    tree = {
+        ROW_ID: [
+            {"id": "h1", "type": "heading_3", "heading_3": _rt("📊 DM Infographic")},
+            {"id": "p1", "type": "paragraph", "paragraph": _rt("🖼️ Infographic prompt (→ GPT image gen)")},
+            {"id": "c1", "type": "code", "code": _rt("draw a chart")},
+        ]
+    }
+    assert nsm._find_dm_infographic_prompt_anchor(ROW_ID, _children_fn(tree)) == "c1"
+
+
+def test_find_dm_infographic_prompt_anchor_none_when_section_missing():
+    tree = {ROW_ID: [{"id": "h1", "type": "heading_3", "heading_3": _rt("Master Script")}]}
+    assert nsm._find_dm_infographic_prompt_anchor(ROW_ID, _children_fn(tree)) is None
+
+
+def test_upload_png_to_notion_returns_file_id(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("NOTION_KEY", "secret_test_key")
+    patch_calls: list[dict] = []
+    _fake_notion_write_urlopen(monkeypatch, patch_calls)
+    file_id = nsm._upload_png_to_notion(FAKE_PNG, "dm-infographic.png")
+    assert file_id == "file-upload-1"
+
+
+def test_upload_png_to_notion_no_key_raises(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.delenv("NOTION_KEY", raising=False)
+    with pytest.raises(nsm.MediaSyncError, match="NOTION_KEY not set"):
+        nsm._upload_png_to_notion(FAKE_PNG, "dm-infographic.png")
+
+
+def test_write_infographic_to_row_creates_toggle_after_anchor(monkeypatch: pytest.MonkeyPatch):
+    """No existing toggle → a new '📊 DM Infographic here' toggle is created,
+    anchored right after the prompt code block."""
+    monkeypatch.setenv("NOTION_KEY", "secret_test_key")
+    patch_calls: list[dict] = []
+    _fake_notion_write_urlopen(monkeypatch, patch_calls)
+    tree = {
+        ROW_ID: [
+            {"id": "h1", "type": "heading_3", "heading_3": _rt("📊 DM Infographic")},
+            {"id": "p1", "type": "paragraph", "paragraph": _rt("🖼️ Infographic prompt (→ GPT image gen)")},
+            {"id": "c1", "type": "code", "code": _rt("draw a chart")},
+        ]
+    }
+    nsm.write_infographic_to_row(ROW_ID, FAKE_PNG, _children_fn(tree))
+
+    block_patches = [c for c in patch_calls if f"/blocks/{ROW_ID}/children" in c["url"]]
+    assert len(block_patches) == 1
+    body = block_patches[0]["body"]
+    assert body["after"] == "c1"
+    toggle = body["children"][0]
+    assert toggle["type"] == "toggle"
+    assert toggle["toggle"]["children"][0]["image"]["file_upload"]["id"] == "file-upload-1"
+
+
+def test_write_infographic_to_row_fills_existing_empty_toggle(monkeypatch: pytest.MonkeyPatch):
+    """An existing (empty) DM Infographic toggle is filled directly — no
+    second toggle is created alongside it."""
+    monkeypatch.setenv("NOTION_KEY", "secret_test_key")
+    patch_calls: list[dict] = []
+    _fake_notion_write_urlopen(monkeypatch, patch_calls)
+    tree = {
+        ROW_ID: [
+            {"id": "h1", "type": "heading_3", "heading_3": _rt("📊 DM Infographic")},
+            _toggle_block("📊 DM Infographic here", block_id="toggle-empty"),
+        ],
+        "toggle-empty": [],
+    }
+    nsm.write_infographic_to_row(ROW_ID, FAKE_PNG, _children_fn(tree))
+
+    assert len(patch_calls) == 1
+    assert f"/blocks/toggle-empty/children" in patch_calls[0]["url"]
+    assert patch_calls[0]["body"]["children"][0]["type"] == "image"
+
+
+def test_write_infographic_to_row_raises_on_upload_failure(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("NOTION_KEY", "secret_test_key")
+
+    def boom(req: Any, timeout: float = 0) -> None:
+        raise urllib.error.URLError("notion down")
+
+    monkeypatch.setattr(urllib.request, "urlopen", boom)
+    with pytest.raises(nsm.MediaSyncError):
+        nsm.write_infographic_to_row(ROW_ID, FAKE_PNG, _children_fn({ROW_ID: []}))
+
+
+def test_generate_infographic_calls_write_back_on_fresh_generation(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: "draw it")
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", lambda *_a, **_k: FAKE_PNG)
+
+    calls: list[tuple[str, bytes]] = []
+    monkeypatch.setattr(
+        nsm, "write_infographic_to_row", lambda row_id, png, fn: calls.append((row_id, png))
+    )
+
+    enriched, warnings = nsm.enrich_rule(
+        _rule(),
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=True,
+        write_back=True,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+
+    assert calls == [(ROW_ID, FAKE_PNG)]
+    assert enriched["image_urls"][0].endswith("/media/guides/sleep-page-1.png")
+    assert not any("writeback_failed" in w for w in warnings)
+
+
+def test_generate_infographic_write_back_false_never_calls_it(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: "draw it")
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", lambda *_a, **_k: FAKE_PNG)
+
+    def _should_not_call(*_a, **_k):  # pragma: no cover - asserts it isn't reached
+        raise AssertionError("write_infographic_to_row must not be called when write_back=False")
+
+    monkeypatch.setattr(nsm, "write_infographic_to_row", _should_not_call)
+
+    enriched, warnings = nsm.enrich_rule(
+        _rule(),
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=True,
+        write_back=False,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+    assert enriched["image_urls"][0].endswith("/media/guides/sleep-page-1.png")
+
+
+def test_generate_infographic_write_back_failure_does_not_undo_generation(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """CRITICAL invariant: a write-back failure must never cost the rule its
+    already-successful image_urls — the DM funnel is the load-bearing part,
+    the Notion-body visibility is a nice-to-have."""
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: "draw it")
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", lambda *_a, **_k: FAKE_PNG)
+
+    def _boom(*_a, **_k):
+        raise nsm.MediaSyncError("notion write failed")
+
+    monkeypatch.setattr(nsm, "write_infographic_to_row", _boom)
+
+    enriched, warnings = nsm.enrich_rule(
+        _rule(),
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=True,
+        write_back=True,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+
+    assert enriched["image_urls"][0].endswith("/media/guides/sleep-page-1.png")
+    assert (media_dir / "sleep-page-1.png").read_bytes() == FAKE_PNG
+    assert any("infographic_writeback_failed" in w for w in warnings)
+    assert any("generated_infographic" in w for w in warnings)
+
+
+def test_generate_infographic_dedup_branch_also_attempts_write_back(
+    media_paths: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Self-healing case: a prior run generated the PNG locally but never
+    wrote it back (e.g. crashed in between) — the dedup-reuse branch must
+    retry write-back, not just silently re-attach the local file forever."""
+    media_dir, state_path = media_paths
+    monkeypatch.setattr(nsm.notion_infographic_gen, "find_infographic_brief", lambda *_: "draw it")
+
+    def _should_not_generate(*_a, **_k):  # pragma: no cover
+        raise AssertionError("must not re-generate — dedup should reuse the local file")
+
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", _should_not_generate)
+
+    # seed state as if a PREVIOUS run already generated (but never wrote back)
+    media_dir.mkdir(parents=True, exist_ok=True)
+    (media_dir / "sleep-page-1.png").write_bytes(FAKE_PNG)
+    nsm._save_state(state_path, {"sleep": f"generated:{len(FAKE_PNG)}"})
+
+    calls: list[tuple[str, bytes]] = []
+    monkeypatch.setattr(
+        nsm, "write_infographic_to_row", lambda row_id, png, fn: calls.append((row_id, png))
+    )
+
+    enriched, warnings = nsm.enrich_rule(
+        _rule(),
+        ROW_ID,
+        _children_fn({ROW_ID: []}),
+        content_page_id=CONTENT_ID,
+        generate=True,
+        write_back=True,
+        media_dir=media_dir,
+        state_path=state_path,
+    )
+
+    assert calls == [(ROW_ID, FAKE_PNG)]
+    assert any("reused existing generated image" in w for w in warnings)
+
+
+# ------------------------------------- CRITICAL regression: no duplicate write
+
+
+def test_find_empty_dm_infographic_toggle_skips_already_filled_toggle():
+    """CRITICAL regression: a toggle that already has an image inside must
+    NOT be returned as 'fillable' — PATCH .../children APPENDS, so returning
+    an already-filled toggle here would stack a second image inside it on a
+    retried/duplicate call."""
+    tree = {
+        ROW_ID: [_toggle_block("📊 DM Infographic here", block_id="toggle-full")],
+        "toggle-full": [_file_image_block("https://s3.example/already-there.png")],
+    }
+    assert nsm._find_empty_dm_infographic_toggle(ROW_ID, _children_fn(tree)) is None
+
+
+def test_write_infographic_to_row_called_twice_is_a_safe_noop(monkeypatch: pytest.MonkeyPatch):
+    """CRITICAL regression: calling write_infographic_to_row a SECOND time for
+    the same row (simulating a retried webhook or crash-recovery re-running
+    the dedup-reuse branch) must not create a second toggle or append a
+    second image — it must be a no-op once the row already has an image
+    anywhere. Uses the REAL function (not monkeypatched away), with a tree
+    that mutates between calls to reflect what Notion would actually look
+    like after the first call landed."""
+    monkeypatch.setenv("NOTION_KEY", "secret_test_key")
+    patch_calls: list[dict] = []
+    _fake_notion_write_urlopen(monkeypatch, patch_calls)
+
+    # Mutable "Notion state" — starts with just the prompt section, no image.
+    state = {
+        ROW_ID: [
+            {"id": "h1", "type": "heading_3", "heading_3": _rt("📊 DM Infographic")},
+            {"id": "p1", "type": "paragraph", "paragraph": _rt("🖼️ Infographic prompt (→ GPT image gen)")},
+            {"id": "c1", "type": "code", "code": _rt("draw a chart")},
+        ]
+    }
+
+    def children_fn(block_id: str) -> list[dict]:
+        return state.get(block_id, [])
+
+    # First call: row has no image anywhere -> creates a new toggle+image.
+    nsm.write_infographic_to_row(ROW_ID, FAKE_PNG, children_fn)
+    assert len(patch_calls) == 1
+
+    # Reflect what Notion would now contain: the new toggle, now WITH an image.
+    state[ROW_ID].append(
+        {"id": "toggle-new", "type": "toggle", "toggle": _rt("📊 DM Infographic here"), "has_children": True}
+    )
+    state["toggle-new"] = [_file_image_block("https://s3.example/just-written.png")]
+
+    # Second call (simulating a retry) — must be a no-op: no new PATCH at all.
+    nsm.write_infographic_to_row(ROW_ID, FAKE_PNG, children_fn)
+    assert len(patch_calls) == 1  # unchanged — the second call wrote nothing
+
+
+# --------------------------------------------------------- retry_write_back
+
+
+def test_retry_write_back_success(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("NOTION_KEY", "secret_test_key")
+    (tmp_path / "sleep-page-1.png").write_bytes(FAKE_PNG)
+    calls: list[tuple[str, bytes]] = []
+    monkeypatch.setattr(
+        nsm, "write_infographic_to_row", lambda row_id, png, fn: calls.append((row_id, png))
+    )
+    result = nsm.retry_write_back(ROW_ID, "sleep", _children_fn({ROW_ID: []}), media_dir=tmp_path)
+    assert result is None
+    assert calls == [(ROW_ID, FAKE_PNG)]
+
+
+def test_retry_write_back_missing_local_file_returns_warning(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    result = nsm.retry_write_back(ROW_ID, "sleep", _children_fn({ROW_ID: []}), media_dir=tmp_path)
+    assert result is not None
+    assert "writeback_retry_failed" in result
+
+
+def test_retry_write_back_propagates_failure_as_warning(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "sleep-page-1.png").write_bytes(FAKE_PNG)
+
+    def _boom(*_a, **_k):
+        raise nsm.MediaSyncError("notion still down")
+
+    monkeypatch.setattr(nsm, "write_infographic_to_row", _boom)
+    result = nsm.retry_write_back(ROW_ID, "sleep", _children_fn({ROW_ID: []}), media_dir=tmp_path)
+    assert result is not None
+    assert "writeback_retry_failed" in result
+    assert "notion still down" in result
+
+
+# ------------------------------------------- sync_once write-back pending queue
+
+
+def test_sync_once_queues_writeback_pending_on_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A write-back failure must not be lost — it's queued in
+    _WRITEBACK_PENDING_PATH for retry on the next sync."""
+    from src import notion_sync
+
+    ids_path = tmp_path / "notion_ids.json"
+    ids_path.write_text(json.dumps({"prod_db": "db-1"}), encoding="utf-8")
+    rules_path = tmp_path / "comment_responses.json"
+    writeback_pending_path = tmp_path / "notion_writeback_pending.json"
+    monkeypatch.setattr(notion_sync, "_IDS_PATH", ids_path)
+    monkeypatch.setattr(notion_sync, "_RULES_PATH", rules_path)
+    monkeypatch.setattr(notion_sync, "_STATE_PATH", tmp_path / "notion_sync_state.json")
+    monkeypatch.setattr(notion_sync, "_WIRED_PENDING_PATH", tmp_path / "notion_wired_pending.json")
+    monkeypatch.setattr(notion_sync, "_WRITEBACK_PENDING_PATH", writeback_pending_path)
+    monkeypatch.setattr(nsm, "MEDIA_DIR", tmp_path / "guides")
+    monkeypatch.setattr(nsm, "STATE_PATH", tmp_path / "notion_media_state.json")
+    monkeypatch.setenv("NOTION_SYNC_WRITE_BACK_INFOGRAPHIC", "1")
+
+    row = {
+        "id": "prod-row-1",
+        "properties": {
+            "Stage": {"select": {"name": "✅ Published"}},
+            "Content": {"relation": [{"id": "content-1"}]},
+            "IP": {"relation": [{"id": "ip-1"}]},
+        },
+    }
+    pages = {
+        "/pages/content-1": {
+            "id": "content-1",
+            "properties": {
+                "Name": {"type": "title", "title": [{"plain_text": "Sleep Guide"}]},
+                "CTA": {"rich_text": [{"plain_text": 'Comment "sleep" below'}]},
+            },
+        },
+        "/pages/ip-1": {
+            "id": "ip-1",
+            "properties": {"IP": {"type": "title", "title": [{"plain_text": "Jackie Chan (EN)"}]}},
+        },
+    }
+    children = {
+        "content-1": [
+            {"id": "h1", "type": "heading_3", "heading_3": _rt("First DM")},
+            {"id": "c1", "type": "code", "code": _rt("Wind down with sour date tea.")},
+            {"id": "h2", "type": "heading_3", "heading_3": _rt("🖼️ Infographic Brief")},
+            {"id": "c2", "type": "code", "code": _rt("draw a chart")},
+        ],
+        "prod-row-1": [],  # no DM Infographic toggle at all -> generate branch
+    }
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(
+        notion_sync,
+        "_ncall",
+        lambda method, path, body=None: {} if method == "PATCH" else pages[path],
+    )
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+    monkeypatch.setattr(nsm.notion_infographic_gen, "generate_png", lambda *_a, **_k: FAKE_PNG)
+
+    def fake_download(req: Any, timeout: float = 0) -> io.BytesIO:
+        return io.BytesIO(FAKE_PNG)
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_download)
+    # NOTION_KEY intentionally unset -> write_infographic_to_row fails fast,
+    # exercising the writeback_pending path end-to-end.
+    monkeypatch.delenv("NOTION_KEY", raising=False)
+
+    result = notion_sync.sync_once()
+
+    assert len(result["added"]) == 1
+    assert any("infographic_writeback_failed" in w for w in result["warnings"])
+    pending = json.loads(writeback_pending_path.read_text(encoding="utf-8"))
+    assert pending == {"prod-row-1": "sleep"}
+
+
+def test_sync_once_retries_writeback_pending_and_clears_on_success(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from src import notion_sync
+
+    ids_path = tmp_path / "notion_ids.json"
+    ids_path.write_text(json.dumps({"prod_db": "db-1"}), encoding="utf-8")
+    writeback_pending_path = tmp_path / "notion_writeback_pending.json"
+    writeback_pending_path.write_text(json.dumps({"prod-row-1": "sleep"}), encoding="utf-8")
+    guides_dir = tmp_path / "guides"
+    guides_dir.mkdir(parents=True, exist_ok=True)
+    (guides_dir / "sleep-page-1.png").write_bytes(FAKE_PNG)
+
+    monkeypatch.setattr(notion_sync, "_IDS_PATH", ids_path)
+    monkeypatch.setattr(notion_sync, "_RULES_PATH", tmp_path / "comment_responses.json")
+    monkeypatch.setattr(notion_sync, "_STATE_PATH", tmp_path / "notion_sync_state.json")
+    monkeypatch.setattr(notion_sync, "_WIRED_PENDING_PATH", tmp_path / "notion_wired_pending.json")
+    monkeypatch.setattr(notion_sync, "_WRITEBACK_PENDING_PATH", writeback_pending_path)
+    monkeypatch.setattr(nsm, "MEDIA_DIR", guides_dir)
+    monkeypatch.setattr(nsm, "STATE_PATH", tmp_path / "notion_media_state.json")
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [])  # nothing new to scan
+
+    calls: list[str] = []
+    monkeypatch.setattr(
+        nsm, "write_infographic_to_row", lambda row_id, png, fn: calls.append(row_id)
+    )
+
+    result = notion_sync.sync_once()
+
+    assert calls == ["prod-row-1"]
+    assert not any("writeback_retry_failed" in w for w in result["warnings"])
+    pending = json.loads(writeback_pending_path.read_text(encoding="utf-8"))
+    assert pending == {}  # cleared after the successful retry
