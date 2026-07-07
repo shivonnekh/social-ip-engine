@@ -251,6 +251,13 @@ def _split_bubbles(text: str, max_bubbles: int) -> list[str]:
 
     Falls back to sentence-ish splitting if the model returned one blob.
     Always returns at least one bubble; caps at ``max_bubbles``.
+
+    Overflow parts are MERGED into the final bubble, never dropped (bug fix
+    2026-07-07 — a multi-point numbered-list answer past ``max_bubbles``
+    was silently truncated in production, e.g. "1." sent then points
+    2/3/4 lost entirely). Slicing with `[:max_bubbles]` used to just cut
+    the tail off; now anything from `max_bubbles - 1` onward is folded
+    into one last bubble instead.
     """
     text = (text or "").strip()
     if not text:
@@ -259,4 +266,9 @@ def _split_bubbles(text: str, max_bubbles: int) -> list[str]:
     if len(parts) <= 1:
         # single blob — split on newlines as a softer fallback
         parts = [p.strip() for p in text.split("\n") if p.strip()] or [text]
-    return parts[:max_bubbles]
+    if len(parts) <= max_bubbles:
+        return parts
+    keep = max(0, max_bubbles - 1)
+    head = parts[:keep]
+    tail = "\n\n".join(parts[keep:])
+    return head + [tail]

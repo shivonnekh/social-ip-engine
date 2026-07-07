@@ -80,7 +80,7 @@ _DEFAULT_PATH: Final[str] = str(
 )
 
 
-def _expected_language(account_id: str | None) -> str:
+def expected_language(account_id: str | None) -> str:
     """Expected content language for a business account ("" = unregistered).
 
     IG accounts come from the IP registry (``data/ips/*/ip.json`` via
@@ -214,7 +214,7 @@ def _language_allowed(rule: CommentReply, account_id: str | None, expected_lang:
     """Same fail-closed language gate for both the exact and fuzzy passes.
 
     A rule with a ``language`` field is only served to an account whose
-    registered expected language (``_expected_language`` — IP registry for
+    registered expected language (``expected_language`` — IP registry for
     IG, FB_PAGE_ID/FB_PAGE_LANGUAGE env for Facebook) matches. Mismatches
     AND unregistered accounts are BLOCKED — fail closed, because before
     this an FB page id missing from the language map would have been
@@ -367,7 +367,7 @@ def match(text: str, *, account_id: str | None = None) -> CommentReply | None:
     change behavior for a correctly-spelled comment.
     """
     haystack = (text or "").lower()
-    expected_lang = _expected_language(account_id)
+    expected_lang = expected_language(account_id)
     rules = load_rules()
 
     exact = _match_exact(rules, haystack, account_id, expected_lang)

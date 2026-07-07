@@ -30,7 +30,7 @@ from datetime import datetime
 from collections import OrderedDict
 from typing import Callable, Final
 
-from src.channels import comment_rules, meta_client
+from src.channels import comment_rules, meta_client, unmatched_comment
 from src.channels.chloe_agent import _is_pure_greeting
 from src.channels.meta_events import (
     IncomingComment,
@@ -752,6 +752,7 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
     rule = comment_rules.match(comment.text, account_id=comment.recipient_id or None)
     if rule is None:
         logger.info("[meta] comment %s: no rule match — skipping", comment.comment_id)
+        await unmatched_comment.handle_unmatched_comment(comment, pipeline)
         return
 
     if rule.use_agent:

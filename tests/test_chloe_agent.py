@@ -30,13 +30,58 @@ def test_persona_loads():
 @pytest.mark.unit
 @pytest.mark.parametrize("text,expected", [
     ("a\n\nb\n\nc", ["a", "b", "c"]),
-    ("a\n\nb\n\nc\n\nd", ["a", "b", "c"]),          # capped at 3
+    # overflow past max_bubbles is MERGED into the final bubble, never
+    # dropped (bug fix 2026-07-07 — see _split_bubbles docstring).
+    ("a\n\nb\n\nc\n\nd", ["a", "b", "c\n\nd"]),
     ("one blob no breaks", ["one blob no breaks"]),
     ("line1\nline2", ["line1", "line2"]),           # newline fallback
     ("", []),
 ])
 def test_split_bubbles(text, expected):
     assert _split_bubbles(text, 3) == expected
+
+
+@pytest.mark.unit
+def test_split_bubbles_unchanged_when_within_cap():
+    """Regression pin: len(parts) <= max_bubbles → returned as-is,
+    no behavior change for the common case."""
+    assert _split_bubbles("a\n\nb", 3) == ["a", "b"]
+    assert _split_bubbles("a", 3) == ["a"]
+    assert _split_bubbles("a\n\nb\n\nc", 3) == ["a", "b", "c"]
+
+
+@pytest.mark.unit
+def test_split_bubbles_merges_overflow_never_loses_content():
+    """A 5-part answer capped at 3 bubbles must still contain every
+    point's content somewhere — nothing silently dropped (production
+    bug: numbered-list replies losing points 2-4 past the bubble cap)."""
+    text = "1. first point\n\n2. second point\n\n3. third point\n\n4. fourth point\n\n5. fifth point"
+    result = _split_bubbles(text, 3)
+
+    assert len(result) == 3
+    combined = "\n\n".join(result)
+    for point in ["first point", "second point", "third point", "fourth point", "fifth point"]:
+        assert point in combined
+    # first two parts remain individual bubbles; overflow merged into the last
+    assert result[0] == "1. first point"
+    assert result[1] == "2. second point"
+    assert "3. third point" in result[2]
+    assert "4. fourth point" in result[2]
+    assert "5. fifth point" in result[2]
+
+
+@pytest.mark.unit
+def test_split_bubbles_max_one_folds_everything_into_single_bubble():
+    text = "a\n\nb\n\nc"
+    result = _split_bubbles(text, 1)
+    assert len(result) == 1
+    assert "a" in result[0] and "b" in result[0] and "c" in result[0]
+
+
+@pytest.mark.unit
+def test_split_bubbles_empty_text_returns_empty_list():
+    assert _split_bubbles("", 3) == []
+    assert _split_bubbles("   ", 5) == []
 
 
 # ---------------------------------------------------------------------------
@@ -105,6 +150,27 @@ async def test_first_touch_greets_first():
     # persisted both sides
     roles = [r for _, r, _ in crm.appended]
     assert roles == ["user", "chloe"]
+
+
+@pytest.mark.asyncio
+async def test_multi_point_reply_past_bubble_cap_keeps_every_point():
+    """End-to-end-ish: a returning user gets a 5-point LLM answer while
+    persona.max_bubbles == 3 — every point must still show up somewhere
+    in ChloeReply.bubbles, not just the first 3 (production bug fix
+    2026-07-07: '1.' sent then points 2-4 silently dropped)."""
+    from src.crm.models import ConversationMessage
+    hist = [ConversationMessage(role="user", content="hi", at=datetime.utcnow()),
+            ConversationMessage(role="chloe", content="你好", at=datetime.utcnow())]
+    crm = _FakeCRM(history=hist)
+    five_point_reply = (
+        "1. 早啲瞓\n\n2. 少啲凍嘢\n\n3. 多啲運動\n\n4. 定期覆診\n\n5. 保持心情開朗"
+    )
+    agent = PersonaAgent(client=_FakeClient(five_point_reply), crm=crm)
+    reply = await agent.respond(crm_key="ig_123", user_message="有咩要注意？")
+
+    combined = "\n\n".join(reply.bubbles)
+    for point in ["早啲瞓", "少啲凍嘢", "多啲運動", "定期覆診", "保持心情開朗"]:
+        assert point in combined
 
 
 @pytest.mark.asyncio

@@ -293,6 +293,25 @@ def for_account(
     return None
 
 
+def persona_dm_channels(ip: IPRecord) -> tuple[ChannelConfig, ...]:
+    """Every channel on this IP configured for persona-driven DMs.
+
+    Exists so callers (namely ``web.py``'s startup agent-registration loop)
+    register a persona agent for EVERY platform an IP is live on, not just
+    whichever platform the caller happened to hardcode a channel name for.
+
+    Missing this once already caused a real production incident
+    (2026-07-07): ``web.py`` only ever read ``ip.channels.get("instagram")``,
+    so when Jackie's Facebook Page went live it was never registered —
+    ``_get_agent()`` found nothing for the FB Page's account id and
+    silently fell back to the DEFAULT agent (Chloe, Cantonese), so an
+    English-only persona's Facebook DMs replied in Cantonese to a real
+    user. Iterating every channel here means adding a NEW platform to an
+    IP's ``ip.json`` is enough on its own — no matching web.py edit needed.
+    """
+    return tuple(c for c in ip.channels.values() if c.dms == "persona")
+
+
 def account_language(
     account_id: str | None, records: tuple[IPRecord, ...] | None = None,
 ) -> str:

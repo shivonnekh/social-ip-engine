@@ -23,6 +23,7 @@ from src.ips.registry import (
 )
 
 JACKIE_IG_ID = "17841417304649448"
+JACKIE_FB_ID = "528216523715336"
 CHLOE_IG_ID = "17841424706900394"
 
 
@@ -74,12 +75,27 @@ def test_for_account_maps_both_live_accounts():
     assert registry.for_account("") is None
 
 
+def test_for_account_also_resolves_jackies_facebook_page():
+    """Regression (2026-07-07 production incident): Jackie's Facebook Page
+    must resolve to the SAME IP as his Instagram account. Before this
+    channel existed in ip.json, web.py's persona-agent registration only
+    ever checked ip.channels["instagram"], so Jackie's FB Page DMs fell
+    through to the default (Chloe, Cantonese) agent — an English persona
+    replied in Cantonese to a real user."""
+    assert registry.for_account(JACKIE_FB_ID) is not None
+    assert registry.for_account(JACKIE_FB_ID).id == "jackie"
+
+
 def test_account_language_matches_frozen_map():
     assert registry.account_language(JACKIE_IG_ID) == "en"
     assert registry.account_language(CHLOE_IG_ID) == "yue"
     # Unknown accounts get "" — same as the old dict .get(..., "") gate.
     assert registry.account_language("999") == ""
     assert registry.account_language(None) == ""
+
+
+def test_account_language_covers_jackies_facebook_page_too():
+    assert registry.account_language(JACKIE_FB_ID) == "en"
 
 
 def test_token_envs_for_account_matches_frozen_map():
@@ -93,6 +109,62 @@ def test_token_envs_for_account_matches_frozen_map():
     )
     assert registry.token_envs_for_account("999") is None
     assert registry.token_envs_for_account(None) is None
+
+
+def test_token_envs_for_jackies_facebook_page():
+    assert registry.token_envs_for_account(JACKIE_FB_ID) == (
+        "FB_PAGE_ACCESS_TOKEN",
+        "FB_PAGE_ID",
+    )
+
+
+def test_facebook_channel_config_matches_production():
+    jackie_fb = registry.get("jackie").channels["facebook"]
+    assert jackie_fb.account_id == JACKIE_FB_ID
+    assert jackie_fb.token_env == "FB_PAGE_ACCESS_TOKEN"
+    assert jackie_fb.user_id_env == "FB_PAGE_ID"
+    assert jackie_fb.dms == "persona"
+
+
+def test_persona_dm_channels_returns_every_persona_channel_for_jackie():
+    """The exact function web.py's agent-registration loop now uses —
+    must return BOTH of Jackie's channels, not just Instagram."""
+    jackie = registry.get("jackie")
+    channels = registry.persona_dm_channels(jackie)
+    account_ids = {c.account_id for c in channels}
+    assert account_ids == {JACKIE_IG_ID, JACKIE_FB_ID}
+
+
+def test_persona_dm_channels_excludes_non_persona_channels(tmp_path):
+    spec = dict(
+        _VALID_IP,
+        channels={
+            "instagram": _VALID_IP["channels"]["instagram"],
+            "facebook": {
+                "account_id": "222",
+                "token_env": "T_ENV_FB",
+                "user_id_env": "U_ENV_FB",
+                "comments": "canned",
+                "dms": "canned",  # NOT persona — must be excluded
+            },
+        },
+    )
+    _write_ip(tmp_path, "testip", spec)
+    reg = load_registry(tmp_path)
+    channels = registry.persona_dm_channels(reg[0])
+    assert [c.account_id for c in channels] == ["111"]
+
+
+def test_persona_dm_channels_empty_when_ip_has_no_persona_channel(tmp_path):
+    spec = dict(
+        _VALID_IP,
+        channels={
+            "instagram": dict(_VALID_IP["channels"]["instagram"], dms="canned"),
+        },
+    )
+    _write_ip(tmp_path, "testip", spec)
+    reg = load_registry(tmp_path)
+    assert registry.persona_dm_channels(reg[0]) == ()
 
 
 @pytest.mark.parametrize(
@@ -225,6 +297,27 @@ def test_duplicate_account_id_rejected(tmp_path):
     _write_ip(tmp_path, "aaa", dict(_VALID_IP, id="aaa"))
     _write_ip(tmp_path, "bbb", dict(_VALID_IP, id="bbb"))
     with pytest.raises(IPRegistryError, match=r"account.*111|111"):
+        load_registry(tmp_path)
+
+
+def test_duplicate_account_id_rejected_across_different_channel_names(tmp_path):
+    """Cross-IP uniqueness must be channel-name-agnostic: two IPs sharing an
+    account_id under DIFFERENT channel keys (one "instagram", one
+    "facebook") is just as much a misconfiguration as sharing it under the
+    same key — this is what the 2026-07-07 multi-channel fix depended on
+    (_check_cross_ip_uniqueness iterates ip.channels.values(), not any
+    fixed key), but nothing exercised the differently-named case before."""
+    a = dict(_VALID_IP, id="aaa")  # channels={"instagram": {account_id: "111", ...}}
+    b = dict(
+        _VALID_IP,
+        id="bbb",
+        channels={
+            "facebook": dict(_VALID_IP["channels"]["instagram"], account_id="111"),
+        },
+    )
+    _write_ip(tmp_path, "aaa", a)
+    _write_ip(tmp_path, "bbb", b)
+    with pytest.raises(IPRegistryError, match=r"111"):
         load_registry(tmp_path)
 
 

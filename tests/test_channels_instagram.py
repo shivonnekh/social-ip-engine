@@ -513,6 +513,8 @@ async def test_handle_comment_no_rule_skips(monkeypatch, tmp_path):
     cfg.write_text(json.dumps({"gut": {"dm_text": "x"}}), encoding="utf-8")
     monkeypatch.setenv("COMMENT_RESPONSES_PATH", str(cfg))
     comment_rules._load_raw.cache_clear()
+    # Unmatched-comment reply path defaults OFF — no-op regardless of env leakage.
+    monkeypatch.delenv("UNMATCHED_COMMENT_REPLY_ENABLED", raising=False)
 
     called = []
 
@@ -524,6 +526,60 @@ async def test_handle_comment_no_rule_skips(monkeypatch, tmp_path):
                               from_id="U9", from_username="amy", media_id="m42")
     await meta_webhook.handle_comment(comment, _FakePipeline(["no"]))
     assert called == []
+
+
+@pytest.mark.asyncio
+async def test_handle_comment_keyword_matched_path_unchanged_by_unmatched_wiring(
+    monkeypatch, tmp_path
+):
+    """Regression guard: the new unmatched-comment branch must never leak into
+    the existing keyword-matched (canned/use_agent) path — same calls, same
+    order, even with the new module wired in and enabled."""
+    from src.channels import unmatched_comment
+
+    monkeypatch.setenv("UNMATCHED_COMMENT_REPLY_ENABLED", "1")  # prove it still never fires
+
+    unmatched_calls = []
+
+    async def fake_handle_unmatched(comment, pipeline):
+        unmatched_calls.append(comment.comment_id)
+
+    # meta_webhook.py imports the `unmatched_comment` MODULE (not the
+    # function directly), so patching the attribute on the module object
+    # once is sufficient — meta_webhook.unmatched_comment IS this same
+    # module object, not a separate reference.
+    monkeypatch.setattr(
+        unmatched_comment, "handle_unmatched_comment", fake_handle_unmatched
+    )
+
+    cfg = tmp_path / "rules.json"
+    cfg.write_text(json.dumps({
+        "gut": {"dm_text": "腸胃懶人包送俾你", "image_url": "https://x/g.png", "public_ack": "send咗喇"},
+    }), encoding="utf-8")
+    monkeypatch.setenv("COMMENT_RESPONSES_PATH", str(cfg))
+    comment_rules._load_raw.cache_clear()
+    monkeypatch.setattr(meta_webhook, "_MEDIA_PAUSE_S", 0.0)
+
+    private, public = [], []
+
+    async def fake_priv(cid, text, *, platform="instagram", **_):
+        private.append((cid, text)); return meta_client.SendResult(True)
+
+    async def fake_pub(cid, text, *, platform="instagram", **_):
+        public.append((cid, text)); return meta_client.SendResult(True)
+
+    monkeypatch.setattr(meta_client, "send_private_reply", fake_priv)
+    monkeypatch.setattr(meta_client, "reply_to_comment", fake_pub)
+
+    comment = IncomingComment(platform="instagram", comment_id="c_kw", text="gut pls",
+                              from_id="U9", from_username="amy", media_id="m42")
+    pipe = _FakePipeline(["AGENT SHOULD NOT RUN"])
+    await meta_webhook.handle_comment(comment, pipe)
+
+    assert pipe.calls == []
+    assert private == [("c_kw", "腸胃懶人包送俾你")]
+    assert public == [("c_kw", "send咗喇")]
+    assert unmatched_calls == []  # the new path never runs for a keyword match
 
 
 @pytest.mark.asyncio
