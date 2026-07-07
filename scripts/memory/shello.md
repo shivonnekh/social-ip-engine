@@ -533,3 +533,28 @@ Still open:
 - Confirmed 3-layer idempotency answers user's "bounce stage won't re-run" Q: row-id state (git-persisted) → keyword dedup → image reuse. Only re-wires if rule deleted/keyword changed.
 - Gotcha for testing: Notion "Stage is set to X" trigger only fires on an actual CHANGE. Re-selecting the same value = no webhook. Test by flipping a NON-Ready row → Ready.
 - Updated docs/content-flow-diagram.html (her HTML): trigger ✅ Published → 🟢 Ready to Publish pre-flight throughout + new §⑤ (rule fields table, generate-from-Brief, 3-layer idempotency, durability). English.
+
+## Session — 2026-07-03 (evening)
+What happened: Redesigned docs/content-flow-diagram.html from a long vertical mermaid page into a 7-slide horizontal presentation deck (scroll-snap L→R, custom flow nodes, animated connectors, webhook bolts). Renamed Jessica → Chloe everywhere in the doc. Committed d331c07 + pushed.
+Decisions:
+- Dropped mermaid entirely for the flow diagram — unstyleable, replaced with hand-built HTML/CSS nodes
+- Deck pattern: wheel→horizontal scroll, dots + arrows + keyboard nav, vertical fallback <900px, prefers-reduced-motion respected
+Still open: decisions.md has uncommitted auto-extracted changes (left unstaged intentionally — hook-owned file)
+
+## Session — 2026-07-07 (afternoon) — pressure-points carousel: research → content → live publish
+What happened: Wrote/patched the `tcm-trend-to-script` skill (Step 0 performance-retro checkpoint + marketing-psychology hook fallback) after a merge-conflict question about a nonexistent "IG reel editor" skill (turned out no such skill exists — video-editing/ai-tcm-voice were the closest, neither actually overlaps). Then researched English TCM infographic-format content (Pinterest gave real signal, IG account-level only, Reddit thin), picked "3 Pressure Points, 3 Everyday Problems" (Hegu/LI4, Zusanli/ST36, Shenmen/HT7) as a 5-slide carousel concept, generated it via gpt-image-2 matching Jackie's existing infographic brand exactly (pulled `sleep.png` as ground truth first), then built and ran the full live-publish pipeline end to end on the real @jackiechan.tcm account.
+
+Decisions / shipped:
+- **Discovered mid-task**: a full Reels auto-publish pipeline (`ig_publish.py`, `notion_publish*.py`, ledger + async runner + crash-resume) already existed uncommitted in the tree — almost certainly my own earlier work in this same session, dropped from visible context by compaction, not a conflicting concurrent session. Left it alone (didn't review/commit it myself); it got committed separately mid-session as `76683c6` by whatever process owns it.
+- **Aspect ratio gotcha**: Instagram's Content Publishing API only accepts 4:5–1.91:1 photos. The established DM-infographic convention (1024x1536, ratio 0.667) would get REJECTED for a feed post — generated at 1024x1024 square instead. Documented in CLAUDE.md so this isn't rediscovered the hard way again.
+- **Built `src/channels/ig_publish_carousel.py`** (item container + parent container, 12 passing tests) as a sibling to Reels-only `ig_publish.py` — reused its generic `poll_container_status`/`publish_container` rather than duplicating.
+- **Images must be publicly fetchable before any Graph API call** — committed to `data/media/carousel/pressure-points/`, pushed, manually triggered a Render deploy (webhook still broken), verified all 5 URLs HTTP 200 before touching the API.
+- **Added a `"pressure"` comment-keyword rule** to `comment_responses.json` so the caption's CTA isn't a dead-end — comment→DM now sends the real point-location text.
+- **Safety-gate pattern used**: `publish_pressure_points_carousel.py` preps containers + polls to FINISHED + prints the exact caption/images, then requires an explicit `--confirm-publish` flag for the actual irreversible `media_publish` call. Shivonne reviewed the prepped output before I ran with the flag.
+- **Result**: live at https://www.instagram.com/p/Dae2j14HzxY/ (media_id 17905615161444489), verified via `list_recent_media` matching back to the same id.
+- Docs: added a "Publishing NEW content to the feed" subsection to CLAUDE.md §3.10 covering both Reels and carousel paths + all the gotchas above. Committed `eebb41b`.
+
+Still open:
+- Carousel publishing isn't wired into any Notion ledger yet — today's flow is ad-hoc/manual. If this becomes a repeated content type, it should get its own idempotency ledger like Reels has (`notion_publish_state.json` equivalent), otherwise a re-run risks a duplicate live post.
+- Haven't reviewed/tested the pre-existing Reels auto-publish pipeline (`ig_publish.py`/`notion_publish*.py`) myself — it shipped mid-session from what's presumably earlier work in this same session, but I haven't personally verified it end-to-end the way I just did for carousels.
+- `zsh` reserves `status` as a variable name — bit me once mid-session on a deploy-poll loop; use `deploy_status` or similar in any future polling script in this repo.
