@@ -17,6 +17,7 @@ pipeline inline, returning the bubbles in the response.
 from __future__ import annotations
 
 import asyncio
+import hmac
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -194,6 +195,14 @@ async def lifespan(app: FastAPI):
     # checks the flag and returns immediately (logged, not silent) if off.
     from src.channels.reconciliation import start_reconciliation_loop
     background_tasks.append(asyncio.create_task(start_reconciliation_loop(pipeline)))
+
+    # Resume any Reel publish interrupted by a prior crash/deploy (container
+    # created but never polled/published) — see notion_publish_runner's
+    # module docstring. Fire-and-forget: does not delay startup, and any one
+    # job raising never takes down the others (resume_in_flight isolates
+    # each via asyncio.gather(..., return_exceptions=True)).
+    from src.notion_publish_runner import resume_in_flight
+    background_tasks.append(asyncio.create_task(resume_in_flight()))
 
     try:
         yield
@@ -486,6 +495,91 @@ async def admin_notion_sync(request: Request) -> JSONResponse:
     logger.info("[notion-sync] added=%d skipped=%d errors=%d",
                 len(result["added"]), len(result["skipped"]), len(result["errors"]))
     return JSONResponse(result)
+
+
+@app.post("/admin/notion-publish")
+async def admin_notion_publish(request: Request) -> JSONResponse:
+    """A SEPARATE Notion Automation calls this the moment a Production row's
+    Stage flips to '✅ Published' — deliberately distinct from
+    ``/admin/notion-sync`` (which fires at '🟢 Ready to Publish' to arm the
+    comment→DM funnel BEFORE the post is live). This endpoint is the actual
+    "go live" trigger: it resolves the row's finished Reel video + a cover +
+    caption, claims it against a duplicate-post ledger, and publishes it to
+    Instagram via the Graph API two-step flow — see ``notion_publish.py`` /
+    ``notion_publish_runner.py`` module docstrings for the full design
+    (idempotency guard, resume-after-crash, why the trigger is kept separate
+    from Ready-to-Publish).
+
+    Auth: same shared secret as ``/admin/notion-sync``
+    (``NOTION_SYNC_SECRET`` / ``X-Sync-Secret`` header) — this endpoint
+    triggers a REAL, irreversible post to a live Instagram account, so it
+    must not be open.
+    """
+    # Timing-safe comparison — this endpoint's blast radius (an irreversible
+    # live post) is materially higher than /admin/notion-sync's (drafts a
+    # keyword rule), so it gets the stricter check even though the sibling
+    # endpoint above still uses a plain `!=` (left as-is, out of scope here).
+    expected = os.environ.get("NOTION_SYNC_SECRET", "")
+    provided = request.headers.get("X-Sync-Secret", "")
+    if not expected or not hmac.compare_digest(provided, expected):
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+
+    from starlette.concurrency import run_in_threadpool
+
+    from src import notion_publish
+    from src.notion_publish_runner import resume_in_flight, run_publish_job
+
+    # Resume anything left "in_flight" from a prior crash/deploy FIRST, so a
+    # stuck row from a previous run gets a fresh task before we plan new
+    # ones — mirrors notion_sync's "retry pending checkbox before scanning
+    # for new rows" ordering.
+    try:
+        resumed_count = await resume_in_flight()
+    except notion_publish.NotionSyncError as exc:
+        # Covers LedgerCorruptError too (a subclass) — a corrupt ledger must
+        # refuse to proceed rather than silently resuming zero jobs (which
+        # would look identical to "nothing was in flight").
+        logger.exception("[notion-publish] resume failed")
+        return JSONResponse({"error": str(exc)}, status_code=502)
+
+    try:
+        # plan_publishes() does blocking I/O (Notion API, cover resolve/
+        # generate) — never run it on the event loop, same reasoning as
+        # notion_sync.sync_once() via run_in_threadpool.
+        result = await run_in_threadpool(notion_publish.plan_publishes)
+    except notion_publish.NotionSyncError as exc:
+        logger.exception("[notion-publish] planning failed")
+        return JSONResponse({"error": str(exc)}, status_code=502)
+
+    # Each job's own background task pushes its ledger mutations to git
+    # itself as it progresses (see notion_publish_runner._update_ledger) —
+    # this endpoint does NOT wait for Meta's processing time, it only waits
+    # for the (fast, local) planning step above, then returns immediately.
+    # Tasks are held on app.state so they aren't garbage-collected mid-run
+    # (asyncio only holds a weak reference to a task with no other owner)
+    # and so a slow shutdown can still see/cancel them if needed.
+    live_tasks = getattr(request.app.state, "notion_publish_tasks", None)
+    if live_tasks is None:
+        live_tasks = []
+        request.app.state.notion_publish_tasks = live_tasks
+    for job in result["jobs"]:
+        task = asyncio.create_task(run_publish_job(job))
+        live_tasks.append(task)
+        task.add_done_callback(lambda t, tasks=live_tasks: tasks.remove(t) if t in tasks else None)
+
+    logger.info(
+        "[notion-publish] checked=%d claimed=%d resumed=%d skipped=%d errors=%d",
+        result["checked"], len(result["jobs"]), resumed_count,
+        len(result["skipped"]), len(result["errors"]),
+    )
+    return JSONResponse({
+        "checked": result["checked"],
+        "claimed": [job.row_id for job in result["jobs"]],
+        "resumed": resumed_count,
+        "skipped": result["skipped"],
+        "errors": result["errors"],
+        "warnings": result["warnings"],
+    })
 
 
 @app.post("/api/dev-chat")

@@ -474,6 +474,7 @@ def test_sync_once_ships_rule_when_infographic_download_fails(
     monkeypatch.setattr(notion_sync, "_IDS_PATH", ids_path)
     monkeypatch.setattr(notion_sync, "_RULES_PATH", rules_path)
     monkeypatch.setattr(notion_sync, "_STATE_PATH", state_path)
+    monkeypatch.setattr(notion_sync, "_WIRED_PENDING_PATH", tmp_path / "notion_wired_pending.json")
     monkeypatch.setattr(nsm, "MEDIA_DIR", tmp_path / "guides")
     monkeypatch.setattr(nsm, "STATE_PATH", tmp_path / "notion_media_state.json")
 
@@ -510,7 +511,11 @@ def test_sync_once_ships_rule_when_infographic_download_fails(
     }
 
     monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
-    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(
+        notion_sync,
+        "_ncall",
+        lambda method, path, body=None: {} if method == "PATCH" else pages[path],
+    )
     monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
 
     def boom(req: Any, timeout: float = 0) -> None:
@@ -537,6 +542,7 @@ def test_sync_once_attaches_infographic(tmp_path: Path, monkeypatch: pytest.Monk
     monkeypatch.setattr(notion_sync, "_IDS_PATH", ids_path)
     monkeypatch.setattr(notion_sync, "_RULES_PATH", rules_path)
     monkeypatch.setattr(notion_sync, "_STATE_PATH", tmp_path / "notion_sync_state.json")
+    monkeypatch.setattr(notion_sync, "_WIRED_PENDING_PATH", tmp_path / "notion_wired_pending.json")
     monkeypatch.setattr(nsm, "MEDIA_DIR", tmp_path / "guides")
     monkeypatch.setattr(nsm, "STATE_PATH", tmp_path / "notion_media_state.json")
     monkeypatch.delenv("PUBLIC_BASE_URL", raising=False)
@@ -575,7 +581,11 @@ def test_sync_once_attaches_infographic(tmp_path: Path, monkeypatch: pytest.Monk
     }
 
     monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
-    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(
+        notion_sync,
+        "_ncall",
+        lambda method, path, body=None: {} if method == "PATCH" else pages[path],
+    )
     monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
 
     def fake(req: Any, timeout: float = 0) -> io.BytesIO:
@@ -614,6 +624,7 @@ def test_sync_once_wires_on_ready_or_published_only(
     monkeypatch.setattr(notion_sync, "_IDS_PATH", ids_path)
     monkeypatch.setattr(notion_sync, "_RULES_PATH", rules_path)
     monkeypatch.setattr(notion_sync, "_STATE_PATH", tmp_path / "notion_sync_state.json")
+    monkeypatch.setattr(notion_sync, "_WIRED_PENDING_PATH", tmp_path / "notion_wired_pending.json")
     monkeypatch.setattr(nsm, "MEDIA_DIR", tmp_path / "guides")
     monkeypatch.setattr(nsm, "STATE_PATH", tmp_path / "notion_media_state.json")
 
@@ -648,7 +659,11 @@ def test_sync_once_wires_on_ready_or_published_only(
 
     monkeypatch.setenv("NOTION_SYNC_GENERATE_IMAGES", "0")
     monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
-    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(
+        notion_sync,
+        "_ncall",
+        lambda method, path, body=None: {} if method == "PATCH" else pages[path],
+    )
     monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
 
     result = notion_sync.sync_once()
