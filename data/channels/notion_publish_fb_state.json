@@ -13,5 +13,73 @@
     "updated_at": "2026-07-08T06:10:13.624994+00:00",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/b1b40b58-18d9-488c-a911-5da4057c39b2/6%E6%9C%8823%E6%97%A5-tonsil.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666UKEHQFK%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T060932Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDQkV1ROFWcU1jd4QKa2SHcsPh0TOMQNla5EoeHqxZJHAIhANlsh8sdUGebLHUuH%2Bce%2FsbAfbiP%2BG8SkMpHH%2Bg59%2B5zKv8DCH8QABoMNjM3NDIzMTgzODA1IgzlLEkHPV%2FIy4Y%2Fo1wq3APicTzLtmLe6Kn0FHRWh30mxD4uTYt5GmpzznaGR6tYv%2BWIZQKIYwhbP0qSPjVa%2Fakd6j1QzMh6CoDbsPqmkr9pIxRtL%2FirGl4VkXVDyUSW4I1%2B5d9sYusxb2c%2BUR1n1zdC9Vr6tdYVMkJa7m2u4YnvLizFWqSLDf9fBKcRJ7tKjwmThbR5aO40jpN3Z9QLwVOufEVHXVIcMo9%2B%2FQ3hm5GdNLSLOif%2Ba4OyF71wszDoClGDVO9y%2BxmEGReQFBMVH1kX6FDkkBrYUrBfxqW8AIBAftjOGnNnJC0GcPLjMSixKX1oT%2BRGzIPhjYto3SbAT4JueptUR0wyRSQXHjWRKmbEfe81RFdU%2Bo1TZG5o73jj8SB7dvNXmbahe7dkLdhIkT298I%2FCI9oi1u5OlEeVBm4vw4pjS6xpwm21ZM8K7htX%2FrXLYoy50gnb9tBshvkjk%2BIJP9F8LrRpyyZv6Pd67ZFwJtp7qGCDtPonjORkv%2BaAZmzdjLg5ASPdD51mlV5N3VaKl6OF6%2FlMQTXFuW1YNDtUYsVsxFcaU0XCpuIIhitVQuTyoTzDPcN8aCA4KO2X7sbst9hv90kib8GETJzzRcAJZEqnpfPWmfWGFR17f6T5v625fZTFnaxhlcxq1jCZzrfSBjqkAU6%2BUmYai8gEBg4vo1fuXK2gzHqLdl4sMCm6KYgMshWgv09BR9AvW33O52uoBVkD%2FHHIVG9KLwRoXn3IQ3DN8oFk78idmSOm5dhAf%2F4NHU6dGZXOVdzuzjN%2FIw0Si7DmmYxmsmHpDeJacCtzCvzmWHXlNJ4I%2B1Pv%2FMSMq6d62mtKg1l49hpEx%2FzpBbIOZOdsFIA%2B4dzEFxNQmwlgT9IeGH7x5vy5&X-Amz-Signature=7538874525107fa9139830d6b127c7b288e6f0a54e293f4466628a0a96ae1473&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/b1b40b58-18d9-488c-a911-5da4057c39b2/6%E6%9C%8823%E6%97%A5-tonsil.mp4"
+  },
+  "389f2a3f-4320-8186-b892-fefacbfe7cb7": {
+    "status": "failed",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7f7a482c-db30-416d-bf82-616a5a7b1f88/detox.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VKOWKJDH%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050257Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCID1O9lJfKfP6CFfZy3hUwi%2FAVUmnBE%2FhhZlfZYCJ25%2FuAiEAkgZiVl5kabfWhRyKnl6DjfUs7KtYcALJMUKjfaAm%2B2wq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDNTPTl6Fi5mjveelCCrcA6qGepwJZ7dOcC2EhMH0lmN6Y4QzK16O0%2BTRh3nJnyUdQDZJyU4fxGYOljcTLVFcfo%2FEpU95RtK5V0%2BnPXNp2VjEchToCXEnlwbQMVZMQuPydgEqQPIsX0utu6zDs5%2BKrEkPwVdWbjNXkTC5MjEu5qzXal%2B0B4YCe05GWx2OpQCKIqMwdS0eW89Kpjq%2BjsuuLXj5tZvdI97zvQoeERLD7J2CBVwkPGCvsxauPM9QLSQyRaqZz1mvjL1G0YaVRvT1d0KUbfSJues7Z7gLdgF7MFAlTmj72fMrUIEfudV2FYHduJC6IjoyaPN87xkigoTcHobPL%2FtqPfpV0MIoEQozbeL9YASVX6NODffrH92wcADbyeIoWXmqpqdVjjcVctbCPD8bALVWMM1%2FmFqu9Fk0wRc8SmS831qQDsqMZtR%2FhEjVSq%2B835U8CJqpfC3NYr7pPPoq96PSSVBBSolyI61dgQWqtwu2ZEVcXqbhqn1Oefd1l74cADcijT%2BRJOzasMjgpgLOiJfGJlYfgcr3cjsaIvwnRSu8PZpoceiP9n4kHGEhvfW3d6fmjsuKe0s9ATUXDoFqTQ2oFX3aP7R0zzFulEaavwVYEO4HL8pWILCUywuRkQ%2FujVkDE3fXaKPMMKObt9IGOqUBPHTB%2FTiMxtFaCw9jERHaXt8IUxC5nzr8%2BRxq4e%2BfghQkGvShvMfU9Oh0PvF3nxs43jKkabRgy80pvQiAnIATk59qHU7ytWFiD20ktlBszgFVn4%2Ba4CRiTXEmqfjYo74a1gzyy0TOJcAsADfIbAnToRquRwxgR3Pl49BvaP3Q4f9yeaijURu%2FC0HPzbyztoASYTjmiOpjPe2Er0tAbdEIAtZvv5Qt&X-Amz-Signature=7ff293a1e938516ab4aff13d975a89470dc284844d9a81aa602792a7424d361d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7f7a482c-db30-416d-bf82-616a5a7b1f88/detox.mp4",
+    "cover_url": "",
+    "caption": "",
+    "account_id": "528216523715336",
+    "creation_id": null,
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
+    "updated_at": "2026-07-08T11:13:26.012646+00:00"
+  },
+  "389f2a3f-4320-81a7-98c4-de027ccde5bd": {
+    "status": "skipped",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/b1b40b58-18d9-488c-a911-5da4057c39b2/6%E6%9C%8823%E6%97%A5-tonsil.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RC6SMRP5%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050300Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCTjvDKncJ8lx5NeZE8VzAw2eCSqfIT92iwcIjrwmJdbAIgaaYiHDk2LZ%2F9mYJ9ammF5zpLKDvhlyueXf8c2hld%2FUYq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDJST0YRVO8K1RJgtMyrcA9lRK1FBt06Jm%2FxwHwDRVGN%2FtSuCYGlw8dLnf5CNN0S05KlWS8f7PxhEHB3BWnHBT6mBRtCSluOZfwccdHIsHZW7dxgXfzs3zyFMAi4Nlc9pc9kPaFi8TjB4nhNR6y%2FTTytuHmAuhVAb4GXG25jLVOpsYsgObyMDL1ktlnNI7qOFlOderZuLpispz5GdytQuArZFj54AO%2FjSYKynPYn%2BHJt0XaWj9brAP%2BijGAq2VN2leixp8BJ%2FxMD3WgcGvrOF7DXi4B17hb68qjBncMSr8Y5vq2pYiAaGpato3nlMOruWdRe7wALlBMfy3kfiv3nE5DWTwlpmDHlVhC4tm2hVF%2BvtgdWDtkPthXZTiEbmdfU9XUe5fEo6Zf1WbojMIrWoZENFNlm95dq6Hk2dDa%2FpprP6Q8gBiuIQRY%2Fp2l33gyx7WExUaJY4qWzBLpRVX6AjlNpF4C9IiGqCTE0g1%2Bmy53pzmJHK65VBQUkXYKTk5VfG9kMKxNOLt51fYcHLthW7bynkCYT7eZ37%2FpNtbOvwQdB4%2FkbrrCFFqGFtUNRyWJlp6JGY5fl4wG72TC%2FN85HxvckFLw8DmjP%2BnulNtJWi5RWmgSyKDHwHabnlGdw7d1%2F2IPZp05NdH7W2G7KlMJCet9IGOqUBHZeRz4GR%2FdtDjGhxNiG9evBHbjjMVgGmo7AqbjAcEA6aD7GixKv68x7T66r0yFN11%2BdOtUyjA7D9OJapSdD2k7xLkV61PYXavRLSdNzv4tXmvQhmfN7m3zHIWRfOG%2BlugzHPNWmSP5CBsI5Mbxb0hChOZYNGfmQwlncy0Edwr0H%2FvrdQMYwNMKersSQwXnNXVqewSY%2BdP9%2FGuNgCkbF7R%2FeIs79e&X-Amz-Signature=d0a8f057bba74688a96d41f299b5754d9aa2f45f6ab7c413bac0c50daf35ab67&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/b1b40b58-18d9-488c-a911-5da4057c39b2/6%E6%9C%8823%E6%97%A5-tonsil.mp4",
+    "account_id": "528216523715336",
+    "creation_id": null,
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 0,
+    "last_error": "duplicate video_url already mirrored to FB under a different row",
+    "updated_at": "2026-07-08T11:13:22.907285+00:00"
+  },
+  "38df2a3f-4320-819f-b0ea-ddcd6b550418": {
+    "status": "failed",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/f6ff0a02-5832-4d84-953d-01adcc937be4/dry_eye.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TIDWCCEB%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050256Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDGVj%2Bm4lMFO%2FDPnPtaFd9Y09q8DhdWEGSnh6IeIMJfXwIgaY7vLLivBh56tYn%2BM2lJ98DgNnJxPf%2FuHDQf9tlsIKIq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDACzq%2FjicyJQoW5rLCrcAxuc2JZFlcRRWz%2BSEmufRtxVr9XFmgrNdMHWr1L3O15sPv3VoBFJ57PCaef%2Ffj2p6PMH2V%2B72juDDJmJd0lJ0VH%2BfSqxTIdt8wDN0V0rBG43lez7F4oUFMgKaSH65ho1tLrJWCtBnHiJTNq2%2BYNN9OsU4Pxjyno5Xg5EpUY%2Fp8ruXIO0MxmHJWy5TXuHq9cG%2B4Hirbd05bRCAuIanlPQVkROhkUOYYPTS7jZGrERUWIxTFtWofUXGcgigrqi1MfN42yox87ZkqkUmH1qDPPv3sr3sy5eoifE0Atwep3ePeDaq2J1VADluCYBOtHTpe22oeWnPVGuPL9uV9GyeFmcupwQ87vAdViJPjOwYUtqN3cYnGKb9IZ%2FvymyBzxSL7iyxOfjF2aHbi4p7SJNPYmilgpduH4VfJZXYWYvbzFH0A7M7%2B4J3xo5Gh%2Fuqem8FXsf9O3vn64yK%2BXKKcmQu8W21va6eUzW1UPKPGa2d67h916WFh%2FzBHjDquymSB3jFEeI1BmRjNtnJZBfTzTIqUpVMxn7F3BIOQkxe5EZbXQ%2Bd%2FbalBq95s5O%2BwrSPViZTTjta2KWSsFQ9xxL%2BscPi%2B0cUShyhgT4VTxOZF10ZrxBrUw0Qv3umvsLrPFLtredMM2at9IGOqUBGxvUOS8smXiFbnIx9GzgMIM%2Fs3FKegXKt%2FWcGl%2FC%2FSvD457SyZA46dlObicrs5rFq%2BdQQOjCh66gfiQ%2BF%2BzMCYrKl%2BSGKMw1IEv9whSodzXnikWEjUUdTex35MtZIDwGAHRHM%2FON%2Bf2OgWPVvVjauG7Ka25PUo2E153qD8hooLFnPdDRW1Rzu1hZTI5YDSFv2177%2B7mzm6PiufOErKgi5vMSlD6Q&X-Amz-Signature=cd12431546cbed19f872f10fd922f1ac7220d5254ba0d462d87dd3a6a06bef43&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/f6ff0a02-5832-4d84-953d-01adcc937be4/dry_eye.mp4",
+    "cover_url": "",
+    "caption": "",
+    "account_id": "528216523715336",
+    "creation_id": null,
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
+    "updated_at": "2026-07-08T11:13:26.003281+00:00"
+  },
+  "38df2a3f-4320-81a1-a1a2-c3deb9b79eab": {
+    "status": "failed",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7d0cdfb4-7da9-4cb0-9e54-a46c2996030a/migraine.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666WBQRLUK%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050257Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIF2hoY9EROFiub66UYw1CM%2FI7%2FU3tWZWro1y7%2FPJZ1leAiEA7BLGWtlk%2B%2BRjoZScNLbsi077GfH8mE9kILvVour7Yqkq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDJdopDOL3Go8qawEzCrcA23o4Wb9Esmi6Z6BjOwb97rDa3NAAsIcjbJn0Bo8E3n%2BQtry3Js8qzkAQ2J8KyAyFqLFZhvOowcVx9c14NsUbP3LTrFjbtnr8HaMpKSCd5CdP8SPHrM%2FBdpWIslsH4G%2FxaiVwtZ7cvsm08H37lKcQVSNz7kwelV1OVeA%2BOhUcdZ7KdZfnHcpyJV864HnWZDK7qZuNDEXqL0AW8MvlS7d8rzoWRp%2FL1yOsZhCaoDuLvqHaVaenOKaPQjmUOa5Run3JbD500prsuDQkCDNQitJBWNHXduOyFq%2FA2z%2F1C%2FrSoPp7y4adTz2bmQpc9V4pz3B6bt72uHBgY7V903UD4pFYhIKNZB1VxELGOi%2FVzrv1TZmQFjKMGiG3dyZxFrY9uK2SUOhGM1dHPB4FdTS6fAgvmToLZLj5WAXT8DXHinUc0TrPr%2B7Ra8E5vIy7dEEwQMffV2c2Aqs3DtXX9tjVrDDz44EfxV5gZu7pd4E6%2BlfroQFDfP00HA8NHk7V%2BAWMAy7Tyj1oX7%2FvN2UaESqDfZ0OULWC8D8cK5%2Ft8egWCFSAW6NYfhGDod4%2BFJZmWyElY9MawsWFHeF5v8OEbSNpQdRd99NX872EjdMk9CpBAKaZBG6p%2FtQgDnij8cIxTqpMJObt9IGOqUBVjBnYDSDMrk8rBOep4Zt%2F6dRXiCtonC7CNiJozy1RTEAZLhpXOXNuZFE6%2BgyOvOgf4DUytDu%2Beqlzofu8nKBv1f%2BdTZuhB%2FiYLec8FqfLM3VuicE8%2BWhSzJaLalrHDw5d8k8gmM9BFNW1ZYTZGTfTLsYXTrdx3FIo3dVjQZD6HXH7QphFCRqost%2B9bVJXrmjzYxkvX2ixOqUHG2F%2BTkU%2Bja8K1M7&X-Amz-Signature=4fe4a0d72e44eb019d66b3a414bcf05382c87d77f594341eb9fe443a09eecef5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7d0cdfb4-7da9-4cb0-9e54-a46c2996030a/migraine.mp4",
+    "cover_url": "",
+    "caption": "",
+    "account_id": "528216523715336",
+    "creation_id": null,
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
+    "updated_at": "2026-07-08T11:13:26.000285+00:00"
+  },
+  "38df2a3f-4320-81c0-83e3-cb566cdbd1c4": {
+    "status": "failed",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/76bd7a3c-9b1f-481b-9e8f-554171ef6144/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WCQVNMJQ%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T075152Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDOhsm6Cn0e%2FTv9wY4VCnT4dHc%2B5VoTnDeq5Bc6xDIjOwIgQQcA4sjF5W5jocGMd%2FXB52Jyx626dmlxv4iJ9X%2BjElcq%2FwMIfxAAGgw2Mzc0MjMxODM4MDUiDIGIN1wmQz8YtsrBIircA1Zj8PZY66TLs%2BVHj0%2BjSPKhXrj4Vv4vQm5g9JVFkvEHHNKmvDdzluc9v730AHw6VX4jWEagssgxmtP0J2kYhiXjzRxefV%2Ft0UJNnx9lzcE9TYqitAZlrBGd%2Bi9vy5NNzAaq7NsrrBsNtC4NAOkcpMCHCHdvlq%2BEDIXu9IqI2UEEtqfFcwu4J%2FROlDRdnqOZANvkxPh%2BmIiGEXPCKyXrYWY2tV8%2F0uzf996Ww7QIEVj2QqiP5xZVHDY4vh8vLVx35leYIE5lQh4ym%2FjDk1lKbaDFB4bov4nmS6Kac6ylc8cx%2FU4AkHOnzfbXPNI%2FCm2KnA5sHc4menj%2FUe7j89Vc2IBfrbqEDcCao4x5ksk3ixCD3rR8mhEbgmbfX5VIY4hVNKzYGKfZ5BdzyMvdU6TT3hl7IrSD%2FECv5z7ef%2FhvlGY6PYqDbCThh3bhthPbCtBqzRbguSycwElgdxyZvsacR563LhMN0rG2Rpvr8T8io1bZBWCfaehz4pMaz%2FD9Tt2G0tJUfH1JNURVX1AkOjgD6vsWLh4DdrOKgzISYbqNWEHj8o%2BukwwlVHYq0FWFSXyOb2B25R78okiFhlgAMnLgjmkwAga6Xjmys1rVA0xQJPuNObVOQX%2BY%2BqHcLg6IMLTOt9IGOqUBD3dbmCdglrzPTJ5h5w%2B0mqNcEbyJ0cZSDQ90D0HZiTZZGIkCrx0h%2BYGsNqLrZ7UXrSPzymuRO5%2BqHyQ%2FDYKoRWK2oqtXWp8Imlqz4wdYbS7SBKC6sH6bWJQriuKgnvICLx%2BPcQMXufTCzW52k0jw1rzGEF9C6khO3I47%2BGWBdyGeoMcBx4flm3hdIJcsayC52h6Ys4NY5TSdnpGvmPFCOlDf9Zva&X-Amz-Signature=7c5d1662cf1d9121c059c20959bf429e7b4a4bbe4497fd1a67cf1bc918e8a629&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/76bd7a3c-9b1f-481b-9e8f-554171ef6144/final_karaoke.mp4",
+    "cover_url": "",
+    "caption": "",
+    "account_id": "528216523715336",
+    "creation_id": null,
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
+    "updated_at": "2026-07-08T11:13:26.069745+00:00"
   }
 }

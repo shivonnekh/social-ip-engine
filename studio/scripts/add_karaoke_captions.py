@@ -176,31 +176,11 @@ def align_to_known_script(words: list[dict[str, Any]], script_text: str) -> list
     return aligned
 
 
-_SENTENCE_END_CHARS = (".", "!", "?")
-
-
-def _ends_sentence(word: str) -> bool:
-    """Whether `word` (as transcribed/corrected, punctuation intact) ends a
-    sentence. Used to force a caption chunk break even when word-count and
-    pause-gap thresholds haven't been hit — see group_words() docstring."""
-    return word.rstrip().endswith(_SENTENCE_END_CHARS)
-
-
 def group_words(words: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
     """Split the flat word list into caption chunks: at most
     MAX_WORDS_PER_CHUNK words, breaking EARLY if the gap to the next word
-    exceeds PAUSE_BREAK_S (a natural breath/pause is a better break point
-    than an arbitrary word count landing mid-breath) OR if the current word
-    ends a sentence (a real production defect, 2026-07-08: "stops them,
-    listen." and the NEXT, unrelated sentence "Western doctors will not
-    tell you this" got merged into one 5-word chunk purely because word
-    count hadn't hit the cap yet and the speaker didn't pause long enough
-    between them — two distinct sentences read as one caption block).
-    Sentence-end detection is deliberately eager (any word ending in
-    . ! ?) — an occasional false break on an abbreviation just costs one
-    extra (still-correct) cue boundary, whereas missing a real sentence
-    end merges two unrelated thoughts into one cue, which is the actual
-    reported defect."""
+    exceeds PAUSE_BREAK_S — a natural breath/pause is a better break point
+    than an arbitrary word count landing mid-breath."""
     chunks: list[list[dict[str, Any]]] = []
     current: list[dict[str, Any]] = []
     for i, word in enumerate(words):
@@ -210,8 +190,7 @@ def group_words(words: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
         next_gap_too_big = (
             not is_last and (words[i + 1]["start"] - word["end"]) > PAUSE_BREAK_S
         )
-        sentence_ended = _ends_sentence(word["word"])
-        if at_max or next_gap_too_big or sentence_ended or is_last:
+        if at_max or next_gap_too_big or is_last:
             chunks.append(current)
             current = []
     return [c for c in chunks if c]
