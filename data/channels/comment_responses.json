@@ -308,5 +308,20 @@
       "https://tcm-jessica.onrender.com/media/carousel/pressure-points/slide-3-zusanli.png",
       "https://tcm-jessica.onrender.com/media/carousel/pressure-points/slide-4-shenmen.png"
     ]
+  },
+  {
+    "keyword": "period",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Let's get you some relief — but type ID first 🩸\n\nTwo quick questions:\n1. Does a heat pack on your lower abdomen make the pain better or does it not really help?\n   → Better = Cold Stagnation type\n   → Doesn't help much = Blood Stasis type\n\n2. Is the pain crampy and wave-like, or stabbing and fixed in one spot?\n\nTell me which, and I'll send the exact protocol for your type — including the right acupressure combo.\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM period guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🩸 Period Pain Emergency — Do This Now",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/period-page-1.png"
+    ]
   }
 ]
