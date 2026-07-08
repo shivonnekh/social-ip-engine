@@ -1,0 +1,97 @@
+{
+  "389f2a3f-4320-8186-b892-fefacbfe7cb7": {
+    "account_id": "17841417304649448",
+    "caption": "",
+    "cover_url": "",
+    "creation_id": "18132481765576822",
+    "media_id": "18113774092803505",
+    "note": "reconciled 2026-07-08: real duplicate post confirmed live on Instagram (ledger was empty when notion-publish first ran, due to a stale git HEAD silently breaking persistence for days — see git_publish.py fix same date)",
+    "status": "published",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7f7a482c-db30-416d-bf82-616a5a7b1f88/detox.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VKOWKJDH%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050257Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCID1O9lJfKfP6CFfZy3hUwi%2FAVUmnBE%2FhhZlfZYCJ25%2FuAiEAkgZiVl5kabfWhRyKnl6DjfUs7KtYcALJMUKjfaAm%2B2wq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDNTPTl6Fi5mjveelCCrcA6qGepwJZ7dOcC2EhMH0lmN6Y4QzK16O0%2BTRh3nJnyUdQDZJyU4fxGYOljcTLVFcfo%2FEpU95RtK5V0%2BnPXNp2VjEchToCXEnlwbQMVZMQuPydgEqQPIsX0utu6zDs5%2BKrEkPwVdWbjNXkTC5MjEu5qzXal%2B0B4YCe05GWx2OpQCKIqMwdS0eW89Kpjq%2BjsuuLXj5tZvdI97zvQoeERLD7J2CBVwkPGCvsxauPM9QLSQyRaqZz1mvjL1G0YaVRvT1d0KUbfSJues7Z7gLdgF7MFAlTmj72fMrUIEfudV2FYHduJC6IjoyaPN87xkigoTcHobPL%2FtqPfpV0MIoEQozbeL9YASVX6NODffrH92wcADbyeIoWXmqpqdVjjcVctbCPD8bALVWMM1%2FmFqu9Fk0wRc8SmS831qQDsqMZtR%2FhEjVSq%2B835U8CJqpfC3NYr7pPPoq96PSSVBBSolyI61dgQWqtwu2ZEVcXqbhqn1Oefd1l74cADcijT%2BRJOzasMjgpgLOiJfGJlYfgcr3cjsaIvwnRSu8PZpoceiP9n4kHGEhvfW3d6fmjsuKe0s9ATUXDoFqTQ2oFX3aP7R0zzFulEaavwVYEO4HL8pWILCUywuRkQ%2FujVkDE3fXaKPMMKObt9IGOqUBPHTB%2FTiMxtFaCw9jERHaXt8IUxC5nzr8%2BRxq4e%2BfghQkGvShvMfU9Oh0PvF3nxs43jKkabRgy80pvQiAnIATk59qHU7ytWFiD20ktlBszgFVn4%2Ba4CRiTXEmqfjYo74a1gzyy0TOJcAsADfIbAnToRquRwxgR3Pl49BvaP3Q4f9yeaijURu%2FC0HPzbyztoASYTjmiOpjPe2Er0tAbdEIAtZvv5Qt&X-Amz-Signature=7ff293a1e938516ab4aff13d975a89470dc284844d9a81aa602792a7424d361d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7f7a482c-db30-416d-bf82-616a5a7b1f88/detox.mp4"
+  },
+  "389f2a3f-4320-81a7-98c4-de027ccde5bd": {
+    "account_id": "17841417304649448",
+    "caption": "",
+    "cover_url": "",
+    "creation_id": "18132481768576822",
+    "media_id": "17909742579431105",
+    "note": "reconciled 2026-07-08: real duplicate post confirmed live on Instagram (ledger was empty when notion-publish first ran, due to a stale git HEAD silently breaking persistence for days — see git_publish.py fix same date)",
+    "status": "published",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/b1b40b58-18d9-488c-a911-5da4057c39b2/6%E6%9C%8823%E6%97%A5-tonsil.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RC6SMRP5%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050300Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCTjvDKncJ8lx5NeZE8VzAw2eCSqfIT92iwcIjrwmJdbAIgaaYiHDk2LZ%2F9mYJ9ammF5zpLKDvhlyueXf8c2hld%2FUYq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDJST0YRVO8K1RJgtMyrcA9lRK1FBt06Jm%2FxwHwDRVGN%2FtSuCYGlw8dLnf5CNN0S05KlWS8f7PxhEHB3BWnHBT6mBRtCSluOZfwccdHIsHZW7dxgXfzs3zyFMAi4Nlc9pc9kPaFi8TjB4nhNR6y%2FTTytuHmAuhVAb4GXG25jLVOpsYsgObyMDL1ktlnNI7qOFlOderZuLpispz5GdytQuArZFj54AO%2FjSYKynPYn%2BHJt0XaWj9brAP%2BijGAq2VN2leixp8BJ%2FxMD3WgcGvrOF7DXi4B17hb68qjBncMSr8Y5vq2pYiAaGpato3nlMOruWdRe7wALlBMfy3kfiv3nE5DWTwlpmDHlVhC4tm2hVF%2BvtgdWDtkPthXZTiEbmdfU9XUe5fEo6Zf1WbojMIrWoZENFNlm95dq6Hk2dDa%2FpprP6Q8gBiuIQRY%2Fp2l33gyx7WExUaJY4qWzBLpRVX6AjlNpF4C9IiGqCTE0g1%2Bmy53pzmJHK65VBQUkXYKTk5VfG9kMKxNOLt51fYcHLthW7bynkCYT7eZ37%2FpNtbOvwQdB4%2FkbrrCFFqGFtUNRyWJlp6JGY5fl4wG72TC%2FN85HxvckFLw8DmjP%2BnulNtJWi5RWmgSyKDHwHabnlGdw7d1%2F2IPZp05NdH7W2G7KlMJCet9IGOqUBHZeRz4GR%2FdtDjGhxNiG9evBHbjjMVgGmo7AqbjAcEA6aD7GixKv68x7T66r0yFN11%2BdOtUyjA7D9OJapSdD2k7xLkV61PYXavRLSdNzv4tXmvQhmfN7m3zHIWRfOG%2BlugzHPNWmSP5CBsI5Mbxb0hChOZYNGfmQwlncy0Edwr0H%2FvrdQMYwNMKersSQwXnNXVqewSY%2BdP9%2FGuNgCkbF7R%2FeIs79e&X-Amz-Signature=d0a8f057bba74688a96d41f299b5754d9aa2f45f6ab7c413bac0c50daf35ab67&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/b1b40b58-18d9-488c-a911-5da4057c39b2/6%E6%9C%8823%E6%97%A5-tonsil.mp4"
+  },
+  "38af2a3f-4320-8178-9fcb-c352860e7663": {
+    "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
+    "status": "skipped",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  },
+  "38af2a3f-4320-81b9-8c37-cad038d50ae8": {
+    "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
+    "status": "skipped",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  },
+  "38df2a3f-4320-818a-8779-f4070bbaaeb4": {
+    "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
+    "status": "skipped",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  },
+  "38df2a3f-4320-819f-b0ea-ddcd6b550418": {
+    "account_id": "17841417304649448",
+    "caption": "",
+    "cover_url": "",
+    "creation_id": "18132481774576822",
+    "media_id": "18078418727677767",
+    "note": "reconciled 2026-07-08: real duplicate post confirmed live on Instagram (ledger was empty when notion-publish first ran, due to a stale git HEAD silently breaking persistence for days — see git_publish.py fix same date)",
+    "status": "published",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/f6ff0a02-5832-4d84-953d-01adcc937be4/dry_eye.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TIDWCCEB%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050256Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDGVj%2Bm4lMFO%2FDPnPtaFd9Y09q8DhdWEGSnh6IeIMJfXwIgaY7vLLivBh56tYn%2BM2lJ98DgNnJxPf%2FuHDQf9tlsIKIq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDACzq%2FjicyJQoW5rLCrcAxuc2JZFlcRRWz%2BSEmufRtxVr9XFmgrNdMHWr1L3O15sPv3VoBFJ57PCaef%2Ffj2p6PMH2V%2B72juDDJmJd0lJ0VH%2BfSqxTIdt8wDN0V0rBG43lez7F4oUFMgKaSH65ho1tLrJWCtBnHiJTNq2%2BYNN9OsU4Pxjyno5Xg5EpUY%2Fp8ruXIO0MxmHJWy5TXuHq9cG%2B4Hirbd05bRCAuIanlPQVkROhkUOYYPTS7jZGrERUWIxTFtWofUXGcgigrqi1MfN42yox87ZkqkUmH1qDPPv3sr3sy5eoifE0Atwep3ePeDaq2J1VADluCYBOtHTpe22oeWnPVGuPL9uV9GyeFmcupwQ87vAdViJPjOwYUtqN3cYnGKb9IZ%2FvymyBzxSL7iyxOfjF2aHbi4p7SJNPYmilgpduH4VfJZXYWYvbzFH0A7M7%2B4J3xo5Gh%2Fuqem8FXsf9O3vn64yK%2BXKKcmQu8W21va6eUzW1UPKPGa2d67h916WFh%2FzBHjDquymSB3jFEeI1BmRjNtnJZBfTzTIqUpVMxn7F3BIOQkxe5EZbXQ%2Bd%2FbalBq95s5O%2BwrSPViZTTjta2KWSsFQ9xxL%2BscPi%2B0cUShyhgT4VTxOZF10ZrxBrUw0Qv3umvsLrPFLtredMM2at9IGOqUBGxvUOS8smXiFbnIx9GzgMIM%2Fs3FKegXKt%2FWcGl%2FC%2FSvD457SyZA46dlObicrs5rFq%2BdQQOjCh66gfiQ%2BF%2BzMCYrKl%2BSGKMw1IEv9whSodzXnikWEjUUdTex35MtZIDwGAHRHM%2FON%2Bf2OgWPVvVjauG7Ka25PUo2E153qD8hooLFnPdDRW1Rzu1hZTI5YDSFv2177%2B7mzm6PiufOErKgi5vMSlD6Q&X-Amz-Signature=cd12431546cbed19f872f10fd922f1ac7220d5254ba0d462d87dd3a6a06bef43&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/f6ff0a02-5832-4d84-953d-01adcc937be4/dry_eye.mp4"
+  },
+  "38df2a3f-4320-81a1-a1a2-c3deb9b79eab": {
+    "account_id": "17841417304649448",
+    "caption": "",
+    "cover_url": "",
+    "creation_id": "18132481762576822",
+    "media_id": "18149998969501519",
+    "note": "reconciled 2026-07-08: real duplicate post confirmed live on Instagram (ledger was empty when notion-publish first ran, due to a stale git HEAD silently breaking persistence for days — see git_publish.py fix same date)",
+    "status": "published",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7d0cdfb4-7da9-4cb0-9e54-a46c2996030a/migraine.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666WBQRLUK%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T050257Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIF2hoY9EROFiub66UYw1CM%2FI7%2FU3tWZWro1y7%2FPJZ1leAiEA7BLGWtlk%2B%2BRjoZScNLbsi077GfH8mE9kILvVour7Yqkq%2FwMIfRAAGgw2Mzc0MjMxODM4MDUiDJdopDOL3Go8qawEzCrcA23o4Wb9Esmi6Z6BjOwb97rDa3NAAsIcjbJn0Bo8E3n%2BQtry3Js8qzkAQ2J8KyAyFqLFZhvOowcVx9c14NsUbP3LTrFjbtnr8HaMpKSCd5CdP8SPHrM%2FBdpWIslsH4G%2FxaiVwtZ7cvsm08H37lKcQVSNz7kwelV1OVeA%2BOhUcdZ7KdZfnHcpyJV864HnWZDK7qZuNDEXqL0AW8MvlS7d8rzoWRp%2FL1yOsZhCaoDuLvqHaVaenOKaPQjmUOa5Run3JbD500prsuDQkCDNQitJBWNHXduOyFq%2FA2z%2F1C%2FrSoPp7y4adTz2bmQpc9V4pz3B6bt72uHBgY7V903UD4pFYhIKNZB1VxELGOi%2FVzrv1TZmQFjKMGiG3dyZxFrY9uK2SUOhGM1dHPB4FdTS6fAgvmToLZLj5WAXT8DXHinUc0TrPr%2B7Ra8E5vIy7dEEwQMffV2c2Aqs3DtXX9tjVrDDz44EfxV5gZu7pd4E6%2BlfroQFDfP00HA8NHk7V%2BAWMAy7Tyj1oX7%2FvN2UaESqDfZ0OULWC8D8cK5%2Ft8egWCFSAW6NYfhGDod4%2BFJZmWyElY9MawsWFHeF5v8OEbSNpQdRd99NX872EjdMk9CpBAKaZBG6p%2FtQgDnij8cIxTqpMJObt9IGOqUBVjBnYDSDMrk8rBOep4Zt%2F6dRXiCtonC7CNiJozy1RTEAZLhpXOXNuZFE6%2BgyOvOgf4DUytDu%2Beqlzofu8nKBv1f%2BdTZuhB%2FiYLec8FqfLM3VuicE8%2BWhSzJaLalrHDw5d8k8gmM9BFNW1ZYTZGTfTLsYXTrdx3FIo3dVjQZD6HXH7QphFCRqost%2B9bVJXrmjzYxkvX2ixOqUHG2F%2BTkU%2Bja8K1M7&X-Amz-Signature=4fe4a0d72e44eb019d66b3a414bcf05382c87d77f594341eb9fe443a09eecef5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/7d0cdfb4-7da9-4cb0-9e54-a46c2996030a/migraine.mp4"
+  },
+  "38df2a3f-4320-81c0-83e3-cb566cdbd1c4": {
+    "account_id": "17841417304649448",
+    "caption": "",
+    "cover_url": "",
+    "creation_id": "18132481777576822",
+    "media_id": "17882864070449462",
+    "note": "reconciled 2026-07-08: real duplicate post confirmed live on Instagram (ledger was empty when notion-publish first ran, due to a stale git HEAD silently breaking persistence for days — see git_publish.py fix same date) | video re-uploaded 2026-07-08 with corrected caption style (white/black-stroke/yellow, no box) + watermark crop | 2026-07-08: rebuilt via official pipeline (notion_video.py + add_karaoke_captions.py --row --upload), filename final_karaoke.mp4 | 2026-07-08: re-merged with fixed concat() (fps-normalizing filter, replaces raw stream-copy) to fix frame-rate metadata mismatch (shots tagged 60fps container / ~24fps real content) that risked a slow-motion artifact | 2026-07-08: fixed line-spacing bug (word_vertical_pad was being double-counted into line_height, inflating visible line gap to ~46px instead of intended 14px) | 2026-07-08: fixed lopsided 2-line split (wrap_chunk_to_lines now picks the width-balanced split, not just the first bias-adjacent one that fits) | 2026-07-08: fixed insufficient descender padding (WORD_VERTICAL_PAD_RATIO 0.33->0.7) — y in every was still clipped at the old value",
+    "status": "published",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/76bd7a3c-9b1f-481b-9e8f-554171ef6144/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WCQVNMJQ%2F20260708%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260708T075152Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDOhsm6Cn0e%2FTv9wY4VCnT4dHc%2B5VoTnDeq5Bc6xDIjOwIgQQcA4sjF5W5jocGMd%2FXB52Jyx626dmlxv4iJ9X%2BjElcq%2FwMIfxAAGgw2Mzc0MjMxODM4MDUiDIGIN1wmQz8YtsrBIircA1Zj8PZY66TLs%2BVHj0%2BjSPKhXrj4Vv4vQm5g9JVFkvEHHNKmvDdzluc9v730AHw6VX4jWEagssgxmtP0J2kYhiXjzRxefV%2Ft0UJNnx9lzcE9TYqitAZlrBGd%2Bi9vy5NNzAaq7NsrrBsNtC4NAOkcpMCHCHdvlq%2BEDIXu9IqI2UEEtqfFcwu4J%2FROlDRdnqOZANvkxPh%2BmIiGEXPCKyXrYWY2tV8%2F0uzf996Ww7QIEVj2QqiP5xZVHDY4vh8vLVx35leYIE5lQh4ym%2FjDk1lKbaDFB4bov4nmS6Kac6ylc8cx%2FU4AkHOnzfbXPNI%2FCm2KnA5sHc4menj%2FUe7j89Vc2IBfrbqEDcCao4x5ksk3ixCD3rR8mhEbgmbfX5VIY4hVNKzYGKfZ5BdzyMvdU6TT3hl7IrSD%2FECv5z7ef%2FhvlGY6PYqDbCThh3bhthPbCtBqzRbguSycwElgdxyZvsacR563LhMN0rG2Rpvr8T8io1bZBWCfaehz4pMaz%2FD9Tt2G0tJUfH1JNURVX1AkOjgD6vsWLh4DdrOKgzISYbqNWEHj8o%2BukwwlVHYq0FWFSXyOb2B25R78okiFhlgAMnLgjmkwAga6Xjmys1rVA0xQJPuNObVOQX%2BY%2BqHcLg6IMLTOt9IGOqUBD3dbmCdglrzPTJ5h5w%2B0mqNcEbyJ0cZSDQ90D0HZiTZZGIkCrx0h%2BYGsNqLrZ7UXrSPzymuRO5%2BqHyQ%2FDYKoRWK2oqtXWp8Imlqz4wdYbS7SBKC6sH6bWJQriuKgnvICLx%2BPcQMXufTCzW52k0jw1rzGEF9C6khO3I47%2BGWBdyGeoMcBx4flm3hdIJcsayC52h6Ys4NY5TSdnpGvmPFCOlDf9Zva&X-Amz-Signature=7c5d1662cf1d9121c059c20959bf429e7b4a4bbe4497fd1a67cf1bc918e8a629&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/76bd7a3c-9b1f-481b-9e8f-554171ef6144/final_karaoke.mp4"
+  },
+  "38df2a3f-4320-81d5-884c-fbd22603b293": {
+    "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
+    "status": "skipped",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  },
+  "38ff2a3f-4320-818a-9dd1-e7f41601c277": {
+    "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
+    "status": "skipped",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  },
+  "38ff2a3f-4320-81c1-bc79-fa3a0ff6adff": {
+    "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
+    "status": "skipped",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  },
+  "390f2a3f-4320-81c0-8683-f3968f206e4d": {
+    "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
+    "status": "skipped",
+    "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  }
+}

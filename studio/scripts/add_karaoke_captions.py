@@ -55,6 +55,7 @@ import difflib
 import json
 import re
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -77,12 +78,51 @@ BASE_STROKE_WIDTH = 5
 HIGHLIGHT_COLOR = "yellow"
 BASE_COLOR = "white"
 STROKE_COLOR = "black"
-LINE_GAP_PX = 14
+LINE_GAP_PX = 14  # reverted to the original value on 2026-07-08 — chased this up to
+# 70 chasing a "lines look touching" complaint that was actually caused by a SEPARATE
+# bug (see WORD_VERTICAL_PAD_RATIO below: individual glyphs were being clipped by
+# MoviePy's tight per-word canvas, which made normal spacing look cramped). Once that
+# clipping bug was fixed, 70px read as excessive/unnatural gap on real human review —
+# 14px (normal typographic leading for this font size) is correct once glyphs render
+# whole. Do not re-bump this without a fresh screenshot review — this exact value has
+# already round-tripped 14 -> 26 -> 46 -> 70 -> 14 in one session chasing the wrong cause.
 SPACE_WIDTH_RATIO = 0.32          # inter-word gap, as a fraction of font_size
 BOTTOM_MARGIN_RATIO = 480 / 1920  # matches the reference's MarginV=480 on a 1920-tall canvas
 
+# Fixes a REAL bug (2026-07-08, found via a human screenshot of "period
+# crampus" cut off mid-letter — this is a DIFFERENT bug than the LINE_GAP_PX
+# history above, which was about line-to-line spacing, not this): MoviePy's
+# TextClip auto-sizes its own canvas too tightly for this font (Arial
+# Black) — descenders get truncated flush against the clip's own bottom
+# edge, INSIDE that single word's rendered bitmap, before it's ever
+# composited onto the video.
+#
+# 0.33 (≈16px at font_size=49) was the FIRST fix and was NOT enough — a
+# later human screenshot caught "every" still clipped mid-"y" in production.
+# Root cause of the under-fix: the initial test sweep only checked words
+# with a 'p' descender ("period", "crampus"), which happens to be
+# shallower in this font than 'y' (confirmed by direct pixel measurement:
+# at margin=16px, "every"/"your"/"yoga"/"gypsy"/"cramps" all still had ink
+# touching the clip's bottom edge — i.e. still clipped — while "period"
+# alone happened to clear at that margin, hiding the bug). Swept margin
+# 16→36px against every distinct word actually used in this campaign PLUS
+# a torture set of deep-descender words ("zygotically", "pygmy", "yyy",
+# "flying", "Sipping") — nothing clips at 32px; 0.7 (≈34px at font_size=49)
+# is used here for a small safety buffer beyond that confirmed threshold.
+WORD_VERTICAL_PAD_RATIO = 0.7
+SIDE_MARGIN_BASE = 60             # matches the reference's MarginL/MarginR=60 on a 1080-wide canvas
+
 # ----------------------------------------------------------------- chunking
-MAX_WORDS_PER_CHUNK = 7
+# Lowered from 7 to 5 on 2026-07-08: at this font size (Arial Black, scaled
+# from a 74px/1080px-canvas base) a 6-7 word chunk routinely couldn't fit
+# in the intended 2 lines within max_line_width once wrap_chunk_to_lines()
+# started actually checking pixel width instead of blindly forcing 2 lines
+# — it correctly fell back to 3 stacked lines instead of overflowing, but
+# 3 lines pushed up far enough to overlap the subject's chin/mouth on
+# several sampled frames of the Period Pain video. 5 words/chunk keeps
+# every sampled chunk in that video to a clean 2 lines; see
+# scripts/memory/shello.md for the before/after frame comparison.
+MAX_WORDS_PER_CHUNK = 5
 PAUSE_BREAK_S = 0.5  # a gap bigger than this ends a chunk early, even under MAX_WORDS_PER_CHUNK
 
 
@@ -156,14 +196,72 @@ def group_words(words: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
     return [c for c in chunks if c]
 
 
-def wrap_two_lines(
+def wrap_chunk_to_lines(
     chunk: list[dict[str, Any]],
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Split a caption chunk's words across 2 lines — line 1 gets the
-    ceil(n/2) words, matching the approved reference's own split pattern
-    (a 7-word chunk becomes 4 + 3, a 6-word chunk becomes 3 + 3)."""
-    split_at = -(-len(chunk) // 2)  # ceil division, stdlib-only
-    return chunk[:split_at], chunk[split_at:]
+    word_width: Callable[[str], int],
+    space_width: int,
+    max_width: int,
+) -> list[list[dict[str, Any]]]:
+    """Wrap a caption chunk across lines WITHOUT letting any line's
+    rendered pixel width exceed ``max_width`` — fixes the 2026-07-08
+    production incident where captions were cut off at the frame edges.
+    The previous implementation (``wrap_two_lines``, word-count only)
+    always split a chunk exactly in half by WORD COUNT with zero awareness
+    of how wide those words actually render — a chunk with a few long
+    words (e.g. "actually", "stops") could overflow the frame even though
+    it "fit" by count alone.
+
+    Strategy: among every 2-line split point where BOTH resulting lines
+    fit ``max_width``, pick the one whose two lines are the most similar
+    in rendered WIDTH (ties broken by proximity to the ceil(n/2) word-count
+    bias point, so a chunk of equal-width words still splits exactly like
+    the old fixed-bias code did). Picking by word-count bias alone (the
+    2026-07-08 first version of this function) could still produce a
+    valid-but-lopsided split — e.g. "Treating them the / same is": both
+    lines fit within max_width, but line 1 is visually much wider than
+    line 2, so the two lines read as disconnected rather than one centered
+    block (reported by human review the same day, on real output). Since
+    each line is independently centered at render time, minimizing the
+    width gap between lines is what actually keeps the block looking
+    cohesive. If no 2-line split fits at all (a genuinely too-wide chunk),
+    fall back to a greedy width-first wrap that uses as many lines as it
+    takes — this only triggers for pathological inputs; any chunk that
+    fits in 2 lines takes the branch above.
+    """
+    def line_width(words: list[dict[str, Any]]) -> int:
+        if not words:
+            return 0
+        return sum(word_width(w["word"]) for w in words) + space_width * (len(words) - 1)
+
+    if len(chunk) <= 1:
+        return [list(chunk)] if chunk else []
+
+    n = len(chunk)
+    bias = -(-n // 2)  # ceil(n/2) — tiebreak anchor, matching the old fixed split
+    candidates: list[tuple[int, int, list[dict[str, Any]], list[dict[str, Any]]]] = []
+    for k in range(1, n):
+        line1, line2 = chunk[:k], chunk[k:]
+        w1, w2 = line_width(line1), line_width(line2)
+        if w1 <= max_width and w2 <= max_width:
+            candidates.append((abs(w1 - w2), abs(k - bias), line1, line2))
+    if candidates:
+        candidates.sort(key=lambda c: (c[0], c[1]))
+        _, _, line1, line2 = candidates[0]
+        return [line1, line2]
+
+    # Fallback: no 2-line split fits — greedy width-first wrap instead.
+    lines: list[list[dict[str, Any]]] = []
+    current: list[dict[str, Any]] = []
+    for word in chunk:
+        candidate = [*current, word]
+        if current and line_width(candidate) > max_width:
+            lines.append(current)
+            current = [word]
+        else:
+            current = candidate
+    if current:
+        lines.append(current)
+    return lines
 
 
 def render(video_path: Path, chunks: list[list[dict[str, Any]]], out_path: Path) -> None:
@@ -179,17 +277,39 @@ def render(video_path: Path, chunks: list[list[dict[str, Any]]], out_path: Path)
     stroke_width = max(1, round(BASE_STROKE_WIDTH * scale))
     space_width = round(font_size * SPACE_WIDTH_RATIO)
     bottom_margin = round(BOTTOM_MARGIN_RATIO * frame_h)
+    side_margin = round(SIDE_MARGIN_BASE * scale)
+    max_line_width = frame_w - 2 * side_margin
+
+    # Vertical-only padding (see WORD_VERTICAL_PAD_RATIO docstring above) —
+    # deliberately NO horizontal margin, so word_width()/space_width/x
+    # positioning below are completely unaffected by this fix; only the
+    # vertical descender-clipping bug needed a canvas-size change.
+    word_vertical_pad = round(font_size * WORD_VERTICAL_PAD_RATIO)
 
     def make_word_clip(text: str, color: str) -> TextClip:
         return TextClip(
             font=FONT_PATH, text=text, font_size=font_size, color=color,
             stroke_color=STROKE_COLOR, stroke_width=stroke_width,
+            margin=(0, word_vertical_pad),
         )
 
     # Reference glyph with both an ascender and a descender ("A" + "g") —
     # gives a stable line height so line spacing never jitters word-to-word
     # depending on which individual letters happen to have descenders.
-    line_height = make_word_clip("Ag", BASE_COLOR).size[1]
+    # IMPORTANT: this must be measured WITHOUT word_vertical_pad — that
+    # padding exists purely so a single word's own glyph doesn't get
+    # clipped by ITS OWN clip's tight canvas edge (see WORD_VERTICAL_PAD_RATIO
+    # docstring). It is invisible (transparent) padding, not visible line
+    # height. Using the PADDED clip's size here was a real bug (found
+    # 2026-07-08 via human review): every line-to-line gap silently grew by
+    # 2×word_vertical_pad on top of the intended LINE_GAP_PX, since padded
+    # line_height is used TWICE in the stacking math below — once as each
+    # line's own height, once as the step to the next line — making 14px of
+    # intended gap read as ~46px of actual visible whitespace. Word clips
+    # (built by make_word_clip, still padded) are individually shifted up by
+    # word_vertical_pad at positioning time below so their VISIBLE glyphs
+    # still land flush with this unpadded line_height's baseline grid.
+    line_height = make_word_clip("Ag", BASE_COLOR).size[1] - 2 * word_vertical_pad
 
     size_cache: dict[str, tuple[int, int]] = {}
 
@@ -201,31 +321,47 @@ def render(video_path: Path, chunks: list[list[dict[str, Any]]], out_path: Path)
     overlay_clips = []
 
     for chunk in chunks:
-        line1, line2 = wrap_two_lines(chunk)
+        lines = wrap_chunk_to_lines(chunk, word_width, space_width, max_line_width)
         chunk_start = chunk[0]["start"]
         chunk_dur = max(0.01, chunk[-1]["end"] - chunk_start)
 
-        line2_y = frame_h - bottom_margin - line_height
-        line1_y = line2_y - line_height - LINE_GAP_PX
+        # Stack however many lines this chunk needed, anchored to the SAME
+        # bottom margin every chunk uses — the last line always lands at
+        # `frame_h - bottom_margin - line_height` regardless of whether
+        # this chunk rendered as 1, 2, or (rare fallback) 3+ lines, so the
+        # caption block's bottom edge never jitters chunk-to-chunk.
+        line_ys: list[float] = []
+        y = frame_h - bottom_margin - line_height
+        for _ in lines:
+            line_ys.append(y)
+            y -= line_height + LINE_GAP_PX
+        line_ys.reverse()
 
-        for line_words, line_y in ((line1, line1_y), (line2, line2_y)):
+        for line_words, line_y in zip(lines, line_ys, strict=True):
             if not line_words:
                 continue
             widths = [word_width(w["word"]) for w in line_words]
             total_width = sum(widths) + space_width * (len(line_words) - 1)
             x = (frame_w - total_width) / 2
 
+            # Each word clip carries word_vertical_pad of invisible padding
+            # ABOVE its own glyphs (see make_word_clip) — shift the whole
+            # padded clip up by that amount so the VISIBLE glyph still lands
+            # at line_y (the position line_ys was computed for), instead of
+            # the glyph appearing word_vertical_pad lower than intended.
+            glyph_y = line_y - word_vertical_pad
+
             for word, width in zip(line_words, widths, strict=True):
                 base_clip = (
                     make_word_clip(word["word"], BASE_COLOR)
                     .with_start(chunk_start).with_duration(chunk_dur)
-                    .with_position((x, line_y))
+                    .with_position((x, glyph_y))
                 )
                 highlight_clip = (
                     make_word_clip(word["word"], HIGHLIGHT_COLOR)
                     .with_start(word["start"])
                     .with_duration(max(0.01, word["end"] - word["start"]))
-                    .with_position((x, line_y))
+                    .with_position((x, glyph_y))
                 )
                 overlay_clips.append(base_clip)
                 overlay_clips.append(highlight_clip)

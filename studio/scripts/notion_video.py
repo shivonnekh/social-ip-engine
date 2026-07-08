@@ -221,6 +221,14 @@ def read_row_shots(row_id):
             cur = {"title": tx, "image_url": None, "audio_url": None,
                    "jimeng": "", "has_video": False}
             shots.append(cur); label = None
+        elif t in ("heading_1", "heading_2", "heading_3"):
+            # Any OTHER heading ends the current shot's scope — e.g. the trailing
+            # "🖼️ Cover Photo" / "📊 DM Infographic" sections, or an older-format
+            # bare "🖼️ Infographic Brief" h2. Without this, a stale `label` still
+            # containing "即梦" from the LAST shot lets its trailing Infographic
+            # Brief code block overwrite that shot's jimeng prompt — found
+            # 2026-07-06 corrupting shot 4's video prompt on the Gua Sha row.
+            cur, label = None, None
         elif cur is None:
             continue
         elif t == "paragraph" and ("Image prompt" in tx or "Voice script" in tx or "即梦" in tx):
@@ -368,13 +376,106 @@ def poll_download(submit_id, out, timeout=1800, interval=20):
     return None
 
 
+# Standard, explicit output frame rate for every merged final.mp4 — see concat()
+# docstring for why this can't just be "whatever the shots already say".
+_MERGE_FPS = 30
+
+
 def concat(mp4s, out):
-    lst = out + ".txt"
-    Path(lst).write_text("".join(f"file '{os.path.abspath(p)}'\n" for p in mp4s))
-    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", lst,
-                    "-c", "copy", out], capture_output=True)
-    os.remove(lst)
+    """Merge shot mp4s into `out` via ffmpeg's concat FILTER (re-encodes every
+    input at one explicit, consistent frame rate) — NOT the concat demuxer's
+    `-c copy` stream copy this used before 2026-07-08.
+
+    Why: 即梦/Seedance shot outputs tag their container with a nominal
+    `r_frame_rate` of 60fps while their REAL content plays back at ~24fps
+    (confirmed via `avg_frame_rate`, which matches each shot's actual
+    declared duration — e.g. shot1.mp4: r_frame_rate=60/1 but
+    avg_frame_rate≈24.06, and 241 frames / 24.06fps ≈ 10.02s, matching its
+    real 10.02s duration). `-c copy` concatenation trusts each input's own
+    internal timing metadata as-is; concatenating several shots whose
+    metadata already disagrees with itself risks that inconsistency
+    surfacing as a perceived slow-motion/speed-mismatch artifact in the
+    merged output (reported 2026-07-08 on the Period Pain video). Re-
+    encoding every input through an explicit `fps=_MERGE_FPS` filter (with
+    `setpts=PTS-STARTPTS` so each shot's own internal offset never leaks
+    into the next one) makes the merged file's timing unambiguous
+    regardless of what quirky metadata any individual shot carried in.
+    """
+    inputs: list[str] = []
+    filter_parts: list[str] = []
+    for i, p in enumerate(mp4s):
+        inputs += ["-i", p]
+        filter_parts.append(
+            f"[{i}:v]fps={_MERGE_FPS},setpts=PTS-STARTPTS[v{i}];"
+            f"[{i}:a]asetpts=PTS-STARTPTS[a{i}]"
+        )
+    concat_refs = "".join(f"[v{i}][a{i}]" for i in range(len(mp4s)))
+    filter_complex = (
+        ";".join(filter_parts)
+        + f";{concat_refs}concat=n={len(mp4s)}:v=1:a=1[outv][outa]"
+    )
+    subprocess.run([
+        "ffmpeg", "-y", *inputs,
+        "-filter_complex", filter_complex,
+        "-map", "[outv]", "-map", "[outa]",
+        "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-ar", "44100",
+        out,
+    ], capture_output=True)
     return out
+
+
+# 即梦/Seedance burns a mandatory "此视频由AI数字人技术生成，仅供参考" compliance
+# label into a fixed-position strip near the bottom of EVERY multimodal2video/
+# image2video output (verified identical pixel position across all 4 shots of
+# the Period Pain campaign on 2026-07-08, regardless of shot content/framing).
+# Expressed as a ratio of frame height (not a fixed pixel count) so it scales
+# correctly whatever resolution 即梦 happens to render at — validated at
+# 720x1280 where the label sits within the bottom ~120px; 150/1280 leaves a
+# safety margin without touching hands/product shots that sit above it.
+_WATERMARK_CROP_RATIO = 150 / 1280
+
+
+def strip_ai_watermark(path: str) -> str:
+    """In place: crop the bottom watermark strip off `path`, then zoom back
+    up to the ORIGINAL frame size so the output stays full-bleed vertical
+    video (no letterboxing) — crop the unwanted strip, scale the remainder
+    back up to the original height, then center-crop the width back down,
+    the standard "remove a strip without changing the output's aspect
+    ratio" technique. Never raises: a probe or encode failure just leaves
+    `path` untouched (better to ship a video with the watermark than lose
+    the video entirely over a transient ffmpeg/ffprobe hiccup).
+
+    Ken Burns fallback shots (pure ffmpeg, no 即梦 — see ken_burns() above)
+    never actually carry this watermark, but running this on them anyway
+    is harmless: it just crops/zooms a few percent off an already-clean
+    frame, identical to what happens to the real footage above the
+    watermark band on every other shot.
+    """
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0",
+         "-show_entries", "stream=width,height", "-of", "csv=p=0", path],
+        capture_output=True, text=True,
+    )
+    try:
+        w_str, h_str = probe.stdout.strip().split(",")
+        w, h = int(w_str), int(h_str)
+    except (ValueError, AttributeError):
+        return path  # can't determine dimensions — skip rather than risk a bad crop
+
+    crop_px = max(1, round(h * _WATERMARK_CROP_RATIO))
+    keep_h = h - crop_px
+    tmp = path + ".nowm.mp4"
+    result = subprocess.run([
+        "ffmpeg", "-y", "-i", path,
+        "-vf", f"crop={w}:{keep_h}:0:0,scale=-2:{h},crop={w}:{h}:(in_w-{w})/2:0",
+        "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+        "-c:a", "copy", tmp,
+    ], capture_output=True)
+    if result.returncode != 0 or not os.path.exists(tmp):
+        return path  # crop failed — keep the original rather than lose the video
+    os.replace(tmp, path)
+    return path
 
 
 def main():
@@ -419,6 +520,7 @@ def main():
         if mp4s:
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
+            strip_ai_watermark(final)
             print(f"🎬 final video -> {final}")
         else:
             print("no shots ready")
@@ -507,6 +609,7 @@ def main():
         if mp4s:
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
+            strip_ai_watermark(final)
             print(f"🎬 final video -> {final}")
         else:
             print("no shots completed")
