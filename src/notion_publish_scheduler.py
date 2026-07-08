@@ -77,6 +77,10 @@ _HKT: Final = ZoneInfo("Asia/Hong_Kong")
 # The list binding itself never changes (Final) even though its contents
 # legitimately mutate (append/remove) across sweep cycles.
 _scheduler_tasks: Final[list[asyncio.Task[bool]]] = []
+# Separate strong-reference list for FB mirror tasks spawned by this sweep —
+# same reasoning as _scheduler_tasks above, kept independent so it can never
+# be confused with (or accidentally share GC lifetime issues with) IG's.
+_scheduler_fb_tasks: Final[list[asyncio.Task[bool]]] = []
 
 
 def _enabled() -> bool:
@@ -147,6 +151,27 @@ async def run_scheduled_sweep() -> dict[str, Any]:
             f"🟡 Notion publish-date sweep completed with {len(result['errors'])} row error(s): "
             f"{result['errors']}",
         )
+
+    # Facebook mirror sweep — same "IG failure must never block/hide FB,
+    # and vice versa" isolation as the live webhook (src/web.py). A no-op
+    # when NOTION_PUBLISH_FB_ENABLED is unset/false. Deliberately outside
+    # the IG try/except above so an IG sweep failure (already alerted)
+    # doesn't suppress an independent FB attempt.
+    from src.notion_publish_fb_runner import plan_and_dispatch_fb
+
+    try:
+        fb_result = await plan_and_dispatch_fb(task_sink=_scheduler_fb_tasks)
+        result["facebook"] = fb_result
+        if fb_result.get("enabled"):
+            logger.info(
+                "[notion-publish-fb-schedule] checked=%d claimed=%d resumed=%d",
+                fb_result["checked"], len(fb_result["claimed"]), fb_result["resumed"],
+            )
+    except Exception as exc:  # noqa: BLE001 - must never crash the loop, see docstring
+        logger.exception("[notion-publish-fb-schedule] sweep failed")
+        await send_ops_alert(_OPS_ALERT_KEY, f"🔴 Notion FB publish-date sweep failed: {exc}")
+        result["facebook"] = {"error": str(exc)}
+
     return result
 
 

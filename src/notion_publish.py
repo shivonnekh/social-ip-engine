@@ -74,6 +74,7 @@ from typing import Any, Final
 from zoneinfo import ZoneInfo
 
 from src import notion_publish_caption, notion_publish_media
+from src.ips import registry as ip_registry
 from src.notion_sync import (
     NotionSyncError,
     _children,
@@ -114,6 +115,13 @@ _STATUS_SKIPPED = "skipped"
 # threading.Lock (not asyncio.Lock) because plan_publishes is a blocking
 # function that runs in a worker thread, not on the event loop.
 _PLAN_LOCK = threading.Lock()
+
+# Separate lock for the Facebook mirror planner (plan_fb_mirrors) — reads a
+# different ledger, writes a different file, has no reason to serialize
+# against Instagram's own planning lock. Kept as its own threading.Lock for
+# the identical reason _PLAN_LOCK exists: plan_fb_mirrors also runs via
+# run_in_threadpool (a worker thread), never on the event loop.
+_FB_PLAN_LOCK = threading.Lock()
 
 
 class LedgerCorruptError(NotionSyncError):
@@ -491,3 +499,190 @@ def _plan_publishes_locked(
         "errors": errors,
         "warnings": warnings,
     }
+
+
+# ---------------------------------------------------------------------------
+# Facebook mirror — deliberately SEPARATE from everything above
+# ---------------------------------------------------------------------------
+#
+# WHY A MIRROR, NOT A SECOND INDEPENDENT PLANNER
+# -----------------------------------------------------------------------
+# The product requirement is "post to Jackie's FB Page the same content
+# already auto-published to his Instagram" (2026-07-08) — not "independently
+# decide what to publish to Facebook." So instead of re-querying Notion and
+# re-resolving cover/caption a second time (which risks the two platforms
+# drifting apart if resolution ever behaves differently on a second call),
+# ``plan_fb_mirrors()`` reads Instagram's OWN ledger (``_STATE_PATH``) for
+# rows already ``"published"`` there and reuses that record's ``video_url``/
+# ``cover_url``/``caption`` VERBATIM. Byte-for-byte mirroring is achieved by
+# construction, not by trusting two independent code paths to agree.
+#
+# WHY A SEPARATE LEDGER FILE (``_FB_STATE_PATH``), NOT A SHARED ONE
+# -----------------------------------------------------------------------
+# ``LedgerCorruptError``'s docstring calls silently treating a corrupt
+# ledger as empty "the single worst possible failure mode for this
+# feature" (mass re-post of every already-live row). Mixing FB's write path
+# into the SAME file as Instagram's would mean a bug anywhere in the new FB
+# code could corrupt the one file protecting Instagram from duplicate posts.
+# A separate file makes that impossible by construction: no FB code path
+# ever opens ``_STATE_PATH`` for writing.
+#
+# WHY THIS ACHIEVES "RETRY ONLY THE FAILED PLATFORM" FOR FREE
+# -----------------------------------------------------------------------
+# ``plan_publishes()`` (above) permanently skips a row once ITS ledger marks
+# it ``published``/``in_flight``/``skipped`` — Instagram never reconsiders a
+# row it already succeeded on. ``plan_fb_mirrors()`` is intentionally NOT
+# gated by that: every call re-scans EVERY Instagram-published row and
+# independently checks the FB ledger's own status for it. So:
+#   * IG published, FB never attempted / previously failed -> mirrored now.
+#   * IG published, FB already published -> layer-1 guard skips (below).
+#   * IG still in_flight / never published -> nothing to mirror yet; this
+#     row is picked up on a LATER call, once Instagram's ledger shows it
+#     published (the daily schedule sweep and the next webhook fire both
+#     call this the same way they call the Instagram planner).
+# No coupling to Instagram's own retry/attempt counters — the two ledgers
+# are fully independent, exactly as required.
+
+_FB_STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_publish_fb_state.json"
+
+
+def _fb_account_for_ig_account(ig_account_id: str) -> str | None:
+    """The Facebook Page account id for whichever IP owns ``ig_account_id``,
+    or ``None`` if that IP has no Facebook channel registered (e.g. Chloe
+    today) or its credentials aren't set. Registry-driven — adding a new
+    IP's Facebook Page later needs only an ``ip.json`` edit, no code change
+    here (same pattern as ``ip_registry.persona_dm_channels`` — see its
+    docstring for the incident this pattern was born from)."""
+    ip = ip_registry.for_account(ig_account_id)
+    if ip is None:
+        return None
+    fb_channel = ip.channels.get("facebook")
+    if fb_channel is None:
+        return None
+    account_id = os.environ.get(fb_channel.user_id_env, "").strip()
+    token = os.environ.get(fb_channel.token_env, "").strip()
+    if not account_id or not token:
+        return None
+    return account_id
+
+
+def plan_fb_mirrors(*, ig_state_path: Path | None = None, fb_state_path: Path | None = None) -> dict[str, Any]:
+    """Mirror every Instagram-published row to Facebook that hasn't been
+    mirrored yet. Pure ledger-to-ledger — no Notion I/O, no cover/caption
+    re-resolution (see module-level comment above for why). Safe to call as
+    often as desired; layers 1-3 below are the same shape as
+    ``plan_publishes()``'s guard, applied to the FB ledger only.
+
+    Returns ``{"jobs": [PublishJob, ...], "skipped": [...], "checked": int}``
+    — ``jobs`` are FB ``PublishJob``s newly claimed this call.
+    """
+    with _FB_PLAN_LOCK:
+        return _plan_fb_mirrors_locked(ig_state_path=ig_state_path, fb_state_path=fb_state_path)
+
+
+def _plan_fb_mirrors_locked(
+    *, ig_state_path: Path | None, fb_state_path: Path | None,
+) -> dict[str, Any]:
+    resolved_ig_path = _STATE_PATH if ig_state_path is None else ig_state_path
+    resolved_fb_path = _FB_STATE_PATH if fb_state_path is None else fb_state_path
+
+    ig_ledger = _load_ledger(resolved_ig_path)
+    fb_ledger = _load_ledger(resolved_fb_path)
+
+    claimed_video_urls = {
+        record["video_url_stable"]
+        for record in fb_ledger.values()
+        if record.get("status") in (_STATUS_PUBLISHED, _STATUS_IN_FLIGHT)
+        and record.get("video_url_stable")
+    }
+
+    jobs: list[PublishJob] = []
+    skipped: list[str] = []
+    checked = 0
+
+    for row_id, ig_record in ig_ledger.items():
+        if ig_record.get("status") != _STATUS_PUBLISHED:
+            continue  # nothing to mirror yet — see module docstring
+        checked += 1
+
+        existing = fb_ledger.get(row_id)
+        if existing is not None:
+            status = existing.get("status")
+            if status in (_STATUS_IN_FLIGHT, _STATUS_PUBLISHED, _STATUS_SKIPPED):
+                continue  # layer 1 — never reconsidered
+            if status == _STATUS_FAILED and existing.get("attempts", 0) >= _max_attempts():
+                fb_ledger[row_id] = {
+                    **existing,
+                    "status": _STATUS_SKIPPED,
+                    "last_error": f"gave up after {existing.get('attempts', 0)} attempts",
+                    "updated_at": _now_iso(),
+                }
+                _save_json(resolved_fb_path, fb_ledger)
+                skipped.append(f"{row_id}: FB mirror gave up after {existing.get('attempts', 0)} attempts")
+                continue
+
+        fb_account_id = _fb_account_for_ig_account(str(ig_record.get("account_id", "")))
+        if fb_account_id is None:
+            skipped.append(f"{row_id}: no Facebook channel/credentials for this IP — not mirrored")
+            continue
+
+        video_url = str(ig_record.get("video_url", ""))
+        stable_video = str(ig_record.get("video_url_stable") or _stable_video_url(video_url))
+        if stable_video in claimed_video_urls:
+            fb_ledger[row_id] = {
+                "status": _STATUS_SKIPPED,
+                "video_url": video_url,
+                "video_url_stable": stable_video,
+                "account_id": fb_account_id,
+                "creation_id": None,
+                "fb_media_id": None,
+                "posted_checkbox": False,
+                "attempts": 0,
+                "last_error": "duplicate video_url already mirrored to FB under a different row",
+                "updated_at": _now_iso(),
+            }
+            _save_json(resolved_fb_path, fb_ledger)
+            skipped.append(f"{row_id}: duplicate video already mirrored to FB elsewhere")
+            continue
+
+        attempts = (existing or {}).get("attempts", 0) + 1
+
+        # Layer 3 — claim-before-call, same discipline as plan_publishes().
+        fb_ledger[row_id] = {
+            "status": _STATUS_IN_FLIGHT,
+            "video_url": video_url,
+            "video_url_stable": stable_video,
+            "cover_url": str(ig_record.get("cover_url", "")),
+            "caption": str(ig_record.get("caption", "")),
+            "account_id": fb_account_id,
+            "creation_id": None,
+            "fb_media_id": None,
+            "posted_checkbox": False,
+            "attempts": attempts,
+            "last_error": "",
+            "updated_at": _now_iso(),
+        }
+        _save_json(resolved_fb_path, fb_ledger)
+        claimed_video_urls.add(stable_video)
+
+        jobs.append(
+            PublishJob(
+                row_id=row_id, account_id=fb_account_id,
+                video_url=video_url, cover_url=str(ig_record.get("cover_url", "")),
+                caption=str(ig_record.get("caption", "")), creation_id="",
+            )
+        )
+
+    return {"checked": checked, "jobs": jobs, "skipped": skipped}
+
+
+def load_fb_in_flight_jobs(state_path: Path | None = None) -> list[PublishJob]:
+    """FB analogue of ``load_in_flight_jobs`` — every FB ledger row still
+    ``"in_flight"``, reconstructed purely from the FB ledger, no Notion
+    call. Used to resume FB mirrors interrupted by a crash/deploy."""
+    ledger = _load_ledger(_FB_STATE_PATH if state_path is None else state_path)
+    return [
+        _job_from_ledger(row_id, record)
+        for row_id, record in ledger.items()
+        if record.get("status") == _STATUS_IN_FLIGHT
+    ]

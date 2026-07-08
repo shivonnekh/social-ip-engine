@@ -233,6 +233,13 @@ async def lifespan(app: FastAPI):
     from src.notion_publish_runner import resume_in_flight
     background_tasks.append(asyncio.create_task(resume_in_flight()))
 
+    # Facebook mirror analogue of the resume above — a no-op unless
+    # NOTION_PUBLISH_FB_ENABLED=true (see notion_publish_fb_runner module
+    # docstring). Kept as its own background task, own ledger, so a bug in
+    # FB resume can never touch the IG resume above.
+    from src.notion_publish_fb_runner import resume_in_flight as fb_resume_in_flight
+    background_tasks.append(asyncio.create_task(fb_resume_in_flight()))
+
     # Daily sweep so a row deferred by a future Publish Date actually gets
     # published once that date arrives (the live webhook above only fires
     # ONCE, when Stage flips — see notion_publish_scheduler module
@@ -592,6 +599,41 @@ async def admin_notion_publish(request: Request) -> JSONResponse:
         result["checked"], len(result["claimed"]), result["resumed"],
         len(result["skipped"]), len(result["errors"]),
     )
+
+    # Facebook mirror — deliberately a SEPARATE try/except from the IG call
+    # above. An IG failure already returned 502 before reaching here (never
+    # attempts FB on a failed IG plan); an FB failure here must NEVER turn
+    # an already-succeeded IG response into an error — the two platforms
+    # are fully independent per the product requirement (see
+    # notion_publish.py's "Facebook mirror" module docstring). A no-op,
+    # zero-cost call when NOTION_PUBLISH_FB_ENABLED is unset/false.
+    from src.notion_publish_fb_runner import plan_and_dispatch_fb
+
+    fb_live_tasks = getattr(request.app.state, "notion_publish_fb_tasks", None)
+    if fb_live_tasks is None:
+        fb_live_tasks = []
+        request.app.state.notion_publish_fb_tasks = fb_live_tasks
+    try:
+        fb_result = await plan_and_dispatch_fb(task_sink=fb_live_tasks)
+        result["facebook"] = fb_result
+        logger.info(
+            "[notion-publish-fb] enabled=%s checked=%d claimed=%d resumed=%d",
+            fb_result.get("enabled"), fb_result.get("checked", 0),
+            len(fb_result.get("claimed", [])), fb_result.get("resumed", 0),
+        )
+    except Exception as exc:  # noqa: BLE001 - must NEVER crash this handler and
+        # discard the already-computed, already-succeeded IG `result` above.
+        # Deliberately broader than `notion_publish.NotionSyncError` alone
+        # (code-reviewer finding, 2026-07-08): plan_fb_mirrors() can raise a
+        # plain OSError from _save_json (disk full, permission, os.replace
+        # failure) which a narrow except would let propagate uncaught,
+        # crashing the whole endpoint and losing the IG response — the exact
+        # failure-isolation bug this block exists to prevent. Matches the
+        # broad `except Exception` already used for the identical reason in
+        # notion_publish_scheduler.py's FB sweep.
+        logger.exception("[notion-publish-fb] resume/plan failed — IG result above is unaffected")
+        result["facebook"] = {"error": str(exc)}
+
     return JSONResponse(result)
 
 
