@@ -55,6 +55,41 @@ def test_group_words_single_word_input():
     assert group_words(words) == [[_word("Hi", 0.0, 0.3)]]
 
 
+def test_group_words_breaks_on_sentence_end_even_under_max_words():
+    """Real production defect (2026-07-08, human-reported): "stops them,
+    listen." and the very next, unrelated sentence "Western doctors will
+    not tell you this" got merged into one 5-word caption chunk, purely
+    because word count hadn't hit MAX_WORDS_PER_CHUNK yet and the speaker
+    didn't pause long enough between them for the pause-gap rule to catch
+    it. A word ending in sentence-terminal punctuation (. ! ?) must end
+    its chunk immediately, regardless of word count or pause length."""
+    words = [
+        _word("stops", 2.9, 3.1), _word("them,", 3.1, 3.3),
+        _word("listen.", 3.3, 3.6),  # sentence ends here — only 3 words in
+        # no long pause to the next word — old code would keep grouping
+        _word("Western", 3.65, 3.9), _word("doctors", 3.9, 4.2),
+    ]
+    chunks = group_words(words)
+    assert len(chunks) == 2
+    assert [w["word"] for w in chunks[0]] == ["stops", "them,", "listen."]
+    assert [w["word"] for w in chunks[1]] == ["Western", "doctors"]
+
+
+def test_group_words_does_not_break_on_mid_sentence_comma():
+    """A comma is not a sentence end — must not trigger an early break
+    (only . ! ? do)."""
+    words = [
+        _word("Cold", 0.0, 0.2), _word("Stagnation:", 0.2, 0.5),
+        _word("cramps", 0.5, 0.7), _word("that", 0.7, 0.85),
+        _word("ease,", 0.85, 1.0), _word("with", 1.0, 1.15),
+        _word("heat.", 1.15, 1.4),
+    ]
+    chunks = group_words(words)
+    # MAX_WORDS_PER_CHUNK=5 still caps the first chunk; the comma inside it
+    # ("ease,") must NOT have forced an earlier break.
+    assert [len(c) for c in chunks] == [5, 2]
+
+
 def test_group_words_empty_input():
     assert group_words([]) == []
 
