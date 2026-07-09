@@ -24,9 +24,9 @@
     "creation_id": null,
     "fb_media_id": null,
     "posted_checkbox": false,
-    "attempts": 2,
+    "attempts": 3,
     "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
-    "updated_at": "2026-07-08T12:20:48.537322+00:00"
+    "updated_at": "2026-07-09T09:34:30.260399+00:00"
   },
   "389f2a3f-4320-81a7-98c4-de027ccde5bd": {
     "status": "skipped",
@@ -50,9 +50,9 @@
     "creation_id": null,
     "fb_media_id": null,
     "posted_checkbox": false,
-    "attempts": 2,
+    "attempts": 3,
     "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
-    "updated_at": "2026-07-08T12:20:48.731258+00:00"
+    "updated_at": "2026-07-09T09:34:30.234162+00:00"
   },
   "38df2a3f-4320-81a1-a1a2-c3deb9b79eab": {
     "status": "failed",
@@ -64,9 +64,9 @@
     "creation_id": null,
     "fb_media_id": null,
     "posted_checkbox": false,
-    "attempts": 2,
+    "attempts": 3,
     "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
-    "updated_at": "2026-07-08T12:20:48.840750+00:00"
+    "updated_at": "2026-07-09T09:34:30.173482+00:00"
   },
   "38df2a3f-4320-81c0-83e3-cb566cdbd1c4": {
     "status": "failed",
@@ -78,8 +78,8 @@
     "creation_id": null,
     "fb_media_id": null,
     "posted_checkbox": false,
-    "attempts": 2,
+    "attempts": 3,
     "last_error": "http 422: {\"debug_info\":{\"retriable\":false,\"type\":\"FileUrlProcessingError\",\"message\":\"Unable to fetch media from URL, got status code: 403 Forbidden\"}}",
-    "updated_at": "2026-07-08T12:20:48.552108+00:00"
+    "updated_at": "2026-07-09T09:34:30.284920+00:00"
   }
 }
