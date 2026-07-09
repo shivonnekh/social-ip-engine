@@ -83,17 +83,17 @@
     "updated_at": "2026-07-08T05:02:56.093997+00:00"
   },
   "38df2a3f-4320-81c0-83e3-cb566cdbd1c4": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/6ebcb145-94e8-4da5-9990-609838a6baf5/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SKC3S5CZ%2F20260709%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260709T112458Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBOQPJQzwSwFmtFd%2BMSSRZ0t4G4%2FclMZW1uejO3RcTXTAiEA3sjtXsNXSF9HnHRl5B5zNAUlUlX9uzOvyndZ3yLZnJ0qiAQInP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGSBp5n8vuUiqnG1GCrcA%2FKPGqhqZnasP3ssZzyIYobWBb5SriA2W1m6G6LvYUt3wYPTit4rRJdZRIzko7GRdfJ3jWFgUF%2BgA%2B9tOSxVxnQO44euh9TuIP3uZdX%2FkMlH%2FDbD3uviF8JLIW4rjXLrWxcVva3%2BgCHEtwbohRMcSDj1adqgRUwuBwyw%2BRo9hrgCQw0qlrmjKduX52z7Zulf4MS%2FfaIJTSfTs8lT4n6dBiqmG2og5BgP8lFi66Wv1MK3ar0HuOPAMN1feO9XzkiRoX%2BrbYlOSzqzTxGvTniLYdGixegy56MuT%2Bk5hL9%2B4Rj66C9kGUeeIImK4u5i59z8JYAtr7A5KZupJhVjCcX4evKmwhAuV6fQWfSMf10%2BvWwv7Y1TAzS5Zhkr1fk%2BAnA4V%2F7cHqWadeY1T1m7sb5%2B0sASWOXp%2FCqEEZop3cg5R8oGIE7BSL5hfMK4Q%2FiqiGNgju4pIUAQ5csZlr3wIW%2Fyw8JQQezIR4osNcTZ3rEzmaNush30IcSwxtE8zzQjzDO%2F7iWMo5%2FXhHqfZ3WsB1I%2Fxx490ID%2FiOnRAVUrJGigX6%2F6nJAfJIVSNLI%2FZVcgmT%2Bod7CkuzsQONyFzx9pK12k8fL1PQdnhobSxD1sQhv1AESnP2afn%2BJffKnAyFHlMJ%2BIvtIGOqUBQ8pJSTcVsLRKKxxr4PL1eqr7EVm6zgoNH1P8wF5nks%2F5MbO%2BHH6GRnCbtpeEw2hLpi3KM%2FG7WfCBklbSrt9kpxyLYaKaxa5EYsFmiHU2MZY56lKTj9iodfOwaHDg29UkgdOqJ%2B5AtsGiiyRR%2FR%2FLkffeNunTT0XG0ZP6%2FKsUMnIWwxSlmFG%2FNHSGqaID6l1JZ8t7hQzxoKn%2FEXBGI8XhXz2%2FUvtP&X-Amz-Signature=78fdad2c8249c4af0e89ec08e1ead65c16532fa0437e1970248d9b139187f972&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/6ebcb145-94e8-4da5-9990-609838a6baf5/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/period-38df2a3f-4320-81c0-83e3-cb566cdbd1c4-cover.jpg",
     "caption": "Pain so bad you can't move? Here's the TCM emergency protocol for right now.\n\nComment \"period\" 👇",
     "account_id": "17841417304649448",
     "creation_id": "18132802120576822",
-    "ig_media_id": null,
+    "ig_media_id": "17978078006889000",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-07-09T11:25:02.324993+00:00"
+    "updated_at": "2026-07-09T11:25:52.011138+00:00"
   }
 }
