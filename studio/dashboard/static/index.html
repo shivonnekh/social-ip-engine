@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-IP Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..900;1,9..144,500..900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🎬 AI-IP Studio</div>
+    <nav class="tabs">
+      <button class="tab active" data-view="queue">🔥 工作台</button>
+      <button class="tab" data-view="concepts">📚 Concepts</button>
+    </nav>
+    <span id="last-sync" class="sync-note"></span>
+    <button id="btn-refresh" class="icon-btn" title="刷新">↻ 刷新</button>
+  </header>
+
+  <main class="main">
+    <!-- 工作台：所有 row 按「下一步该做什么」分组 -->
+    <section id="view-queue" class="view">
+      <div id="queue-body" class="queue-body"><p class="hint">loading…</p></div>
+    </section>
+
+    <!-- Concepts 浏览 + fan-out -->
+    <section id="view-concepts" class="view" hidden>
+      <div class="concepts-layout">
+        <aside class="sidebar">
+          <h2>Content Library</h2>
+          <div id="content-list" class="content-list"><p class="hint">loading…</p></div>
+        </aside>
+        <div class="concept-main">
+          <div id="concept-toolbar" class="concept-toolbar" hidden>
+            <button id="btn-fanout" class="btn primary">▶ Fan out + 生成素材（所有 active IP）</button>
+          </div>
+          <div id="rows-panel" class="rows-panel">
+            <p class="hint">← 左边选一个 concept</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- row 详情（JS 渲染） -->
+  <div id="detail" class="detail" hidden></div>
+
+  <!-- 任务日志抽屉 -->
+  <div id="log-drawer" class="log-drawer collapsed">
+    <div class="log-head" id="log-head">
+      <span class="log-dot" id="log-dot"></span>
+      <span id="log-title">日志</span>
+      <span id="log-status" class="log-status"></span>
+      <button class="icon-btn" id="log-toggle">▴</button>
+    </div>
+    <pre id="log-output"></pre>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

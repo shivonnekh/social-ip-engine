@@ -15,6 +15,11 @@ Usage:
   python3 scripts/notion_video.py --row <production_page_id>
   python3 scripts/notion_video.py --row <id> --model seedance2.0fast --submit-only
   python3 scripts/notion_video.py --row <id> --collect      # download + concat already-submitted
+  python3 scripts/notion_video.py --row <id> --merge-only   # NO 即梦 calls: pull each shot's
+                # existing video back FROM NOTION, concat, strip watermark, upload Raw Video.
+                # For rows whose shots are all done in Notion but whose local workdir is gone —
+                # merge normally only happens as the tail of a generation run, so such a row
+                # could otherwise never get its merged Raw Video.
 """
 from __future__ import annotations
 
@@ -219,7 +224,7 @@ def read_row_shots(row_id):
         t, tx = b["type"], _txt(b)
         if t == "heading_3" and tx.lower().startswith("shot"):
             cur = {"title": tx, "image_url": None, "audio_url": None,
-                   "jimeng": "", "has_video": False}
+                   "jimeng": "", "has_video": False, "video_url": None}
             shots.append(cur); label = None
         elif t in ("heading_1", "heading_2", "heading_3"):
             # Any OTHER heading ends the current shot's scope — e.g. the trailing
@@ -241,9 +246,12 @@ def read_row_shots(row_id):
                     cur["image_url"] = _block_file_url(c); break
         elif t == "toggle" and "Video here" in tx and b.get("has_children"):
             # Check if the video toggle already has a real video inside
-            kids = _children(b["id"])
-            if any(k["type"] == "video" for k in kids):
-                cur["has_video"] = True
+            # (and remember its URL — --merge-only re-downloads from Notion)
+            for k in _children(b["id"]):
+                if k["type"] == "video":
+                    cur["has_video"] = True
+                    cur["video_url"] = _block_file_url(k)
+                    break
         elif t == "audio":
             cur["audio_url"] = _block_file_url(b)
     return shots
@@ -478,6 +486,43 @@ def strip_ai_watermark(path: str) -> str:
     return path
 
 
+def upload_raw_video_property(row_id: str, mp4_path: str) -> None:
+    """Upload the merged-but-UNCAPTIONED `final.mp4` and set it as the row's
+    "Raw Video" page PROPERTY — a Files & media property, separate on
+    purpose from "Production Video" (which `add_karaoke_captions.py
+    --upload` writes, and which social-ip-engine's live Reels auto-publish
+    reads via `src/notion_publish.py::_extract_video_url`).
+
+    Why a SEPARATE property and not just writing "Production Video" here
+    directly: social-ip-engine's Render-side caption-burn step needs a
+    Notion-reachable copy of the raw merged video to fetch and caption (it
+    has no access to this laptop's local disk) — but if the raw,
+    uncaptioned video were written straight to "Production Video", a human
+    could flip Stage to "✅ Published" (a manual, out-of-band decision,
+    per studio/CLAUDE.md's established convention) before the Render-side
+    caption job ever runs or finishes, auto-publishing an uncaptioned video
+    live. Keeping the merge output in "Raw Video" and only ever letting the
+    caption-burn step populate "Production Video" (on success) means
+    "Production Video" staying empty is the fail-closed default — and
+    src/notion_publish.py already treats an empty "Production Video" as
+    "not ready yet, retry later" with zero new code needed there.
+
+    Never raises past this call — mirrors this file's existing convention
+    of failing loudly on the FIRST video-producing step (concat/
+    strip_ai_watermark) but not letting a secondary Notion write-back hiccup
+    lose the already-successfully-merged local file; a failure here just
+    means the caption-burn step won't find anything yet and this row stays
+    eligible for a retry on next run.
+    """
+    try:
+        file_id = upload_to_notion(mp4_path, "video/mp4", "final.mp4")
+        file_ref = {"type": "file_upload", "file_upload": {"id": file_id}, "name": "final.mp4"}
+        ncall_w("PATCH", f"/pages/{row_id}", {"properties": {"Raw Video": {"files": [file_ref]}}})
+        print("  ⬆️  uploaded merged video -> Notion 'Raw Video' property")
+    except Exception as exc:  # noqa: BLE001 - the local merge already succeeded, don't lose it
+        print(f"  ⚠️  'Raw Video' upload failed (local final.mp4 is still fine): {exc}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--row", required=True)
@@ -486,6 +531,8 @@ def main():
     ap.add_argument("--collect", action="store_true", help="skip submit; download+concat from saved submit_ids")
     ap.add_argument("--regen", action="store_true", help="regenerate all shots even if videos exist; appends new '🎬 Video (regen)' toggles alongside old ones")
     ap.add_argument("--shot", type=int, default=None, metavar="N", help="process only shot N (useful for targeted retry)")
+    ap.add_argument("--merge-only", action="store_true",
+                    help="no 即梦 calls: download every shot's existing video FROM NOTION, concat, strip watermark, upload Raw Video")
     args = ap.parse_args()
 
     workdir = _campaign_workdir(args.row)
@@ -500,6 +547,32 @@ def main():
     vdir = workdir / "video"
     idir = workdir / "images"
     adir = workdir / "voice"
+
+    # --merge-only: every shot's video already lives in Notion — pull them back,
+    # concat, strip watermark, upload. Zero 即梦 calls. Refuses to run unless ALL
+    # shots have a video (a silently incomplete final.mp4 is worse than no merge).
+    if args.merge_only:
+        missing = [i for i, s in enumerate(shots, 1) if not s.get("video_url")]
+        if missing:
+            print(f"❌ merge-only aborted — shots missing video in Notion: {missing}")
+            return 1
+        mp4s = []
+        for i, s in enumerate(shots, 1):
+            out = str(vdir / f"shot{i}.mp4")
+            # force=True: any local shotN.mp4 may be stale — Notion is the source of truth here
+            _download(s["video_url"], out, force=True)
+            mp4s.append(out)
+            print(f"  Shot {i}: downloaded from Notion ({Path(out).stat().st_size // 1024} KB)")
+        final = str(vdir / "final.mp4")
+        concat(mp4s, final)  # already in shot order — do NOT re-sort
+        strip_ai_watermark(final)
+        # No Notion write-back here on purpose: the Production Tracker has no
+        # "Raw Video" property (upload_raw_video_property 400s against it —
+        # confirmed 2026-07-10), and the merged-but-uncaptioned file is just an
+        # intermediate for add_karaoke_captions.py --upload, which writes the
+        # only video property that exists ("Production Video").
+        print(f"🎬 merged {len(mp4s)} shots -> {final}")
+        return 0
 
     # --collect: poll existing submit IDs and download (no new submissions)
     if args.collect:
@@ -521,6 +594,7 @@ def main():
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
             strip_ai_watermark(final)
+            upload_raw_video_property(args.row, final)
             print(f"🎬 final video -> {final}")
         else:
             print("no shots ready")
@@ -610,6 +684,7 @@ def main():
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
             strip_ai_watermark(final)
+            upload_raw_video_property(args.row, final)
             print(f"🎬 final video -> {final}")
         else:
             print("no shots completed")

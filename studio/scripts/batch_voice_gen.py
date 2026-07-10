@@ -481,6 +481,16 @@ def process_row(row_id: str, title: str, *,
         done += 1
         time.sleep(0.5)  # gentle rate-limit
 
+    if not dry_run and all(s["has_audio"] for s in extract_shots(row_id)):
+        # Mirrors notion_image.py ticking "🎨 Image" once every shot has one —
+        # this checkbox was never actually set anywhere before (found 2026-07-08
+        # while building state detection for the local dashboard), so "has voice"
+        # was previously undetectable without walking the full row body.
+        try:
+            ncall("PATCH", f"/pages/{row_id}", {"properties": {"🎙️ Voice": {"checkbox": True}}})
+        except Exception as exc:
+            print(f"    ⚠️  failed to tick '🎙️ Voice' checkbox: {exc}")
+
     return {"status": "ok", "done": done, "skipped": skipped}
 
 

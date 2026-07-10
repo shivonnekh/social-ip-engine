@@ -174,7 +174,7 @@ def gen_image(prompt, ref_paths, out_path):
     key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not key:
         sys.exit("[error] OPENAI_API_KEY not set")
-    model = os.environ.get("IMAGE_MODEL", "gpt-image-1")  # switch via env if a newer model ships
+    model = os.environ.get("IMAGE_MODEL", "gpt-image-2")  # switch via env if a newer model ships
     fields = {"model": model, "prompt": prompt, "size": "1024x1536", "n": "1"}
     files = [("image[]", p) for p in ref_paths]
     bnd, body = _multipart(fields, files)
@@ -221,9 +221,13 @@ def main():
     # face references: pull from the IP's Notion page (source of truth); fall back to assets map
     ip_refs = ip_reference_images(ip_rel[0]["id"], ROOT / "campaigns" / "assets" / "faces" / ip_name) if ip_rel else []
     if not ip_refs and ASSETS.get("faces", {}).get(ip_name):
-        ip_refs = [ASSETS["faces"][ip_name]]
+        ip_refs = [str(ROOT / ASSETS["faces"][ip_name])]
     bgs = ASSETS.get("clinic_bg", [])
-    bg = bgs[(args.bg - 1) % len(bgs)] if bgs else ""
+    # notion_assets.json paths are relative to the studio/ ROOT, not to cwd — anchor
+    # explicitly. Bare relative paths only "worked" when this script happened to be
+    # invoked with cwd=studio/; generate_assets.py's pipeline_common.run_step() invokes
+    # with cwd=studio/scripts/, which broke this (found 2026-07-08 on a real run).
+    bg = str(ROOT / bgs[(args.bg - 1) % len(bgs)]) if bgs else ""
 
     shots = read_shots(args.row)
     print(f"row IP: {ip_name or '?'} | face refs from Notion: {len(ip_refs)} | bg: {bg or 'MISSING'} | shots: {len(shots)}")

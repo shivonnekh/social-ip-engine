@@ -352,6 +352,91 @@ def _relation_id(page: dict, prop: str) -> str | None:
     return rel[0]["id"] if rel else None
 
 
+def _page_title(page: dict) -> str:
+    for prop in page["properties"].values():
+        if prop.get("type") == "title":
+            return "".join(t["plain_text"] for t in prop["title"])
+    return ""
+
+
+def fetch_infographic_brief(concept_id: str) -> str:
+    """Pull the 🖼️ Infographic Brief code block from a Content Library page.
+    Returns "" if the concept has no brief."""
+    grab = False
+    for b in _all_children(concept_id):
+        t, tx = b["type"], _txt(b)
+        if t.startswith("heading") and "Infographic Brief" in tx:
+            grab = True
+            continue
+        if grab and t == "code":
+            return tx
+        if grab and t.startswith("heading"):
+            break  # next section reached without finding a code block
+    return ""
+
+
+def build_cover_prompt(persona: str, title: str, hook_visual: str = "") -> str:
+    """Cover/thumbnail prompt for the row — scroll-stopping single frame with
+    clean space reserved for a bold title overlay (text added in editing)."""
+    topic_hint = f" Include one clear visual element from the hook scene: {hook_visual}" if hook_visual else ""
+    return (
+        "One single photorealistic vertical 9:16 COVER IMAGE for a short-video "
+        "thumbnail — a single moment. No split screen, no collage, no panels.\n"
+        f"The main character must be the EXACT same person as the reference photo "
+        f"({persona}) — same face, hair, age, ethnicity.\n"
+        "Expression: exaggerated, scroll-stopping (shocked / concerned / intrigued), "
+        "direct eye contact with the camera, face near-frontal.\n"
+        "Composition: subject fills the lower two-thirds of the frame; clean "
+        "high-contrast background; keep the top third uncluttered for a bold title "
+        "text overlay added later.\n"
+        f"TOPIC: {title}.{topic_hint}\n"
+        "Punchy color grading, crisp lighting, readable at thumbnail size. "
+        "No on-screen text, no watermark."
+    )
+
+
+NO_BRIEF_PLACEHOLDER = "<no Infographic Brief on the Content page — add it there, then re-sync>"
+
+
+def _bold_block(t: str) -> dict:
+    return {"object": "block", "type": "paragraph", "paragraph": {"rich_text": [
+        {"type": "text", "text": {"content": t},
+         "annotations": {"bold": True, "italic": False, "strikethrough": False,
+                         "underline": False, "code": False, "color": "default"}}]}}
+
+
+def _code_block(t: str) -> dict:
+    return {"object": "block", "type": "code",
+            "code": {"rich_text": _rt(t), "language": "plain text"}}
+
+
+def cover_blocks(persona: str, title: str, hook_visual: str = "") -> list[dict]:
+    """🖼️ Cover Photo section blocks (prompt + drop-toggle + trailing divider)."""
+    return [
+        {"object": "block", "type": "heading_3", "heading_3": {"rich_text": _rt("🖼️ Cover Photo")}},
+        _bold_block("🖼️ Cover prompt (thumbnail → GPT)"),
+        _code_block(build_cover_prompt(persona, title, hook_visual)),
+        {"object": "block", "type": "toggle",
+         "toggle": {"rich_text": _rt("🖼️ Cover here"), "children": []}},
+        {"object": "block", "type": "divider", "divider": {}},
+    ]
+
+
+def dm_blocks(brief: str) -> list[dict]:
+    """📊 DM Infographic section blocks (prompt synced from the Content page)."""
+    return [
+        {"object": "block", "type": "heading_3", "heading_3": {"rich_text": _rt("📊 DM Infographic")}},
+        _bold_block("🖼️ Infographic prompt (→ GPT image gen)"),
+        _code_block(brief or NO_BRIEF_PLACEHOLDER),
+    ]
+
+
+def cover_dm_blocks(persona: str, title: str, brief: str, hook_visual: str = "") -> list[dict]:
+    """Body blocks for the 🖼️ Cover Photo + 📊 DM Infographic sections
+    (appended by apply_shot_plan on fan-out; backfilled onto older rows)."""
+    return cover_blocks(persona, title, hook_visual) + dm_blocks(brief)
+
+
 def _has_sentinel(row_id: str) -> dict | None:
     for b in _all_children(row_id):
         if b["type"] == "callout" and SENTINEL in _txt(b):
@@ -537,6 +622,13 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
         blocks.append(_empty_toggle("🖼️ Image here"))   # leave blank — drop assets in later
         blocks.append(_empty_toggle("🎬 Video here"))   # leave blank — drop assets in later
         blocks.append({"object": "block", "type": "divider", "divider": {}})
+
+    # Trailer sections: cover-photo prompt + DM-infographic prompt travel WITH
+    # the production row from day one (synced from the Content page at fan-out).
+    concept_title = _page_title(call("GET", f"/pages/{concept_id}"))
+    brief = fetch_infographic_brief(concept_id)
+    hook_visual = _primary_beat(shots[0]["visual"]) if shots else ""
+    blocks.extend(cover_dm_blocks(persona, concept_title, brief, hook_visual))
 
     for i in range(0, len(blocks), 25):
         call("PATCH", f"/blocks/{row_id}/children", {"children": blocks[i:i + 25]})
