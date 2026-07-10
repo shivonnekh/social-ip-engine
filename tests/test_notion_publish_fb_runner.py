@@ -262,7 +262,15 @@ async def test_same_row_id_never_runs_twice_concurrently(
     task1 = asyncio.create_task(
         runner.run_publish_job(job, state_path=state_path, poll_interval_s=0, poll_max_s=5)
     )
-    await asyncio.sleep(0)  # let task1 reach the gate and claim _RUNNING_ROW_IDS
+    # Let task1 claim _RUNNING_ROW_IDS and reach the gate. A single sleep(0)
+    # used to be enough, but _ensure_container now does an asyncio.to_thread
+    # round-trip (the fresh-video-URL refresh) before create — poll until
+    # task1 has actually entered create_reel_container instead.
+    for _ in range(500):
+        if create_calls["n"] == 1:
+            break
+        await asyncio.sleep(0.01)
+    assert create_calls["n"] == 1  # task1 is parked at the gate inside create
     result2 = await runner.run_publish_job(job, state_path=state_path, poll_interval_s=0, poll_max_s=5)
 
     assert result2 is False  # the second call backed off immediately
@@ -299,3 +307,90 @@ async def test_plan_and_dispatch_fb_runs_when_enabled(monkeypatch: pytest.Monkey
 
 async def _async_noop_zero() -> int:
     return 0
+
+
+# ------------------------------------------------- fresh video URL refresh
+# The ledger's video_url is a Notion S3 presigned link that expires in 1h;
+# any mirror that doesn't run instantly hands Meta a dead URL (403 — the
+# 2026-07-09/10 four-rows-failed-3x incident). _ensure_container must
+# re-resolve a fresh URL from Notion at execution time — but ONLY when it
+# is the SAME underlying file (stable-URL match), never a replaced asset.
+
+
+def _notion_row_with_video(url: str) -> dict:
+    return {"properties": {"Production Video": {"files": [{"type": "file", "file": {"url": url}}]}}}
+
+
+@pytest.mark.asyncio
+async def test_create_uses_fresh_notion_url_when_same_stable_file(
+    state_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Same path as _job()'s video_url, different (fresh) query string.
+    fresh = "https://s3.example/v.mp4?X-Amz-Expires=3600&X-Amz-Signature=NEW"
+    monkeypatch.setattr(
+        runner, "_ncall", lambda method, path, body=None: _notion_row_with_video(fresh)
+    )
+    seen: dict = {}
+
+    async def fake_create(**kw):
+        seen.update(kw)
+        return fb_publish.ContainerResult(True, creation_id="v1")
+
+    async def fake_poll(creation_id, *, account_id=None):
+        return fb_publish.StatusResult(True, status_code="upload_complete")
+
+    async def fake_publish(creation_id, caption="", **kw):
+        return fb_publish.PublishResult(True, media_id="m1")
+
+    monkeypatch.setattr(fb_publish, "create_reel_container", fake_create)
+    monkeypatch.setattr(fb_publish, "poll_container_status", fake_poll)
+    monkeypatch.setattr(fb_publish, "publish_container", fake_publish)
+
+    assert await runner.run_publish_job(_job(), state_path=state_path, poll_interval_s=0, poll_max_s=1)
+    assert seen["video_url"] == fresh  # NOT the stale ledger copy
+
+
+@pytest.mark.asyncio
+async def test_create_refuses_fresh_url_for_a_different_file(
+    state_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Notion's Production Video was REPLACED after the IG publish — a
+    # different path. Mirroring it would post content to FB that never went
+    # to IG; must fall back to the (stale) ledger URL instead.
+    monkeypatch.setattr(
+        runner, "_ncall",
+        lambda method, path, body=None: _notion_row_with_video(
+            "https://s3.example/DIFFERENT-FILE.mp4?sig=x"
+        ),
+    )
+    seen: dict = {}
+
+    async def fake_create(**kw):
+        seen.update(kw)
+        return fb_publish.ContainerResult(False, detail="http 422: dead url")
+
+    monkeypatch.setattr(fb_publish, "create_reel_container", fake_create)
+
+    assert not await runner.run_publish_job(_job(), state_path=state_path)
+    assert seen["video_url"] == "https://s3.example/v.mp4"  # ledger copy, untouched
+
+
+@pytest.mark.asyncio
+async def test_create_falls_back_to_ledger_url_when_notion_fetch_fails(
+    state_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def boom(method, path, body=None):
+        raise RuntimeError("notion 500")
+
+    monkeypatch.setattr(runner, "_ncall", boom)
+    seen: dict = {}
+
+    async def fake_create(**kw):
+        seen.update(kw)
+        return fb_publish.ContainerResult(False, detail="dead")
+
+    monkeypatch.setattr(fb_publish, "create_reel_container", fake_create)
+
+    assert not await runner.run_publish_job(_job(), state_path=state_path)
+    assert seen["video_url"] == "https://s3.example/v.mp4"
+

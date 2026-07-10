@@ -137,13 +137,67 @@ async def _release_running(row_id: str) -> None:
         _RUNNING_ROW_IDS.discard(row_id)
 
 
+def _refresh_video_url(job: PublishJob) -> str | None:
+    """Re-resolve the row's "Production Video" URL from Notion RIGHT NOW,
+    returning a fresh presigned URL — or ``None`` if it can't be safely used
+    (caller falls back to ``job.video_url`` unchanged).
+
+    WHY (2026-07-09/10 incident, 4 rows failed 3x each): the mirror planner
+    copies ``video_url`` verbatim out of Instagram's ledger — but that URL is
+    a Notion S3 presigned link that expires in ONE HOUR, and the FB mirror
+    STRUCTURALLY runs later than that: when ``plan_fb_mirrors()`` executes,
+    the same call's IG job is still ``in_flight`` (its ledger entry only says
+    ``published`` after the async IG runner finishes), so the row is only
+    picked up on the NEXT webhook fire or the daily sweep — hours to a day
+    later. Every FB mirror of a not-just-published row was therefore handing
+    Meta a dead URL: ``FileUrlProcessingError ... 403 Forbidden``.
+
+    SAFETY — this must never weaken the byte-for-byte mirror guarantee: the
+    fresh URL is only used when its STABLE part (scheme+host+path, the same
+    normalization the dedup ledger uses) matches ``job.video_url``'s. A
+    mismatch means the row's "Production Video" file was REPLACED after the
+    IG publish — silently mirroring the new file would post content to FB
+    that never went to IG, so we refuse (return ``None``) and let the create
+    call fail loudly with the stale URL instead. Caption/cover are NOT
+    refreshed for the same reason: URL freshness is a transport concern;
+    content stays whatever IG's ledger recorded.
+
+    Sync (urllib) — call via ``asyncio.to_thread``. Never raises."""
+    try:
+        row = _ncall("GET", f"/pages/{job.row_id}")
+        fresh = notion_publish._extract_video_url(row)
+        if not fresh:
+            logger.warning(
+                "[notion-publish-fb] %s: no Production Video on the Notion row — using ledger URL",
+                job.row_id,
+            )
+            return None
+        if notion_publish._stable_video_url(fresh) != notion_publish._stable_video_url(job.video_url):
+            logger.warning(
+                "[notion-publish-fb] %s: Notion's Production Video differs from the one published "
+                "to IG — refusing to mirror a different asset; using ledger URL",
+                job.row_id,
+            )
+            return None
+        return fresh
+    except Exception as exc:  # noqa: BLE001 - refresh is best-effort, stale URL fails loudly downstream
+        logger.warning("[notion-publish-fb] %s: video URL refresh failed (%s) — using ledger URL",
+                       job.row_id, exc)
+        return None
+
+
 async def _ensure_container(job: PublishJob, state_path: Path) -> str | None:
     """Return a ``creation_id`` (FB ``video_id``) — reusing ``job.creation_id``
-    if already set (a resume), else running the start+transfer sequence."""
+    if already set (a resume), else running the start+transfer sequence.
+
+    The transfer URL is re-resolved fresh from Notion first (see
+    ``_refresh_video_url``) — the ledger's copy is expired by the time any
+    non-instant mirror runs."""
     if job.creation_id:
         return job.creation_id
+    video_url = await asyncio.to_thread(_refresh_video_url, job) or job.video_url
     result = await fb_publish.create_reel_container(
-        video_url=job.video_url, caption=job.caption, cover_url=job.cover_url,
+        video_url=video_url, caption=job.caption, cover_url=job.cover_url,
         account_id=job.account_id,
     )
     if not result.ok:
