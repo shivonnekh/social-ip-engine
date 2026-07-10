@@ -12,10 +12,16 @@
 #   - Combine with a free external cron (cron-job.org, every 10 min) hitting
 #     /health to prevent sleep. See docs/DEPLOYMENT.md.
 
-databases:
-  - name: tcm-jessica-db
-    plan: free
-    region: singapore
+# ⚠️ NO databases: section on purpose. The original blueprint-declared
+# free Postgres (tcm-jessica-db) hit its 90-day free-tier expiry on
+# 2026-06-20 and was deleted by Render. Its manually-created replacement
+# is **tcm-jessica-db-2** (created 2026-06-26, dashboard-managed, NOT in
+# this yaml). From ~06-20 to 07-10 the service silently ran on SQLite on
+# the EPHEMERAL disk because DATABASE_URL still pointed (via
+# fromDatabase) at the dead db — every deploy wiped ALL CRM state +
+# webhook dedup claims, causing the "old comment→DM replies re-sent
+# after every deploy" incident (found 2026-07-10). Free Postgres expires;
+# if this ever recurs, check `render.com /v1/postgres` status FIRST.
 
 services:
   - type: web
@@ -89,14 +95,17 @@ services:
       - key: JESSICA_BOT_NAMES
         value: "Jessica,jessica,Jessica姐"
 
-      # ── Persistent Postgres (auto-injected by Render) ───────
-      # Render wires DATABASE_URL automatically when a database is linked.
-      # repo_factory.py reads DATABASE_URL first → uses CRMRepoPG.
-      # No DATABASE_PATH needed — Postgres is the only backend in production.
+      # ── Persistent Postgres ──────────────────────────────────
+      # repo_factory.py reads DATABASE_URL first → uses CRMRepoPG; when it
+      # is missing/empty it SILENTLY falls back to SQLite on the ephemeral
+      # disk — which is exactly what happened 2026-06-20→07-10 when the
+      # original linked db expired (see the databases: note at the top).
+      # sync:false — the value is the tcm-jessica-db-2 internal connection
+      # string, set in the dashboard/API (2026-07-10). NEVER wire this via
+      # fromDatabase again unless the referenced db is blueprint-managed
+      # and its expiry is monitored.
       - key: DATABASE_URL
-        fromDatabase:
-          name: tcm-jessica-db
-          property: connectionString
+        sync: false
 
       # ── Trace bundles — ephemeral on free plan ───────────────
       # Trace JSON files live in /tmp/traces and are lost on restart.
