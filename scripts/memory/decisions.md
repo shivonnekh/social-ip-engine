@@ -8486,3 +8486,415 @@
 - **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
 - - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
 
+
+## 2026-07-10 11:00 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+
+
+## 2026-07-10 11:03 — social-ip-engine
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 11:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 11:12 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 12:57 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 12:59 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+
+
+## 2026-07-10 13:16 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 13:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 13:23 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 13:33 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 13:37 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 13:39 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 13:44 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 13:52 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 13:54 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 14:04 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 14:15 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 14:21 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 14:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 14:24 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 14:29 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 14:38 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 14:41 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 15:13 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 15:19 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-10 15:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 15:28 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **4. Period Pain 其实昨天已经上 IG 了。** 服务器 commit 记录显示台账清掉后触发重新发布成功(caption 是 Hook 生成的那句 "Pain so bad you can't move?...Comment 'period' 👇")。但它用的是**旧 cover 逻辑**——已经发出去的这条 IG 帖子的封面改不了(IG API 不支持事后换封面),只有以后的帖子会用对。你可以去 Jackie 的 IG 确认一下这条帖子存不存在、封面能不能接受。
+- 监控在跑。IG 视频处理一般 2-5 分钟,FB 再加 2 分钟左右。这次是全新代码走的第一条完整链路:封面从 Cover Photo toggle 读、caption 用 "Can't Move from Pain? Try This NOW! 😱"、FB 拿新鲜链接镜像。结果一出来我就报,包括两边的 media id 和实际用的 cover URL,你直接刷 IG/FB 就能看到新帖。
+
+### Decisions & Reasoning
+- **改法（用 seedance-characters 的 three-tier action hierarchy）**：二选一
+- 这是个真实的代码 gap，不只是内容问题：`_jimeng_camera()`（298-310行）已经会读 title 里的关键字（比如"demo"）来选镜头运镜，但 lip-sync 那句话完全没有类似的条件判断。**建议**：给 `build_jimeng_prompt()` 加一个判断——如果 visual 文本里出现"no dialogue to camera"/"action shot"，把 read 那句换成纯 VO 描述，不要求对口型。我可以现在就改这个函数，要吗？
+- 但 `_primary_beat()`（234-243行）只取第一个分号/逗号/"then"之前的那一段作为静帧图片的 SCENE，"warm side lighting, soft focus"这个你特意写的打光指令，落在第二个 `;` 之后，**根本没被摘进 build_prompt() 里**。而且这段文字也没命中 `_clinic_kws`/`_street_kws` 任何关键字，所以最后套用的是最保底的 fallback：`"Setting: shallow depth of field, natural lighting."`——一句完全通用、没有意图的话。
+- 按 directing-engine 的 Step 5（光是有动机的，不是随便一句"natural lighting"）：这镜的光线本该是特意设计的（warm side light 服务"温柔专业的诊疗感"），结果被模板吃掉了，变成了泛用光。**改法**：Shot 2 的视觉描述把光线线索挪到第一段（分号前），比如："...scrape from the center of her cheek outward to the ear, warm side lighting on her face, then down along the jawline..." 这样 `_primary_beat()` 才抓得到。
+- 这是内容不一致：DM 私信发出去的信息图，承诺了视频里根本没演示过的手法。用户看完视频、评论关键字拿到图，会发现图上多了一条视频没教的东西。**建议**：要么把 brow-to-hairline 从 infographic 里删掉（保持图和视频严格对齐），要么在 Shot 3 补一句额头手法（更花成本，不建议为了这个改视频）。我倾向直接删。
+- - Infographic 本身风格选择（illustration、非写实、no real faces）是对的——医美/身体相关内容用插画而非写实照片，本来就更安全，不用动。
+- **我会怎么改**：拿掉对比图插入，把这个"恍然大悟"的瞬间做成一个真实可拍的动作——比如医生用手指轻按自己下颌，停顿、微微点头，一个"这不是脂肪"的确认表情。让画面自己完成认知转折，而不是靠一张信息图硬解释。对比图这个视觉任务，交给 DM 的 infographic 去做就够了（本来 infographic brief 里已经有箭头示意图，两边做同一件事是重复劳动）。
+- - **Shot 2**：医生在**别人（患者）脸上**做示范，配音用"you"（"you scrape from the center of your face..."）
+
+
+## 2026-07-10 15:32 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+

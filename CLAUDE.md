@@ -284,6 +284,10 @@ Two personas share this surface: **Chloe/陳芷晴** (`chloechan.cccc`, IG id `1
 
 **Publishing NEW content to the feed (not replies) — two separate capabilities, both live:**
 - **Reels** (`src/channels/ig_publish.py` + `src/notion_publish*.py`) — auto-publishes a Production Tracker row's video the moment `Stage` hits `✅ Published`. Container create → poll → publish, with a paranoid row-level + video-URL-level duplicate-post ledger (`notion_publish_state.json`) and crash-resume (`resume_in_flight()`), since a duplicate live post is effectively irreversible. Wired via `POST /admin/notion-publish` in `src/web.py`, called by a Notion Automation the instant `Stage` flips — **event-driven, not polling**.
+- **Cover priority (fixed 2026-07-10):** `notion_publish_media.resolve_cover()` reads, in order: ① the row's dedicated **"🖼️ Cover Photo → 🖼️ Cover here" toggle** (the human-reviewed thumbnail) → ② Shot 1's in-scene still → ③ blind AI generation from the Hook. Before the fix, ① was NEVER read — live posts silently shipped Shot-1/blind covers even when a reviewed cover existed on the row.
+- **Caption headline (fixed 2026-07-10):** the row's **`🏷️ Title` property** (punchy, viewer-facing, authored by `notion_fanout.py`'s `draft_title`) wins over the Content page's `Hook` (an internal creative-brief line). Hook is fallback-only, with a loud warning in the plan output.
+- **Facebook mirror** (`src/channels/fb_publish.py` + `src/notion_publish_fb_runner.py`, `NOTION_PUBLISH_FB_ENABLED=true`) — every IG-published row is mirrored to Jackie's FB Page with the SAME video/cover/caption, copied **verbatim from Instagram's ledger** (never re-derived — byte-for-byte by construction). Separate ledger (`notion_publish_fb_state.json`), separate runner/locks; an FB failure can never corrupt IG state. Three hard-won gotchas: **(a)** the mirror STRUCTURALLY runs at least one trigger later than IG (when `plan_fb_mirrors()` executes, the same call's IG job is still `in_flight`), and the ledger's video URL is a Notion S3 presigned link that **expires in 1 hour** — so `_ensure_container` re-fetches a fresh URL from Notion at publish time (stable-URL match guard: a replaced file is refused, never silently mirrored). **(b)** FB's `video_reels` upload flow has **NO cover parameter** — FB auto-picks a random frame; the runner sets the real cover post-publish via `POST /{video_id}/thumbnails` `is_preferred=true` (verified live on a real Reel, works despite docs ambiguity; cosmetic-only failure contract). **(c)** rows failed ≥3 attempts flip to permanent `skipped` on the next plan call — clearing a ledger entry for a clean retry must happen BEFORE any trigger fires. Note: deleting an FB Reel is possible via `DELETE /{video_id}`; **deleting an IG post via API is NOT supported** (manual only).
+- **Delete-and-republish playbook (used 2026-07-10):** delete the FB Reel via API → clear the row's entries from BOTH ledgers → **deploy** (the server's on-disk ledgers are its deploy checkout + its own writes; a git-side clear doesn't reach the live process until a deploy) → `POST /admin/notion-publish` for IG → after IG's ledger shows `published`, trigger again for the FB mirror. Beware: right after a deploy flips "live", the first trigger can still hit the DRAINING old instance (old ledger → silent no-op) — just re-trigger.
 - **Optional scheduled publishing via the `Publish Date` property** (added 2026-07-07, `notion_publish._publish_date_eligible`): a row is only claimed once its `Publish Date` (name overridable via `NOTION_PUBLISH_DATE_PROP`) has arrived, compared in HKT. **Opt-in** — a row with no `Publish Date` set behaves exactly as before (claimed the instant `Stage` flips). A date-only value (no time) is eligible from 00:00 HKT that day; an explicit time is respected exactly. Deferred rows are reported in `plan_publishes()`'s `skipped` list, NOT written to the ledger, so they're reconsidered on every future run. An unparseable `Publish Date` fails OPEN (publishes now, with a warning) — a parsing bug must never silently and permanently block a row a human already marked Published.
 - **The daily schedule sweep** (`src/notion_publish_scheduler.py`) is why a deferred row ever actually goes live: the Notion Automation above only fires ONCE, when `Stage` changes — a row deferred by a future `Publish Date` has no future event to re-check it. This sweep is a long-running internal `asyncio` loop (mirrors `src.channels.reconciliation`'s pattern, not an external cron hit — this service runs on a non-sleeping Render plan) that wakes once a day at `NOTION_PUBLISH_SCHEDULE_HOUR_HKT:MINUTE_HKT` (default `9:00` HKT) and calls the exact same `notion_publish_runner.plan_and_dispatch()` the live webhook uses — one dispatch code path for both triggers, so they can never diverge on the duplicate-post guard. **Off by default** (`NOTION_PUBLISH_SCHEDULE_ENABLED=true` to turn on) — unlike `RECONCILE_ENABLED` (default on), this sweep can create a brand new, real, irreversible Instagram post, so it should be opted into deliberately, not enabled for free on the next deploy. Unlike the live webhook (whose 502 is visible to the Notion Automation, which can see/retry it), this loop has no external observer — a sweep failure (raised exception, or a non-empty `errors` list even on a non-raising run) fires `send_ops_alert` (see `OPS_ALERT_WEBHOOK_URL` in §6/render.yaml), so a silently-broken daily sweep doesn't leave a deferred row stuck forever with nobody notified.
 - **Carousels** (`src/channels/ig_publish_carousel.py`, added 2026-07-07) — same container→poll→publish shape, but Reels-only `ig_publish.py` didn't cover multi-image posts, so this is a sibling module: one item container per image (`create_carousel_item_container`, `is_carousel_item=true`) + one parent container referencing all item ids (`create_carousel_container`, `media_type=CAROUSEL`). Reuses `ig_publish.poll_container_status` / `publish_container` as-is — those two calls are container-type-agnostic. **Not yet wired to the Notion ledger** — today it's ad-hoc (see `scripts/gen_carousel_pressure_points.py` + `scripts/publish_pressure_points_carousel.py` for a full worked example: research → gpt-image-2 generation → deploy → publish).
@@ -385,9 +389,20 @@ Also expose a **live trace viewer** (simple FastAPI + HTML) at `/trace/<turn_id>
   `data/media/tts/<sha16>.mp3`, served via the existing
   `/media` StaticFiles mount; absolute URL requires `JESSICA_BASE_URL`
   env var (otherwise ChatDaddy can't fetch the audio).
-- **DB:** PostgreSQL in production (Render free, 1GB, persistent — **free
-  tier expires 90 days after creation; current expiry 2026-06-20**).
-  SQLite for local dev. Dispatched by `repo_factory.py` based on `DATABASE_URL`.
+- **DB:** PostgreSQL in production — **`tcm-jessica-db-2`, PAID
+  basic_256mb (~$6/mo, no expiry), created 2026-06-26**. SQLite for local
+  dev. Dispatched by `repo_factory.py` based on `DATABASE_URL`.
+  **Incident 2026-06-20→07-10:** the original FREE Postgres hit its 90-day
+  expiry and was DELETED; `render.yaml`'s `fromDatabase` link resolved to
+  nothing, and prod silently fell back to SQLite on the EPHEMERAL disk for
+  3 weeks — every deploy wiped ALL CRM state + the `webhook_events` dedup
+  table (whose emptiness made the reconciliation sweep re-DM old comments
+  after every deploy). Fixed 2026-07-10: DATABASE_URL set directly on the
+  service (dashboard-managed, `sync: false` in render.yaml), and
+  `repo_factory.resolve_database_url` now REFUSES to boot when
+  `APP_ENV=production` and the URL is not postgres:// (fail-loud guard,
+  `tests/test_repo_factory.py`). Never wire DATABASE_URL via
+  `fromDatabase` against an unmonitored free-tier db again.
 - **Vector search:** pgvector (Postgres extension) — indexed on startup if
   `DATABASE_URL` is Postgres. Hybrid KB search via `tools/vector_store.py`.
 - **Schema migrations:** `CREATE TABLE IF NOT EXISTS` only creates new
@@ -404,7 +419,7 @@ Also expose a **live trace viewer** (simple FastAPI + HTML) at `/trace/<turn_id>
   **Auto-deploy webhook is currently broken** — push to main does not
   trigger deploy. Workaround: `POST /v1/services/{id}/deploys` via Render
   API. See `docs/DEPLOYMENT.md`.
-- **Test:** pytest (758 passing + 2 skipped as of 2026-07-03).
+- **Test:** pytest (1388 passing + 2 skipped as of 2026-07-10).
 
 ---
 
