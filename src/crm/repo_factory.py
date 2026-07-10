@@ -36,8 +36,29 @@ def resolve_database_url(default_sqlite_path: str) -> str:
       1. DATABASE_URL env var (Render Postgres injects this)
       2. DATABASE_PATH env var (legacy SQLite path)
       3. default_sqlite_path argument
+
+    PRODUCTION GUARD (added 2026-07-10): when APP_ENV=production, refuse to
+    boot on anything that is not a postgres:// URL. The silent fallback to
+    SQLite-on-ephemeral-disk is exactly how the 2026-06-20→07-10 incident
+    stayed invisible for three weeks: the linked free Postgres expired and
+    was deleted, DATABASE_URL resolved to empty, and prod quietly ran on a
+    database that was WIPED ON EVERY DEPLOY — losing all CRM history and
+    the webhook_events dedup table (whose emptiness made the reconciliation
+    sweep re-DM old comments after every deploy). Failing loudly at boot
+    turns that three-week silent degradation into a minutes-visible outage.
+    Mirrors src/whatsapp/router.py's existing "refuse to boot in production
+    without CHATDADDY_WEBHOOK_SECRET" precedent.
     """
     url = os.environ.get("DATABASE_URL", "").strip()
+    app_env = os.environ.get("APP_ENV", "development").lower()
+    if app_env == "production" and not url.startswith(("postgres://", "postgresql://")):
+        raise RuntimeError(
+            "APP_ENV=production requires a postgres:// DATABASE_URL — refusing to "
+            "fall back to SQLite on an ephemeral disk (every deploy would silently "
+            "wipe all CRM state + webhook dedup; see the 2026-06-20 expired-Postgres "
+            f"incident in render.yaml). Got: {url!r}. Check the Render dashboard: is "
+            "the linked Postgres alive and DATABASE_URL set?"
+        )
     if url:
         return url
     return os.environ.get("DATABASE_PATH", default_sqlite_path)

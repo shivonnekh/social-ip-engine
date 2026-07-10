@@ -39,12 +39,15 @@ STAGE_READY = "🟢 Ready to Publish"
 STAGE_PUBLISHED = "✅ Published"
 
 # next_action values, in human priority order (closest-to-live first).
+# NOTE: there is no Raw Video step anywhere — the Production Tracker has no
+# "Raw Video" property (confirmed 2026-07-10) and per-shot videos are reviewed
+# in the shots grid; "finalize" (merge+captions+upload) goes straight to the
+# "Production Video" property in one job.
 NEXT_ACTIONS = [
     "publish",          # everything ready — final look + irreversible publish
-    "add_captions",     # cover/info done, needs captioned Production Video
     "make_cover",       # ready-stage, cover/infographic still missing
-    "review_video",     # raw video exists — review it, then flip Ready
-    "merge_video",      # every shot has a video in Notion but no merged Raw Video
+    "review_video",     # Production Video exists — review it, then flip Ready
+    "finalize",         # every shot has its video — merge+captions+upload in one click
                         # (detail-level only — needs body walk to detect)
     "review_assets",    # images+voice exist — review them, then generate video
     "generate_assets",  # shots exist but image/voice not generated yet
@@ -104,21 +107,20 @@ def list_content_concepts() -> list[dict]:
 # ---------- cheap per-row summary (properties only) ----------
 
 def _next_action_board(stage: str, has_script: bool, has_image: bool,
-                       has_voice: bool, has_raw: bool, has_prod: bool) -> str:
+                       has_voice: bool, has_prod: bool) -> str:
     """Coarse next_action from page properties alone (no body walk).
-    The detail view refines make_cover vs add_captions using body state."""
+    Can't distinguish review_assets vs finalize (needs per-shot video state
+    from the body) — the detail view refines that."""
     if stage == STAGE_PUBLISHED:
         return "done"
     if not has_script:
         return "fan_out"
     if not (has_image and has_voice):
         return "generate_assets"
-    if not has_raw:
+    if not has_prod:
         return "review_assets"
     if stage != STAGE_READY:
         return "review_video"
-    if not has_prod:
-        return "make_cover"
     return "publish"
 
 
@@ -130,7 +132,6 @@ def _row_summary(r: dict) -> dict:
     has_script = bool(_rt(p.get("Script", {})).strip())
     has_image = bool(p.get("🎨 Image", {}).get("checkbox", False))
     has_voice = bool(p.get("🎙️ Voice", {}).get("checkbox", False))
-    has_raw = bool(p.get("Raw Video", {}).get("files"))
     has_prod = bool(p.get("Production Video", {}).get("files"))
     return {
         "id": r["id"],
@@ -142,11 +143,10 @@ def _row_summary(r: dict) -> dict:
         "has_script": has_script,
         "has_image": has_image,
         "has_voice": has_voice,
-        "has_raw_video": has_raw,
         "has_production_video": has_prod,
         "dm_wired": bool(p.get("🔗 DM Wired", {}).get("checkbox", False)),
         "next_action": _next_action_board(stage, has_script, has_image,
-                                          has_voice, has_raw, has_prod),
+                                          has_voice, has_prod),
         "edited": r.get("last_edited_time", ""),
     }
 
@@ -177,7 +177,7 @@ def _resolve_toggle_media(item: tuple[str, dict, str, str]) -> tuple[dict, str, 
     return target, f"{_kind}_url", None
 
 
-def _next_action_detail(stage: str, shots: list[dict], has_raw: bool,
+def _next_action_detail(stage: str, shots: list[dict],
                         cover_img: bool, info_img: bool, has_prod: bool) -> str:
     if stage == STAGE_PUBLISHED:
         return "done"
@@ -186,19 +186,14 @@ def _next_action_detail(stage: str, shots: list[dict], has_raw: bool,
     assets_done = all(s["image_url"] for s in shots) and all(s["audio_url"] for s in shots)
     if not assets_done:
         return "generate_assets"
-    if not has_raw:
-        # If every shot ALREADY has its video in Notion, the only missing step
-        # is the merge itself (e.g. generated elsewhere / local workdir gone —
-        # merge normally only runs as the tail of a generation run).
-        if all(s["video_url"] for s in shots):
-            return "merge_video"
-        return "review_assets"
+    if not all(s["video_url"] for s in shots):
+        return "review_assets"          # review image+voice, then generate the shot videos
+    if not has_prod:
+        return "finalize"               # merge + captions + upload, one click
     if stage != STAGE_READY:
-        return "review_video"
+        return "review_video"           # review the captioned Production Video, then flip Ready
     if not (cover_img and info_img):
         return "make_cover"
-    if not has_prod:
-        return "add_captions"
     return "publish"
 
 
@@ -270,7 +265,6 @@ def row_detail(row_id: str) -> dict:
 
     p = page["properties"]
     stage = _sel(p.get("Stage", {}))
-    raw_url = _file_url(p.get("Raw Video", {}))
     prod_url = _file_url(p.get("Production Video", {}))
     info_is_placeholder = bool(info["prompt"]) and info["prompt"].strip() == npm.NO_BRIEF_PLACEHOLDER
 
@@ -286,9 +280,8 @@ def row_detail(row_id: str) -> dict:
         "shots": shots_out,
         "all_shots_have_image": bool(shots_out) and all(s["has_image"] for s in shots_out),
         "all_shots_have_voice": bool(shots_out) and all(s["has_voice"] for s in shots_out),
-        "raw_video_url": raw_url,
+        "all_shots_have_video": bool(shots_out) and all(s["video_url"] for s in shots_out),
         "production_video_url": prod_url,
-        "has_raw_video": bool(raw_url),
         "has_production_video": bool(prod_url),
         "has_cover_prompt": bool(cover["prompt"]),
         "has_cover_image": bool(cover["image_url"]),
@@ -297,7 +290,7 @@ def row_detail(row_id: str) -> dict:
         "has_infographic_image": bool(info["image_url"]),
         "infographic_image_url": info["image_url"],
         "dm_wired": bool(p.get("🔗 DM Wired", {}).get("checkbox", False)),
-        "next_action": _next_action_detail(stage, shots_out, bool(raw_url),
+        "next_action": _next_action_detail(stage, shots_out,
                                            bool(cover["image_url"]), bool(info["image_url"]),
                                            bool(prod_url)),
     }
