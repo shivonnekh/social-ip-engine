@@ -81,5 +81,19 @@
     "last_error": "reconciled 2026-07-08: pre-existing external publish, predates this automation (this system never touched it) — never auto-post",
     "status": "skipped",
     "updated_at": "2026-07-08T05:02:56.093997+00:00"
+  },
+  "38df2a3f-4320-81c0-83e3-cb566cdbd1c4": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/6ebcb145-94e8-4da5-9990-609838a6baf5/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666OMPCWE3%2F20260710%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260710T053640Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCFNFLyq%2Ft4gszWUtsxuKXOMTXAnh%2FT3%2BWtby0HTbnvsgIhANe7bZlqzGNHpZQ7fj8q23V1o51pHIcRZ42T8UiJk3wAKogECK7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgwoE2mTJA%2FDIsMWLKMq3AN7l%2BLUdJBsVB3C49TE2%2FHA6HWOcrW3SmY477CEvDuRzNx4Go%2Bg6qICeEU0dwqF2btP8cwk93A%2BlMrg7xjDXaJrGA7aSDOoGe8E0Zss%2BVKKawCIqOFA24pxuGDsproa1znjQDVyoPNsG9EwnnhgqFmfVDLhLDoK5IlhawpHOXx06l%2FriOjrzOwHZFqgd%2FrPRYmuYFw99ZZLvqqkAAEIx2iVkkgmV3X3ghihyc7z1VntwgmMNVeITn0SHY1unxHchVLTldeS4C4DGEbVmZ4XGNYROybAOJ0yKtlftZi0LlIJA1mxu2Ut4OVcGlGiagriuhnpxos4x%2BJtVMB7QEC%2Bh0HH7HvOICyvL9%2F5TK4F0Wt3Uv6%2FkqsZ1%2F%2F8K7t0wUT0puwi88nHEtfBL2xNv%2F7454CeIxQyt8AQvz%2BtelciKMm4KHuFJx6OkiMcI41ZUqdtWAdnirHIjEe3%2FynrXj3ONxQAlfOnbhGUSlUkiabiPuXeDkB4tfQWll6rCtF6MyVsptMdhM%2FT8lzyTifa76tLN15lANoACXKXGKUyoZz%2FwcNcqIohPhW3ijm2p1MH5YzCawPmSf89zCIXag5Q1AQQ685MSagLq5QI3TX56nE8dNMItPAE7uLZkpVhL3%2FCszDr6sHSBjqkASI%2B3DVZcDMKSgoL27cPGFuPWsuKlIzmlSp2xYS97YAD1Hs4aedgNquoZ1FtkpMdRyp3brdgOLsGFhqh4UMYijdOzlRMCI5UCONynH181hckSEJL6jpfok2LIIyEWTzL%2F%2FCwfN%2BiSXfdkCFmrBespoHwv7YfJv9YPdWPo6hSCqqoRzgybg8SsuThz4RZydlz%2BGww3qK5l0Tzkh5XROeSp8%2FwvcG7&X-Amz-Signature=07cf587fa60b93ec91c179206b63ae6228bdf8f8115f9d4da8f33fd2690780ef&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/6ebcb145-94e8-4da5-9990-609838a6baf5/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/period-38df2a3f-4320-81c0-83e3-cb566cdbd1c4-cover.jpg",
+    "caption": "Can’t Move from Pain? Try This NOW! 😱\n\nComment \"period\" 👇",
+    "account_id": "17841417304649448",
+    "creation_id": "18133001917576822",
+    "ig_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-07-10T05:36:45.235260+00:00"
   }
 }
