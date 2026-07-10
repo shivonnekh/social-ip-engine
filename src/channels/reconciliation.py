@@ -64,6 +64,50 @@ def _enabled() -> bool:
     return os.environ.get("RECONCILE_ENABLED", "true").lower() == "true"
 
 
+_HKT = timezone(timedelta(hours=8))
+
+
+def _not_before() -> datetime | None:
+    """Optional date gate: sweeps are skipped while now < RECONCILE_NOT_BEFORE.
+
+    WHY (2026-07-10): after the expired-Postgres incident, the dedup table
+    (webhook_events) restarted EMPTY on a fresh database — running a sweep
+    before the old already-DM'd comments slide out of the 72h media lookback
+    would re-DM every one of them. Rather than turning RECONCILE_ENABLED off
+    and trusting a human to remember to turn it back on (the explicit
+    requirement: "I'm afraid I'll forget"), the gate lives server-side and
+    expires on its own — set RECONCILE_NOT_BEFORE=2026-07-13 once, and the
+    sweep resumes automatically that day with zero human memory involved.
+
+    A date-only value means midnight HKT. An unparseable value fails OPEN
+    (gate ignored, warning logged) — same contract as notion_publish's
+    _publish_date_eligible: a parsing bug must never silently disable the
+    missed-comment backstop forever. Checked per-iteration (not once at loop
+    start) because the comparison flips with TIME, not with a restart.
+    """
+    raw = os.environ.get("RECONCILE_NOT_BEFORE", "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw)
+    except ValueError:
+        logger.warning("[reconcile] unparseable RECONCILE_NOT_BEFORE=%r — gate ignored", raw)
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=_HKT)
+    return parsed
+
+
+def _gated_now() -> bool:
+    nb = _not_before()
+    if nb is None:
+        return False
+    if datetime.now(timezone.utc) < nb:
+        logger.info("[reconcile] gated until %s — skipping this sweep", nb.isoformat())
+        return True
+    return False
+
+
 def _parse_media_timestamp(raw: str) -> datetime | None:
     """Best-effort ISO8601 parse. Returns None (never raises) on any
     unexpected shape — callers treat "unknown timestamp" as "include it",
@@ -194,6 +238,8 @@ async def start_reconciliation_loop(pipeline: JessicaPipeline) -> None:
     logger.info("[reconcile] loop started — interval=%ds lookback=%dh", RECONCILE_INTERVAL_S, RECONCILE_LOOKBACK_H)
     while True:
         await asyncio.sleep(RECONCILE_INTERVAL_S)
+        if _gated_now():
+            continue
         try:
             await run_reconciliation_sweep(pipeline)
         except Exception as exc:  # noqa: BLE001

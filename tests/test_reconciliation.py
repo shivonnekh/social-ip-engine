@@ -163,3 +163,39 @@ def test_active_ig_accounts_excludes_comments_off(monkeypatch):
     monkeypatch.setattr(reconciliation.ip_registry, "all_ips", lambda *a, **kw: (off_ip,))
 
     assert reconciliation._active_ig_accounts() == []
+
+
+# ------------------------------------------------ RECONCILE_NOT_BEFORE gate
+# Server-side self-expiring alternative to "turn it off and hope a human
+# remembers to turn it back on" (2026-07-10, post-Postgres-incident: the
+# fresh dedup table must not sweep until old comments leave the lookback).
+
+from src.channels.reconciliation import _gated_now, _not_before
+
+
+def test_gate_absent_means_not_gated(monkeypatch):
+    monkeypatch.delenv("RECONCILE_NOT_BEFORE", raising=False)
+    assert _not_before() is None
+    assert _gated_now() is False
+
+
+def test_future_date_gates(monkeypatch):
+    monkeypatch.setenv("RECONCILE_NOT_BEFORE", "2099-01-01")
+    assert _gated_now() is True
+
+
+def test_past_date_does_not_gate(monkeypatch):
+    monkeypatch.setenv("RECONCILE_NOT_BEFORE", "2020-01-01")
+    assert _gated_now() is False
+
+
+def test_date_only_value_is_hkt_midnight(monkeypatch):
+    monkeypatch.setenv("RECONCILE_NOT_BEFORE", "2026-07-13")
+    nb = _not_before()
+    assert nb is not None and nb.utcoffset().total_seconds() == 8 * 3600
+
+
+def test_unparseable_fails_open(monkeypatch):
+    monkeypatch.setenv("RECONCILE_NOT_BEFORE", "next monday")
+    assert _not_before() is None
+    assert _gated_now() is False  # backstop must never be silently disabled forever
