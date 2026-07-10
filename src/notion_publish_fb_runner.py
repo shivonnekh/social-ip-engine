@@ -264,6 +264,21 @@ async def _publish_and_tick_checkbox(job: PublishJob, creation_id: str, state_pa
         "[notion-publish-fb] published %s -> media_id=%s", job.row_id, publish_result.media_id
     )
 
+    # Best-effort custom cover — the video_reels flow has no cover param, so
+    # without this FB auto-picks a random frame (user-visible wrong cover,
+    # reported 2026-07-10). Same content contract as the caption: the cover
+    # mirrored is whatever IG's ledger recorded. Cosmetic — a failure here
+    # must never be confused with a failed publish (the Reel is live).
+    if job.cover_url:
+        thumb_ok, thumb_detail = await fb_publish.set_video_thumbnail(
+            publish_result.media_id, job.cover_url, account_id=job.account_id
+        )
+        if not thumb_ok:
+            logger.warning(
+                "[notion-publish-fb] %s: custom cover failed (%s) — Reel is live with an auto frame",
+                job.row_id, thumb_detail,
+            )
+
     if _posted_checkbox_enabled():
         checkbox_warning = await _mark_posted_async(job.row_id)
         if checkbox_warning is None:

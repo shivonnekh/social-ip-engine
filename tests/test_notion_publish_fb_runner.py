@@ -394,3 +394,58 @@ async def test_create_falls_back_to_ledger_url_when_notion_fetch_fails(
     assert not await runner.run_publish_job(_job(), state_path=state_path)
     assert seen["video_url"] == "https://s3.example/v.mp4"
 
+
+
+# ---------------------------------------------------------- custom cover
+# video_reels has no cover param — FB auto-picks a random frame unless we
+# set one post-publish via POST /{video_id}/thumbnails (found 2026-07-10,
+# user-visible wrong cover on the first successful mirror).
+
+
+@pytest.mark.asyncio
+async def test_publish_sets_custom_thumbnail_from_cover_url(
+    state_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(fb_publish, "create_reel_container", lambda **kw: _ok_container("v1"))
+
+    async def fake_poll(creation_id, *, account_id=None):
+        return fb_publish.StatusResult(True, status_code="upload_complete")
+
+    async def fake_publish(creation_id, caption="", **kw):
+        return fb_publish.PublishResult(True, media_id="v1")
+
+    thumb_calls: list[tuple] = []
+
+    async def fake_thumb(video_id, cover_url, *, account_id=None):
+        thumb_calls.append((video_id, cover_url, account_id))
+        return True, ""
+
+    monkeypatch.setattr(fb_publish, "poll_container_status", fake_poll)
+    monkeypatch.setattr(fb_publish, "publish_container", fake_publish)
+    monkeypatch.setattr(fb_publish, "set_video_thumbnail", fake_thumb)
+
+    assert await runner.run_publish_job(_job(), state_path=state_path, poll_interval_s=0, poll_max_s=1)
+    assert thumb_calls == [("v1", "https://example.com/cover.jpg", "fb-acct-1")]
+
+
+@pytest.mark.asyncio
+async def test_thumbnail_failure_never_undoes_published_status(
+    state_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(fb_publish, "create_reel_container", lambda **kw: _ok_container("v1"))
+
+    async def fake_poll(creation_id, *, account_id=None):
+        return fb_publish.StatusResult(True, status_code="upload_complete")
+
+    async def fake_publish(creation_id, caption="", **kw):
+        return fb_publish.PublishResult(True, media_id="v1")
+
+    async def failing_thumb(video_id, cover_url, *, account_id=None):
+        return False, "http 400: whatever"
+
+    monkeypatch.setattr(fb_publish, "poll_container_status", fake_poll)
+    monkeypatch.setattr(fb_publish, "publish_container", fake_publish)
+    monkeypatch.setattr(fb_publish, "set_video_thumbnail", failing_thumb)
+
+    assert await runner.run_publish_job(_job(), state_path=state_path, poll_interval_s=0, poll_max_s=1)
+    assert _ledger(state_path)["row-1"]["status"] == "published"  # cosmetic failure only

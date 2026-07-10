@@ -290,3 +290,48 @@ async def publish_container(
     logger.info("[fb_publish] published: video_id=%s", creation_id)
     # No separate media id is minted at finish time — video_id IS the id.
     return PublishResult(True, media_id=creation_id)
+
+
+async def set_video_thumbnail(
+    video_id: str,
+    cover_url: str,
+    *,
+    account_id: str | None = None,
+) -> tuple[bool, str]:
+    """Best-effort custom cover for an already-published Reel via
+    ``POST /{video_id}/thumbnails`` (``is_preferred=true``).
+
+    The ``video_reels`` upload flow itself has NO cover parameter (see the
+    module docstring), so FB auto-picks a frame at publish time — this is
+    the only API route to the same custom cover Instagram gets via its
+    container's ``cover_url``. Verified working against a LIVE published
+    Reel (video 1343882013854078, 2026-07-10), not just docs.
+
+    Downloads ``cover_url`` and re-uploads the bytes (the endpoint takes a
+    file, not a URL). Returns ``(ok, detail)`` — callers treat failure as
+    cosmetic (the Reel is already live); never raises.
+    """
+    creds = _creds("facebook", account_id)
+    if not creds.complete:
+        return False, "missing credentials"
+    if not video_id.strip() or not cover_url.strip():
+        return False, "empty video_id/cover_url"
+
+    try:
+        async with httpx.AsyncClient(timeout=_TIMEOUT_S) as client:
+            img = await client.get(cover_url)
+            if img.status_code != 200:
+                return False, f"cover fetch http {img.status_code}"
+            resp = await client.post(
+                _graph_url("facebook", f"{video_id}/thumbnails"),
+                params={"access_token": creds.token},
+                files={"source": ("cover.jpg", img.content, "image/jpeg")},
+                data={"is_preferred": "true"},
+            )
+    except httpx.HTTPError as exc:
+        return False, f"transport: {exc}"
+
+    if resp.status_code != 200:
+        return False, f"http {resp.status_code}: {resp.text[:200]}"
+    logger.info("[fb_publish] custom thumbnail set for video %s", video_id)
+    return True, ""
