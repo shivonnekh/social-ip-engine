@@ -446,8 +446,21 @@ def _plan_publishes_locked(
             t["plain_text"] for t in content_page["properties"].get("CTA", {}).get("rich_text", [])
         )
         keyword = normalize_keyword(cta)
+        # Headline: row's 🏷️ Title property first (punchy, public-facing —
+        # see notion_publish_caption module docstring), Hook as fallback.
+        # hook itself is ALSO needed below as the cover generator's
+        # text-to-image prompt seed (notion_publish_media has no opinion on
+        # Title vs Hook — cosmetic fallback only) — resolved once here and
+        # threaded into extract_headline so a legacy row with neither Title
+        # nor a Hook property doesn't pay for two separate _children() walks
+        # (a real paginated Notion API call, not a cheap re-check).
         hook = notion_publish_caption.extract_hook(content_page, content_rel[0]["id"], _children)
-        caption = notion_publish_caption.build_caption(hook, keyword=keyword, language=language)
+        headline, headline_warning = notion_publish_caption.extract_headline(
+            row, content_page, content_rel[0]["id"], _children, hook=hook
+        )
+        if headline_warning:
+            warnings.append(f"{row_id}: {headline_warning}")
+        caption = notion_publish_caption.build_caption(headline, keyword=keyword, language=language)
 
         allow_cover_generate = generate_enabled and generations_done < generation_cap
         cover_url, cover_warning = notion_publish_media.resolve_cover(

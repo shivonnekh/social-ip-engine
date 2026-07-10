@@ -28,12 +28,15 @@ def _row(
     stage: str = "✅ Published",
     video_url: str = "https://s3.example/v.mp4?sig=abc",
     publish_date: str | None = None,
+    title: str | None = None,
 ) -> dict:
     props: dict = {
         "Stage": {"select": {"name": stage}},
         "Content": {"relation": [{"id": CONTENT_PAGE}]},
         "IP": {"relation": [{"id": JACKIE_IP_PAGE}]},
     }
+    if title is not None:
+        props["🏷️ Title"] = {"type": "rich_text", "rich_text": [{"plain_text": title}]}
     if video_url:
         kind = "file"
         props["Production Video"] = {"files": [{"type": kind, kind: {"url": video_url}}]}
@@ -102,6 +105,35 @@ def test_claims_a_newly_published_row(paths, monkeypatch):
     assert "muscle" in job.caption.lower() or "Comment" in job.caption
     ledger = json.loads(paths["state"].read_text())
     assert ledger[ROW_ID]["status"] == "in_flight"
+
+
+def test_caption_prefers_row_title_property_over_content_hook(paths, monkeypatch):
+    """Regression test for the 2026-07-08 incident: the caption headline must
+    use the row's punchy 🏷️ Title property, not the content page's internal
+    Hook line, whenever a Title has been authored."""
+    result = _plan([_row(title="Do you have tonsil stones? 😱")], paths, monkeypatch)
+    assert len(result["jobs"]) == 1
+    caption = result["jobs"][0].caption
+    assert caption.startswith("Do you have tonsil stones? 😱")
+    assert "A great hook." not in caption
+
+
+def test_caption_falls_back_to_hook_when_row_has_no_title(paths, monkeypatch):
+    result = _plan([_row(title=None)], paths, monkeypatch)
+    assert len(result["jobs"]) == 1
+    assert result["jobs"][0].caption.startswith("A great hook.")
+    assert any("Title" in w for w in result["warnings"])
+
+
+def test_caption_falls_back_to_hook_when_row_title_is_whitespace_only(paths, monkeypatch):
+    """End-to-end variant of the unit-level whitespace-only-Title test in
+    test_notion_publish_caption.py — a Title property that exists but is
+    blank must fall back to Hook through the full plan_publishes() path,
+    not just at the extract_headline() unit level."""
+    result = _plan([_row(title="   ")], paths, monkeypatch)
+    assert len(result["jobs"]) == 1
+    assert result["jobs"][0].caption.startswith("A great hook.")
+    assert any("Title" in w for w in result["warnings"])
 
 
 def test_claim_is_persisted_to_disk_before_returning(paths, monkeypatch):

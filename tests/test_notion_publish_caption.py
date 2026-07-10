@@ -86,6 +86,94 @@ def test_extract_hook_from_body_stops_at_next_non_matching_content() -> None:
     assert cap.extract_hook(page, "page-1", _children_fn(tree)) == "the real hook"
 
 
+# --------------------------------------------------------- extract_title_property
+
+
+def _row_with_title(title: str) -> dict:
+    return {"properties": {"🏷️ Title": {"type": "rich_text", "rich_text": [{"plain_text": title}]}}}
+
+
+def test_extract_title_property_present() -> None:
+    row = _row_with_title("Do you have tonsil stones? 😱")
+    assert cap.extract_title_property(row) == "Do you have tonsil stones? 😱"
+
+
+def test_extract_title_property_missing_returns_empty() -> None:
+    row = {"properties": {"Name": {"type": "title", "title": [{"plain_text": "Some Row"}]}}}
+    assert cap.extract_title_property(row) == ""
+
+
+def test_extract_title_property_empty_string_returns_empty() -> None:
+    row = {"properties": {"🏷️ Title": {"type": "rich_text", "rich_text": []}}}
+    assert cap.extract_title_property(row) == ""
+
+
+# ------------------------------------------------------------- extract_headline
+
+
+def test_extract_headline_prefers_row_title_over_hook() -> None:
+    """Regression test for the 2026-07-08 incident: a live Facebook post went
+    out captioned with the internal Hook line instead of the row's
+    purpose-authored 🏷️ Title. Title must always win when present, and no
+    fallback warning should fire since nothing was actually missing."""
+    row = _row_with_title("Do you have tonsil stones? 😱")
+    content_page = _page_with_hook_property("Watch what came out of her throat: tonsil stones.")
+    headline, warning = cap.extract_headline(row, content_page, "page-1", _children_fn({}))
+    assert headline == "Do you have tonsil stones? 😱"
+    assert warning is None
+
+
+def test_extract_headline_falls_back_to_hook_when_no_title() -> None:
+    row = {"properties": {}}
+    content_page = _page_with_hook_property("Watch what came out of her throat: tonsil stones.")
+    headline, warning = cap.extract_headline(row, content_page, "page-1", _children_fn({}))
+    assert headline == "Watch what came out of her throat: tonsil stones."
+    assert warning is not None and "Title" in warning
+
+
+def test_extract_headline_falls_back_to_hook_body_when_no_title_or_hook_property() -> None:
+    row = {"properties": {}}
+    content_page = _page_without_hook_property()
+    tree = {"page-1": [_heading("Hook"), _code("Body hook text here.")]}
+    headline, warning = cap.extract_headline(row, content_page, "page-1", _children_fn(tree))
+    assert headline == "Body hook text here."
+    assert warning is not None
+
+
+def test_extract_headline_whitespace_only_title_falls_back_to_hook() -> None:
+    row = {"properties": {"🏷️ Title": {"type": "rich_text", "rich_text": [{"plain_text": "   "}]}}}
+    content_page = _page_with_hook_property("Watch what came out of her throat: tonsil stones.")
+    headline, warning = cap.extract_headline(row, content_page, "page-1", _children_fn({}))
+    assert headline == "Watch what came out of her throat: tonsil stones."
+    assert warning is not None
+
+
+def test_extract_title_property_respects_env_override(monkeypatch) -> None:
+    monkeypatch.setenv("NOTION_PUBLISH_TITLE_PROP", "Custom Title Column")
+    row = {"properties": {"Custom Title Column": {"type": "rich_text", "rich_text": [{"plain_text": "Renamed column works"}]}}}
+    assert cap.extract_title_property(row) == "Renamed column works"
+    # The default property name must NOT match once an override is active.
+    assert cap.extract_title_property(_row_with_title("should not be found")) == ""
+
+
+def test_extract_headline_accepts_precomputed_hook_without_recomputing() -> None:
+    """When the caller already resolved `hook` (e.g. for the cover-image
+    prompt seed), extract_headline must use it verbatim rather than
+    re-walking the content page/body — passing a children_fn that raises
+    proves no re-walk happens."""
+    row = {"properties": {}}
+    content_page = _page_without_hook_property()
+
+    def _boom(_block_id: str) -> list[dict]:
+        raise AssertionError("children_fn should not be called when hook is precomputed")
+
+    headline, warning = cap.extract_headline(
+        row, content_page, "page-1", _boom, hook="precomputed hook text"
+    )
+    assert headline == "precomputed hook text"
+    assert warning is not None
+
+
 # ------------------------------------------------------------- build_caption
 
 

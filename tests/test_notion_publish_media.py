@@ -107,7 +107,97 @@ def test_external_image_type_supported():
     assert npm.find_shot_one_cover_source(ROW_ID, _children_fn(tree)) == "https://cdn.example/x.jpg"
 
 
+# ------------------------------------------ find_cover_photo_section_source
+
+
+def test_finds_image_in_cover_photo_section_toggle():
+    tree = {
+        ROW_ID: [_heading("🖼️ Cover Photo"), _toggle("🖼️ Cover here")],
+        TOGGLE_ID: [_image_block("https://s3.example/cover.png")],
+    }
+    assert (
+        npm.find_cover_photo_section_source(ROW_ID, _children_fn(tree))
+        == "https://s3.example/cover.png"
+    )
+
+
+def test_ignores_shot_image_toggle_when_looking_for_cover_section():
+    """A shot's "Image here" toggle must never be mistaken for the
+    dedicated Cover Photo section's "Cover here" toggle — different marker
+    text, and the cover section only starts once its own heading is seen."""
+    tree = {
+        ROW_ID: [
+            _heading("Shot 1 · ~3s · Hook", "h1"),
+            _toggle("🖼️ Image here", "toggle-shot1"),
+        ],
+        "toggle-shot1": [_image_block("https://s3.example/shot1.png")],
+    }
+    assert npm.find_cover_photo_section_source(ROW_ID, _children_fn(tree)) is None
+
+
+def test_cover_photo_section_present_but_toggle_empty_returns_none():
+    tree = {ROW_ID: [_heading("🖼️ Cover Photo"), _toggle("🖼️ Cover here")], TOGGLE_ID: []}
+    assert npm.find_cover_photo_section_source(ROW_ID, _children_fn(tree)) is None
+
+
+def test_no_cover_photo_heading_returns_none():
+    tree = {ROW_ID: [_heading("Master Script")]}
+    assert npm.find_cover_photo_section_source(ROW_ID, _children_fn(tree)) is None
+
+
 # --------------------------------------------------------------- resolve_cover
+
+
+def test_resolve_cover_prefers_cover_photo_section_over_shot_one(
+    fake_urlopen: list[str], media_paths: tuple[Path, Path]
+) -> None:
+    """The dedicated Cover Photo section must win over Shot 1 when both
+    have an image — it is the purpose-built thumbnail, Shot 1 is just a
+    reuse fallback for older rows."""
+    media_dir, state_path = media_paths
+    tree = {
+        ROW_ID: [
+            _heading("Shot 1 · Hook", "h1"),
+            _toggle("🖼️ Image here", "toggle-shot1"),
+            _heading("🖼️ Cover Photo", "h-cover"),
+            _toggle("🖼️ Cover here", "toggle-cover"),
+        ],
+        "toggle-shot1": [_image_block("https://s3.example/shot1.png")],
+        "toggle-cover": [_image_block("https://s3.example/cover.png")],
+    }
+    url, warning = npm.resolve_cover(
+        ROW_ID, "muscle", "some hook", _children_fn(tree), media_dir=media_dir, state_path=state_path
+    )
+    assert url.endswith("/media/covers/muscle-row-1-cover.jpg")
+    assert warning is None
+    assert (media_dir / "muscle-row-1-cover.jpg").read_bytes() == FAKE_JPG
+    # Pins the actual regression this test exists to catch: without this,
+    # the test would still pass even if resolve_cover() fetched shot1.png
+    # instead of cover.png, since both fakes return identical bytes and the
+    # output filename is derived from slug+row_id, not the source URL.
+    assert fake_urlopen[-1] == "https://s3.example/cover.png"
+
+
+def test_resolve_cover_falls_back_to_shot_one_when_cover_section_empty(
+    fake_urlopen: list[str], media_paths: tuple[Path, Path]
+) -> None:
+    media_dir, state_path = media_paths
+    tree = {
+        ROW_ID: [
+            _heading("🖼️ Cover Photo", "h-cover"),
+            _toggle("🖼️ Cover here", "toggle-cover"),  # empty — no image yet
+            _heading("Shot 1 · Hook", "h1"),
+            _toggle("🖼️ Image here", "toggle-shot1"),
+        ],
+        "toggle-cover": [],
+        "toggle-shot1": [_image_block("https://s3.example/shot1.png")],
+    }
+    url, warning = npm.resolve_cover(
+        ROW_ID, "muscle", "some hook", _children_fn(tree), media_dir=media_dir, state_path=state_path
+    )
+    assert url.endswith("/media/covers/muscle-row-1-cover.jpg")
+    assert warning is None
+    assert fake_urlopen[-1] == "https://s3.example/shot1.png"
 
 
 def test_resolve_cover_reuses_shot_one_image(

@@ -68,7 +68,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from src import notion_sync_media
+from src import notion_caption_gen, notion_cover_gen, notion_sync_media
 from src.ips import registry as ip_registry
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -293,10 +293,42 @@ def sync_once() -> dict[str, Any]:
     state_set = set(state)
 
     rows = _query_all(ids["prod_db"])
+
+    # Cover-image generation is a fully separate pass over ALL rows fetched
+    # above — NOT gated by state_set like the per-row loop below (see
+    # _run_cover_generation's docstring for why). Run it here, up front,
+    # so it's visually obvious it's independent of — and never interleaved
+    # with — the checkbox-ordering-sensitive loop that follows. Wrapped in
+    # its own catch-all (on top of _run_cover_generation's internal one) so
+    # the lower-priority cover-gen pass can never take down the
+    # higher-priority DM-rule-wiring loop below it, even on a totally
+    # unanticipated bug (e.g. ids["prod_db"]-shaped assumption drift).
+    try:
+        cover_warnings, covers_generated = _run_cover_generation(rows)
+    except Exception as exc:  # noqa: BLE001 - cover-gen must never sink DM-rule wiring
+        cover_warnings, covers_generated = [f"cover_pass_crashed: {exc}"], 0
+
+    # Caption-eligibility scan — same "run up front, independent of the
+    # checkbox-ordering-sensitive loop below" placement as cover-gen above.
+    # This is a PURE filter (no network beyond `rows` itself — see
+    # _find_caption_eligible_rows' docstring), so a crash here would only
+    # ever be a bug in this function itself, not a transient Notion/network
+    # hiccup — still wrapped in its own catch-all so that bug can never sink
+    # the higher-priority DM-rule-wiring loop that runs after it, matching
+    # the cover-gen pass's belt-and-suspenders discipline immediately above.
+    try:
+        caption_pending = _find_caption_eligible_rows(rows)
+        caption_scan_warning: str | None = None
+    except Exception as exc:  # noqa: BLE001 - must never sink DM-rule wiring
+        caption_pending = []
+        caption_scan_warning = f"caption_pending_scan_crashed: {exc}"
+
     added: list[str] = []
     skipped: list[str] = []
     errors: list[str] = []
-    warnings: list[str] = []
+    warnings: list[str] = list(cover_warnings)
+    if caption_scan_warning:
+        warnings.append(caption_scan_warning)
     added_rule_objs: list[dict] = []
 
     rules: list[dict] = _load_json(_RULES_PATH, [])
@@ -462,6 +494,8 @@ def sync_once() -> dict[str, Any]:
         "warnings": warnings,
         "rules_changed": bool(added),
         "media_paths": _media_paths_for(added_rule_objs),
+        "covers_generated": covers_generated,
+        "caption_pending": caption_pending,
     }
 
 
@@ -537,6 +571,148 @@ def _generation_cap() -> int:
         return max(0, int(raw))
     except ValueError:
         return 5
+
+
+def _generate_covers_enabled() -> bool:
+    """Whether to generate a Cover Photo when a wireable row's cover toggle
+    is still empty. On by default; set NOTION_SYNC_GENERATE_COVERS=0 to
+    disable — mirrors _generate_images_enabled()'s on-by-default idiom."""
+    return _flag_enabled("NOTION_SYNC_GENERATE_COVERS")
+
+
+def _cover_generation_cap() -> int:
+    """Max NEW cover images to generate per sync run. Deliberately a
+    SEPARATE budget from _generation_cap() (infographics) — a bulk
+    Ready-to-Publish flip can now trigger up to two OpenAI image calls per
+    row (infographic + cover), and these are independent spend/risk
+    categories that must not share one counter. Override with
+    NOTION_SYNC_MAX_COVER_GENERATIONS (default 5, same default as the
+    infographic cap for a simple mental model — tune independently later)."""
+    raw = os.environ.get("NOTION_SYNC_MAX_COVER_GENERATIONS", "5").strip()
+    try:
+        return max(0, int(raw))
+    except ValueError:
+        return 5
+
+
+def _run_cover_generation(rows: list[dict]) -> tuple[list[str], int]:
+    """Generate a Cover Photo for every wireable-stage row (Stage in
+    _WIREABLE_STAGES, has an IP relation) whose "Cover here" toggle is
+    still empty, up to _cover_generation_cap() NEW generations per run.
+
+    Deliberately independent of notion_sync_state.json / state_set — cover
+    completeness is an orthogonal concern to DM-rule-wiring completeness. A
+    row can be fully wired (rule drafted, checkbox ticked) long before this
+    feature existed, and still have zero cover today — the main per-row
+    loop's `if row_id in state_set: continue` would never revisit such a
+    row, so cover-gen has to run as its own pass over every row instead of
+    being folded into that loop.
+    ``notion_cover_gen.generate_and_upload_cover`` is already fully
+    idempotent on its own (checks ``toggle_has_image`` internally and
+    no-ops if a cover already exists), so re-checking every already-covered
+    row on every sync run is cheap and safe — no separate state file needed
+    for cover-gen itself.
+
+    Never raises: every failure (lookup or generation) surfaces as a
+    warning string in the returned list, matching every other best-effort
+    step in this module. Returns (warnings, generated_count) —
+    generated_count counts ATTEMPTS that got past the idempotency check
+    (i.e. the toggle was genuinely empty), regardless of whether the
+    attempt itself then succeeded or produced a warning; this is what the
+    cap limits (OpenAI call attempts), not just clean successes.
+    """
+    if not _generate_covers_enabled():
+        return [], 0
+
+    warnings: list[str] = []
+    cap = _cover_generation_cap()
+    generated = 0
+
+    for row in rows:
+        if generated >= cap:
+            break
+        row_id = row["id"]
+        props = row["properties"]
+        stage = (props.get("Stage", {}).get("select") or {}).get("name", "")
+        if stage not in _WIREABLE_STAGES:
+            continue
+        ip_rel = props.get("IP", {}).get("relation") or []
+        if not ip_rel:
+            continue
+
+        try:
+            toggle_id = notion_cover_gen.find_cover_toggle(row_id, _children)
+            if toggle_id is None:
+                continue  # no Cover Photo section on this row yet — nothing to do
+            if notion_cover_gen.toggle_has_image(toggle_id, _children):
+                continue  # already has a cover — outside this cap's concern
+        except Exception as exc:  # noqa: BLE001 - one row's lookup failure must not sink the run
+            warnings.append(f"cover_check_failed: '{row_id}' — {exc}")
+            continue
+
+        generated += 1
+        # generate_and_upload_cover is documented to never raise, but that
+        # guarantee lives entirely in ITS OWN outer catch — belt-and-suspenders
+        # here too, so a future edit that narrows that catch (or a new bug)
+        # can never let a single row's cover-gen exception escape this loop
+        # and take down the WHOLE sync run, including the higher-priority
+        # DM-rule-wiring loop that runs after this one (code review finding,
+        # 2026-07-08 — cover-gen is explicitly the lower-priority, orthogonal
+        # concern and must never be structurally able to sink the other).
+        try:
+            warning = notion_cover_gen.generate_and_upload_cover(row_id, ip_rel[0]["id"], _children)
+        except Exception as exc:  # noqa: BLE001 - see comment above
+            warnings.append(f"cover_gen_crashed: '{row_id}' — {exc}")
+            continue
+        if warning:
+            warnings.append(warning)
+
+    return warnings, generated
+
+
+def _find_caption_eligible_rows(rows: list[dict]) -> list[dict]:
+    """Rows in a wireable Stage that have a "Raw Video" file but NO
+    "Production Video" file yet — these are what the caption-burn
+    background pass (``notion_caption_gen.burn_captions_for_row``, dispatched
+    from ``POST /admin/notion-sync`` in ``src/web.py``) should pick up.
+
+    Pure filter, no network calls beyond what's already in the ``rows`` list
+    passed in — unlike ``_run_cover_generation``'s eligibility check (which
+    needs a body-block walk via ``_children`` to find the Cover Photo
+    toggle), both "Raw Video" and "Production Video" are page PROPERTIES,
+    already present in the same row dict ``_query_all`` already fetched. No
+    extra Notion round-trip needed to decide eligibility.
+
+    Deliberately does NOT do any capping/enabling/dispatch logic itself
+    (unlike ``_run_cover_generation``, which also performs the generation) —
+    this is only a "what's eligible" query. The enable-flag + cap + actual
+    ``asyncio.create_task`` dispatch belongs in ``web.py``, since that's
+    where this repo's async background-task machinery already lives
+    (mirrors the existing split between this module staying purely
+    sync/thread-offloaded, and ``web.py``/``notion_publish_runner.py``
+    owning async task-spawning — see ``admin_notion_publish``'s
+    ``plan_and_dispatch`` for the same pattern applied to Reels publishing).
+
+    Returns ``[{"row_id": ..., "video_url": ...}, ...]`` — order-stable,
+    matching the input ``rows`` order.
+    """
+    eligible: list[dict] = []
+    for row in rows:
+        props = row.get("properties", {})
+        stage = (props.get("Stage", {}).get("select") or {}).get("name", "")
+        if stage not in _WIREABLE_STAGES:
+            continue
+
+        raw_video_url = notion_caption_gen.find_raw_video_url(row["id"], page=row)
+        if not raw_video_url:
+            continue  # no Raw Video uploaded yet — nothing to caption
+
+        production_files = props.get("Production Video", {}).get("files") or []
+        if production_files:
+            continue  # already captioned — idempotency guard, never re-burn
+
+        eligible.append({"row_id": row["id"], "video_url": raw_video_url})
+    return eligible
 
 
 def _media_paths_for(added_rules: list[dict]) -> list[str]:

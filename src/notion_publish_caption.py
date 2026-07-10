@@ -5,16 +5,27 @@ Pure functions, no I/O beyond an injected ``children_fn`` (same convention as
 when composing a ``PublishJob`` — kept in its own tiny module because it is
 trivially unit-testable and has zero dependency on the Notion/Meta clients.
 
-Hook source, in priority order:
-1. The content page's ``Hook`` rich_text PROPERTY (this is how every content
-   row is authored today — confirmed via the Content Library schema).
-2. A body fallback: a ``heading_3`` containing "Hook" followed by the next
+Headline source, in priority order (bug found + fixed 2026-07-08, after a
+live Facebook test post — commit ``ebe5350`` — went out captioned with the
+raw creative-brief Hook instead of the punchy public-facing title):
+1. The Production Tracker ROW's ``🏷️ Title`` rich_text PROPERTY — a short
+   clickbait viewer-facing title authored by ``studio/scripts/notion_fanout.py``
+   (via ``notion_prompts.draft_title``) specifically to be public-facing. This
+   is what a human actually wants leading the caption.
+2. The content page's ``Hook`` rich_text PROPERTY. This is an internal
+   creative-brief / script-opening line (see the row body's "Shot 1 · Hook"
+   section) — useful as a fallback for rows authored before ``🏷️ Title``
+   existed, but was WRONGLY being used as the primary headline before this
+   fix. Never surface it over an available ``🏷️ Title``.
+3. A body fallback: a ``heading_3`` containing "Hook" followed by the next
    ``code``/``paragraph`` block — mirrors ``notion_sync._extract_first_dm``'s
-   heading→sibling walk, for older rows authored before the property existed.
+   heading→sibling walk, for older rows authored before the Hook property
+   existed either.
 """
 
 from __future__ import annotations
 
+import os
 from collections.abc import Callable
 
 ChildrenFn = Callable[[str], list[dict]]
@@ -66,6 +77,64 @@ def extract_hook(content_page: dict, content_page_id: str, children_fn: Children
     if from_property:
         return from_property
     return extract_hook_from_body(content_page_id, children_fn)
+
+
+_DEFAULT_TITLE_PROPERTY_NAME = "🏷️ Title"
+
+
+def _title_property_name() -> str:
+    """Override via ``NOTION_PUBLISH_TITLE_PROP`` if the Production Tracker
+    column is ever renamed — same escape hatch as ``notion_publish``'s
+    ``NOTION_PUBLISH_DATE_PROP`` / ``notion_sync``'s
+    ``NOTION_WIRED_CHECKBOX_PROP``. Without this, a renamed column would
+    silently and permanently fall back to Hook with no error signal —
+    reproducing the exact 2026-07-08 incident this module exists to fix."""
+    return os.environ.get("NOTION_PUBLISH_TITLE_PROP", "").strip() or _DEFAULT_TITLE_PROPERTY_NAME
+
+
+def extract_title_property(row_page: dict) -> str:
+    """The Production Tracker row's ``🏷️ Title`` rich_text property's plain
+    text, or "" if absent/empty. Lives on the ROW (not the content page) —
+    see ``studio/scripts/notion_fanout.py``'s ``draft_title`` call, which is
+    what actually authors it."""
+    prop = row_page.get("properties", {}).get(_title_property_name())
+    if not prop:
+        return ""
+    return _rich_text(prop).strip()
+
+
+def extract_headline(
+    row_page: dict,
+    content_page: dict,
+    content_page_id: str,
+    children_fn: ChildrenFn,
+    *,
+    hook: str | None = None,
+) -> tuple[str, str | None]:
+    """The public-facing caption headline: the row's ``🏷️ Title`` property
+    first (the punchy, purpose-authored viewer-facing title), falling back to
+    the Hook (the content page's internal creative-brief line) only when no
+    Title has been authored yet — see module docstring for the incident this
+    ordering fixes.
+
+    Returns ``(headline, warning)`` — ``warning`` is set (non-``None``) only
+    when we fell back to Hook, so callers can surface it (same "fails open
+    but loudly" contract as ``notion_publish._publish_date_eligible``): a
+    blank Title should be visible in ops output, not just silently patched
+    over, in case ``draft_title()`` itself starts failing upstream.
+
+    ``hook`` lets the caller pass an ALREADY-resolved Hook (e.g. because it
+    also needs it separately, for the cover-image prompt seed) so this
+    function never re-triggers a second ``children_fn`` walk / Notion API
+    round-trip for the same content page. If omitted, resolves it internally
+    exactly as before.
+    """
+    title = extract_title_property(row_page)
+    if title:
+        return title, None
+
+    resolved_hook = hook if hook is not None else extract_hook(content_page, content_page_id, children_fn)
+    return resolved_hook, "no 🏷️ Title property set — caption fell back to the internal Hook line"
 
 
 def build_caption(hook: str, *, keyword: str = "", language: str = "en") -> str:

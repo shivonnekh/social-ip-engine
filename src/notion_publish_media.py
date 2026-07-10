@@ -1,13 +1,21 @@
 """notion_publish_media.py — resolve a Reels cover image for a Production row.
 
 Cover source, in priority order:
-1. Reuse the row's already-generated **Shot 1** still frame — the studio
+1. Reuse the row's dedicated **🖼️ Cover Photo** section — the studio pipeline
+   (``studio/scripts/notion_prompts.py`` / ``backfill_cover_dm_prompts.py``)
+   writes a purpose-built thumbnail prompt there (scroll-stopping expression,
+   top-third reserved for a title overlay — see the prompt template in
+   ``notion_prompts.py``), distinct from any shot's in-scene still. When a
+   human/agent has generated an image into that section's "🖼️ Cover here"
+   toggle, it is the best available thumbnail and always wins.
+2. Reuse the row's already-generated **Shot 1** still frame — the studio
    pipeline (``studio/scripts/notion_image.py``) places each shot's AI image
    inside a ``toggle`` block containing "Image here", immediately following
-   that shot's ``heading_3`` (e.g. "Shot 1 · ~3s · Hook"). Shot 1 is exactly
-   the hook still-frame CC already reviewed — no need to make a new asset.
-2. Generate one from the Hook text via ``notion_infographic_gen.generate_png``
-   if no Shot 1 image exists yet.
+   that shot's ``heading_3`` (e.g. "Shot 1 · ~3s · Hook"). Falls back to this
+   when the row predates the dedicated Cover Photo section, or its toggle is
+   still empty.
+3. Generate one from the Hook text via ``notion_infographic_gen.generate_png``
+   if neither of the above has an image yet.
 
 Mirrors the on-disk dedup + atomic-write + never-raise contract established
 in ``notion_sync_media.py`` (deliberately reimplemented here in miniature
@@ -37,6 +45,8 @@ DEFAULT_BASE_URL = "https://tcm-jessica.onrender.com"
 _BASE_URL_ENV_VARS = ("PUBLIC_BASE_URL", "JESSICA_BASE_URL")
 _SHOT_ONE_MARKER = "shot 1"
 _IMAGE_TOGGLE_MARKER = "image here"
+_COVER_SECTION_MARKER = "cover photo"
+_COVER_TOGGLE_MARKER = "cover here"
 _DOWNLOAD_TIMEOUT_S = 30
 _GENERATED_MARKER = "generated:"
 
@@ -67,6 +77,33 @@ def find_shot_one_cover_source(row_page_id: str, children_fn: ChildrenFn) -> str
         if block_type == "heading_3":
             in_shot_one = _SHOT_ONE_MARKER in text
         elif in_shot_one and block_type == "toggle" and _IMAGE_TOGGLE_MARKER in text:
+            for child in children_fn(block["id"]):
+                if child.get("type") == "image":
+                    url = _image_url(child)
+                    if url:
+                        return url
+            return None  # found the toggle but it has no image yet
+    return None
+
+
+def find_cover_photo_section_source(row_page_id: str, children_fn: ChildrenFn) -> str | None:
+    """First image URL inside the dedicated "🖼️ Cover Photo" section's
+    "🖼️ Cover here" toggle, else ``None``.
+
+    Mirrors ``find_shot_one_cover_source`` exactly (same loose,
+    case-insensitive substring matching against ``heading_3`` / ``toggle``
+    block text) — this section sits AFTER the last shot in the row body, not
+    inside a shot's scope, so there is no risk of a shot's own image toggle
+    being mistaken for this one (the marker text differs: "cover here" vs
+    "image here").
+    """
+    in_cover_section = False
+    for block in children_fn(row_page_id):
+        block_type = block.get("type", "")
+        text = _block_plain_text(block).casefold()
+        if block_type == "heading_3":
+            in_cover_section = _COVER_SECTION_MARKER in text
+        elif in_cover_section and block_type == "toggle" and _COVER_TOGGLE_MARKER in text:
             for child in children_fn(block["id"]):
                 if child.get("type") == "image":
                     url = _image_url(child)
@@ -189,7 +226,9 @@ def resolve_cover(
     dest = resolved_media_dir / filename
 
     try:
-        source = find_shot_one_cover_source(row_page_id, children_fn)
+        source = find_cover_photo_section_source(row_page_id, children_fn)
+        if source is None:
+            source = find_shot_one_cover_source(row_page_id, children_fn)
         state = _load_state(resolved_state_path)
 
         if source is not None:

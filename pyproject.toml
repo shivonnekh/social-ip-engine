@@ -23,6 +23,10 @@ dependencies = [
     "jinja2>=3.1.4",
     "structlog>=24.4.0",
     "rapidfuzz>=3.9.0",  # typo-tolerant comment keyword matching (comment_rules.py)
+    "moviepy>=2.1.2",  # karaoke caption rendering (notion_caption_render.py) — Pillow-based text
+                       # compositing, works regardless of the host's ffmpeg build's filter set
+    "imageio-ffmpeg>=0.5.1",  # pip-installs a static ffmpeg binary — no system/apt package or
+                              # root access needed, works under Render's native Python buildpack
 ]
 
 [project.optional-dependencies]

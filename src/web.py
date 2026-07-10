@@ -475,6 +475,33 @@ async def admin_backfill_comments(request: Request) -> JSONResponse:
     return JSONResponse({"status": "done", "processed": summary})
 
 
+def _caption_enabled() -> bool:
+    """Whether ``POST /admin/notion-sync`` should ALSO dispatch caption-burn
+    background tasks for rows with a "Raw Video" but no "Production Video"
+    yet (see ``notion_sync._find_caption_eligible_rows``). OFF by default —
+    deliberately opt-in, mirroring ``NOTION_PUBLISH_SCHEDULE_ENABLED``'s
+    precedent in ``notion_publish_scheduler.py``: unlike cover-gen (a quick
+    outbound image-API call), a caption burn is a real CPU/RAM-heavy
+    moviepy/ffmpeg render running on THIS SAME process, which also answers
+    live Instagram DM replies and comment webhooks — a false default-on
+    here would silently start spending real compute on live traffic the
+    moment this deploys. Set ``NOTION_SYNC_CAPTION_ENABLED=1`` to turn on."""
+    return os.environ.get("NOTION_SYNC_CAPTION_ENABLED", "0").strip() == "1"
+
+
+def _caption_render_cap() -> int:
+    """Max caption-burn renders to DISPATCH per ``/admin/notion-sync`` call.
+    Deliberately stingier than the image-gen caps (default 5) — each unit
+    here is real CPU-seconds-to-minutes of rendering on the live-traffic
+    process, not a quick outbound API call. Override with
+    ``NOTION_SYNC_MAX_CAPTION_RENDERS`` (default 1)."""
+    raw = os.environ.get("NOTION_SYNC_MAX_CAPTION_RENDERS", "1").strip()
+    try:
+        return max(0, int(raw))
+    except ValueError:
+        return 1
+
+
 @app.post("/admin/notion-sync")
 async def admin_notion_sync(request: Request) -> JSONResponse:
     """Notion Automation calls this the moment a Production row's Stage
@@ -503,6 +530,29 @@ async def admin_notion_sync(request: Request) -> JSONResponse:
     except notion_sync.NotionSyncError as exc:
         logger.exception("[notion-sync] failed")
         return JSONResponse({"error": str(exc)}, status_code=502)
+
+    # Caption-burn dispatch — a SEPARATE opt-in step from everything above.
+    # Placed AFTER sync_once() has already durably saved comment_responses.json
+    # / notion_sync_state.json / the cover-gen work, so this can never affect
+    # (or be affected by) that already-completed, higher-priority work. OFF
+    # by default (_caption_enabled) — see that helper's docstring for why a
+    # caption burn is materially riskier to leave default-on than cover-gen.
+    # Tasks are DISPATCHED (asyncio.create_task), never awaited here — same
+    # non-blocking pattern as notion_publish_tasks in admin_notion_publish,
+    # so a slow render (10-60+ seconds) never delays this webhook's response.
+    if _caption_enabled():
+        from src import notion_caption_gen
+
+        caption_tasks = getattr(request.app.state, "notion_caption_tasks", None)
+        if caption_tasks is None:
+            caption_tasks = []
+            request.app.state.notion_caption_tasks = caption_tasks
+        cap = _caption_render_cap()
+        for pending in result.get("caption_pending", [])[:cap]:
+            task = asyncio.create_task(
+                notion_caption_gen.burn_captions_for_row(pending["row_id"], pending["video_url"])
+            )
+            caption_tasks.append(task)
 
     if result["rules_changed"]:
         # Persist the rules, the processed-row state, the media-attach state,
