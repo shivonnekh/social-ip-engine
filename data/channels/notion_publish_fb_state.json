@@ -83,17 +83,17 @@
     "updated_at": "2026-07-10T05:38:02.219034+00:00"
   },
   "395f2a3f-4320-8105-af74-e98d1166ad0d": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/4d9b2081-cd0b-4a0e-96a8-87c91c1cb330/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZQY6BVKR%2F20260713%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260713T032740Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECsaCXVzLXdlc3QtMiJHMEUCIHBFjqJ10lT2fYGsE3SJNshKWmr6WJ1asS61JwAy6LgqAiEAngt3KxqejH%2BctKkeq65tVRPEG5PaV%2Fm51vpMOxlruYkqiAQI8%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDB2VVrt0LfSPvrzEOyrcA3CSZ6HKCF%2Bl4rkXvfiOd8RNeeS7dPp8SGVODkMbFPUtBb2Bh7djxSI5qBDGApsDpn9Ptk0Evy0zrBKeeTTigCJMOR54GS1c7Br8yGQhTYlzpiEWoHL4LVn468yQQDy2hi1XCVx7rllb2FgLU6X1KubT%2BrCEcUsAzIuFCXA681xgZHR%2BY3zcCwW63L1VhX%2Fe5t5UT7L00I00%2F7U4RZ%2F0fVYMoAdN%2FQoCPK3%2FhubQLEhqwK%2BppmHSGmPVdQk0YpkxxFVnjrGVszAk3xveQawhJdacpwXwwNSx5hfMkXhOg9k%2BYouVlVkg0ogTtV0xBaX3xzbSQfEPxjbo7YicgAV8V1qj3rYv4l66ar3yK6oKXNcvJkSY5xSXwIqBDPW8Piu5v25GOwkIC0LXVfvT5grhAoRrmba6yaaFvPTJzTg7dZADHaN3KbwIWRZjmCRMWJicEmA3%2FW9ptUWN6eQGTMN9MtMQs0Ztt60NvuQ2mCHsaJymE2Y4AJF0VC6xWZt%2BEnRHH7w0wVVepeYAagPzGMKbeJS9zbBhoZhSyJTHcnwiz4wQxRqSdKeyUxf3ByVSfvADwXRCYwUEcUO6mh3eNaDHAiyqWomcOG1Dk1aLbrV1Y5ykKNWomdDyjC%2B%2FRYDmMJyW0dIGOqUB5rDmaW1%2FgrHo%2BTPO5k1LtqC1lJi1de0Vw8MFYbx%2F4SlubeDVRnhFTRAQCMCRKxIJSUS7Izom47%2BkWeLqXvT4eK8UXvaWK6a2FCdBmYyg3D6rBGp8ThFLE2P%2F7dRlCLGOZ7RU171keup8r5P1jtj2r%2B%2BxLFVGnnthEJVobICagSRm26rUObb8URgtO6xSUBOWUYqTxABGpWUPcNSOTi6iAR67ck7%2B&X-Amz-Signature=c0c0d8da0ad21248c3c3c353dfa68466628837249fe02a7ae075dc3b15bc98a7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/4d9b2081-cd0b-4a0e-96a8-87c91c1cb330/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/ear-395f2a3f-4320-8105-af74-e98d1166ad0d-cover.jpg",
     "caption": "Can Your Ear Help You Sleep Better? 😴\n\nComment \"ear\" 👇",
     "account_id": "528216523715336",
     "creation_id": "27246930634978755",
-    "fb_media_id": null,
+    "fb_media_id": "27246930634978755",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-07-13T03:29:02.379129+00:00"
+    "updated_at": "2026-07-13T03:29:13.080132+00:00"
   }
 }
