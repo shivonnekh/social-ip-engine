@@ -165,16 +165,22 @@ def work_queue() -> list[dict]:
 
 # ---------- deep row detail (one body walk, media URLs included) ----------
 
-def _resolve_toggle_media(item: tuple[str, dict, str, str]) -> tuple[dict, str, str | None]:
+def _resolve_toggle_media(item: tuple[str, dict, str, str]) -> tuple[dict, str, str | None, str]:
     """Fetch a toggle's children and return the first media URL of the wanted
-    block type. Runs inside the thread pool — one Notion call each."""
+    block type + its created_time. Runs inside the thread pool — one Notion
+    call each. created_time matters because a shot can hold BOTH its original
+    '🎬 Video here' toggle and one or more '🎬 Video (regen)' toggles, and
+    their DOCUMENT ORDER does not reflect recency (place_video_in_shot inserts
+    regen toggles right after the 即梦 prompt anchor, i.e. BEFORE the original
+    toggle) — found live 2026-07-10 when a replaced shot video kept showing
+    the old one. Newest created_time wins, never document order."""
     _kind, target, toggle_id, want_type = item
     for c in ni._children(toggle_id):
         if c.get("type") == want_type:
             url = _block_url(c)
             if url:
-                return target, f"{_kind}_url", url
-    return target, f"{_kind}_url", None
+                return target, f"{_kind}_url", url, c.get("created_time", "")
+    return target, f"{_kind}_url", None, ""
 
 
 def _next_action_detail(stage: str, shots: list[dict],
@@ -258,9 +264,12 @@ def row_detail(row_id: str) -> dict:
 
     if pending:
         # Modest parallelism — Notion rate-limits at ~3 req/s sustained.
+        # NEWEST created_time wins per (target, key) — see _resolve_toggle_media.
+        best: dict[tuple[int, str], str] = {}
         with ThreadPoolExecutor(max_workers=4) as ex:
-            for target, key, url in ex.map(_resolve_toggle_media, pending):
-                if url:
+            for target, key, url, created in ex.map(_resolve_toggle_media, pending):
+                if url and created >= best.get((id(target), key), ""):
+                    best[(id(target), key)] = created
                     target[key] = url
 
     p = page["properties"]

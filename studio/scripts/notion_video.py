@@ -133,27 +133,36 @@ def upload_to_notion(path, content_type, fname):
     return o["id"]
 
 
-def place_video_in_shot(row_id, shot_title, mp4, regen=False):
-    """Put a shot's video in a toggle under that shot.
+def place_video_in_shot(row_id, shot_title, mp4):
+    """Put a shot's video in Notion — ALWAYS exactly ONE '🎬 Video here' toggle
+    per shot, content replaced in place.
 
-    Normal mode: fills the existing empty '🎬 Video here' toggle, skips if already has video.
-    Regen mode (regen=True): always appends a new '🎬 Video (regen)' toggle — never touches
-    existing content.
+    Rewritten 2026-07-13 (previously took a `regen` flag and, in regen mode,
+    APPENDED a new '🎬 Video (regen)' toggle rather than replacing content —
+    a heavily-iterated shot could stack 3-4 video toggles, and every reader
+    (dashboard, merge) needed a 'newest created_time wins' tie-break to pick
+    the right one. Fragile: a new reader already once trusted document order
+    instead and silently served a STALE video. Consolidating to one toggle
+    per shot removes the whole class of bug — there's nothing left to pick
+    between). Callers already gate on has_video/skip-existing BEFORE calling
+    this, so there's no "skip if occupied" behavior here — every call means
+    "put this video in, replacing whatever (if anything) is there now."
+
+    Also cleans up any duplicate/stray video toggles already accumulated for
+    this shot from before this rewrite (keeps the FIRST toggle found, deletes
+    the rest) — so calling this once on an old, multi-toggle shot self-heals
+    it down to one.
     """
-    anchor, in_s, expect = None, False, False
-    toggle_id, toggle_has_video, last_video_toggle_id = None, False, None
+    in_s, expect = False, False
+    anchor = None
+    video_toggles: list[str] = []  # every video toggle found for this shot, in doc order
 
     for b in _children(row_id):
         t, tx = b["type"], _txt(b)
         if t == "heading_3":
             in_s = (tx == shot_title)
-            toggle_id, toggle_has_video, last_video_toggle_id = None, False, None
-        elif in_s and t == "toggle" and "Video here" in tx:
-            toggle_id = b["id"]
-            last_video_toggle_id = b["id"]
-            if b.get("has_children"):
-                kids = _children(b["id"])
-                toggle_has_video = any(k["type"] == "video" for k in kids)
+        elif in_s and t == "toggle" and ("Video here" in tx or "Video (regen)" in tx):
+            video_toggles.append(b["id"])
         elif in_s and t == "paragraph" and "即梦" in tx:
             expect = True
         elif in_s and expect and t == "code":
@@ -163,28 +172,32 @@ def place_video_in_shot(row_id, shot_title, mp4, regen=False):
     video_block = {"object": "block", "type": "video",
                    "video": {"type": "file_upload", "file_upload": {"id": fid}}}
 
-    if regen:
-        # Always create a NEW toggle after the last existing video toggle (or after 即梦 code)
-        label = "🎬 Video (regen)"
-        after_id = last_video_toggle_id or anchor
-        toggle = {"object": "block", "type": "toggle", "toggle": {
-            "rich_text": [{"type": "text", "text": {"content": label}}],
-            "children": [video_block]}}
-        body = {"children": [toggle]}
-        if after_id:
-            body["after"] = after_id
-        ncall_w("PATCH", f"/blocks/{row_id}/children", body)
-        return "regen-added"
+    keep_id, extra_ids = (video_toggles[0], video_toggles[1:]) if video_toggles else (None, [])
 
-    # Normal mode
-    if toggle_has_video:
-        return "exists"  # already has a real video — skip
+    for extra_id in extra_ids:
+        try:
+            ncall_w("DELETE", f"/blocks/{extra_id}")
+        except Exception as exc:  # noqa: BLE001 - a stale/already-gone block must not abort the placement
+            print(f"    ⚠️  couldn't delete duplicate video toggle {extra_id}: {exc}")
 
-    if toggle_id:
-        ncall_w("PATCH", f"/blocks/{toggle_id}/children", {"children": [video_block]})
-        return "filled-toggle"
+    if keep_id:
+        # Normalize the label — a kept toggle that happened to be a
+        # "(regen)" one (from before this rewrite) would otherwise keep a
+        # confusing label forever, even though it's now just THE toggle.
+        try:
+            ncall_w("PATCH", f"/blocks/{keep_id}",
+                    {"toggle": {"rich_text": [{"type": "text", "text": {"content": "🎬 Video here"}}]}})
+        except Exception as exc:  # noqa: BLE001 - cosmetic only, never block the actual swap
+            print(f"    ⚠️  couldn't normalize toggle label: {exc}")
+        for child in _children(keep_id):
+            try:
+                ncall_w("DELETE", f"/blocks/{child['id']}")
+            except Exception as exc:  # noqa: BLE001
+                print(f"    ⚠️  couldn't clear old video content: {exc}")
+        ncall_w("PATCH", f"/blocks/{keep_id}/children", {"children": [video_block]})
+        return "replaced" if extra_ids else "filled-toggle"
 
-    # No toggle yet — create one after the 即梦 code block
+    # No toggle existed at all yet — create the one-and-only toggle after the 即梦 code block
     toggle = {"object": "block", "type": "toggle", "toggle": {
         "rich_text": [{"type": "text", "text": {"content": "🎬 Video here"}}],
         "children": [video_block]}}
@@ -244,13 +257,21 @@ def read_row_shots(row_id):
             for c in _children(b["id"]):
                 if c["type"] == "image":
                     cur["image_url"] = _block_file_url(c); break
-        elif t == "toggle" and "Video here" in tx and b.get("has_children"):
+        elif (t == "toggle" and ("Video here" in tx or "Video (regen)" in tx)
+              and b.get("has_children")):
             # Check if the video toggle already has a real video inside
-            # (and remember its URL — --merge-only re-downloads from Notion)
+            # (and remember its URL — --merge-only re-downloads from Notion).
+            # ⚠️ NEWEST created_time wins, NOT document order: regen toggles are
+            # inserted right after the 即梦 prompt anchor, i.e. BEFORE the
+            # original "Video here" toggle — trusting document order made a
+            # replaced shot keep merging the OLD video (found live 2026-07-10).
             for k in _children(b["id"]):
                 if k["type"] == "video":
-                    cur["has_video"] = True
-                    cur["video_url"] = _block_file_url(k)
+                    created = k.get("created_time", "")
+                    if created >= cur.get("_video_created", ""):
+                        cur["has_video"] = True
+                        cur["video_url"] = _block_file_url(k)
+                        cur["_video_created"] = created
                     break
         elif t == "audio":
             cur["audio_url"] = _block_file_url(b)
@@ -369,19 +390,59 @@ def _video_url(d):
         return None
 
 
-def poll_download(submit_id, out, timeout=1800, interval=20):
+# Measured 2026-07-10 across 236 historical tasks: 81% of successes finish
+# in <5 min, 95% in <15 min, NONE ever succeeded past ~62 min — while ~45% of
+# audio-driven multimodal submissions hang in "querying" FOREVER (the 即梦
+# hang-lottery). So poll 10 min per attempt, then treat the task as hung and
+# resubmit the same thing ("retry usually works", studio/CLAUDE.md).
+_POLL_TIMEOUT_S = 600
+_MM_ATTEMPTS = 3  # multimodal submission attempts per shot before falling back
+
+
+def _fresh_querying_tasks(max_age_s=900):
+    """submit_ids of 即梦 tasks created in the last ~15 min still 'querying' —
+    those may genuinely be rendering (95% of real successes land within
+    15 min). OLDER 'querying' tasks are almost certainly hung forever (the
+    即梦 hang-lottery) and must NOT block new submissions. Reads the CLI's
+    local sqlite directly because `list_task` doesn't expose create_time."""
+    import sqlite3 as _sq
+    db = Path.home() / ".dreamina_cli" / "tasks.db"
+    if not db.exists():
+        return []
+    try:
+        conn = _sq.connect(f"file:{db}?mode=ro", uri=True)
+        rows = conn.execute(
+            "SELECT submit_id FROM aigc_task WHERE gen_status='querying' "
+            "AND create_time > strftime('%s','now') - ?", (max_age_s,)).fetchall()
+        conn.close()
+        return [r[0] for r in rows]
+    except Exception:  # noqa: BLE001 - advisory check, never block on a read error
+        return []
+
+
+def poll_download(submit_id, out, timeout=_POLL_TIMEOUT_S, interval=20):
+    """Returns (path_or_None, status) where status ∈ {"success","fail","timeout"}.
+
+    ⚠️ "timeout" is NOT a failure — it means the task is STILL RENDERING /
+    QUEUED on 即梦's side. Root-caused 2026-07-10: the old version returned a
+    bare None for both timeout and fail, so callers treated a throttled-queue
+    stall as a hard failure and SUBMITTED A FALLBACK TASK — stacking more
+    outstanding tasks onto an already-throttled account queue (即梦 throttles
+    per-account when several tasks are outstanding; documented in
+    studio/CLAUDE.md), making every subsequent task slower. On timeout: save
+    the submit_id and harvest later with --collect. Never resubmit."""
     deadline = time.time() + timeout
     while time.time() < deadline:
         d = _dreamina(["query_result", f"--submit_id={submit_id}"])
         status = d.get("gen_status", "?")
         if status == "success":
             url = _video_url(d)
-            return _download(url, out) if url else None
+            return (_download(url, out) if url else None), ("success" if url else "fail")
         if status == "fail":
             print(f"    fail_reason: {d.get('fail_reason')}")
-            return None
+            return None, "fail"
         time.sleep(interval)
-    return None
+    return None, "timeout"
 
 
 # Standard, explicit output frame rate for every merged final.mp4 — see concat()
@@ -533,6 +594,9 @@ def main():
     ap.add_argument("--shot", type=int, default=None, metavar="N", help="process only shot N (useful for targeted retry)")
     ap.add_argument("--merge-only", action="store_true",
                     help="no 即梦 calls: download every shot's existing video FROM NOTION, concat, strip watermark, upload Raw Video")
+    ap.add_argument("--force-submit", action="store_true",
+                    help="submit even when the account already has outstanding 'querying' tasks "
+                         "(normally refused — outstanding tasks throttle the whole queue)")
     args = ap.parse_args()
 
     workdir = _campaign_workdir(args.row)
@@ -566,6 +630,10 @@ def main():
         final = str(vdir / "final.mp4")
         concat(mp4s, final)  # already in shot order — do NOT re-sort
         strip_ai_watermark(final)
+        # A new merge invalidates any cached caption transcript — nuke it so
+        # add_karaoke_captions can never caption the previous final's audio
+        # (belt-and-braces: it also fingerprints the video itself).
+        (vdir / "words.json").unlink(missing_ok=True)
         # No Notion write-back here on purpose: the Production Tracker has no
         # "Raw Video" property (upload_raw_video_property 400s against it —
         # confirmed 2026-07-10), and the merged-but-uncaptioned file is just an
@@ -574,31 +642,88 @@ def main():
         print(f"🎬 merged {len(mp4s)} shots -> {final}")
         return 0
 
-    # --collect: poll existing submit IDs and download (no new submissions)
+    # --collect: harvest existing submit IDs (no new submissions). Checks each
+    # task ONCE — finished ones are downloaded + placed, pending ones are
+    # reported and left for a later collect. Never blocks 30 min per task the
+    # way generation polling does (this is a "grab what's ready" button).
     if args.collect:
+        if not ids_path.exists():
+            print("nothing to collect — no video_submits.json for this row")
+            return 0
         submits = json.loads(ids_path.read_text())
         mp4s = [str(vdir / f"shot{s['shot']}.mp4")
                 for s in submits if Path(vdir / f"shot{s['shot']}.mp4").exists()]
+        pending = 0
         for s in submits:
             out = str(vdir / f"shot{s['shot']}.mp4")
             if Path(out).exists():
                 print(f"  Shot {s['shot']}: already downloaded — skip"); continue
-            print(f"  polling shot {s['shot']} ({s['submit_id']}) ...")
-            if poll_download(s["submit_id"], out):
-                mp4s.append(out)
-                status = place_video_in_shot(args.row, s.get("title", ""), out) if s.get("title") else "no-title"
-                print(f"    ✅ {out} | Notion: {status}")
+            d = _dreamina(["query_result", f"--submit_id={s['submit_id']}"])
+            gs = d.get("gen_status", "?")
+            if gs == "success":
+                url = _video_url(d)
+                if url and _download(url, out, force=True):
+                    if s.get("i2v"):
+                        # image2video fallback output is SILENT — mix the shot's
+                        # voice clip back in (same as the generation path does)
+                        aud = str(adir / f"shot{s['shot']}.mp3")
+                        if Path(aud).exists():
+                            raw = str(vdir / f"shot{s['shot']}_i2v_raw.mp4")
+                            os.replace(out, raw)
+                            mix_audio(raw, aud, out)
+                        else:
+                            print(f"    ⚠️  shot {s['shot']} is i2v but local audio missing — placed SILENT")
+                    mp4s.append(out)
+                    status = place_video_in_shot(args.row, s.get("title", ""), out) if s.get("title") else "no-title"
+                    print(f"    ✅ shot {s['shot']} collected | Notion: {status}")
+                else:
+                    print(f"    ❌ shot {s['shot']} success but no video url")
+            elif gs == "fail":
+                print(f"    ❌ shot {s['shot']} failed: {d.get('fail_reason')}")
             else:
-                print(f"    ❌ shot {s['shot']} failed/no video")
-        if mp4s:
+                print(f"    ⏳ shot {s['shot']} still '{gs}' — try collecting again later")
+                pending += 1
+        if pending:
+            print(f"⏳ {pending} task(s) still rendering on 即梦's side")
+        if mp4s and len(mp4s) >= len(shots):
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
             strip_ai_watermark(final)
-            upload_raw_video_property(args.row, final)
+            (vdir / "words.json").unlink(missing_ok=True)  # stale caption transcript
+            # NOT calling upload_raw_video_property here on purpose: the
+            # Production Tracker has no "Raw Video" property (confirmed
+            # 2026-07-10 — this call 400s every single time, harmlessly but
+            # noisily). "Production Video" (written by add_karaoke_captions.py
+            # --upload) is the only video property that exists.
             print(f"🎬 final video -> {final}")
+        elif mp4s:
+            # Some shots collected but not all — do NOT merge a partial final.mp4
+            # (add_karaoke_captions.py --row would happily caption it). The
+            # collected shots ARE placed in Notion above; finish the missing
+            # shots, then merge via --merge-only / the dashboard's 一键成片.
+            print(f"📥 collected {len(mp4s)}/{len(shots)} shots — merge skipped (incomplete). "
+                  "Generate the missing shots, then use 一键成片.")
         else:
             print("no shots ready")
         return 0
+
+    # ── Pre-flight (generation only; --collect/--merge-only never reach here) ──
+    # 1. Fresh-task check: a 'querying' task submitted in the last ~15 min may
+    #    genuinely be rendering — don't double-submit on top of it. OLDER
+    #    'querying' tasks are hung forever (即梦 hang-lottery, ~45% of
+    #    audio-driven submissions; measured 2026-07-10) and don't block anything.
+    fresh = _fresh_querying_tasks()
+    if fresh and not args.force_submit:
+        print(f"⏸ {len(fresh)} 即梦 task(s) submitted <15 min ago still 'querying': {fresh[:5]}")
+        print("   They may genuinely be rendering — wait a few minutes, harvest with "
+              "收割已提交 / --collect, or override with --force-submit")
+        return 1
+    # 2. Credit check — advisory: a vip task that can't pre-deduct fails with
+    #    CreditPreDeductNotEnough (seen live on 2026-07-07).
+    credit = _dreamina(["user_credit"]).get("total_credit")
+    print(f"即梦 credit: {credit}")
+    if isinstance(credit, int) and credit < 30:
+        print(f"⚠️  low credit ({credit}) — vip tasks may fail CreditPreDeductNotEnough mid-batch")
 
     # Download ALL assets immediately while Notion S3 URLs are still fresh.
     # Notion presigned URLs expire in ~1h — shots 3-4 would 403 if we download on-demand
@@ -617,6 +742,7 @@ def main():
     # Default: submit ONE at a time → poll → place → next (avoids queue throttling)
     mp4s = []
     submits = []
+    failed: list[int] = []  # shots that produced no video this run (hung / failed)
     for i, s in enumerate(shots, 1):
         if args.shot and i != args.shot:
             # targeted retry — skip other shots but count their existing mp4s for concat
@@ -633,61 +759,141 @@ def main():
                 mp4s.append(existing)
             continue
         if not s["image_url"] or not s["audio_url"]:
-            print(f"  Shot {i}: MISSING image/audio — skip"); continue
+            print(f"  Shot {i}: MISSING image/audio — skip")
+            failed.append(i)
+            continue
 
         img = str(idir / f"shot{i}.png")   # always use local (pre-downloaded above)
         aud = str(adir / f"shot{i}.mp3")   # always re-fetched from Notion above
         suffix = "_regen" if args.regen else ""
         out = str(vdir / f"shot{i}{suffix}.mp4")
 
-        sid, res = submit_shot(img, aud, s["jimeng"], args.model)
-        print(f"  Shot {i}: submit_id={sid} credits={res.get('credit_count')}")
-        submits.append({"shot": i, "title": s["title"], "submit_id": sid})
-        ids_path.write_text(json.dumps(submits, indent=2))  # save after each submit
+        # ── multimodal with hang-lottery retries ──
+        # ~45% of audio-driven multimodal submissions hang in "querying"
+        # forever (measured 2026-07-10, 236 historical tasks); when a task
+        # actually runs it finishes in <5 min 81% of the time. The fix is NOT
+        # waiting longer — it's resubmitting the same task for a fresh
+        # lottery ticket (up to _MM_ATTEMPTS tries).
+        path, pstat, sid = None, None, None
+        abandoned: list[str] = []  # submit_ids we gave up polling on — may still finish later
+        for attempt in range(1, _MM_ATTEMPTS + 1):
+            sid, res = submit_shot(img, aud, s["jimeng"], args.model)
+            tag = f" (attempt {attempt}/{_MM_ATTEMPTS})" if attempt > 1 else ""
+            print(f"  Shot {i}: submit_id={sid} credits={res.get('credit_count')}{tag}")
+            if not sid:
+                # submit itself failed — most commonly EXHAUSTED 即梦 CREDITS or auth expiry.
+                print(f"    ❌ shot {i} submit failed — raw response: {json.dumps(res, ensure_ascii=False)[:400]}")
+                print("    💡 check credits: `dreamina user_credit` (top up / re-login if 0)")
+                break
+            submits.append({"shot": i, "title": s["title"], "submit_id": sid})
+            ids_path.write_text(json.dumps(submits, indent=2))  # save after each submit
+            if args.submit_only:
+                break
+            print(f"  polling shot {i} ({sid}) up to {_POLL_TIMEOUT_S // 60} min ...")
+            path, pstat = poll_download(sid, out)
+            if path or pstat == "fail":
+                break
+            print(f"    🕳️ shot {i} attempt {attempt} hung >{_POLL_TIMEOUT_S // 60} min — "
+                  "即梦 hang-lottery (task likely never scheduled), resubmitting ...")
+            abandoned.append(sid)
 
         if args.submit_only:
             continue
 
-        # Poll immediately — one at a time
-        print(f"  polling shot {i} ({sid}) ...")
-        if poll_download(sid, out):
+        # A "timeout" often just means "needed a few more minutes," not "hung
+        # forever" — found live 2026-07-13: attempt 1 was declared timed-out
+        # and abandoned, we moved on and used attempt 3's result instead, but
+        # attempt 1 had ACTUALLY succeeded ~15 min after we gave up on it —
+        # and it was the cleaner take (attempt 3's had 即梦's own auto-captions
+        # burned in; 即梦's caption overlay is apparently probabilistic per
+        # generation, independent of the prompt). Re-check every abandoned
+        # attempt, OLDEST first, and prefer the earliest one that actually
+        # completed over whatever the loop above landed on — same shot,
+        # zero extra credits, and it's usually what's ALREADY visible as a
+        # finished task in 即梦's own web dashboard by the time a human looks.
+        if abandoned:
+            for earlier_sid in abandoned:
+                d = _dreamina(["query_result", f"--submit_id={earlier_sid}"])
+                if d.get("gen_status") == "success":
+                    url = _video_url(d)
+                    if url and _download(url, out, force=True):
+                        print(f"    ↩️  shot {i}: attempt {earlier_sid} actually finished "
+                              f"(just slower than {_POLL_TIMEOUT_S // 60} min) — using it instead "
+                              "of the later attempt")
+                        path, sid = out, earlier_sid
+                        break
+
+        if path:
             mp4s.append(out)
-            status = place_video_in_shot(args.row, s["title"], out, regen=args.regen)
+            status = place_video_in_shot(args.row, s["title"], out)
             print(f"    ✅ {out} | Notion: {status}")
+        elif not sid:
+            failed.append(i)  # submit itself failed (credits/auth) — msg printed above
+        elif pstat == "timeout":
+            # every attempt hung — don't silently degrade to i2v/Ken Burns over
+            # a lottery problem; the saved submit_ids MIGHT still land later
+            # (harvest with --collect / 收割已提交), or ↻ 视频 regen this shot.
+            print(f"    ❌ shot {i}: all {_MM_ATTEMPTS} multimodal attempts hung — "
+                  "skipping (submit_ids saved; try 收割已提交 later, or ↻ 视频 regen)")
+            failed.append(i)
         else:
-            # multimodal2video failed (e.g. two-person frame, B-roll, no face) — fall back to image2video
-            print(f"    ❌ shot {i} multimodal failed — falling back to image2video ...")
+            # explicit FAIL from 即梦 (e.g. two-person frame, B-roll, no face) — fall back to image2video
+            print(f"    ❌ shot {i} multimodal FAILED (explicit) — falling back to image2video ...")
             sid_fb, res_fb = submit_shot_image2video(img, aud, s["jimeng"], args.model)
             print(f"    ↪️  fallback submit_id={sid_fb} credits={res_fb.get('credit_count')}")
             if sid_fb:
+                submits.append({"shot": i, "title": s["title"], "submit_id": sid_fb, "i2v": True})
+                ids_path.write_text(json.dumps(submits, indent=2))
                 out_silent = str(vdir / f"shot{i}{suffix}_i2v_raw.mp4")
-                if poll_download(sid_fb, out_silent):
+                path_fb, pstat_fb = poll_download(sid_fb, out_silent)
+                if path_fb:
                     mix_audio(out_silent, aud, out)
                     mp4s.append(out)
-                    status = place_video_in_shot(args.row, s["title"], out, regen=args.regen)
+                    status = place_video_in_shot(args.row, s["title"], out)
                     print(f"    ✅ fallback (image2video+audio) {out} | Notion: {status}")
+                elif pstat_fb == "timeout":
+                    print(f"    ❌ shot {i} fallback hung too — skipping (submit_id saved for --collect)")
+                    failed.append(i)
                 else:
-                    # image2video also failed — last resort: Ken Burns ffmpeg
+                    # image2video also explicitly failed — last resort: Ken Burns ffmpeg
                     print(f"    ❌ shot {i} image2video failed — Ken Burns fallback ...")
                     try:
                         ken_burns(img, aud, out)
                         mp4s.append(out)
-                        status = place_video_in_shot(args.row, s["title"], out, regen=args.regen)
+                        status = place_video_in_shot(args.row, s["title"], out)
                         print(f"    ✅ Ken Burns (ffmpeg) {out} | Notion: {status}")
                     except Exception as e:
                         print(f"    ❌ shot {i} Ken Burns also failed: {e}")
+                        failed.append(i)
             else:
                 print(f"    ❌ shot {i} fallback submit failed — skipping")
+                print(f"    raw response: {json.dumps(res_fb, ensure_ascii=False)[:400]}")
+                print("    💡 check credits: `dreamina user_credit`")
+                failed.append(i)
 
     if not args.submit_only:
+        if failed:
+            # Do NOT merge a partial final.mp4 — a leftover incomplete final is a
+            # landmine (add_karaoke_captions.py --row would happily caption it).
+            # Non-zero exit turns the dashboard job red so the failure is visible.
+            print(f"❌ {len(failed)} shot(s) FAILED: {failed} — merge skipped, no final.mp4 produced")
+            print("   fix the failed shot(s) (check 即梦 credits first), then re-run")
+            return 1
         if mp4s:
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
             strip_ai_watermark(final)
-            upload_raw_video_property(args.row, final)
+            (vdir / "words.json").unlink(missing_ok=True)  # stale caption transcript
+            # NOT calling upload_raw_video_property here on purpose: the
+            # Production Tracker has no "Raw Video" property (confirmed
+            # 2026-07-10 — this call 400s every single time, harmlessly but
+            # noisily). "Production Video" (written by add_karaoke_captions.py
+            # --upload) is the only video property that exists.
             print(f"🎬 final video -> {final}")
         else:
-            print("no shots completed")
+            print("no shots completed (if every shot already has its video in Notion, "
+                  "use --merge-only / the dashboard's 一键成片 instead)")
+            return 1
     return 0
 
 
