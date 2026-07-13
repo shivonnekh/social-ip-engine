@@ -67,15 +67,29 @@ def push_paths(paths: list[str], message: str) -> dict:
     # "[rejected] (fetch first)" — forever, not just once, since nothing
     # here ever advanced HEAD to match origin (caused the notion-publish
     # ledger writes to silently stop persisting on 2026-07-08).
-    # `reset --soft FETCH_HEAD` re-parents this commit onto the CURRENT
-    # origin/main tip while leaving the working tree (every other file
-    # this old container never pulled) completely untouched — we only
-    # ever `git add` the specific state paths passed in, so the resulting
-    # commit carries just this call's JSON changes forward regardless of
-    # how out-of-date the rest of the container's checkout is.
+    #
+    # `reset --mixed FETCH_HEAD` (mixed is git's default — spelled out here
+    # so the intent is unambiguous) re-parents this commit onto the CURRENT
+    # origin/main tip AND updates the INDEX to match that tip, leaving only
+    # the WORKING TREE untouched.
+    #
+    # ⚠️ Do NOT use `--soft` here (this was the actual bug, live 2026-07-13):
+    # `--soft` moves the branch ref but leaves the index at the OLD HEAD's
+    # tree. Since we then `git add` only the specific state paths passed in,
+    # every OTHER file stays staged at the container's stale old version —
+    # so the resulting commit's diff (index vs the NEW parent, FETCH_HEAD)
+    # includes every file that changed between the container's stale HEAD
+    # and current origin/main, reverting all of them back to the stale
+    # checkout's content. This silently blew away hours of unrelated
+    # studio/dashboard/*.py and *.md work the moment a notion-publish call
+    # happened to run on a container whose checkout was behind — the exact
+    # kind of "reads fine, writes garbage" bug that's easy to miss because
+    # `push.returncode == 0` the whole time. `--mixed` syncs the index to
+    # FETCH_HEAD first, so the subsequent targeted `git add` is the ONLY
+    # diff from the new parent — nothing else can leak into the commit.
     fetch = _run("fetch", authed_remote, "main", timeout=30)
     if fetch.returncode == 0:
-        reset = _run("reset", "--soft", "FETCH_HEAD")
+        reset = _run("reset", "--mixed", "FETCH_HEAD")
         if reset.returncode != 0:
             logger.warning("[git_publish] reset onto FETCH_HEAD failed: %s", reset.stderr[:200])
     else:
@@ -110,7 +124,7 @@ def push_paths(paths: list[str], message: str) -> dict:
         # rather than surfacing a transient race as a hard failure.
         retry_fetch = _run("fetch", authed_remote, "main", timeout=30)
         if retry_fetch.returncode == 0:
-            _run("reset", "--soft", "FETCH_HEAD")
+            _run("reset", "--mixed", "FETCH_HEAD")
             push = _push()
     if push.returncode != 0:
         # Never let the token leak into logs via stderr echoes of the remote url.
