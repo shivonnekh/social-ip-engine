@@ -323,5 +323,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/period-page-1.png"
     ]
+  },
+  {
+    "keyword": "ear",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! There are actually 200+ points on your ear you can use for calm, cravings, or sleep 👂\n\nQuick check so I send the right one — are you looking to calm anxiety/stress, curb cravings, or fall asleep faster?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM ear guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "👂 Your Ear is a Map of Your Whole Body",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/ear-page-1.png"
+    ]
   }
 ]
