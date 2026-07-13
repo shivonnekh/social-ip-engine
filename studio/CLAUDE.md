@@ -71,8 +71,6 @@ Older rows were backfilled with `scripts/backfill_cover_dm_prompts.py`
 - `notion_image.py --row <id> [--shot N] [--reuse]` — pull IP reference faces FROM Notion + a clinic bg → `gpt-image-2` → place each still in its "🖼️ Image here" toggle → tick 🎨.
 - `notion_video.py --row <id>` — 即梦 video: per shot, pull image+audio+即梦prompt from Notion → `dreamina multimodal2video` → download → place in "🎬 Video here" → ffmpeg concat final (merge is already automatic here — no separate manual "merge" step needed).
 - `add_karaoke_captions.py --row <id> [--upload] [--script <path>]` — burns word-level karaoke-highlight captions (white base, current word yellow) onto that row's merged `final.mp4` → `final_karaoke.mp4`. Added 2026-07-07 to replace the previous ad-hoc process (JianYing CLI drafts kept failing to open). **Uses moviepy, NOT ffmpeg's `ass`/`subtitles`/`drawtext` filters** — this machine's ffmpeg build has no libass/freetype support (`ffmpeg -filters` shows neither). Word timing comes from local `openai-whisper` (`word_timestamps=True`) run directly against the merged video's audio. Pass `--script <path-to-txt>` with the KNOWN correct VO script to fix Whisper mishearings (e.g. it transcribed "cramps" as "crampus" in the period-pain campaign) while keeping Whisper's timestamps — see `align_to_known_script()`. `--upload` pushes the result to the row's **"Production Video" page PROPERTY** (not a body block) — the exact property social-ip-engine's live Reels auto-publish reads (`src/notion_publish.py::_extract_video_url`), so a captioned row is then one Stage-flip away from going live. Caches the Whisper transcript as `words.json` next to the video (gitignored, `campaigns/**/video/`) — pass `--retranscribe` to force a redo.
-- `generate_cover.py --row <id> [--force]` — generate the 🖼️ Cover Photo image for ONE row (reads the row's own Cover prompt code block, uses the IP's reference faces, fills the "🖼️ Cover here" toggle). This is the review checkpoint the LIVE publish path now reads FIRST (see root CLAUDE.md "Cover priority") — generate + eyeball it BEFORE flipping Stage.
-- `generate_infographic.py --row <id> [--force]` — same for the 📊 DM Infographic (text-to-image, no face refs — the brief mandates illustration style). Refuses to run against the no-brief placeholder.
 - `gen_voice_clip.py` — MiniMax TTS. Voice config per IP (see voice_config.yaml + IP Registry). Low-level single-clip tool — for a whole Production row use `batch_voice_gen.py --row <id>` instead (reads each shot's Voice script property, calls this per shot).
 - `notion_assets.json` — clinic backgrounds + (optional) face overrides.
 
@@ -119,37 +117,10 @@ Jackie's voice is a **custom MiniMax clone** of his real voice — not a preset.
 `dreamina multimodal2video --image X --audio Y --prompt Z --ratio 9:16 --duration <4-15> --model_version seedance2.0fast_vip --poll 0`
 - **Use `_vip` models — they SKIP the queue** (non-vip queue is 500k+, hours).
 - **Submit ONE AT A TIME** — submitting many at once throttles the account (tasks stall in "querying" for hours).
-- **⚠️ The 即梦 hang-lottery (root-caused 2026-07-10, 236-task analysis).**
-  ~45% of audio-driven multimodal2video submissions (and ~35% of image2video)
-  hang in `querying` FOREVER — never scheduled, never failed, never charged
-  (tasks from 2026-06-25 still answered `querying` on 07-10). When a task DOES
-  run, vip is genuinely fast: 81% of successes <5 min, 95% <15 min, NONE ever
-  succeeded past ~62 min. So a task `querying` >15 min is a lost lottery
-  ticket: **the fix is resubmitting the same task ("retry usually works"),
-  NOT waiting and NOT downgrading quality.** Rules encoded in
-  `notion_video.py`: (1) poll 10 min per attempt, up to 3 multimodal attempts
-  per shot; (2) image2video fallback only on an EXPLICIT `gen_status=fail`
-  (content problems: two-person frame, no face), never on a hang; (3)
-  pre-flight only blocks when a task submitted <15 min ago is still
-  `querying` (might genuinely be rendering) — old hung tasks don't block;
-  (4) hung submit_ids stay in `video_submits.json` — a rare late-completer
-  can still be harvested with `--collect` (dashboard: 收割已提交).
-- `query_result` answers `querying` even for long-dead tasks — it is NOT
-  evidence a task is alive. `list_task` reads a local sqlite cache
-  (`~/.dreamina_cli/tasks.db`) that goes stale unless each id is re-queried.
-  There is NO task-cancel API in the CLI.
-- `CreditPreDeductNotEnough` (ret=1006) = credit balance can't cover the vip
-  pre-deduct — check `dreamina user_credit` before batches (dashboard shows it
-  in the topbar; a 4-shot vip batch on a ~29-credit balance is asking for a
-  mid-batch failure).
 - Result video URL: `result_json.videos[0].video_url`.
 - **Realistic talking-head + audio is flaky** — retry usually works. **Two people in one image (e.g. doctor + patient) hangs 即梦** — for those shots use `image2video` (motion only) or ffmpeg Ken Burns + voiceover, OR regenerate as a single person.
 - **Lip-sync requires a near-frontal face** — side/profile angles (>30° off-axis) cause multimodal2video to fail silently → Ken Burns fallback. Always generate image prompts with face ≤15° off-axis when lip-sync is needed.
 - Audio must be 2–15s.
-
-## Local dashboard (`dashboard/`, added 2026-07-08)
-
-`python3 -m uvicorn dashboard.app:app --port 8420` (from `studio/`) → browser control panel for the whole 6-stage pipeline: workbench view groups every Production row by "what do I do next", row detail shows shot images/audio/videos/cover/infographic inline (review without opening Notion), every button subprocess-invokes the existing `scripts/*.py` tools verbatim (pipeline_common.py precedent — ZERO pipeline logic reimplemented), job logs stream live via SSE. **Stateless: Notion is the only source of truth** — every screen load re-reads Notion, so dashboard and manual-Notion edits can never diverge. Publish is gated behind a hard confirm dialog (irreversible). Local-only, never deployed. Unverified: whether a Notion Automation fires on an API-set Stage change same as a manual drag — check on first real dashboard-driven publish; fallback is one line (call the webhook directly after the Stage PATCH).
 
 ## Conventions
 - Each shot ≤13s (OmniHuman/即梦 sweet spot). Scripts: ONE line per shot in the row's Script property, in the IP's language.

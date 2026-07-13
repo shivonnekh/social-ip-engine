@@ -237,12 +237,7 @@ def row_detail(row_id: str) -> dict:
                 cur["audio_url"] = _block_url(b)
             elif t == "toggle" and "image here" in low and b.get("has_children"):
                 pending.append(("image", cur, b["id"], "image"))
-            elif (t == "toggle" and ("video here" in low or "video (regen)" in low)
-                  and b.get("has_children")):
-                # regen toggles come after the original in document order, and
-                # later pending entries overwrite earlier ones in the resolve
-                # loop below — so the NEWEST video wins, matching notion_video's
-                # read_row_shots behaviour
+            elif t == "toggle" and "video here" in low and b.get("has_children"):
                 pending.append(("video", cur, b["id"], "video"))
         elif section == "cover":
             if t == "paragraph" and "cover prompt" in low:
