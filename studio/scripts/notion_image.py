@@ -211,10 +211,6 @@ def main():
     ap.add_argument("--bg", type=int, default=1, help="clinic background index (1-based)")
     ap.add_argument("--shot", type=int, help="generate ONLY this shot number (1-based)")
     ap.add_argument("--reuse", action="store_true", help="reuse a local shotN.png if it exists (skip regen)")
-    ap.add_argument("--force", action="store_true",
-                    help="regenerate even if an image already exists — deletes the old image "
-                         "block(s) inside the '🖼️ Image here' toggle first. Combined with "
-                         "--shot N this is the dashboard's 'replace one bad image' path.")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -274,14 +270,7 @@ def main():
             continue
         toggle_id, has_img = _image_toggle(s["title"])
         if has_img:
-            if not args.force:
-                print(f"  Shot {i}: image already present — skip"); continue
-            if not args.dry_run and toggle_id:
-                # --force: clear the old image(s) out of the toggle, then regenerate below
-                for c in _children(toggle_id):
-                    if c["type"] == "image":
-                        ncall("DELETE", f"/blocks/{c['id']}")
-                print(f"  Shot {i}: deleted old image (--force) ✓")
+            print(f"  Shot {i}: image already present — skip"); continue
         # Always include IP face refs — doctor identity must match the IP's reference photos
         refs = ip_refs + ([bg] if bg else [])
         out_path = str(outdir / f"shot{i}.png")

@@ -30,14 +30,11 @@ already-working, independently-runnable scripts/*.py tools.
 """
 from __future__ import annotations
 
-import base64
-import os
-import secrets
 import sys
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import Response, StreamingResponse
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -48,24 +45,6 @@ import jobs  # noqa: E402
 import state  # noqa: E402
 
 app = FastAPI(title="AI-IP Studio Dashboard")
-
-# ---------- auth (required for tunnel/remote access) ----------
-# Set DASHBOARD_PASSWORD to enforce HTTP Basic auth on EVERY route (user:
-# "studio"). Without it the panel is open — acceptable ONLY for pure-localhost
-# use; anything exposed through a tunnel MUST run with the password set,
-# because this panel can publish to live IG/FB and spend real API credits.
-_PASSWORD = os.environ.get("DASHBOARD_PASSWORD", "")
-_EXPECTED = ("Basic " + base64.b64encode(f"studio:{_PASSWORD}".encode()).decode()) if _PASSWORD else ""
-
-
-@app.middleware("http")
-async def _basic_auth(request: Request, call_next):
-    if _EXPECTED:
-        supplied = request.headers.get("authorization", "")
-        if not secrets.compare_digest(supplied, _EXPECTED):
-            return Response(status_code=401, content="auth required",
-                            headers={"WWW-Authenticate": 'Basic realm="AI-IP Studio"'})
-    return await call_next(request)
 
 
 @app.get("/")
@@ -79,71 +58,20 @@ app.mount("/static", StaticFiles(directory=str(DASHBOARD_DIR / "static")), name=
 
 # ---------- read-only board state ----------
 
-_CREDIT_CACHE: dict = {"at": 0.0, "data": None}
-
-
-@app.get("/api/credit")
-def api_credit():
-    """即梦 (dreamina) credit balance — cached 60s so the UI's background poll
-    doesn't hammer the CLI. Fails soft: {'total_credit': None} when the CLI is
-    missing/not logged in, never a 500 (credit display is advisory)."""
-    import json as _json
-    import subprocess as _sp
-    import time as _time
-    now = _time.time()
-    if _CREDIT_CACHE["data"] is not None and now - _CREDIT_CACHE["at"] < 60:
-        return _CREDIT_CACHE["data"]
-    try:
-        r = _sp.run([str(Path.home() / ".local" / "bin" / "dreamina"), "user_credit"],
-                    capture_output=True, text=True, timeout=15)
-        info = _json.loads(r.stdout)
-        data = {"total_credit": info.get("total_credit"), "vip_level": info.get("vip_level")}
-    except Exception:  # noqa: BLE001 - advisory display, fail soft
-        data = {"total_credit": None, "vip_level": None}
-    _CREDIT_CACHE.update(at=now, data=data)
-    return data
-
-
-def _friendly_notion_error(exc: Exception) -> str:
-    """Turn Notion's raw 404/401 HTML-ish error bodies into an actionable
-    message for the dashboard UI, instead of a bare 500 + stack trace. The
-    single most common cause (hit live 2026-07-10/13): the integration's
-    CONNECTION to a specific database was dropped on the Notion side — GET on
-    individual pages still works, but database QUERY 404s with
-    'object_not_found'. Fixing this requires a human action in Notion
-    (database •••  → Connections → reconnect the integration); no retry or
-    code change here can work around it."""
-    msg = str(exc)
-    if "object_not_found" in msg or "404" in msg:
-        return ("Notion 连接断了 — 打开该数据库右上角 ••• → Connections，"
-                "确认 Notion 集成还连着（Production Tracker + Content Library 都要查）。"
-                f" 原始错误: {msg}")
-    return f"读取 Notion 失败: {msg}"
-
-
 @app.get("/api/queue")
 def api_queue():
     """Every Production row with its computed next_action — the workbench view."""
-    try:
-        return state.work_queue()
-    except Exception as exc:  # noqa: BLE001 - surface as a clear, actionable message
-        raise HTTPException(status_code=502, detail=_friendly_notion_error(exc)) from exc
+    return state.work_queue()
 
 
 @app.get("/api/content")
 def api_content():
-    try:
-        return state.list_content_concepts()
-    except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=502, detail=_friendly_notion_error(exc)) from exc
+    return state.list_content_concepts()
 
 
 @app.get("/api/content/{content_id}/rows")
 def api_content_rows(content_id: str):
-    try:
-        return state.content_rows(content_id)
-    except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=502, detail=_friendly_notion_error(exc)) from exc
+    return state.content_rows(content_id)
 
 
 @app.get("/api/rows/{row_id}/detail")
@@ -165,7 +93,6 @@ class ActionRequest(BaseModel):
     action: str
     content_id: str | None = None
     row_id: str | None = None
-    shot: int | None = None  # 1-based, for per-shot regenerate actions
 
 
 _CONTENT_ACTIONS: dict[str, str] = {
@@ -177,14 +104,6 @@ _ROW_ACTIONS: dict[str, str] = {
     "generate_video": "notion_video.py",
     "generate_cover": "generate_cover.py",
     "generate_infographic": "generate_infographic.py",
-}
-
-# Per-shot regenerate: replace ONE bad image / voice clip / shot video without
-# touching the other shots. action -> (script, extra flags after --row/--shot).
-_SHOT_ACTIONS: dict[str, tuple[str, list[str]]] = {
-    "regen_image_shot": ("notion_image.py", ["--force"]),
-    "regen_voice_shot": ("batch_voice_gen.py", ["--force"]),
-    "regen_video_shot": ("notion_video.py", ["--regen"]),
 }
 
 
@@ -200,26 +119,6 @@ def api_action(req: ActionRequest):
         if not req.row_id:
             raise HTTPException(400, "row_id required")
         job = jobs.start_job(req.action, [(_ROW_ACTIONS[req.action], ["--row", req.row_id])])
-        return {"job_id": job.id}
-
-    if req.action in _SHOT_ACTIONS:
-        if not req.row_id or not req.shot:
-            raise HTTPException(400, "row_id and shot required")
-        script, extra = _SHOT_ACTIONS[req.action]
-        job = jobs.start_job(f"{req.action} (shot {req.shot})",
-                             [(script, ["--row", req.row_id, "--shot", str(req.shot), *extra])])
-        return {"job_id": job.id}
-
-    if req.action == "collect_video":
-        # Harvest 即梦 tasks that were submitted earlier but whose polling was
-        # abandoned (queue throttled / job killed): poll saved submit_ids from
-        # video_submits.json, download whatever finished, place in Notion.
-        # Merge only happens if that completes the row (partial-merge guarded
-        # inside the script). Zero new 即梦 submissions.
-        if not req.row_id:
-            raise HTTPException(400, "row_id required")
-        job = jobs.start_job("collect_video",
-                             [("notion_video.py", ["--row", req.row_id, "--collect"])])
         return {"job_id": job.id}
 
     if req.action == "finalize_video":

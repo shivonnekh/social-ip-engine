@@ -417,16 +417,12 @@ def place_audio_block(page_id: str, after_block_id: str, file_upload_id: str) ->
 def process_row(row_id: str, title: str, *,
                 voice_config: dict | None = None,
                 dry_run: bool = False,
-                force: bool = False,
-                only_shot: int | None = None) -> dict:
+                force: bool = False) -> dict:
     """Generate voice clips for all shots in a Production row.
 
     voice_config: IP voice config dict. If None, auto-reads from the row's IP
     relation (adds an extra Notion API call). Pass it explicitly when iterating
     many rows for the same IP.
-    only_shot: if set (1-based), process ONLY that shot — combined with
-    force=True this is the dashboard's "replace just this one bad voice clip"
-    path (added 2026-07-10).
     """
     if voice_config is None:
         _, _, voice_config = _row_ip_config(row_id)
@@ -440,9 +436,6 @@ def process_row(row_id: str, title: str, *,
 
     done = skipped = 0
     for i, shot in enumerate(shots, 1):
-        if only_shot is not None and i != only_shot:
-            skipped += 1
-            continue
         if shot["has_audio"]:
             if not force:
                 print(f"    Shot {i} ({shot['title'][:30]}): audio exists — skip")
@@ -488,7 +481,7 @@ def process_row(row_id: str, title: str, *,
         done += 1
         time.sleep(0.5)  # gentle rate-limit
 
-    if not dry_run and only_shot is None and all(s["has_audio"] for s in extract_shots(row_id)):
+    if not dry_run and all(s["has_audio"] for s in extract_shots(row_id)):
         # Mirrors notion_image.py ticking "🎨 Image" once every shot has one —
         # this checkbox was never actually set anywhere before (found 2026-07-08
         # while building state detection for the local dashboard), so "has voice"
@@ -517,9 +510,6 @@ def main() -> None:
                         help="Preview only — no TTS calls, no writes")
     parser.add_argument("--force", action="store_true",
                         help="Delete existing audio blocks and regenerate (e.g. after voice_id change)")
-    parser.add_argument("--shot", type=int, metavar="N",
-                        help="Process ONLY shot N (1-based; requires --row). "
-                             "With --force: replace just that one shot's voice clip.")
     parser.add_argument("--emotion", metavar="EMOTION",
                         help="Override emotion for this run (e.g. happy, excited, neutral). "
                              "Overrides IP Registry value without changing it.")
@@ -534,9 +524,6 @@ def main() -> None:
             return {**cfg, "emotion": args.emotion}
         return cfg
 
-    if args.shot and not args.row:
-        sys.exit("[error] --shot requires --row")
-
     # ── Single row ─────────────────────────────────────────────────────────────
     if args.row:
         row_id = args.row.replace("-", "")
@@ -544,8 +531,7 @@ def main() -> None:
         cfg = _apply_emotion(cfg)
         title = _page_title(ncall("GET", f"/pages/{row_id}"))
         print(f"▶ {title}  [{ip_name}]  voice={cfg['voice_id']}  emotion={cfg.get('emotion') or 'default'}")
-        result = process_row(row_id, title, voice_config=cfg, dry_run=args.dry_run,
-                             force=args.force, only_shot=args.shot)
+        result = process_row(row_id, title, voice_config=cfg, dry_run=args.dry_run, force=args.force)
         total_done += result.get("done", 0)
         total_skipped += result.get("skipped", 0)
 

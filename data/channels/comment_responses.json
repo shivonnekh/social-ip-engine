@@ -338,5 +338,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/ear-page-1.png"
     ]
+  },
+  {
+    "keyword": "neck",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Phone neck is one of the fastest-growing complaints I see — you're not alone 📱\n\nYour 5-minute daily neck recovery routine:\n• Neck roll with exhale: 5 slow circles each direction. Exhale on the way down — that's when the muscle releases.\n• Fengchi (風池) point: base of skull, in the two hollows where neck meets skull. Press 60 seconds.\n• Kudzu root (葛根) tea: drink once daily — specifically targets neck and upper back stiffness in TCM.\n\nIs your pain more in the neck itself, the shoulders pulling down, or do you also get headaches from it?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM neck guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "📱 Phone Neck — TCM Fixes What Stretching Can't",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/neck-page-1.png"
+    ]
   }
 ]
