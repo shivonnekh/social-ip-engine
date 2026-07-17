@@ -140,8 +140,19 @@ def ip_reference_images(ip_id: str, cache_dir: Path) -> list[str]:
     return refs
 
 
+_SAME_PERSON_RE = re.compile(r"\[\s*SAME_PERSON_AS\s*:\s*Shot\s*(\d+)\s*\]", re.I)
+
+
 def read_shots(row_id):
-    """[(shot_title, image_prompt)] parsed from the row body."""
+    """[(shot_title, image_prompt, same_person_as)] parsed from the row body.
+
+    same_person_as: optional 1-based shot number, set when the prompt
+    contains a `[SAME_PERSON_AS: Shot N]` marker — the recurring-extra
+    consistency mechanism (added 2026-07-14, see notes on `_recurring_extra_ref`
+    below). The marker itself is stripped out of `prompt` before it's ever
+    sent to gpt-image-2 — it's an authoring instruction for THIS script, not
+    part of the actual image description.
+    """
     shots, cur, want = [], None, False
     for b in _children(row_id):
         t = b["type"]; txt = _txt(b)
@@ -150,7 +161,10 @@ def read_shots(row_id):
         elif t == "paragraph" and "Image prompt" in txt:
             want = True
         elif want and t == "code" and cur is not None:
-            cur["prompt"] = txt; shots.append(cur); want = False; cur = None
+            m = _SAME_PERSON_RE.search(txt)
+            cur["same_person_as"] = int(m.group(1)) if m else None
+            cur["prompt"] = _SAME_PERSON_RE.sub("", txt).strip()
+            shots.append(cur); want = False; cur = None
     return shots
 
 
@@ -268,6 +282,43 @@ def main():
                 return b["id"], bool(has_img)
         return None, False
 
+    def _recurring_extra_ref(same_person_as: int) -> str | None:
+        """Resolve a `[SAME_PERSON_AS: Shot N]` marker to a local image path
+        for shot N, so a recurring EXTRA (a passerby/guest — anyone who
+        ISN'T the IP) can be passed as an additional gpt-image-2 reference,
+        the exact same mechanism that already keeps Jackie's own face
+        consistent (`ip_refs`). Added 2026-07-14 — root cause: extras had
+        ZERO reference image before this, so gpt-image-2 improvised a new
+        random-looking person on every shot, even when the shot guide
+        clearly meant "the same guest as three shots ago."
+
+        Checks THIS run's local cache first (shot N may have just been
+        generated earlier in the same --row batch), then falls back to
+        downloading whatever's already in shot N's Notion '🖼️ Image here'
+        toggle (covers regenerating a single later shot in a separate run,
+        after shot N was generated previously)."""
+        local = outdir / f"shot{same_person_as}.png"
+        if local.exists():
+            return str(local)
+        if same_person_as < 1 or same_person_as > len(shots):
+            print(f"    ⚠️  SAME_PERSON_AS points at Shot {same_person_as}, which doesn't exist in this row")
+            return None
+        ref_title = shots[same_person_as - 1]["title"]
+        toggle_id, has_img = _image_toggle(ref_title)
+        if not has_img:
+            print(f"    ⚠️  SAME_PERSON_AS: Shot {same_person_as} has no image yet — "
+                  "generate that shot first, then regenerate this one for consistency. "
+                  "Proceeding WITHOUT the extra's reference for now.")
+            return None
+        for c in _children(toggle_id):
+            if c["type"] == "image":
+                url = (c["image"].get("file") or c["image"].get("external") or {}).get("url")
+                if url:
+                    dl_path = str(outdir / f"_ref_shot{same_person_as}.png")
+                    urllib.request.urlretrieve(url, dl_path)
+                    return dl_path
+        return None
+
     done = 0
     for i, s in enumerate(shots, 1):
         if args.shot and i != args.shot:
@@ -284,6 +335,12 @@ def main():
                 print(f"  Shot {i}: deleted old image (--force) ✓")
         # Always include IP face refs — doctor identity must match the IP's reference photos
         refs = ip_refs + ([bg] if bg else [])
+        extra_ref = None
+        if s.get("same_person_as"):
+            extra_ref = _recurring_extra_ref(s["same_person_as"])
+            if extra_ref:
+                refs = refs + [extra_ref]
+                print(f"  Shot {i}: recurring extra — reusing Shot {s['same_person_as']}'s image for consistency")
         out_path = str(outdir / f"shot{i}.png")
         if args.reuse and Path(out_path).exists():
             print(f"  Shot {i}: reuse local image {out_path}")

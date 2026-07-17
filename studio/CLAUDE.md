@@ -69,6 +69,28 @@ Older rows were backfilled with `scripts/backfill_cover_dm_prompts.py`
 - `notion_watch.py [--loop N]` — auto fan-out when Concept Status = "✅ Ready to fan-out" → flips to "🚀 Fanned out".
 - `notion_prompts.py --backfill [--force]` — (re)build per-shot prompts on Production rows. Core: `apply_shot_plan(row, rebuild=True)` wipes+rebuilds the body. ⚠️ rebuild is DESTRUCTIVE — wipes uploaded images/audio/video. Don't run on rows that already hold media.
 - `notion_image.py --row <id> [--shot N] [--reuse]` — pull IP reference faces FROM Notion + a clinic bg → `gpt-image-2` → place each still in its "🖼️ Image here" toggle → tick 🎨.
+  - **Recurring-extra consistency (`[SAME_PERSON_AS: Shot N]`, added 2026-07-14):**
+    the IP (e.g. Jackie) is always consistent because `ip_refs` feeds his face
+    into every gen_image() call — but any EXTRA (a passerby/guest who isn't the
+    IP) had ZERO reference image before this, so a different-looking stranger
+    got improvised on every shot, even for a multi-shot mini-scene clearly
+    meant to be the SAME person (root-caused live on the "Tongue Never Lies"
+    street-approach series — shots 5-8 are all "the guest who said yes" from
+    shot 4, but each came out as a different woman). Fix: add a line
+    `[SAME_PERSON_AS: Shot 4]` anywhere in a shot's 🖼️ Image prompt code block
+    — `read_shots()` strips the marker before it ever reaches gpt-image-2 and
+    resolves shot 4's ALREADY-GENERATED image (local cache first, else
+    downloaded fresh from that shot's Notion toggle) as an ADDITIONAL
+    reference alongside the IP's own face refs, exactly the same mechanism
+    that keeps the IP consistent. **Author shots in order** (generate shot 4
+    before 5-8) — if the referenced shot has no image yet, generation
+    proceeds WITHOUT the extra ref and prints a warning rather than failing,
+    so a full-row run never blocks on this, but the guest won't actually
+    match until you regenerate that shot after shot 4 exists. Only needed for
+    shots that are SUPPOSED to share the same extra — one-off strangers
+    (e.g. two different, intentionally-distinct people who each reject Jackie
+    earlier in the same script) should NOT be marked; different people
+    looking different is correct there.
 - `notion_video.py --row <id>` — 即梦 video: per shot, pull image+audio+即梦prompt from Notion → `dreamina multimodal2video` → download → place in "🎬 Video here" → ffmpeg concat final (merge is already automatic here — no separate manual "merge" step needed).
 - `add_karaoke_captions.py --row <id> [--upload] [--script <path>]` — burns word-level karaoke-highlight captions (white base, current word yellow) onto that row's merged `final.mp4` → `final_karaoke.mp4`. Added 2026-07-07 to replace the previous ad-hoc process (JianYing CLI drafts kept failing to open). **Uses moviepy, NOT ffmpeg's `ass`/`subtitles`/`drawtext` filters** — this machine's ffmpeg build has no libass/freetype support (`ffmpeg -filters` shows neither). Word timing comes from local `openai-whisper` (`word_timestamps=True`) run directly against the merged video's audio. Pass `--script <path-to-txt>` with the KNOWN correct VO script to fix Whisper mishearings (e.g. it transcribed "cramps" as "crampus" in the period-pain campaign) while keeping Whisper's timestamps — see `align_to_known_script()`. `--upload` pushes the result to the row's **"Production Video" page PROPERTY** (not a body block) — the exact property social-ip-engine's live Reels auto-publish reads (`src/notion_publish.py::_extract_video_url`), so a captioned row is then one Stage-flip away from going live. Caches the Whisper transcript as `words.json` next to the video (gitignored, `campaigns/**/video/`) — pass `--retranscribe` to force a redo.
 - `generate_cover.py --row <id> [--force]` — generate the 🖼️ Cover Photo image for ONE row (reads the row's own Cover prompt code block, uses the IP's reference faces, fills the "🖼️ Cover here" toggle). This is the review checkpoint the LIVE publish path now reads FIRST (see root CLAUDE.md "Cover priority") — generate + eyeball it BEFORE flipping Stage.

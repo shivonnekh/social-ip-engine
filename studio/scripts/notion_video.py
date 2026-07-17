@@ -237,7 +237,7 @@ def read_row_shots(row_id):
         t, tx = b["type"], _txt(b)
         if t == "heading_3" and tx.lower().startswith("shot"):
             cur = {"title": tx, "image_url": None, "audio_url": None,
-                   "jimeng": "", "has_video": False, "video_url": None}
+                   "jimeng": "", "voice_text": "", "has_video": False, "video_url": None}
             shots.append(cur); label = None
         elif t in ("heading_1", "heading_2", "heading_3"):
             # Any OTHER heading ends the current shot's scope — e.g. the trailing
@@ -253,6 +253,13 @@ def read_row_shots(row_id):
             label = tx
         elif t == "code" and label and "即梦" in label:
             cur["jimeng"] = tx
+        elif t == "code" and label and "Voice script" in label:
+            # Empty-on-purpose (a genuinely silent/reaction/B-roll beat, e.g.
+            # "second rejection" — Jackie doesn't speak) is a DIFFERENT case
+            # from "script written but TTS hasn't run yet": the former is a
+            # valid silent shot (image2video path below); the latter is a
+            # real gap that must still block generation with a clear message.
+            cur["voice_text"] = tx.strip()
         elif t == "toggle" and "Image here" in tx and b.get("has_children"):
             for c in _children(b["id"]):
                 if c["type"] == "image":
@@ -292,6 +299,50 @@ def _dur(path):
     return float(r.stdout.strip() or 0)
 
 
+# 即梦 rejects audio outside 2–15s. Over-length audio does NOT error — the task
+# hangs in "querying" FOREVER (indistinguishable from the hang-lottery, but
+# 100% reproducible for that shot). Root-caused 2026-07-16 on Phone Neck Shot 3
+# (15.84s VO → hung 6/6 across BOTH accounts). We time-compress in place so
+# every downstream consumer (multimodal + fallbacks) transparently gets a
+# submittable clip; target a small margin under the ceiling so float/encoder
+# rounding can't nudge it back over.
+JIMENG_AUDIO_MAX_S = 15.0
+JIMENG_AUDIO_TARGET_S = 14.6
+
+
+def fit_audio_for_jimeng(path: str, max_s: float = JIMENG_AUDIO_MAX_S,
+                         target_s: float = JIMENG_AUDIO_TARGET_S) -> bool:
+    """If `path` is longer than max_s, speed it up (ffmpeg atempo, pitch-
+    preserving) to target_s IN PLACE. Returns True if it rewrote the file.
+
+    atempo only accepts 0.5–2.0 per filter; our worst realistic case is a
+    ~16s clip → ~1.1x, comfortably inside one filter, so no chaining needed
+    (guarded anyway). Under-length (<2s) is left alone — that's a TTS problem
+    to fix upstream, not something speed-changing can repair, and padding
+    would desync lip-sync."""
+    dur = _dur(path)
+    if dur <= max_s or dur <= 0:
+        return False
+    tempo = dur / target_s
+    if tempo > 2.0:  # pathological; a single atempo can't do it — leave loud + visible
+        print(f"    ⚠️  audio {dur:.1f}s needs {tempo:.2f}x (>2.0 atempo limit) — "
+              "shorten the VO script; leaving as-is")
+        return False
+    tmp = f"{path}.fit.mp3"
+    r = subprocess.run(
+        ["ffmpeg", "-y", "-v", "error", "-i", path,
+         "-filter:a", f"atempo={tempo:.4f}", "-c:a", "libmp3lame", tmp],
+        capture_output=True, text=True)
+    if r.returncode != 0 or not Path(tmp).exists():
+        print(f"    ⚠️  atempo fit failed ({r.stderr.strip()[:120]}) — leaving audio as-is")
+        Path(tmp).unlink(missing_ok=True)
+        return False
+    os.replace(tmp, path)
+    print(f"    ⏱️  audio {dur:.1f}s > {max_s:.0f}s ceiling → sped {tempo:.3f}x to "
+          f"{_dur(path):.1f}s (即梦-submittable)")
+    return True
+
+
 def _dreamina(args):
     r = subprocess.run([DREAMINA, *args], capture_output=True, text=True)
     try:
@@ -301,8 +352,25 @@ def _dreamina(args):
 
 
 def compose_i2v_prompt(jimeng_text: str) -> str:
-    """Extract visual/motion instructions for image2video.
-    Strips audio-native headers, {{图片}}, {{对白}} variables — keeps 分镜 directions + 运镜."""
+    """Extract visual/motion instructions for image2video (no audio upload,
+    no lip-sync) — strips anything that only makes sense for the
+    audio-native/multimodal path: old-format headers, {{图片}}/{{对白}}
+    variables, and the WHOLE 【Speech】...【next section】 block from the
+    2026-07-10 template rewrite.
+
+    The 【Speech】 block fix was added 2026-07-14 after finding it completely
+    UNSTRIPPED in an image2video submission for an intentionally-silent shot
+    — the model was being told "Lip-sync naturally to the uploaded audio"
+    with no audio ever uploaded, since the old skip_keywords list only
+    matched OLD-template markers ("音频驱动"/"Audio Native"/"数字人视频") and
+    the new template's 【Speech】 section body text contains none of those —
+    it survived untouched and got sent to image2video, actively misleading
+    generation for the one case (silent shots) that most needs a clean,
+    lip-sync-free prompt."""
+    # Drop the 【Speech】 section entirely — it only makes sense with real
+    # uploaded audio, which image2video never has.
+    jimeng_text = re.sub(r"【Speech】.*?(?=【|\Z)", "", jimeng_text, flags=re.S)
+
     skip_keywords = ("音频驱动", "Audio Native", "数字人视频", "AI-digital-human")
     out = []
     for ln in jimeng_text.splitlines():
@@ -320,10 +388,40 @@ def compose_i2v_prompt(jimeng_text: str) -> str:
     return "\n".join(out)
 
 
+def compose_multimodal_prompt(jimeng_text: str) -> str:
+    """Prompt for the audio-native multimodal2video path — keeps 【Speech】
+    and the 音频驱动/数字人 header INTACT; strips only legacy {{图片}}/{{对白}}
+    template variables.
+
+    Added 2026-07-16 after root-causing why EVERY audio shot since 07-14
+    came back with 即梦-invented speech instead of the uploaded voice
+    (verified by Whisper-transcribing the uploaded mp3 vs the video's audio
+    track — completely different words; one output even echoed the 【Style】
+    line "wellness presentation" as its script). submit_shot_multimodal()
+    was reusing compose_i2v_prompt(), whose 07-14 fix deletes the WHOLE
+    【Speech】 section — correct for the silent image2video path it was
+    written for, catastrophic here: the lip-sync-to-uploaded-audio
+    instruction was being stripped out of every audio submission at the
+    last moment, so no amount of Notion-side prompt fixing could ever
+    reach 即梦. The two paths now have separate composers; do NOT reunify
+    them."""
+    out = []
+    for ln in jimeng_text.splitlines():
+        if "{{图片}}" in ln:
+            continue
+        if "{{对白}}" in ln:
+            ln = ln.replace("{{对白}}", "").strip(" ：: ，,")
+            if not ln:
+                continue
+        if ln.strip():
+            out.append(ln)
+    return "\n".join(out)
+
+
 def submit_shot_multimodal(img, aud, jimeng_text, model):
     """Submit multimodal2video — image + audio → lip-sync talking-head video."""
     dur = max(4, min(15, round(_dur(aud)) or 5))
-    prompt = compose_i2v_prompt(jimeng_text) or "医生自然讲解，轻微点头眨眼，摄影机缓慢推入，9:16竖屏"
+    prompt = compose_multimodal_prompt(jimeng_text) or "医生自然讲解，轻微点头眨眼，摄影机缓慢推入，9:16竖屏"
     res = _dreamina(["multimodal2video", "--image", img, "--audio", aud,
                      "--prompt", prompt, "--ratio", "9:16", "--duration", str(dur),
                      "--model_version", model, "--poll", "0"])
@@ -339,6 +437,48 @@ def submit_shot_image2video(img, aud, jimeng_text, model):
                      "--prompt", prompt, "--duration", str(dur),
                      "--model_version", model, "--poll", "0"])
     return res.get("submit_id"), res
+
+
+_SHOT_DURATION_RE = re.compile(r"~\s*(\d+)\s*s", re.I)
+
+
+def shot_duration_hint(title: str, default: int = 5) -> int:
+    """Parse the '~Ns' duration hint out of a shot's own heading (e.g.
+    'Shot 3 · ~3s · second rejection' -> 3), clamped to 即梦's 4-15s range.
+    Used for INTENTIONALLY SILENT shots (added 2026-07-14) — with no audio
+    file to derive duration from (`_dur(aud)`, the normal path), the shot's
+    own title is the next best signal of its intended length."""
+    m = _SHOT_DURATION_RE.search(title)
+    return max(4, min(15, int(m.group(1)) if m else default))
+
+
+def submit_silent_shot(img, jimeng_text, model, duration):
+    """Submit image2video for a shot that's INTENTIONALLY silent — a reaction
+    /B-roll beat with no dialogue (e.g. "second rejection": an old man waves
+    Jackie off, Jackie never speaks). No lip-sync needed (nothing to sync to),
+    no audio file exists to mix in — `add_silent_audio()` mux in a silent
+    track afterward so the clip still has an [v][a] pair for concat().
+    Returns (submit_id, res)."""
+    prompt = compose_i2v_prompt(jimeng_text) or "画面自然流动，摄影机缓慢推入，9:16竖屏"
+    res = _dreamina(["image2video", "--image", img,
+                     "--prompt", prompt, "--duration", str(duration),
+                     "--model_version", model, "--poll", "0"])
+    return res.get("submit_id"), res
+
+
+def add_silent_audio(video_path: str, out_path: str) -> str:
+    """Mux a silent audio track onto a video-only clip so it has the same
+    [video][audio] stream shape every other shot has — concat()'s ffmpeg
+    filter pairs `[v{i}][a{i}]` per input and breaks on an audio-less file.
+    `anullsrc` is an "infinite" lavfi source; `-shortest` cuts it to the
+    VIDEO's actual length automatically — no duration argument needed here."""
+    subprocess.run([
+        "ffmpeg", "-y", "-i", video_path,
+        "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+        "-map", "0:v:0", "-map", "1:a:0",
+        "-c:v", "copy", "-c:a", "aac", "-shortest", out_path,
+    ], capture_output=True, check=True)
+    return out_path
 
 
 def mix_audio(video_path: str, audio_path: str, out_path: str) -> str:
@@ -663,7 +803,15 @@ def main():
             if gs == "success":
                 url = _video_url(d)
                 if url and _download(url, out, force=True):
-                    if s.get("i2v"):
+                    if s.get("silent"):
+                        # intentionally-silent shot — mux a silent track so it
+                        # still has an [v][a] pair for concat() (never real
+                        # dialogue audio to mix in; there was never a voice
+                        # script for this shot in the first place)
+                        raw = str(vdir / f"shot{s['shot']}_silent_raw.mp4")
+                        os.replace(out, raw)
+                        add_silent_audio(raw, out)
+                    elif s.get("i2v"):
                         # image2video fallback output is SILENT — mix the shot's
                         # voice clip back in (same as the generation path does)
                         aud = str(adir / f"shot{s['shot']}.mp3")
@@ -733,11 +881,17 @@ def main():
         if args.shot and i != args.shot:
             continue
         skip_existing = s.get("has_video") and not args.regen
-        if skip_existing or not s["image_url"] or not s["audio_url"]:
+        if skip_existing or not s["image_url"]:
             continue
+        is_silent = not s["audio_url"] and not s["voice_text"]
+        if not s["audio_url"] and not is_silent:
+            continue  # voice script written but not generated yet — real gap, handled below
         _download(s["image_url"], str(idir / f"shot{i}.png"))
-        _download(s["audio_url"], str(adir / f"shot{i}.mp3"), force=True)  # always re-fetch audio from Notion
-        print(f"    Shot {i}: assets ready")
+        if not is_silent:
+            apath = str(adir / f"shot{i}.mp3")
+            _download(s["audio_url"], apath, force=True)  # always re-fetch audio from Notion
+            fit_audio_for_jimeng(apath)  # 即梦 hard-rejects >15s → silent永久 hang; fix in place
+        print(f"    Shot {i}: assets ready" + (" (silent shot — no audio needed)" if is_silent else ""))
 
     # Default: submit ONE at a time → poll → place → next (avoids queue throttling)
     mp4s = []
@@ -758,15 +912,52 @@ def main():
             if Path(existing).exists():
                 mp4s.append(existing)
             continue
-        if not s["image_url"] or not s["audio_url"]:
-            print(f"  Shot {i}: MISSING image/audio — skip")
+        if not s["image_url"]:
+            print(f"  Shot {i}: MISSING image — skip")
+            failed.append(i)
+            continue
+        is_silent = not s["audio_url"] and not s["voice_text"]
+        if not s["audio_url"] and not is_silent:
+            print(f"  Shot {i}: Voice script is written but not generated yet — "
+                  "run 生成 image+voice first (this is NOT treated as a silent shot: "
+                  "there's a line, it just hasn't been turned into audio).")
             failed.append(i)
             continue
 
         img = str(idir / f"shot{i}.png")   # always use local (pre-downloaded above)
-        aud = str(adir / f"shot{i}.mp3")   # always re-fetched from Notion above
         suffix = "_regen" if args.regen else ""
         out = str(vdir / f"shot{i}{suffix}.mp4")
+
+        # ── intentionally silent shot: image2video, no lip-sync, no hang-lottery
+        # retry needed (measured stats are specifically about audio-driven
+        # multimodal2video; image2video has no equivalent problem documented) ──
+        if is_silent:
+            duration = shot_duration_hint(s["title"])
+            sid, res = submit_silent_shot(img, s["jimeng"], args.model, duration)
+            print(f"  Shot {i} (silent): submit_id={sid} credits={res.get('credit_count')} duration={duration}s")
+            if not sid:
+                print(f"    ❌ shot {i} submit failed — raw response: {json.dumps(res, ensure_ascii=False)[:400]}")
+                failed.append(i)
+                continue
+            submits.append({"shot": i, "title": s["title"], "submit_id": sid, "silent": True})
+            ids_path.write_text(json.dumps(submits, indent=2))
+            if args.submit_only:
+                continue
+            print(f"  polling shot {i} ({sid}) up to {_POLL_TIMEOUT_S // 60} min ...")
+            raw_path = str(vdir / f"shot{i}{suffix}_silent_raw.mp4")
+            path, pstat = poll_download(sid, raw_path)
+            if path:
+                add_silent_audio(raw_path, out)
+                mp4s.append(out)
+                status = place_video_in_shot(args.row, s["title"], out)
+                print(f"    ✅ {out} (silent) | Notion: {status}")
+            else:
+                print(f"    ❌ shot {i} (silent) {'hung' if pstat == 'timeout' else 'failed'} — "
+                      "submit_id saved, try 收割已提交 later")
+                failed.append(i)
+            continue
+
+        aud = str(adir / f"shot{i}.mp3")   # always re-fetched from Notion above
 
         # ── multimodal with hang-lottery retries ──
         # ~45% of audio-driven multimodal submissions hang in "querying"

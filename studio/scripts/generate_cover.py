@@ -23,13 +23,105 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notion_image as ni  # noqa: E402 - reuse gen_image / upload_image / ip_reference_images
 
 ROOT = ni.ROOT
+
+# Same font as add_karaoke_captions.py's on-screen text (white fill + black
+# stroke) — one visual identity for every burned-in text element in the pipeline.
+_TITLE_FONT_PATH = "/System/Library/Fonts/Supplemental/Arial Black.ttf"
+
+# Targets actual emoji Unicode blocks only (misc symbols/pictographs,
+# emoticons, transport, dingbats, supplemental symbols, variation selectors,
+# regional indicators) — NOT a blanket non-ASCII strip, since Chloe's titles
+# are Cantonese and CJK characters must survive. Arial Black has no emoji
+# glyphs, so an un-stripped emoji renders as a broken tofu-box glyph (found
+# 2026-07-14 on "Why Do Some Never Get Sick? 😮").
+_EMOJI_RE = re.compile(
+    "[" "\U0001F300-\U0001FAFF" "\U00002600-\U000027BF" "\U0001F1E6-\U0001F1FF"
+    "\U00002190-\U000021FF" "\U00002B00-\U00002BFF" "\U0000FE0F" "]+"
+)
+
+
+def _strip_emoji(text: str) -> str:
+    return _EMOJI_RE.sub("", text).strip()
+
+
+def _wrap_text(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
+    words = text.split()
+    lines: list[str] = []
+    cur = ""
+    for w in words:
+        trial = f"{cur} {w}".strip()
+        bbox = draw.textbbox((0, 0), trial, font=font)
+        if bbox[2] - bbox[0] <= max_width or not cur:
+            cur = trial
+        else:
+            lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def overlay_cover_title(image_path: str, title: str, out_path: str) -> str:
+    """Burn the row's punchy 🏷️ Title onto the cover's reserved top third.
+
+    Root cause this fixes (found 2026-07-14): build_cover_prompt()'s own
+    docstring has always said "clean space reserved for a bold title overlay
+    added later" — but nothing in this codebase, local OR live (src/
+    notion_cover_gen.py), ever actually added it. Every cover has been
+    shipping completely bare since the feature was designed. gpt-image-2 is
+    deliberately told "No on-screen text" in the prompt (AI-rendered text is
+    reliably garbled/misspelled) — the title has to be composited afterward
+    with a real font, same as this project already does for video captions
+    (add_karaoke_captions.py: white fill, black stroke, Arial Black).
+
+    Auto-shrinks + wraps to fit the reserved top-30%-of-frame zone (matches
+    the prompt's own "top third uncluttered" instruction) without ever
+    overflowing onto the subject below."""
+    title = _strip_emoji(title)
+    img = Image.open(image_path).convert("RGB")
+    W, H = img.size
+    draw = ImageDraw.Draw(img)
+
+    margin_x = round(W * 0.08)
+    max_width = W - 2 * margin_x
+    top_zone_height = round(H * 0.30)
+
+    font_size, min_font_size = 96, 40
+    font = lines = None
+    line_height = 0
+    while font_size >= min_font_size:
+        font = ImageFont.truetype(_TITLE_FONT_PATH, font_size)
+        lines = _wrap_text(draw, title, font, max_width)
+        line_height = font.getbbox("Ag")[3] + round(font_size * 0.28)
+        if line_height * len(lines) <= top_zone_height and len(lines) <= 4:
+            break
+        font_size -= 4
+    else:
+        font = ImageFont.truetype(_TITLE_FONT_PATH, min_font_size)
+        lines = _wrap_text(draw, title, font, max_width)
+        line_height = font.getbbox("Ag")[3] + round(min_font_size * 0.28)
+
+    stroke_width = max(2, round(font_size * 0.08))
+    y = round(H * 0.05)
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font, stroke_width=stroke_width)
+        x = (W - (bbox[2] - bbox[0])) // 2
+        draw.text((x, y), line, font=font, fill="white",
+                  stroke_width=stroke_width, stroke_fill="black")
+        y += line_height
+
+    img.save(out_path)
+    return out_path
 
 
 def find_cover_prompt(row_id: str) -> tuple[str | None, str | None, bool]:
@@ -91,6 +183,17 @@ def main() -> int:
     outdir = ni._campaign_workdir(page, ip_name) / "images"
     outdir.mkdir(parents=True, exist_ok=True)
     out_path = str(outdir / "cover.png")
+    # The title is now baked directly into the image by gpt-image-2 itself —
+    # build_cover_prompt() (rewritten 2026-07-16) asks for the actual viral-
+    # thumbnail text treatment (bold black highlight box, yellow/white
+    # split-color words, accent burst) reverse-engineered from Shivonne's
+    # real published covers. NOT running overlay_cover_title() here anymore:
+    # that PIL post-pass was yesterday's fix for "covers ship completely
+    # bare" — it worked, but produced flat "plain text on a photo" results
+    # that looked worse than what the model can do natively when asked
+    # properly. Running both would double the text. overlay_cover_title()
+    # is kept in this file as a manual fallback (e.g. the model garbles a
+    # word and you want a quick fix) — just not auto-invoked.
     out = ni.gen_image(prompt, ip_refs, out_path)
     fid = ni.upload_image(out)
     img_block = {"object": "block", "type": "image",

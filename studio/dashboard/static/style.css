@@ -361,3 +361,42 @@ body {
   color: var(--ink-soft); height: 240px; overflow-y: auto;
   white-space: pre-wrap; word-break: break-word;
 }
+
+/* ===== restored 2026-07-14: credit chip + per-shot regen tools + instruction input ===== */
+.chip.credit          { background: #fff3d6; color: #8a6100; border-color: #8a6100; }
+.chip.credit.low      { background: var(--red); color: #fff; border-color: var(--ink); animation: pulse 1.2s infinite; }
+.sync-note { font-size: 11px; color: var(--dim); font-weight: 600; }
+
+.shot-tools { display: flex; gap: 6px; margin-top: 2px; flex-wrap: wrap; }
+.btn.mini {
+  padding: 4px 9px; font-size: 11px; border-radius: 8px;
+  box-shadow: 2px 2px 0 rgba(35,32,26,.5);
+}
+.btn.mini:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 rgba(35,32,26,.6); }
+
+.instruction-row { display: flex; gap: 6px; margin-top: 4px; }
+.instruction-input {
+  flex: 1; min-width: 0; font-family: var(--body-font);
+  border: 1.5px solid var(--line); border-radius: 8px;
+  padding: 5px 8px; font-size: 11.5px; background: var(--card); color: var(--ink);
+}
+.instruction-input:focus { outline: none; border-color: var(--violet); }
+.instruction-input::placeholder { color: var(--dim); }
+
+/* ===== batch select (added 2026-07-15) ===== */
+.sc-select { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.sc-select input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--violet); cursor: pointer; }
+.batch-bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: var(--card); border: 1.5px dashed var(--line); border-radius: 10px;
+  padding: 8px 12px; margin-bottom: 14px;
+}
+.batch-count { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+
+/* ===== IP selector for scoped fan-out (added 2026-07-15) ===== */
+.ip-select {
+  font-family: var(--body-font); font-size: 12.5px; font-weight: 600;
+  border: 2px solid var(--ink); border-radius: 10px;
+  padding: 8px 12px; background: var(--card); color: var(--ink);
+  box-shadow: var(--shadow); cursor: pointer;
+}

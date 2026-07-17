@@ -45,7 +45,17 @@ def _extract_visual(old_prompt: str) -> str | None:
     for pat in _VISUAL_PATTERNS:
         m = pat.search(old_prompt)
         if m:
-            return m.group(1).strip()
+            visual = m.group(1).strip()
+            # Strip the harmonizing clause build_jimeng_prompt() appends to
+            # dialogue shots' Shot Guides (fourth-pass, 2026-07-16) — without
+            # this, every re-extraction would re-capture the clause as part
+            # of the visual and the rebuild would append it AGAIN, compounding
+            # one copy per run.
+            visual = re.sub(
+                r"\s*Throughout every beat the presenter keeps facing the "
+                r"camera, mouth visible, speaking the line\.?\s*$",
+                "", visual)
+            return visual.strip()
     return None
 
 
@@ -64,28 +74,42 @@ def update_row(row_id: str, dry_run: bool) -> tuple[int, int]:
     updated = skipped = 0
     cur_shot: str | None = None
     want_code = False
+    want_voice = False
+    dialogue = ""
     for b in ni._children(row_id):
         t, tx = b["type"], ni._txt(b)
         if t == "heading_3":
             cur_shot = tx if tx.lower().startswith("shot") else None
             want_code = False
+            want_voice = False
+            dialogue = ""
+        elif cur_shot and t == "paragraph" and "Voice script" in tx:
+            want_voice = True
+        elif cur_shot and want_voice and t == "code":
+            dialogue = tx.strip()
+            want_voice = False
         elif cur_shot and t == "paragraph" and "即梦" in tx:
             want_code = True
         elif cur_shot and want_code and t == "code":
             want_code = False
-            # Skip only if the block already carries the LATEST template
-            # (marker: the anti-subtitle guard, added 2026-07-10 evening).
-            # Earlier new-format blocks (【Character】 but no subtitle guard)
-            # get re-extracted via the 【Shot Guide】 pattern and rebuilt.
-            if "NO subtitles" in tx:
-                skipped += 1
-                continue
+            # Staleness detection is REBUILD-AND-COMPARE (switched 2026-07-16,
+            # fifth pass, from the previous "template marker phrase" scheme):
+            # re-extract the shot's visual, rebuild the prompt with the
+            # CURRENT build_jimeng_prompt(), and skip only if the result is
+            # byte-identical to what's already stored. The marker scheme had
+            # to be hand-updated on every template change and silently
+            # no-ops the whole batch when forgotten (nearly happened twice
+            # today); comparing actual output is idempotent by construction
+            # and needs zero maintenance.
             visual = _extract_visual(tx)
             if visual is None:
                 print(f"    ⚠️  {cur_shot}: unrecognized prompt format — left untouched")
                 skipped += 1
                 continue
-            new_prompt = npm.build_jimeng_prompt(cur_shot, visual, lang)
+            new_prompt = npm.build_jimeng_prompt(cur_shot, visual, lang, dialogue)
+            if new_prompt == tx:
+                skipped += 1
+                continue
             if dry_run:
                 print(f"    [dry-run] would update {cur_shot} ({len(new_prompt)} chars)")
             else:

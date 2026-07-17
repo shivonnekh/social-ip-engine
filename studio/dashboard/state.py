@@ -86,6 +86,18 @@ def _block_url(b: dict) -> str | None:
 
 # ---------- content concepts (sidebar / concepts view) ----------
 
+def list_active_ips() -> list[dict]:
+    """[{id, name}] for every ACTIVE IP in the IP Registry — powers the
+    Concepts view's "only fan out to this IP" selector (added 2026-07-15)."""
+    rows = pc._query_all(IDS["ip_db"])
+    out = []
+    for r in rows:
+        active = (r["properties"].get("Active", {}) or {}).get("checkbox", False)
+        if active:
+            out.append({"id": r["id"], "name": pc._title_of(r)})
+    return out
+
+
 def list_content_concepts() -> list[dict]:
     rows = pc._query_all(IDS["content_db"])
     out = []
@@ -189,7 +201,7 @@ def _next_action_detail(stage: str, shots: list[dict],
         return "done"
     if not shots:
         return "fan_out"
-    assets_done = all(s["image_url"] for s in shots) and all(s["audio_url"] for s in shots)
+    assets_done = all(s["image_url"] for s in shots) and all(s.get("audio_url") or s.get("is_silent") for s in shots)
     if not assets_done:
         return "generate_assets"
     if not all(s["video_url"] for s in shots):
@@ -227,7 +239,8 @@ def row_detail(row_id: str) -> dict:
         if t == "heading_3":
             want_code = None
             if low.startswith("shot"):
-                cur = {"title": tx, "image_url": None, "audio_url": None, "video_url": None}
+                cur = {"title": tx, "image_url": None, "audio_url": None,
+                       "video_url": None, "voice_text": ""}
                 shots.append(cur)
                 section = "shot"
             elif "cover photo" in low:
@@ -239,7 +252,12 @@ def row_detail(row_id: str) -> dict:
             continue
 
         if section == "shot" and cur is not None:
-            if t == "audio":
+            if t == "paragraph" and "voice script" in low:
+                want_code = "voice"
+            elif want_code == "voice" and t == "code":
+                cur["voice_text"] = tx.strip()
+                want_code = None
+            elif t == "audio":
                 cur["audio_url"] = _block_url(b)
             elif t == "toggle" and "image here" in low and b.get("has_children"):
                 pending.append(("image", cur, b["id"], "image"))
@@ -277,9 +295,17 @@ def row_detail(row_id: str) -> dict:
     prod_url = _file_url(p.get("Production Video", {}))
     info_is_placeholder = bool(info["prompt"]) and info["prompt"].strip() == npm.NO_BRIEF_PLACEHOLDER
 
+    # A shot with NO voice script text at all is INTENTIONALLY silent (a
+    # reaction/B-roll beat — e.g. "second rejection": an old man waves Jackie
+    # off, Jackie never speaks) — added 2026-07-14. That's different from "a
+    # line is written but TTS hasn't run yet" (has_voice=False, is_silent=
+    # False), which should still block and get flagged, not be silently
+    # treated as fine. notion_video.py's own generation loop makes the same
+    # distinction (submit_silent_shot / image2video path vs a hard skip).
     shots_out = [{**s,
                   "has_image": bool(s["image_url"]),
-                  "has_voice": bool(s["audio_url"])} for s in shots]
+                  "has_voice": bool(s["audio_url"]),
+                  "is_silent": not s["audio_url"] and not s["voice_text"]} for s in shots]
 
     return {
         "id": row_id,
@@ -288,7 +314,7 @@ def row_detail(row_id: str) -> dict:
         "stage": stage,
         "shots": shots_out,
         "all_shots_have_image": bool(shots_out) and all(s["has_image"] for s in shots_out),
-        "all_shots_have_voice": bool(shots_out) and all(s["has_voice"] for s in shots_out),
+        "all_shots_have_voice": bool(shots_out) and all(s["has_voice"] or s["is_silent"] for s in shots_out),
         "all_shots_have_video": bool(shots_out) and all(s["video_url"] for s in shots_out),
         "production_video_url": prod_url,
         "has_production_video": bool(prod_url),
@@ -309,3 +335,78 @@ def set_stage(row_id: str, stage_name: str) -> None:
     if stage_name not in STAGE_OPTIONS:
         raise ValueError(f"unknown stage {stage_name!r}")
     ni.ncall("PATCH", f"/pages/{row_id}", {"properties": {"Stage": {"select": {"name": stage_name}}}})
+
+
+def shot_title_by_index(row_id: str, shot_index: int) -> str | None:
+    """1-based shot index -> its exact heading_3 title text (e.g. 'Shot 2 ·
+    ~12s · The Points (demo)'). A lightweight, single-purpose walk — deliberately
+    NOT reusing row_detail() here, which also resolves every shot's media URLs
+    (several extra Notion calls) just to answer "what's shot N called"."""
+    n = 0
+    for b in ni._children(row_id):
+        if b["type"] == "heading_3":
+            tx = ni._txt(b)
+            if tx.lower().startswith("shot"):
+                n += 1
+                if n == shot_index:
+                    return tx
+    return None
+
+
+# Which paragraph label precedes the code block for each regen kind, per the
+# shot template built by notion_prompts.apply_shot_plan(). Matched by
+# substring, same convention every reader in this codebase already uses.
+_INSTRUCTION_LABEL = {
+    "image": "Image prompt",
+    "voice": "Voice script",
+    "video": "即梦",
+}
+
+
+def append_shot_instruction(row_id: str, shot_title: str, kind: str, instruction: str) -> bool:
+    """Append a human-written edit instruction onto the END of a shot's
+    existing image/voice/即梦 prompt code block, so the next regenerate call
+    (which always re-reads the prompt fresh from Notion) picks it up —
+    "把它加进原有的 prompt 里，这样它才知道要改什么" (added 2026-07-14).
+
+    Persists to Notion (not a one-off/ephemeral flag) — the instruction sticks
+    for future regenerations of this shot too, until someone edits it away in
+    Notion directly. Returns True if a target code block was found and
+    updated, False if this shot doesn't have that section yet (e.g. a shot
+    with no voice script written).
+    """
+    if kind not in _INSTRUCTION_LABEL:
+        raise ValueError(f"unknown instruction kind {kind!r}")
+    label_text = _INSTRUCTION_LABEL[kind]
+
+    in_shot, want_code, code_block = False, False, None
+    for b in ni._children(row_id):
+        t, tx = b["type"], ni._txt(b)
+        if t == "heading_3":
+            in_shot = (tx == shot_title)
+            want_code = False
+        elif in_shot and t == "paragraph" and label_text in tx:
+            want_code = True
+        elif in_shot and want_code and t == "code":
+            code_block = b
+            want_code = False
+            if kind != "video":
+                break  # image/voice: first match is the only one
+            # for "video" specifically, keep scanning — a shot could in
+            # theory have more than one 即梦-labelled paragraph; last one wins,
+            # matching how notion_video.py itself reads it
+
+    if code_block is None:
+        return False
+
+    current = ni._txt(code_block)
+    marker = "\n\n【手动补充指令 via Studio】"
+    # Idempotent-ish: if the exact same instruction was already appended
+    # (e.g. a retry), don't stack duplicate markers.
+    if marker + instruction in current:
+        return True
+    new_text = f"{current}{marker} {instruction}"
+    chunks = [{"type": "text", "text": {"content": new_text[i:i + 1900]}}
+              for i in range(0, len(new_text), 1900)]
+    ni.ncall("PATCH", f"/blocks/{code_block['id']}", {"code": {"rich_text": chunks}})
+    return True

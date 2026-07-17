@@ -138,6 +138,15 @@ def api_content():
         raise HTTPException(status_code=502, detail=_friendly_notion_error(exc)) from exc
 
 
+@app.get("/api/ips")
+def api_ips():
+    """Active IPs — powers the Concepts view's "只 fan out 这个 IP" selector."""
+    try:
+        return state.list_active_ips()
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=502, detail=_friendly_notion_error(exc)) from exc
+
+
 @app.get("/api/content/{content_id}/rows")
 def api_content_rows(content_id: str):
     try:
@@ -165,7 +174,11 @@ class ActionRequest(BaseModel):
     action: str
     content_id: str | None = None
     row_id: str | None = None
-    shot: int | None = None  # 1-based, for per-shot regenerate actions
+    shot: int | None = None  # 1-based, single-shot regenerate
+    shots: list[int] | None = None  # 1-based, BATCH regenerate — runs sequentially, one job
+    instruction: str | None = None  # single-shot: optional free-text edit note
+    instructions: dict[str, str] | None = None  # batch: {"5": "closer shot", ...} — keyed by shot number as string (JSON object keys are always strings)
+    ip: str | None = None  # generate_assets_content only — scope fan-out to ONE IP (substring match)
 
 
 _CONTENT_ACTIONS: dict[str, str] = {
@@ -180,11 +193,12 @@ _ROW_ACTIONS: dict[str, str] = {
 }
 
 # Per-shot regenerate: replace ONE bad image / voice clip / shot video without
-# touching the other shots. action -> (script, extra flags after --row/--shot).
-_SHOT_ACTIONS: dict[str, tuple[str, list[str]]] = {
-    "regen_image_shot": ("notion_image.py", ["--force"]),
-    "regen_voice_shot": ("batch_voice_gen.py", ["--force"]),
-    "regen_video_shot": ("notion_video.py", ["--regen"]),
+# touching the other shots. action -> (script, extra flags after --row/--shot,
+# instruction_kind for append_shot_instruction()).
+_SHOT_ACTIONS: dict[str, tuple[str, list[str], str]] = {
+    "regen_image_shot": ("notion_image.py", ["--force"], "image"),
+    "regen_voice_shot": ("batch_voice_gen.py", ["--force"], "voice"),
+    "regen_video_shot": ("notion_video.py", ["--regen"], "video"),
 }
 
 
@@ -193,7 +207,10 @@ def api_action(req: ActionRequest):
     if req.action in _CONTENT_ACTIONS:
         if not req.content_id:
             raise HTTPException(400, "content_id required")
-        job = jobs.start_job(req.action, [(_CONTENT_ACTIONS[req.action], ["--content-id", req.content_id])])
+        args = ["--content-id", req.content_id]
+        if req.ip and req.ip.strip():
+            args += ["--ip", req.ip.strip()]
+        job = jobs.start_job(req.action, [(_CONTENT_ACTIONS[req.action], args)])
         return {"job_id": job.id}
 
     if req.action in _ROW_ACTIONS:
@@ -203,11 +220,44 @@ def api_action(req: ActionRequest):
         return {"job_id": job.id}
 
     if req.action in _SHOT_ACTIONS:
-        if not req.row_id or not req.shot:
-            raise HTTPException(400, "row_id and shot required")
-        script, extra = _SHOT_ACTIONS[req.action]
-        job = jobs.start_job(f"{req.action} (shot {req.shot})",
-                             [(script, ["--row", req.row_id, "--shot", str(req.shot), *extra])])
+        if not req.row_id or not (req.shot or req.shots):
+            raise HTTPException(400, "row_id and shot (or shots) required")
+        script, extra, kind = _SHOT_ACTIONS[req.action]
+        shot_list = req.shots if req.shots else [req.shot]
+
+        def _apply_instruction(shot_num: int, text: str) -> None:
+            # Persist the instruction onto the shot's own prompt BEFORE
+            # regenerating, so the script (which always re-reads the prompt
+            # fresh from Notion) picks it up on this run — and it sticks for
+            # any future regen of this shot too, not just this one call.
+            shot_title = state.shot_title_by_index(req.row_id, shot_num)
+            if shot_title is None:
+                raise HTTPException(400, f"row has no shot {shot_num}")
+            if not state.append_shot_instruction(req.row_id, shot_title, kind, text):
+                raise HTTPException(400, f"shot {shot_num} has no {kind} prompt section yet")
+
+        try:
+            for n in shot_list:
+                text = (req.instructions or {}).get(str(n)) or (req.instruction if n == req.shot else None)
+                if text and text.strip():
+                    _apply_instruction(n, text.strip())
+        except HTTPException:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(502, f"couldn't write instruction to Notion: {exc}") from exc
+
+        # Batch = one job, multiple sequential steps (same chaining jobs.py
+        # already uses for finalize_video) — a single continuous log instead
+        # of making the user click, wait, click, wait for every shot. A
+        # failing step still aborts the chain (jobs.start_job's existing
+        # behavior) so a bad shot can't silently skip and leave you thinking
+        # everything succeeded.
+        steps = [(script, ["--row", req.row_id, "--shot", str(n), *extra]) for n in shot_list]
+        label = (f"{req.action} (shot {shot_list[0]})" if len(shot_list) == 1
+                 else f"{req.action} (shots {', '.join(map(str, shot_list))})")
+        if req.instruction or req.instructions:
+            label += " + 自定义指令"
+        job = jobs.start_job(label, steps)
         return {"job_id": job.id}
 
     if req.action == "collect_video":

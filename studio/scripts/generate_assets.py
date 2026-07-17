@@ -22,6 +22,7 @@ Usage:
   python3 scripts/generate_assets.py --content-id <page_id>
   python3 scripts/generate_assets.py --row <production_row_id>   # single row, skip fan-out
   python3 scripts/generate_assets.py --content "Detox" --all-ips
+  python3 scripts/generate_assets.py --content "Detox" --ip Jackie   # only this IP, skip the rest
 """
 from __future__ import annotations
 
@@ -44,6 +45,11 @@ def main() -> int:
         "--all-ips", action="store_true",
         help="Fan out to inactive IPs too (passed through to notion_fanout.py)",
     )
+    ap.add_argument(
+        "--ip", help="Only fan out (and only generate assets for) this IP — substring match, "
+                     "e.g. 'Jackie'. Existing rows for OTHER IPs under this concept are left alone "
+                     "(not touched, not regenerated) — this scopes the WHOLE step to one IP.",
+    )
     args = ap.parse_args()
 
     if args.row:
@@ -55,11 +61,32 @@ def main() -> int:
         fanout_cmd = ["python3", "notion_fanout.py", "--content-id", content_id]
         if args.all_ips:
             fanout_cmd.append("--all-ips")
+        if args.ip:
+            fanout_cmd += ["--ip", args.ip]
         pc.run_step(fanout_cmd, "fan-out")
 
         rows = pc.production_rows_for_content(content_id)
         if not rows:
             sys.exit("[error] no Production rows found for this content even after fan-out")
+
+        if args.ip:
+            # notion_fanout.py already scoped WHICH rows got CREATED to this
+            # IP — but production_rows_for_content() returns every row ever
+            # linked to this concept, including ones from a PRIOR fan-out to
+            # a different IP. Without this filter, asking for "just Jackie"
+            # would still silently re-touch an existing Chloe row too.
+            wanted = args.ip.lower()
+            filtered = []
+            for row in rows:
+                ip_rel = row["properties"].get("IP", {}).get("relation", [])
+                if not ip_rel:
+                    continue
+                ip_name = pc._title_of(nv.ncall(f"/pages/{ip_rel[0]['id']}"))
+                if wanted in ip_name.lower():
+                    filtered.append(row)
+            rows = filtered
+            if not rows:
+                sys.exit(f"[error] no Production row for IP matching '{args.ip}' under this content")
 
     print(f"[assets] {len(rows)} row(s) to process")
 

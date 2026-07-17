@@ -244,10 +244,21 @@ def _primary_beat(visual: str) -> str:
     return first or visual
 
 
-def build_prompt(persona: str, visual: str) -> str:
+def build_prompt(persona: str, visual: str, talking: bool = False) -> str:
     """One shot = ONE single frame. Setting is derived from the visual description —
     not hardcoded. Street/outdoor shots use natural light; clinic shots use clinic light.
-    People (patient, guest, bystander) appear only when the scene explicitly describes them."""
+    People (patient, guest, bystander) appear only when the scene explicitly describes them.
+
+    `talking` added 2026-07-16: when the shot has spoken dialogue, the STILL
+    that feeds 即梦's multimodal2video must be a lip-syncable talking head —
+    single person, face near-frontal to camera, eyes OPEN, mouth visible.
+    Root-caused on Phone Neck Shot 3: the shot guide was a demo beat ("neck
+    roll, eyes closed" + a second person in frame), gpt-image-2 faithfully
+    produced a two-person, eyes-closed, head-down image, and multimodal2video
+    then hung forever (both documented triggers: two faces + no frontal
+    speaking face → silent lip-sync failure). For a dialogue shot the
+    talking-head framing OVERRIDES the demo posture — the words are the point,
+    the technique is narrated, not silently performed."""
     v = visual.lower()
 
     # Derive setting from the visual — don't hardcode clinic for every shot
@@ -285,7 +296,16 @@ def build_prompt(persona: str, visual: str) -> str:
         setting,
         f"SCENE: {visual}",
     ]
-    if has_doctor:
+    if talking:
+        # A lip-syncable talking head overrides any demo posture in the beat.
+        lines.append(
+            "IMPORTANT — this is a talking-to-camera shot: exactly ONE person "
+            "in frame, alone, facing the camera near-frontally, eyes OPEN and "
+            "looking at the camera, mouth clearly visible mid-speech. Any "
+            "demonstration is shown by the single presenter facing camera "
+            "(gesturing / holding a prop), NEVER by turning away, closing the "
+            "eyes, tilting the head down, or adding a second person.")
+    if has_doctor or talking:
         lines.append(f"The main character must be the EXACT same person as the reference photo "
                      f"({persona}) — same face, hair, age, ethnicity.")
     lines.append("Include only the people explicitly described in the scene. "
@@ -296,10 +316,32 @@ def build_prompt(persona: str, visual: str) -> str:
 JIMENG_DISCLAIMER = "请注意，这些都是 AI 数字人，不是真人。没有真人也可以直接生成影片。"
 
 
-def _jimeng_camera(title: str, visual: str = "") -> str:
+def _jimeng_camera(title: str, visual: str = "", lang: str = "") -> str:
     """Camera/运镜 keyed off the shot BEAT (the title), not the visual text — so a word
-    like 'gesturing' in one shot can't leak its camera into another."""
+    like 'gesturing' in one shot can't leak its camera into another.
+
+    Language-aware as of 2026-07-16: this function used to return Chinese
+    UNCONDITIONALLY regardless of the IP's language — meaning an otherwise
+    all-English Jackie prompt still had one Chinese-language clause sitting
+    inside its 【Camera】 line. Per Seedance's own audio-guide skill, language
+    strength is uneven and Mandarin-weighted in training; a prompt that mixes
+    languages gives the model less reason to lock onto the uploaded audio's
+    actual (English) language rather than drifting to its strongest-trained
+    one. English/Cantonese-tagged IPs now get an English camera direction —
+    only genuinely Chinese-language IPs (Mandarin) keep the Chinese phrasing,
+    since 运镜 vocabulary in Chinese is native/correct for that case, not a
+    leftover default."""
     t = title.lower()
+    if lang not in ("", "普通话"):  # English, Cantonese, and every other non-Mandarin IP language
+        if "hook" in t:
+            return "Slow push-in, drawing the viewer in"
+        if "cta" in t:
+            return "Slow push-in to the face, warm and personal close"
+        if any(k in t for k in ("quick", "win", "demo", "method", "try", "remedy", "recipe")):
+            return "Medium shot, camera naturally follows the hand action, slight handheld feel"
+        if any(k in t for k in ("safety", "principle", "caution", "root")):
+            return "Stable frame, slight push-in, serious expression"
+        return "Subject centered, slow gentle push-in, natural breathing and blinking"
     if "hook" in t:
         return "缓慢推近，营造代入感"
     if "cta" in t:
@@ -349,6 +391,13 @@ _JIMENG_SAFE_SUBS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bmedical\b", re.I), "wellness"),
     (re.compile(r"\bacupuncture\b", re.I), "acupressure"),
     (re.compile(r"\bneedles?\b", re.I), "small tool"),
+    # Anatomy + acupoint vocabulary (added 2026-07-16 after Phone Neck Shot 3
+    # hung 3/3 consecutive multimodal attempts — ~9% odds if pure hang-lottery
+    # — with "base of your skull" in the quoted dialogue and "風池穴 ... at
+    # skull base" in the shot guide; same medical-content-review trigger
+    # class as the 07-10 root cause):
+    (re.compile(r"\bskull\b", re.I), "head"),
+    (re.compile(r"[一-鿿]{1,3}穴"), "acupressure point"),
     (re.compile(r"医生|老中医|中医师"), "养生讲师"),
     (re.compile(r"病人|患者"), "参与者"),
     (re.compile(r"诊所|医馆"), "养生工作室"),
@@ -368,7 +417,7 @@ def sanitize_for_jimeng(text: str) -> str:
     return text
 
 
-def build_jimeng_prompt(title: str, visual: str = "", lang: str = "") -> str:
+def build_jimeng_prompt(title: str, visual: str = "", lang: str = "", dialogue: str = "") -> str:
     """The prompt that goes INTO 即梦 (audio-native digital human).
 
     Rewritten 2026-07-10 to the structured 【Section】 format Shivonne verified
@@ -384,29 +433,121 @@ def build_jimeng_prompt(title: str, visual: str = "", lang: str = "") -> str:
          glow / no halo / no particles — heads off both the safety filter and
          即梦's fantasy-VFX drift.
       4. Short declarative sentences; uploads referenced plainly ("the
-         uploaded reference image / audio") instead of {{图片}}/{{对白}} tokens."""
+         uploaded reference image / audio") instead of {{图片}}/{{对白}} tokens.
+
+    【Speech】 + 【Camera】 rewritten 2026-07-16 after Shivonne reported videos
+    for English-configured shots kept coming back with Chinese script/voice.
+    Root-caused via the seedance-20 skill's audio-guide.md (field-observed
+    community testing, not guesswork): an uploaded audio reference is NOT
+    automatically treated as "these are the exact words, in this exact
+    language" — surfaces default to treating it as a rhythm/mood reference
+    unless the prompt explicitly assigns it the stronger role, and the
+    underlying model is Mandarin-weighted by training, so an under-specified
+    audio role lets it drift toward synthesizing its own (Mandarin) speech
+    instead of strictly lip-syncing the uploaded track. Compounding factor
+    found in THIS codebase: _jimeng_camera() returned Chinese unconditionally
+    regardless of IP language, so an English shot's prompt was English text
+    with one Chinese clause sitting in the middle of it — a mixed-language
+    prompt gives the model less signal to lock onto English. Fix: (a)
+    _jimeng_camera() is now language-aware (English camera direction for
+    non-Mandarin IPs), (b) 【Speech】 assigns the uploaded audio the "exact
+    spoken words" role.
+
+    【Speech】 rewritten AGAIN same day (second pass) after the first version
+    made things categorically worse — EVERY shot stopped using the uploaded
+    voice at all, not just the wrong-language subset. Root cause: the first
+    version leaned on negation to lock the role ("Do NOT synthesize new
+    speech. Do NOT invent dialogue. Do NOT translate or switch language."),
+    plus stated the locked language twice. Per model-mechanics.md's mechanism
+    #3 ("there is no NOT" — text conditioning moves probability TOWARD every
+    concept it names; negation is weak grammar wrapped around a strong
+    activation, so telling the model "do not synthesize new speech" still
+    primes it toward synthesizing new speech) and mechanism #1 (attention is
+    a finite budget; short dense prompts beat long repetitive ones). The
+    ORIGINAL 07-10 template — which Shivonne confirmed worked — used exactly
+    ONE short positive sentence for the read-aloud instruction and no
+    negation at all. That pattern is restored here: state the audio's role
+    positively (it IS the dialogue, lip-sync to it) instead of listing what
+    it must not become.
+
+    `dialogue` param added same day (third pass) after Shivonne reported the
+    positive-only rewrite STILL wasn't strictly following the uploaded voice.
+    Real gap found: this function never had a way to receive the shot's
+    actual voice-script text in the first place — 【Speech】 only ever
+    gestured at "the uploaded audio" in the abstract, never quoted the words
+    being said. Per seedance-troubleshoot's diagnostic tree, "Lip-sync poor"
+    lists "unassigned speaker" as a documented cause, and audio-guide.md's
+    Dialogue section says explicitly: "Put spoken dialogue in quotes. Assign
+    the speaker by tag." — i.e. the model wants the literal line as text,
+    not just an audio waveform to imitate. When `dialogue` is supplied,
+    【Speech】 now quotes it with an assigned speaker tag; the audio
+    reference is framed as "how it sounds", the quoted text as "what is
+    said" — the two channels reinforcing each other instead of the video
+    channel having zero textual signal about the actual words."""
     visual_clean = sanitize_for_jimeng(visual or "")
     lang_en = _LANG_EN.get(lang, lang)
-    speech_lang = f" Speak {lang_en} dialogue." if lang_en else ""
-    shot_guide = f"【Shot Guide】{visual_clean}\n" if visual_clean else ""
-    return (
-        "音频驱动（Audio Native）数字人视频。\n"
-        f"{shot_guide}"
+    # The quoted dialogue must pass content review too — quoting the RAW voice
+    # script leaked unsanitized medical vocabulary straight into the prompt
+    # (found 2026-07-16: "base of your skull" in a quoted line → 3/3 hangs).
+    # The audio still carries the true verbatim words; the quote is the text
+    # hint, so a safety-substituted word in it costs almost nothing.
+    dialogue = sanitize_for_jimeng((dialogue or "").strip())
+    lang_word = f" in {lang_en}" if lang_en else ""
+    # Dialogue shots: 【Speech】 comes FIRST (right after the header) and the
+    # Shot Guide gets a harmonizing clause. Added 2026-07-16 (fourth pass)
+    # after a verified-correct-voice generation still played the audio as
+    # VOICEOVER — mouth not moving — because the Shot Guide directed the
+    # presenter to tilt her head down at a phone + cut to an insert, actions
+    # that hide the face and physically preclude lip-sync. Per the seedance
+    # skill: mechanism #1 (earlier clauses win more conditioning influence —
+    # so speaking-to-camera must outrank the action beats) and audio-guide's
+    # lip-sync rules ("use stable framing for lip-sync; avoid head turns,
+    # large face movement... while mouth accuracy matters"). The harmonizing
+    # clause resolves the guide-vs-lip-sync conflict positively (what IS:
+    # face stays toward camera while speaking) instead of deleting the
+    # creative beats.
+    if dialogue:
+        speech = (
+            "The presenter speaks directly to camera for the entire clip — face "
+            "frontal, mouth clearly visible, lips moving in precise sync with the "
+            f'uploaded audio from the first word to the last. The exact line: "{dialogue}" '
+            f"— this is the uploaded audio, spoken{lang_word}. Comfortable pace, "
+            "occasional natural blinking and breathing."
+        )
+        guide_body = (
+            f"{visual_clean.rstrip('。.; ')}. Throughout every beat the presenter "
+            "keeps facing the camera, mouth visible, speaking the line."
+        ) if visual_clean else ""
+    else:
+        speech = (
+            f"Lip-sync to the uploaded audio reference — it is the dialogue"
+            f"{lang_word}, lips moving in precise sync with the uploaded audio from "
+            "the first word to the last. Comfortable pace, occasional natural "
+            "blinking and breathing."
+        )
+        guide_body = visual_clean
+    shot_guide = f"【Shot Guide】{guide_body}\n" if guide_body else ""
+    speech_sec = f"【Speech】{speech}\n"
+    character_sec = (
         "【Character】AI virtual presenter. Use the uploaded reference image as the "
         "appearance reference. Keep the same hairstyle, clothing, facial features, "
         "age and expression. Consistent identity throughout the video.\n"
-        f"【Speech】Lip-sync naturally to the uploaded audio.{speech_lang} "
-        "Natural mouth movement. Comfortable speaking pace. "
-        "Occasional natural blinking and breathing.\n"
+    )
+    # Speaking shots: Speech outranks the Shot Guide. Silent shots: original order.
+    body = (speech_sec + shot_guide + character_sec) if dialogue else (shot_guide + character_sec + speech_sec)
+    return (
+        "音频驱动（Audio Native）数字人视频。\n"
+        f"{body}"
         "【Style】Educational wellness presentation. Calm. Friendly. Professional. "
         "Natural. No dramatic acting. No exaggerated gestures.\n"
-        f"【Camera】{_jimeng_camera(title, visual)}。Maintain 9:16 vertical composition. "
+        f"【Camera】{_jimeng_camera(title, visual, lang)}。Maintain 9:16 vertical composition. "
         "Warm soft natural lighting.\n"
         "【Important】This is an AI-generated virtual presenter for educational "
         "purposes. No patient. No treatment. No doctor. No diagnosis. No medical "
         "advice. No medical procedures. No surgery. No injections. No blood. "
         "NO glow. NO halo. NO light effects. NO magical particles. "
-        "NO subtitles. NO captions. NO on-screen text of any kind. NO lyrics text. "
+        "Textless plate: NO subtitles. NO captions. NO burned-in text of any kind, "
+        "in any language. No lyrics text. "
         "画面中绝对不要出现任何字幕、文字、标题 — 字幕由后期另行添加。No watermark.\n"
         f"{JIMENG_DISCLAIMER}"
     )
@@ -440,23 +581,79 @@ def fetch_infographic_brief(concept_id: str) -> str:
     return ""
 
 
+# Actual emoji Unicode blocks only — NOT a blanket non-ASCII strip, since
+# Chloe's titles are Cantonese/CJK and must survive. Image-generation models
+# reliably render emoji as garbled glyphs/tofu boxes when told to render
+# literal text containing them (same failure mode fixed for the PIL cover
+# overlay on 2026-07-14 — this is the AI-native-text equivalent).
+_EMOJI_RE = re.compile(
+    "[" "\U0001F300-\U0001FAFF" "\U00002600-\U000027BF" "\U0001F1E6-\U0001F1FF"
+    "\U00002190-\U000021FF" "\U00002B00-\U00002BFF" "\U0000FE0F" "]+"
+)
+
+
+def _strip_emoji(text: str) -> str:
+    return _EMOJI_RE.sub("", text).strip()
+
+
 def build_cover_prompt(persona: str, title: str, hook_visual: str = "") -> str:
-    """Cover/thumbnail prompt for the row — scroll-stopping single frame with
-    clean space reserved for a bold title overlay (text added in editing)."""
+    """Cover/thumbnail prompt — viral YouTube-thumbnail style with the title
+    baked directly into the image by gpt-image-2.
+
+    Rewritten 2026-07-16 after Shivonne flagged that recent covers ("plain
+    text + IP photo") looked much worse than the early hand-crafted ones
+    (Tonsil Stone, Detox Juice, Constant Anxiety — all published, all still
+    live in Notion). Root cause found by pulling those actual images: they
+    were never generated by this function — build_cover_prompt() didn't
+    exist yet when they were made (git-blamed to a single commit, no prior
+    history), and their Content Library pages have no cover prompt of any
+    kind. They were bespoke, one-off prompts typed directly into an image
+    tool, never captured in code. This version reverse-engineers their
+    consistent visual template from the actual published images (all 3
+    independently confirm the same pattern) instead of guessing:
+      - Bold condensed "Impact"-style font, ALL text inside a black
+        rough/marker-edged highlight box
+      - 1-3 punchy words picked out in bright yellow, the rest in white
+      - A small yellow "attention burst" accent mark near the headline
+      - Subject with an exaggerated reaction (shocked/intrigued), gesturing,
+        positioned below/beside the text block, holding a topic-relevant prop
+      - Warm, detailed TCM clinic background (herb jars, wooden cabinets,
+        calligraphy signage) — never a plain/empty backdrop
+    The previous version explicitly said "No on-screen text" (correct for
+    SHOT prompts, where small dialogue captions render as garbled — wrong
+    here: short, huge, high-contrast headline text is exactly what
+    gpt-image-2 handles well, as the reference examples prove). Because the
+    title is now baked in by the model, generate_cover.py no longer runs its
+    PIL text-overlay pass on top — that would double the text.
+    """
+    title = _strip_emoji(title)
     topic_hint = f" Include one clear visual element from the hook scene: {hook_visual}" if hook_visual else ""
     return (
         "One single photorealistic vertical 9:16 COVER IMAGE for a short-video "
-        "thumbnail — a single moment. No split screen, no collage, no panels.\n"
+        "thumbnail — viral YouTube-thumbnail style. A single moment, no split "
+        "screen, no collage, no panels.\n"
         f"The main character must be the EXACT same person as the reference photo "
         f"({persona}) — same face, hair, age, ethnicity.\n"
-        "Expression: exaggerated, scroll-stopping (shocked / concerned / intrigued), "
-        "direct eye contact with the camera, face near-frontal.\n"
-        "Composition: subject fills the lower two-thirds of the frame; clean "
-        "high-contrast background; keep the top third uncluttered for a bold title "
-        "text overlay added later.\n"
-        f"TOPIC: {title}.{topic_hint}\n"
-        "Punchy color grading, crisp lighting, readable at thumbnail size. "
-        "No on-screen text, no watermark."
+        "TEXT (render this directly in the image, large and bold):\n"
+        f'"{title}"\n'
+        "Typography: bold condensed sans-serif ('Impact'/poster style), all-caps "
+        "energy, set inside a black rough-edged marker/brush-stroke highlight box "
+        "that hugs the text tightly. Pick out the 1-3 most attention-grabbing words "
+        "(the pain point, the surprising fact, or the question word) in bright "
+        "saturated YELLOW — every other word in WHITE. Add one small yellow "
+        "spark/burst accent mark near a top corner of the text block, like a "
+        "hand-drawn '!' emphasis mark. Text block sits in the upper portion of the "
+        "frame, sized to be readable at thumbnail scale on a phone screen.\n"
+        "Subject: positioned below or beside the text block, expression exaggerated "
+        "and scroll-stopping (shocked / concerned / intrigued), direct eye contact "
+        "with the camera, one hand gesturing or pointing, the other holding a "
+        f"prop directly relevant to the topic.{topic_hint}\n"
+        "Background: warm, detailed, in-focus traditional Chinese medicine clinic — "
+        "wooden herb cabinets, glass jars of herbs, calligraphy signage plaque — "
+        "never a plain or empty backdrop.\n"
+        f"TOPIC: {title}.\n"
+        "Punchy color grading, crisp lighting, high contrast, professional "
+        "thumbnail-designer composition. No watermark."
     )
 
 
@@ -672,6 +869,10 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
     for i, s in enumerate(shots):
         voice_line = (script_lines[i] if i < len(script_lines)
                       else (s["line"] or "<add to the Script property: one line per shot>"))
+        # Guard: never feed the placeholder text itself to build_jimeng_prompt as
+        # spoken dialogue — that would literally quote "<add to the Script...>"
+        # as the presenter's line.
+        dialogue_for_jimeng = "" if voice_line.startswith("<add to") else voice_line
         blocks.append({"object": "block", "type": "heading_3",
                        "heading_3": {"rich_text": _rt(s["title"])}})
         blocks.append(_bold("🖼️ Image prompt (single frame → GPT)"))
@@ -682,7 +883,7 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
             "rich_text": _rt(voice_line), "language": "plain text"}})
         blocks.append(_bold("🎬 即梦 prompt (rich shot guide → video)"))
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(build_jimeng_prompt(s["title"], s["visual"], lang)),
+            "rich_text": _rt(build_jimeng_prompt(s["title"], s["visual"], lang, dialogue_for_jimeng)),
             "language": "plain text"}})
         blocks.append(_empty_toggle("🖼️ Image here"))   # leave blank — drop assets in later
         blocks.append(_empty_toggle("🎬 Video here"))   # leave blank — drop assets in later
@@ -723,7 +924,7 @@ def add_jimeng_prompts(row_id: str) -> str:
                  "annotations": {"bold": True, "italic": False, "strikethrough": False,
                                  "underline": False, "code": False, "color": "default"}}]}},
             {"object": "block", "type": "code", "code": {
-                "rich_text": _rt(build_jimeng_prompt(title)), "language": "plain text"}},
+                "rich_text": _rt(build_jimeng_prompt(title, dialogue=dialogue)), "language": "plain text"}},
         ]})
         time.sleep(0.25)
     return f"added {len(targets)} 即梦 prompts"
@@ -755,7 +956,7 @@ def refresh_jimeng(row_id: str) -> str:
     for s in shots:
         if s["jid"]:
             call("PATCH", f"/blocks/{s['jid']}", {"code": {
-                "rich_text": _rt(build_jimeng_prompt(s["title"], s["scene"], lang)),
+                "rich_text": _rt(build_jimeng_prompt(s["title"], s["scene"], lang, s["dialogue"])),
                 "language": "plain text"}})
             n += 1; time.sleep(0.25)
     return f"refreshed {n} 即梦 prompts"

@@ -1,7 +1,14 @@
 /* AI-IP Studio dashboard — workbench-first UI.
    Home = rows grouped by "what do I do next"; detail = inline media review
    (shot images / audio / videos / cover / infographic) so review never
-   requires opening Notion. */
+   requires opening Notion.
+
+   Restored 2026-07-14 after a server-side git incident silently reverted
+   this file to an early-session state (see src/git_publish.py fix + decisions
+   log) — rebuilt against the CURRENT backend contract (dashboard/app.py,
+   dashboard/state.py): no Raw Video property, one-click finalize_video,
+   per-shot regenerate with an optional free-text instruction appended into
+   the shot's own Notion prompt before regenerating. */
 
 let selectedContentId = null;
 let selectedRowId = null;
@@ -36,10 +43,10 @@ const STAGE_CLASS = {
 // each group carries its own accent colour (--g) used by cards + headers
 const GROUPS = [
   ["publish", "🚀 待发布 — 最后确认一下就能发", "#ff5d3b"],
-  ["add_captions", "📝 待加字幕", "#f59e0b"],
   ["make_cover", "🖼️ 封面 / Infographic 阶段", "#ff5da2"],
-  ["review_video", "🎬 视频待 Review", "#7c5cff"],
-  ["review_assets", "🎨 图 + 声待 Review", "#00a98f"],
+  ["review_video", "🎬 成片待 Review → Ready", "#7c5cff"],
+  ["finalize", "🧵 待一键成片（合并+字幕+上传）", "#f59e0b"],
+  ["review_assets", "🎨 素材待 Review / 待生成视频", "#00a98f"],
   ["generate_assets", "⚙️ 待生成素材", "#3f7bff"],
   ["fan_out", "💡 还没开始", "#b5aa93"],
 ];
@@ -47,11 +54,10 @@ const GROUPS = [
 const BANNERS = {
   fan_out:         { icon: "💡", cls: "warn", text: "这一行还没有 shots", sub: "去 Concepts 页对这个 concept 跑 fan-out", btn: null },
   generate_assets: { icon: "⚙️", cls: "",     text: "下一步：生成 image + voice", sub: "一个 command 跑完所有 shot", btn: "btn-assets" },
-  review_assets:   { icon: "🎨", cls: "",     text: "Review 下面的图和声音", sub: "满意就点「生成视频」；不满意去 Notion 改 prompt 后重新生成", btn: "btn-video" },
-  merge_video:     { icon: "🧵", cls: "",     text: "Shot 视频都齐了 — 只差合并", sub: "从 Notion 拉回所有 shot 视频 → 合并 → 去水印 → 上传 Raw Video（不花即梦额度）", btn: "btn-merge" },
-  review_video:    { icon: "🎬", cls: "",     text: "Review raw video", sub: "满意就点「Ready to Publish」— 会自动布好 DM 关键词规则", btn: "btn-ready" },
+  review_assets:   { icon: "🎨", cls: "",     text: "Review 下面的图和声音", sub: "满意就点「生成视频」；单个不满意用卡片下面的 ↻ 按钮单独重来", btn: "btn-video" },
+  finalize:        { icon: "🧵", cls: "",     text: "Shot 视频都齐了 — 一键成片", sub: "合并 → 加字幕 → 上传 Production Video，一个任务跑完（不花即梦额度）", btn: "btn-finalize" },
+  review_video:    { icon: "🎬", cls: "",     text: "Review 带字幕的成片", sub: "满意就点「Ready to Publish」— 会自动布好 DM 关键词规则", btn: "btn-ready" },
   make_cover:      { icon: "🖼️", cls: "",     text: "生成并 review 封面 + infographic", sub: "生成结果会直接显示在下面", btn: "btn-cover" },
-  add_captions:    { icon: "📝", cls: "",     text: "封面 OK — 加字幕", sub: "字幕视频会自动上传到 Production Video 属性", btn: "btn-captions" },
   publish:         { icon: "🚀", cls: "warn", text: "全部就绪 — 最后看一遍成片再发布", sub: "发布不可逆：真的会发到 Instagram / Facebook", btn: "btn-publish" },
   done:            { icon: "✅", cls: "ok",   text: "已发布", sub: "这行不需要再做什么", btn: null },
 };
@@ -79,14 +85,33 @@ document.getElementById("btn-refresh").onclick = (e) => {
   if (!document.getElementById("view-queue").hidden) loadQueue();
   else { loadContentList(); if (selectedContentId) loadRows(selectedContentId); }
   if (!document.getElementById("detail").hidden) refreshDetail();
+  loadCredit();
 };
+
+// ---------- 即梦 credit chip ----------
+// Advisory only — a video shot costs credits; running out mid-batch turns
+// the job red with a "check credits" hint in the log, but this chip lets you
+// see it coming before you spend anything.
+const CREDIT_LOW_THRESHOLD = 20;
+async function loadCredit() {
+  try {
+    const c = await api("/api/credit");
+    const chip = document.getElementById("credit-chip");
+    if (!chip) return;
+    if (c.total_credit == null) { chip.hidden = true; return; }
+    chip.hidden = false;
+    chip.textContent = `⚡ 即梦 ${c.total_credit}`;
+    chip.classList.toggle("low", c.total_credit < CREDIT_LOW_THRESHOLD);
+    chip.title = `即梦剩余额度 ${c.total_credit}（${c.vip_level || "?"}）— 低于 ${CREDIT_LOW_THRESHOLD} 会变红`;
+  } catch { /* advisory only */ }
+}
 
 // ---------- shared row card ----------
 
 function rowCardHTML(r, i = 0) {
   const steps = [
     ["📜", r.has_script], ["🎨", r.has_image], ["🎙️", r.has_voice],
-    ["🎬", r.has_raw_video], ["📝", r.has_production_video],
+    ["📝", r.has_production_video],
   ].map(([ic, on]) => `<span class="${on ? "step-on" : "step-off"}" title="${on ? "已完成" : "未完成"}">${ic}</span>`).join("");
   return `
     <div class="row-card" data-row="${r.id}" style="--i:${i}">
@@ -112,8 +137,8 @@ let lastQueueRaw = "";
 
 function markSynced() {
   const t = new Date();
-  document.getElementById("last-sync").textContent =
-    "同步于 " + String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
+  const el = document.getElementById("last-sync");
+  if (el) el.textContent = "同步于 " + String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
 }
 
 async function loadQueue() {
@@ -186,10 +211,29 @@ async function loadRows(contentId) {
   bindRowCards(panel);
 }
 
+// IP selector — "只 fan out Jackie 的，不要 fan out Chloe 的" (2026-07-15).
+// Loaded once at boot; the <select> stays populated across concept switches.
+async function loadIpOptions() {
+  try {
+    const ips = await api("/api/ips");
+    const sel = document.getElementById("fanout-ip-select");
+    for (const ip of ips) {
+      const opt = document.createElement("option");
+      opt.value = ip.name;
+      opt.textContent = ip.name;
+      sel.appendChild(opt);
+    }
+  } catch { /* selector just stays at "所有 active IP" if this fails */ }
+}
+loadIpOptions();
+
 document.getElementById("btn-fanout").onclick = () => {
   if (!selectedContentId) return;
-  startJob("fan-out + 生成素材", { action: "generate_assets_content", content_id: selectedContentId },
-    () => loadRows(selectedContentId));
+  const ip = document.getElementById("fanout-ip-select").value;
+  const label = ip ? `fan-out + 生成素材 — 只 ${ip}` : "fan-out + 生成素材（所有 active IP）";
+  const body = { action: "generate_assets_content", content_id: selectedContentId };
+  if (ip) body.ip = ip;
+  startJob(label, body, () => loadRows(selectedContentId));
 };
 
 // ---------- detail ----------
@@ -239,14 +283,31 @@ function renderDetail(d) {
 
   const shotsHTML = d.shots.length ? d.shots.map((s, i) => `
     <div class="shot-card" style="--i:${i}">
-      <div class="sc-title">${esc(s.title)}</div>
+      <label class="sc-select">
+        <input type="checkbox" class="shot-check" data-shot="${i + 1}">
+        <span class="sc-title">${esc(s.title)}</span>
+      </label>
       <div class="media-frame">${mediaImg(s.image_url, s.title)}</div>
       ${s.audio_url
         ? `<audio controls preload="none" src="${esc(s.audio_url)}"></audio>`
-        : '<span class="missing">🎙️ 还没有 voice</span>'}
+        : s.is_silent
+          ? '<span class="missing">🔇 静音 shot（无台词，正常）</span>'
+          : '<span class="missing">🎙️ 还没有 voice</span>'}
       ${s.video_url
         ? `<div class="media-frame"><video controls preload="none" src="${esc(s.video_url)}"></video></div>`
         : ""}
+      <div class="instruction-row">
+        <input type="text" class="instruction-input" data-shot="${i + 1}"
+          placeholder="改动说明（可选，如「表情更自然」）— 会写进这个 shot 的 prompt">
+      </div>
+      <div class="shot-tools">
+        <button class="btn mini regen" data-act="regen_image_shot" data-shot="${i + 1}"
+          title="重新生成这个 shot 的图片（会替换旧图；上面填了说明会一并加进 prompt）">↻ 图</button>
+        <button class="btn mini regen" data-act="regen_voice_shot" data-shot="${i + 1}"
+          title="重新生成这个 shot 的配音（会替换旧配音；上面填了说明会一并加进 prompt）">↻ 声</button>
+        <button class="btn mini regen" data-act="regen_video_shot" data-shot="${i + 1}"
+          ${s.image_url && (s.audio_url || s.is_silent) ? "" : "disabled"} title="重新生成这个 shot 的视频（即梦，花额度；新视频自动生效；上面填了说明会一并加进 prompt）">↻ 视频</button>
+      </div>
     </div>`).join("")
     : '<p class="hint">还没有 shot — 先 fan-out。</p>';
 
@@ -271,29 +332,31 @@ function renderDetail(d) {
       <h3>🎨 素材（${d.shots.length} shots）
         <span class="sec-actions"><button class="btn" id="btn-assets">▶ 生成 image + voice</button></span>
       </h3>
+      <div class="batch-bar" id="batch-bar">
+        <span id="batch-count" class="batch-count">已选 0 个</span>
+        <button class="btn mini" id="batch-image" disabled>↻ 批量重生成图片</button>
+        <button class="btn mini" id="batch-voice" disabled>↻ 批量重生成配音</button>
+        <button class="btn mini" id="batch-video" disabled>↻ 批量重生成视频</button>
+        <button class="btn mini" id="batch-clear">清空选择</button>
+        <span class="hint" style="font-size:11px;">勾选多个 shot 后一次性排队执行；有填改动说明的会一起带上</span>
+      </div>
       <div class="shot-grid">${shotsHTML}</div>
     </div>
 
     <div class="section">
       <h3>🎬 成片
         <span class="sec-actions">
-          <button class="btn" id="btn-video">▶ 生成视频（含自动合并）</button>
-          <button class="btn" id="btn-merge">🧵 仅合并（不花即梦额度）</button>
-          <button class="btn" id="btn-captions">▶ 加字幕 + 上传</button>
+          <button class="btn" id="btn-video">▶ 生成 shot 视频（即梦）</button>
+          <button class="btn" id="btn-collect" title="把之前已提交、但当时没等到的即梦任务收割回来（不新提交、不花额度）">📥 收割已提交</button>
+          <button class="btn" id="btn-finalize">🧵 一键成片（合并 + 字幕 + 上传）</button>
         </span>
       </h3>
       <div class="video-row">
         <div class="video-col">
-          <div class="v-label">Raw video（合并后）</div>
-          <div class="media-frame">${d.raw_video_url
-            ? `<video controls preload="metadata" src="${esc(d.raw_video_url)}"></video>`
-            : '<span class="missing">还没生成</span>'}</div>
-        </div>
-        <div class="video-col">
           <div class="v-label">Production video（带字幕 = 会发布的版本）</div>
           <div class="media-frame">${d.production_video_url
             ? `<video controls preload="metadata" src="${esc(d.production_video_url)}"></video>`
-            : '<span class="missing">还没字幕</span>'}</div>
+            : '<span class="missing">还没成片 — shot 视频齐了就点「一键成片」</span>'}</div>
         </div>
       </div>
     </div>
@@ -321,10 +384,10 @@ function renderDetail(d) {
       <h3>🚀 发布</h3>
       <ul class="checklist">
         ${check(d.all_shots_have_image && d.all_shots_have_voice, "所有 shot 有 image + voice")}
-        ${check(d.has_raw_video, "Raw video 已合并")}
+        ${check(d.all_shots_have_video, "所有 shot 已生成视频")}
+        ${check(d.has_production_video, "成片（字幕版 Production Video）已上传")}
         ${check(d.has_cover_image, "Cover 已生成")}
         ${check(d.has_infographic_image, "Infographic 已生成")}
-        ${check(d.has_production_video, "字幕版 Production Video 已上传")}
         ${check(d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published", "Stage = Ready（DM 关键词已布）")}
       </ul>
       <div class="publish-actions">
@@ -337,29 +400,96 @@ function renderDetail(d) {
   document.getElementById("btn-back").onclick = closeDetail;
   const assetsBtn = document.getElementById("btn-assets");
   const videoBtn = document.getElementById("btn-video");
-  const mergeBtn = document.getElementById("btn-merge");
+  const collectBtn = document.getElementById("btn-collect");
+  const finBtn = document.getElementById("btn-finalize");
   const coverBtn = document.getElementById("btn-cover");
   const infoBtn = document.getElementById("btn-info");
-  const capBtn = document.getElementById("btn-captions");
   const readyBtn = document.getElementById("btn-ready");
   const pubBtn = document.getElementById("btn-publish");
 
   assetsBtn.onclick = () => startJob("生成 image + voice", { action: "generate_assets_row", row_id: d.id }, refreshDetail);
-  videoBtn.onclick = () => startJob("生成视频", { action: "generate_video", row_id: d.id }, refreshDetail);
-  mergeBtn.onclick = () => startJob("合并 shot 视频", { action: "merge_video", row_id: d.id }, refreshDetail);
+  videoBtn.onclick = () => startJob("生成 shot 视频", { action: "generate_video", row_id: d.id }, refreshDetail);
+  collectBtn.onclick = () => startJob("收割已提交的视频", { action: "collect_video", row_id: d.id }, refreshDetail);
+  finBtn.onclick = () => startJob("一键成片（合并+字幕+上传）", { action: "finalize_video", row_id: d.id }, refreshDetail);
   coverBtn.onclick = () => startJob("生成 cover", { action: "generate_cover", row_id: d.id }, refreshDetail);
   infoBtn.onclick = () => startJob("生成 infographic", { action: "generate_infographic", row_id: d.id }, refreshDetail);
-  capBtn.onclick = () => startJob("加字幕 + 上传", { action: "add_captions", row_id: d.id }, refreshDetail);
 
   assetsBtn.disabled = jobRunning || !d.shots.length;
   videoBtn.disabled = jobRunning || !(d.all_shots_have_image && d.all_shots_have_voice);
-  mergeBtn.disabled = jobRunning || !d.shots.length || !d.shots.every(s => s.video_url);
+  collectBtn.disabled = jobRunning;
+  finBtn.disabled = jobRunning || !d.all_shots_have_video;
   coverBtn.disabled = jobRunning || !d.has_cover_prompt;
   infoBtn.disabled = jobRunning || !d.has_infographic_prompt;
-  capBtn.disabled = jobRunning || !d.has_raw_video;
-  readyBtn.disabled = !d.has_raw_video || d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published";
+  readyBtn.disabled = !d.has_production_video || d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published";
   pubBtn.disabled = d.stage === "✅ Published"
     || !(d.has_cover_image && d.has_infographic_image && d.has_production_video);
+
+  // per-shot regenerate buttons — each reads its own instruction input
+  const REGEN_LABELS = {
+    regen_image_shot: "重生成图片",
+    regen_voice_shot: "重生成配音",
+    regen_video_shot: "重生成视频（即梦）",
+  };
+  detailEl.querySelectorAll(".shot-tools .regen").forEach(btn => {
+    if (jobRunning) btn.disabled = true;
+    btn.onclick = () => {
+      const shotNum = Number(btn.dataset.shot);
+      const input = detailEl.querySelector(`.instruction-input[data-shot="${shotNum}"]`);
+      const instruction = input ? input.value.trim() : "";
+      const label = instruction
+        ? `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}（+指令）`
+        : `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}`;
+      const body = { action: btn.dataset.act, row_id: d.id, shot: shotNum };
+      if (instruction) body.instruction = instruction;
+      startJob(label, body, refreshDetail);
+    };
+  });
+
+  // ---- multi-select + batch regenerate ----
+  // Solves "I click one shot's ↻ and every other button greys out until it
+  // finishes" — check several shots, then run them as ONE sequential job
+  // (jobs.py already chains multi-step jobs for finalize_video; reused here)
+  // instead of clicking → waiting → clicking → waiting for every shot.
+  const batchBar = document.getElementById("batch-bar");
+  const batchCount = document.getElementById("batch-count");
+  const batchButtons = {
+    regen_image_shot: document.getElementById("batch-image"),
+    regen_voice_shot: document.getElementById("batch-voice"),
+    regen_video_shot: document.getElementById("batch-video"),
+  };
+  const clearBtn = document.getElementById("batch-clear");
+
+  function selectedShots() {
+    return [...detailEl.querySelectorAll(".shot-check:checked")].map(cb => Number(cb.dataset.shot));
+  }
+  function refreshBatchBar() {
+    const n = selectedShots().length;
+    batchCount.textContent = `已选 ${n} 个`;
+    for (const btn of Object.values(batchButtons)) btn.disabled = jobRunning || n === 0;
+    clearBtn.disabled = n === 0;
+  }
+  detailEl.querySelectorAll(".shot-check").forEach(cb => { cb.onchange = refreshBatchBar; });
+  clearBtn.onclick = () => {
+    detailEl.querySelectorAll(".shot-check").forEach(cb => { cb.checked = false; });
+    refreshBatchBar();
+  };
+  for (const [action, btn] of Object.entries(batchButtons)) {
+    btn.onclick = () => {
+      const shots = selectedShots();
+      if (!shots.length) return;
+      const instructions = {};
+      for (const n of shots) {
+        const input = detailEl.querySelector(`.instruction-input[data-shot="${n}"]`);
+        const v = input ? input.value.trim() : "";
+        if (v) instructions[String(n)] = v;
+      }
+      const label = `${REGEN_LABELS[action]} — Shots ${shots.join(", ")}`;
+      const body = { action, row_id: d.id, shots };
+      if (Object.keys(instructions).length) body.instructions = instructions;
+      startJob(label, body, refreshDetail);
+    };
+  }
+  refreshBatchBar();
 
   readyBtn.onclick = async () => {
     readyBtn.disabled = true;
@@ -415,7 +545,7 @@ const logOut = document.getElementById("log-output");
 const logDot = document.getElementById("log-dot");
 
 document.getElementById("log-head").onclick = (e) => {
-  if (e.target.closest("audio,video")) return;
+  if (e.target.closest("audio,video,input")) return;
   drawer.classList.toggle("collapsed");
   document.getElementById("log-toggle").textContent = drawer.classList.contains("collapsed") ? "▴" : "▾";
 };
@@ -459,6 +589,7 @@ function streamJob(jobId, label, onDone) {
     if (onDone) onDone();
     if (lastDetail) refreshDetail();
     loadQueue();
+    loadCredit();
   });
   es.onerror = () => {
     document.getElementById("log-status").textContent = "connection closed";
@@ -471,6 +602,7 @@ function streamJob(jobId, label, onDone) {
 // ---------- boot ----------
 
 loadQueue();
+loadCredit();
 
 // Auto-sync: pull the queue from Notion every 60s so new content / stage
 // changes appear on their own. Skipped when the browser tab is hidden.
@@ -479,6 +611,7 @@ loadQueue();
 setInterval(() => {
   if (document.hidden) return;
   loadQueue();
+  loadCredit();
 }, 60_000);
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) loadQueue(); // instant catch-up when you come back
