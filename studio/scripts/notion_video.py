@@ -588,6 +588,7 @@ def poll_download(submit_id, out, timeout=_POLL_TIMEOUT_S, interval=20):
 # Standard, explicit output frame rate for every merged final.mp4 — see concat()
 # docstring for why this can't just be "whatever the shots already say".
 _MERGE_FPS = 30
+_MERGE_W, _MERGE_H = 720, 1280  # 9:16 — every shot is normalized to this before concat
 
 
 def concat(mp4s, out):
@@ -614,8 +615,24 @@ def concat(mp4s, out):
     filter_parts: list[str] = []
     for i, p in enumerate(mp4s):
         inputs += ["-i", p]
+        # Normalize RESOLUTION too, not just fps: 即梦 does NOT always render at
+        # the 9:16 720x1280 you asked for — a shot can come back at e.g.
+        # 832x1120 (found 2026-07-18 on Phone Neck Shot 3, regenerated on the
+        # 新号 account). The concat filter REQUIRES every input to share
+        # dimensions; a single mismatched shot makes the whole filtergraph
+        # error out and ffmpeg writes a 0-byte final.mp4 — while the old code
+        # (no return-code check) still printed "🎬 merged" and returned success.
+        # scale-to-cover + center-crop fills the target frame with no
+        # letterbox, matching _maybe_compress_video()'s convention.
+        # setsar=1 is REQUIRED, not cosmetic: 即梦's off-spec renders (e.g.
+        # 832x1120) can carry a non-1:1 sample aspect ratio that survives the
+        # scale/crop, and concat rejects inputs whose SAR disagrees ("Failed
+        # to configure output pad on Parsed_concat") — even when pixel
+        # dimensions now match. Forcing SAR to 1:1 on every input is what
+        # actually lets the differently-rendered shot merge.
         filter_parts.append(
-            f"[{i}:v]fps={_MERGE_FPS},setpts=PTS-STARTPTS[v{i}];"
+            f"[{i}:v]scale={_MERGE_W}:{_MERGE_H}:force_original_aspect_ratio=increase,"
+            f"crop={_MERGE_W}:{_MERGE_H},setsar=1,fps={_MERGE_FPS},setpts=PTS-STARTPTS[v{i}];"
             f"[{i}:a]asetpts=PTS-STARTPTS[a{i}]"
         )
     concat_refs = "".join(f"[v{i}][a{i}]" for i in range(len(mp4s)))
@@ -623,14 +640,22 @@ def concat(mp4s, out):
         ";".join(filter_parts)
         + f";{concat_refs}concat=n={len(mp4s)}:v=1:a=1[outv][outa]"
     )
-    subprocess.run([
+    result = subprocess.run([
         "ffmpeg", "-y", *inputs,
         "-filter_complex", filter_complex,
         "-map", "[outv]", "-map", "[outa]",
         "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-ar", "44100",
         out,
-    ], capture_output=True)
+    ], capture_output=True, text=True)
+    # Fail LOUD, don't lie: a 0-byte / missing output must not report success
+    # (the whole point of the 2026-07-18 fix — a silent 0-byte merge sent the
+    # user in circles clicking 一键成片 on a corrupt final.mp4).
+    if result.returncode != 0 or not os.path.exists(out) or os.path.getsize(out) == 0:
+        raise RuntimeError(
+            f"ffmpeg concat failed (rc={result.returncode}, "
+            f"size={os.path.getsize(out) if os.path.exists(out) else 'missing'}). "
+            f"stderr tail: {(result.stderr or '')[-500:]}")
     return out
 
 
