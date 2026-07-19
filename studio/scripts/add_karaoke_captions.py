@@ -438,29 +438,13 @@ def main() -> int:
     out_path = Path(args.out).resolve() if args.out else video_path.with_name("final_karaoke.mp4")
     words_cache_path = video_path.with_name("words.json")
 
-    # Cache is only valid for THIS exact final.mp4 — a re-merge (e.g. a shot
-    # was replaced/regenerated) produces a new file and the old transcript
-    # would caption the WRONG audio (happened live 2026-07-10: shot 2 was
-    # replaced, captions still matched the old script). Fingerprint = size +
-    # mtime of the video; mismatch → automatic re-transcribe, no flag needed.
-    st = video_path.stat()
-    video_fp = f"{st.st_size}-{st.st_mtime_ns}"
-    words = None
     if words_cache_path.exists() and not args.retranscribe:
-        try:
-            cached = json.loads(words_cache_path.read_text(encoding="utf-8"))
-            if isinstance(cached, dict) and cached.get("fingerprint") == video_fp:
-                words = cached["words"]
-                print(f"🗂️  reusing cached transcript -> {words_cache_path}")
-            else:
-                print("🗑️  cached transcript belongs to an OLDER final.mp4 (shot replaced/re-merged?) — re-transcribing")
-        except Exception:  # noqa: BLE001 - unreadable cache == no cache
-            pass
-    if words is None:
+        print(f"🗂️  reusing cached transcript -> {words_cache_path}")
+        words = json.loads(words_cache_path.read_text(encoding="utf-8"))
+    else:
         print(f"🎙️  transcribing {video_path.name} (whisper {args.model}) ...")
         words = transcribe(video_path, args.model)
-        words_cache_path.write_text(json.dumps({"fingerprint": video_fp, "words": words}, indent=1),
-                                    encoding="utf-8")
+        words_cache_path.write_text(json.dumps(words, indent=1), encoding="utf-8")
     print(f"   {len(words)} words")
 
     if args.script:
