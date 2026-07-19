@@ -632,6 +632,29 @@ def replace_shot_audio(video_path: str, real_audio_path: str, out_path: str) -> 
     return True
 
 
+def swap_real_voice_if_available(video_path: str, real_audio_path: str) -> str:
+    """Convenience wrapper: returns the audio-swapped path on success, or
+    ``video_path`` unchanged if there's no local voice clip for this shot
+    (silent/B-roll shots, which already carry correct audio via their own
+    separate silent/mix path) or the swap fails. Never raises, never blocks
+    the pipeline — worst case a shot keeps 即梦's own (wrong) voice, exactly
+    today's pre-fix behavior, not a regression.
+
+    Wired into EVERY path that can produce a genuine multimodal2video
+    SUCCESS result (the main generation loop, --collect, and --merge-only)
+    — added 2026-07-19 after finding it was easy to fix only one of these
+    three near-identical download/assemble code paths and leave the other
+    two with the original wrong-voice bug for any row generated fresh
+    rather than merge-only'd from already-in-Notion shots."""
+    if not Path(real_audio_path).exists():
+        return video_path
+    swapped = str(Path(video_path).with_name(Path(video_path).stem + "_realvoice.mp4"))
+    if replace_shot_audio(video_path, real_audio_path, swapped):
+        print(f"    🔊 swapped in the real uploaded voice")
+        return swapped
+    return video_path
+
+
 def concat(mp4s, out):
     """Merge shot mp4s into `out` via ffmpeg's concat FILTER (re-encodes every
     input at one explicit, consistent frame rate) — NOT the concat demuxer's
@@ -687,6 +710,10 @@ def concat(mp4s, out):
         "-map", "[outv]", "-map", "[outa]",
         "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-ar", "44100",
+        "-movflags", "+faststart",  # moov-atom-first — see add_karaoke_captions.py's
+        # write_videofile() call for the full 2026-07-19 root-cause writeup
+        # (Meta Reels ingestion returned container status ERROR); every
+        # final.mp4 produced before this had moov AFTER mdat.
         out,
     ], capture_output=True, text=True)
     # Fail LOUD, don't lie: a 0-byte / missing output must not report success
@@ -745,7 +772,12 @@ def strip_ai_watermark(path: str) -> str:
         "ffmpeg", "-y", "-i", path,
         "-vf", f"crop={w}:{keep_h}:0:0,scale=-2:{h},crop={w}:{h}:(in_w-{w})/2:0",
         "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
-        "-c:a", "copy", tmp,
+        "-c:a", "copy", "-movflags", "+faststart", tmp,
+        # Without this, this re-encode SILENTLY UNDOES concat()'s own
+        # +faststart (moov moves back to the end here since this is a fresh
+        # mux) — this function always runs immediately after concat() in
+        # the real pipeline, so concat()'s flag alone was never sufficient.
+        # Found 2026-07-19 while chasing a Meta Reels ingestion "ERROR".
     ], capture_output=True)
     if result.returncode != 0 or not os.path.exists(tmp):
         return path  # crop failed — keep the original rather than lose the video
@@ -899,6 +931,13 @@ def main():
                             mix_audio(raw, aud, out)
                         else:
                             print(f"    ⚠️  shot {s['shot']} is i2v but local audio missing — placed SILENT")
+                    else:
+                        # Plain multimodal2video success — 即梦 re-synthesized its
+                        # own voice for lip-sync (see replace_shot_audio()'s
+                        # docstring); swap in the real uploaded clip if this shot
+                        # has one.
+                        real_aud = str(adir / f"shot{s['shot']}.mp3")
+                        out = swap_real_voice_if_available(out, real_aud)
                     mp4s.append(out)
                     status = place_video_in_shot(args.row, s.get("title", ""), out) if s.get("title") else "no-title"
                     print(f"    ✅ shot {s['shot']} collected | Notion: {status}")
@@ -1093,6 +1132,7 @@ def main():
                         break
 
         if path:
+            out = swap_real_voice_if_available(out, aud)
             mp4s.append(out)
             status = place_video_in_shot(args.row, s["title"], out)
             print(f"    ✅ {out} | Notion: {status}")
