@@ -707,7 +707,18 @@ async def admin_republish_row(request: Request) -> JSONResponse:
     explicit, human-confirmed action.
 
     Auth: same shared secret as the other /admin endpoints.
-    Body: {"row_id": "<production row page id>"}
+    Body: {"row_id": "...", "already_deleted": bool}
+
+    ``already_deleted`` (added same day, right after the first real call):
+    Instagram's Graph API returned a hard "Unsupported delete request" for
+    EVERY media id tested — Meta's Content Publishing API has no delete
+    operation for IG media at all, confirmed, not a permissions/token
+    issue. The only way to remove a live post is a human deleting it in
+    the Instagram app. Once that's done, pass ``already_deleted: true`` to
+    skip the (guaranteed-to-fail) API delete attempt and go straight to
+    clearing the ledger + republishing — this flag is a human's explicit
+    confirmation the post is actually gone, not something to ever set
+    automatically.
     """
     expected = os.environ.get("NOTION_SYNC_SECRET", "")
     provided = request.headers.get("X-Sync-Secret", "")
@@ -716,6 +727,7 @@ async def admin_republish_row(request: Request) -> JSONResponse:
 
     body = await request.json()
     row_id = str(body.get("row_id", "")).strip()
+    already_deleted = bool(body.get("already_deleted", False))
     if not row_id:
         return JSONResponse({"error": "row_id required"}, status_code=400)
 
@@ -733,7 +745,7 @@ async def admin_republish_row(request: Request) -> JSONResponse:
     media_id = str(entry.get("ig_media_id", "")).strip()
     account_id = str(entry.get("account_id", "")).strip() or None
     delete_result = None
-    if media_id:
+    if media_id and not already_deleted:
         delete_result = await ig_publish.delete_media(media_id, account_id=account_id)
         if not delete_result.ok:
             # Put the ledger entry BACK — a failed delete must not leave the
