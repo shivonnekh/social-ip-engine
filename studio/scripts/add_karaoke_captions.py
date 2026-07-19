@@ -123,7 +123,13 @@ SIDE_MARGIN_BASE = 60             # matches the reference's MarginL/MarginR=60 o
 # every sampled chunk in that video to a clean 2 lines; see
 # scripts/memory/shello.md for the before/after frame comparison.
 MAX_WORDS_PER_CHUNK = 5
+# Absolute ceiling — only used as a safety valve for a run-on sentence with no
+# punctuation and no pause (e.g. a Whisper mis-transcription that dropped a
+# period). A normal sentence is allowed to run past MAX_WORDS_PER_CHUNK to
+# reach its actual end rather than being chopped mid-clause.
+HARD_MAX_WORDS_PER_CHUNK = 9
 PAUSE_BREAK_S = 0.5  # a gap bigger than this ends a chunk early, even under MAX_WORDS_PER_CHUNK
+_SENTENCE_END_RE = re.compile(r"[.!?][\"'”’)]*$")  # sentence-ending punctuation, optional trailing quote/paren
 
 
 def transcribe(video_path: Path, model_name: str = "base.en") -> list[dict[str, Any]]:
@@ -177,20 +183,37 @@ def align_to_known_script(words: list[dict[str, Any]], script_text: str) -> list
 
 
 def group_words(words: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
-    """Split the flat word list into caption chunks: at most
-    MAX_WORDS_PER_CHUNK words, breaking EARLY if the gap to the next word
-    exceeds PAUSE_BREAK_S — a natural breath/pause is a better break point
-    than an arbitrary word count landing mid-breath."""
+    """Split the flat word list into caption chunks on COMPLETE-SENTENCE
+    boundaries where possible, not an arbitrary word count.
+
+    Rewritten 2026-07-19 after Shivonne reported captions weren't respecting
+    full sentences. Root cause: the previous version force-closed every
+    chunk at exactly MAX_WORDS_PER_CHUNK (5) words regardless of whether
+    that landed mid-clause — a real 8-9 word CTA sentence ("Comment 'neck'
+    and I'll send the full phone-neck recovery routine") got chopped into
+    two disconnected 5-word fragments with no relationship to the sentence's
+    actual grammar.
+
+    New priority order per word: (1) a pause > PAUSE_BREAK_S still ends a
+    chunk early regardless of punctuation — a real breath break should never
+    be bridged; (2) sentence-ending punctuation (.?!, via _SENTENCE_END_RE,
+    since Whisper's word tokens keep trailing punctuation attached) ends the
+    chunk — this is the new default, letting a chunk run PAST
+    MAX_WORDS_PER_CHUNK to reach the sentence's real end; (3)
+    HARD_MAX_WORDS_PER_CHUNK is the safety valve for a run-on with no
+    punctuation and no pause (e.g. a dropped period), so a caption can never
+    grow unboundedly and become unreadable."""
     chunks: list[list[dict[str, Any]]] = []
     current: list[dict[str, Any]] = []
     for i, word in enumerate(words):
         current.append(word)
-        at_max = len(current) >= MAX_WORDS_PER_CHUNK
         is_last = i == len(words) - 1
+        ends_sentence = bool(_SENTENCE_END_RE.search(word["word"]))
+        at_hard_max = len(current) >= HARD_MAX_WORDS_PER_CHUNK
         next_gap_too_big = (
             not is_last and (words[i + 1]["start"] - word["end"]) > PAUSE_BREAK_S
         )
-        if at_max or next_gap_too_big or is_last:
+        if ends_sentence or next_gap_too_big or at_hard_max or is_last:
             chunks.append(current)
             current = []
     return [c for c in chunks if c]

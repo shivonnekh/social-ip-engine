@@ -591,6 +591,47 @@ _MERGE_FPS = 30
 _MERGE_W, _MERGE_H = 720, 1280  # 9:16 — every shot is normalized to this before concat
 
 
+def replace_shot_audio(video_path: str, real_audio_path: str, out_path: str) -> bool:
+    """Replace a shot's embedded audio track with the ORIGINAL uploaded voice
+    clip, keeping the video untouched. Returns True if it rewrote the file.
+
+    Root-caused 2026-07-19 via waveform cross-correlation (not just Whisper
+    word-transcript comparison, which had been the verification method all
+    session and was NOT sufficient): every shot's video audio has near-ZERO
+    correlation (0.01-0.10) with the uploaded voice clip AND a different
+    duration (up to 0.58s off) — despite the WORDS transcribing the same.
+    即梦's audio-native lip-sync does NOT play back the uploaded audio
+    verbatim; it treats it as a content/rhythm reference and re-synthesizes
+    its own voice track. This means no amount of prompt engineering (today's
+    quoted-dialogue / positive-framing / sanitization fixes all included)
+    can make 即梦 use the real cloned voice — that limitation is in the
+    model, not the prompt. Getting the ACTUAL uploaded voice into the final
+    video requires swapping the audio track in post.
+
+    Trade-off, stated plainly: the video's mouth movement was animated to
+    即梦's own (usually slightly LONGER) synthesized speech, so swapping in
+    the real, usually-shorter audio can leave a brief silent tail where the
+    mouth is still moving after the real line ends (max observed: 0.58s on
+    an ~5s shot). Padding/trimming to the VIDEO's length (not the audio's)
+    keeps shot duration and downstream concat/caption timing unchanged.
+    """
+    vdur = _dur(video_path)
+    if vdur <= 0:
+        return False
+    result = subprocess.run([
+        "ffmpeg", "-y", "-i", video_path, "-i", real_audio_path,
+        "-filter_complex", f"[1:a]apad=whole_dur={vdur:.3f}[a]",
+        "-map", "0:v", "-map", "[a]", "-t", f"{vdur:.3f}",
+        "-c:v", "copy", "-c:a", "aac", "-ar", "44100",
+        out_path,
+    ], capture_output=True, text=True)
+    if result.returncode != 0 or not os.path.exists(out_path):
+        print(f"    ⚠️  audio swap failed for {video_path} — keeping 即梦's own audio "
+              f"({(result.stderr or '')[-200:]})")
+        return False
+    return True
+
+
 def concat(mp4s, out):
     """Merge shot mp4s into `out` via ffmpeg's concat FILTER (re-encodes every
     input at one explicit, consistent frame rate) — NOT the concat demuxer's
@@ -790,8 +831,20 @@ def main():
             out = str(vdir / f"shot{i}.mp4")
             # force=True: any local shotN.mp4 may be stale — Notion is the source of truth here
             _download(s["video_url"], out, force=True)
-            mp4s.append(out)
             print(f"  Shot {i}: downloaded from Notion ({Path(out).stat().st_size // 1024} KB)")
+            # Swap in the REAL uploaded voice — 即梦 re-synthesizes its own audio
+            # for lip-sync rather than playing the upload back verbatim (see
+            # replace_shot_audio()'s docstring for the full root cause). Only
+            # for shots that actually have a voice line; silent/B-roll shots
+            # keep whatever audio 即梦 or the Ken Burns path already produced.
+            if s.get("audio_url"):
+                real_audio = str(adir / f"shot{i}.mp3")
+                _download(s["audio_url"], real_audio, force=True)
+                swapped = str(vdir / f"shot{i}_realvoice.mp4")
+                if replace_shot_audio(out, real_audio, swapped):
+                    out = swapped
+                    print(f"    🔊 swapped in the real uploaded voice for shot {i}")
+            mp4s.append(out)
         final = str(vdir / "final.mp4")
         concat(mp4s, final)  # already in shot order — do NOT re-sort
         strip_ai_watermark(final)

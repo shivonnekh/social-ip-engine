@@ -687,6 +687,94 @@ async def admin_notion_publish(request: Request) -> JSONResponse:
     return JSONResponse(result)
 
 
+@app.post("/admin/republish-row")
+async def admin_republish_row(request: Request) -> JSONResponse:
+    """Delete a row's LIVE Instagram post and republish it fresh from its
+    current Production Video / Cover / caption.
+
+    Added 2026-07-19 — the first time this codebase has ever needed to
+    delete a live post. Root cause: 即梦's audio-native lip-sync does not
+    play the uploaded voice back verbatim, it re-synthesizes its own track
+    (see studio/scripts/notion_video.py's ``replace_shot_audio()``
+    docstring for the full investigation) — a row published before that
+    fix went out carries the wrong voice, and Instagram's API has no
+    "replace this Reel's video" call, only delete-and-republish.
+
+    Deliberately a SEPARATE endpoint from ``/admin/notion-publish``, never
+    called by any automated sweep — every other module in this codebase
+    treats a live post as effectively permanent (the whole ledger/
+    idempotency design exists so this is never needed). This is a rare,
+    explicit, human-confirmed action.
+
+    Auth: same shared secret as the other /admin endpoints.
+    Body: {"row_id": "<production row page id>"}
+    """
+    expected = os.environ.get("NOTION_SYNC_SECRET", "")
+    provided = request.headers.get("X-Sync-Secret", "")
+    if not expected or not hmac.compare_digest(provided, expected):
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+
+    body = await request.json()
+    row_id = str(body.get("row_id", "")).strip()
+    if not row_id:
+        return JSONResponse({"error": "row_id required"}, status_code=400)
+
+    from src import notion_publish
+    from src.channels import ig_publish
+    from src.notion_publish_runner import plan_and_dispatch
+
+    entry = notion_publish.clear_ledger_entry(row_id)
+    if entry is None:
+        return JSONResponse(
+            {"error": f"no ledger entry for row {row_id} — nothing to delete"},
+            status_code=404,
+        )
+
+    media_id = str(entry.get("ig_media_id", "")).strip()
+    account_id = str(entry.get("account_id", "")).strip() or None
+    delete_result = None
+    if media_id:
+        delete_result = await ig_publish.delete_media(media_id, account_id=account_id)
+        if not delete_result.ok:
+            # Put the ledger entry BACK — a failed delete must not leave the
+            # row silently unledgered (the next sweep would then attempt a
+            # SECOND live post while the first one is still up).
+            from src.notion_sync import _save_json
+            ledger = notion_publish._load_ledger(notion_publish._STATE_PATH)
+            ledger[row_id] = entry
+            _save_json(notion_publish._STATE_PATH, ledger)
+            logger.error("[republish-row] delete failed for %s (media_id=%s): %s — "
+                        "ledger entry restored, republish aborted",
+                        row_id, media_id, delete_result.detail)
+            return JSONResponse(
+                {"error": f"delete failed: {delete_result.detail}", "row_id": row_id},
+                status_code=502,
+            )
+        logger.info("[republish-row] deleted media_id=%s for row %s", media_id, row_id)
+
+    # Row is now unledgered — the normal claim/publish path picks it up
+    # fresh from whatever's currently in Production Video / Cover / caption.
+    live_tasks = getattr(request.app.state, "notion_publish_tasks", None)
+    if live_tasks is None:
+        live_tasks = []
+        request.app.state.notion_publish_tasks = live_tasks
+    try:
+        result = await plan_and_dispatch(task_sink=live_tasks)
+    except notion_publish.NotionSyncError as exc:
+        logger.exception("[republish-row] republish plan failed after delete for %s", row_id)
+        return JSONResponse(
+            {"error": f"deleted old post but republish failed to plan: {exc}",
+             "row_id": row_id, "deleted_media_id": media_id},
+            status_code=502,
+        )
+
+    return JSONResponse({
+        "row_id": row_id,
+        "deleted_media_id": media_id or None,
+        "republish": result,
+    })
+
+
 @app.post("/api/dev-chat")
 async def dev_chat(request: Request) -> JSONResponse:
     """Dev-sandbox pipeline runner.

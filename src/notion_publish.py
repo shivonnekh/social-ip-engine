@@ -241,6 +241,28 @@ def _load_ledger(state_path: Path) -> dict[str, dict]:
     return data
 
 
+def clear_ledger_entry(row_id: str, *, state_path: Path | None = None) -> dict | None:
+    """Remove a row's ledger entry so the NEXT ``/admin/notion-publish``
+    sweep treats it as never-published and re-claims + republishes it fresh.
+
+    Returns the removed entry (so the caller can read ``account_id`` /
+    ``ig_media_id`` before it's gone) or ``None`` if the row had no entry.
+
+    Added 2026-07-19 alongside ``ig_publish.delete_media()`` for the first
+    delete-and-republish this codebase has ever needed (即梦 audio-swap
+    root cause — see that module's docstring). Deliberately a SEPARATE,
+    explicit call from the normal publish flow: clearing a ledger entry is
+    exactly what the ledger exists to prevent happening accidentally, so
+    the caller (an admin endpoint, human-triggered) must call this before
+    the live media is actually deleted, never automatically."""
+    resolved = _STATE_PATH if state_path is None else state_path
+    ledger = _load_ledger(resolved)
+    entry = ledger.pop(row_id, None)
+    if entry is not None:
+        _save_json(resolved, ledger)
+    return entry
+
+
 @dataclass(frozen=True)
 class PublishJob:
     """Everything a runner needs to create → poll → publish one Reel,

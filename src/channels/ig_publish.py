@@ -205,3 +205,46 @@ async def publish_container(
         media_id = ""
     logger.info("[ig_publish] published: creation_id=%s media_id=%s", creation_id, media_id)
     return PublishResult(True, media_id=media_id)
+
+
+@dataclass(frozen=True)
+class DeleteResult:
+    """Outcome of deleting a live media object."""
+
+    ok: bool
+    detail: str = ""
+
+
+async def delete_media(media_id: str, *, account_id: str | None = None) -> DeleteResult:
+    """``DELETE /{ig-media-id}`` — permanently removes a LIVE post.
+
+    Added 2026-07-19: the first time this codebase ever needed to delete a
+    live post, after discovering 即梦 does not play back an uploaded voice
+    verbatim (see notion_video.py's replace_shot_audio() docstring) — a
+    post published before that fix went out with the wrong voice, and
+    Instagram has no "replace this Reel's video" API, only delete-and-
+    republish. Every other module in this codebase treats a live post as
+    effectively permanent (the whole ledger/idempotency design exists to
+    prevent ever needing this) — so this is a genuinely rare, deliberate,
+    human-confirmed operation, not something any automated sweep calls.
+    """
+    creds = _creds("instagram", account_id)
+    if not creds.token:
+        logger.warning("[ig_publish] missing instagram token — cannot delete")
+        return DeleteResult(False, detail="missing credentials")
+    if not media_id.strip():
+        return DeleteResult(False, detail="empty media_id")
+
+    url = _graph_url("instagram", media_id)
+    try:
+        async with httpx.AsyncClient(timeout=_TIMEOUT_S) as client:
+            resp = await client.delete(url, params={"access_token": creds.token})
+    except httpx.HTTPError as exc:
+        logger.warning("[ig_publish] delete transport error: %s", exc)
+        return DeleteResult(False, detail=f"transport: {exc}")
+
+    result = _interpret(resp, context=f"ig_publish:delete→{media_id}")
+    if not result.ok:
+        return DeleteResult(False, detail=result.detail)
+    logger.info("[ig_publish] deleted media_id=%s", media_id)
+    return DeleteResult(True)
