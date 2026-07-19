@@ -111,17 +111,17 @@
     "updated_at": "2026-07-13T03:28:35.796803+00:00"
   },
   "38df2a3f-4320-81d8-ad8c-d2af43923c36": {
-    "status": "failed",
-    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/a20bd948-9ea9-4134-b22d-c06d1a4d5acc/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UKQEGBTO%2F20260719%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260719T123620Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMH%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID%2Fl16KPlEXL%2FT7g%2B8Wme3RZMnZJQnQc6ACc2wZflsEgAiAlbb4I1GUr%2FHsZZ31yHe2V%2FXukCLNj70kU7b0y5yLG2SqIBAiK%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMs0EGEmjLcohdt2wfKtwD4Le8felil7SmSnHU1Um8eLDZV%2FcgZ6YFHx258cJZQiC7%2FppP1%2BLgc47WzR7Jz2uQfQ1PCIxUFJu6tZIcmVwG1%2Fx2Zom0PNxWRQm3J2NEdWSm5Gh4nwieKXIN0pH%2F%2FJcNIzNOv1L9dmk2wNQmx6y5qVLN4eWk5rjCwQRwEcmdJGrj%2BcZ1UzV3EHzcYCCCi6A5XnQgdzDIjiICr9K6BtprSmAzrdldOl8mbleuMcvm9P3aB%2B8fRCZ47aU2p8ODOpdxr6jyvNBhj3egyD2vQlRogGAR4uUF%2BLQbOhIb5rIX1Jm2GO1OwPvHob5AUnjj3DPbd3dGLw%2FYx%2BREsteTa9FJbXr3hS77OAJgZz%2BBU7eX%2Fdk5wTRiVcj%2FhJqNq66ilYsp7uc4EHJ26ykfSLS92OEr03JTU4QDXMAA49pHMdX8htvGQOd3ZmgQmVbe0avV2hyD5w%2BkK7Mh7qjBhswSpOryT3upqoy3rWamOlGs6E%2BFzEmsDd6EzHUZU1hgC1ZRIxm6ECM50aT769Cs79TxtuoCO9hqN7EY%2BEvrORL8I1Ox83M%2FkK20EmiIe63sg3sEOqonrEX6PVKrvtAxPj7whg2kZ0zOP0cdvNDk%2FXfCyVbBJYHSnXVwBASEryA9%2BhQw5qfy0gY6pgFV9gz1asWSFNgcEO4S30iH8Pb5Q2NUQzcbNUmMKcmtHO7bZLiNXkNK5GFdywb3dvoTIk62TkRSLmrOfnh1POJmBHaf2cs15hdzKP91kjlKDR43J6%2B73mOfDQ3uJhzAJckIbSl7aHDgzMYQ0BL50PTh%2BAhxcBbKyxu%2FPCC%2FQ8eJbXguTQnYkXiLGba9CT8IxmdLrhFHxomWybk8n3EWFlQ1vPjKM%2FGf&X-Amz-Signature=509e73b71c49b5f0474e347b43897ee4dbb65535f25c2e40c30e6699fda4db0a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
-    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/a20bd948-9ea9-4134-b22d-c06d1a4d5acc/final_karaoke.mp4",
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/2e8603ae-3fad-4e49-a242-f1f3ba94a1bd/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Y2KKKFSR%2F20260719%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260719T124921Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMH%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIHCAn3ULK%2B8KEkTdhSzE15YTMWIdf3Lj0tCPeMZgSJz4AiEAmb8bTQHUoosOfKIn7O9Bnmia3a5ko6H3A6jR5I3caYMqiAQIiv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPEDDNZ%2B%2F3W4ASChISrcA3TeYeG9hWoiu6o5tE4UctI7rd%2BD4%2FFvQvuKoFa%2BXvLiVdvG3OcA2n7XI7B0Dqr2BIg8S9C3MmvqGQEwUAqVNOPuPPqQBgTCEMgGslhU76Picdza3g8hG3dyw3E0p2Xaw7MEUCant1%2B4i%2BYVRW%2Bb8gEps1I2yPgL4f%2BTaYORvLY7PD7uj1kbRvy1B29DO1Q8rajCoMKEt3TMucB2Sw9%2FfxGCCevwTwChICrp55HZajCV0C5ZB8cj7dHvTHnUL0MH7Yew7ayh6eOzDwepmuWtmP7ZnMkvkKpKni7GjLWMzo9ZymzTxOv%2FYcuV%2FKxY3nErQU2tbWbQ%2FF8PbrO%2BEWK5LxClmOQmjFeuPKE0gbgqcW5zPfB0obTm4N8kVMm3t5zRG6b0WM547vfCmmdo4%2Fi6mdPm6qn60sd9Ap%2Bdvctegruv%2Bre6beFlcydvLL4WDORRz3lkZc0870Z22DTlmeDKfomxYFCS1x0PJoiv%2BkvuTFh8V4WPPIir0296QDXBcwU02SGupgwUy%2Bn4tV0bg87RSpcsa2SBA5kxQnqgoRin1S7Z8gB91DwsSBWWKn8hNGPHVq5MkEtBv%2FukoY1UyHGfmkABGl9MpMdqfhMRVWeGJa3FM4ph0ZltUeK60F7DMIqn8tIGOqUBksjWJxrUfLDHaAI%2BkknMoY86TerlC%2FugVx80EcxN0S26QXR8x%2FCrZ3l%2BM%2FMu5oLvrzM62spDGtlN9UwCIiX3ThoOj2Ys4ghXhCMLeAYiX0W8BJ680W45nvXsPDFt64dxZPqevdtlylVngooy05lpXHNYNLZRKKQI98BX%2BKGMqL8s2onOTLlZMCa8NTaWh6XUsNXEUFtKXy%2FomOq5h1jKWqyIuX92&X-Amz-Signature=099859b21f5852ec1c53027b39f3c95c3a79bab755b819a0f61e919b3102d937&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/2e8603ae-3fad-4e49-a242-f1f3ba94a1bd/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/neck-38df2a3f-4320-81d8-ad8c-d2af43923c36-cover.jpg",
     "caption": "Is Your Phone Causing Hidden Pain? 😱\n\nComment \"neck\" 👇",
     "account_id": "17841417304649448",
-    "creation_id": "18135261658576822",
+    "creation_id": "18135264349576822",
     "ig_media_id": null,
     "posted_checkbox": false,
-    "attempts": 1,
-    "last_error": "container status: ERROR",
-    "updated_at": "2026-07-19T12:40:24.068308+00:00"
+    "attempts": 2,
+    "last_error": "",
+    "updated_at": "2026-07-19T12:49:24.083128+00:00"
   }
 }
