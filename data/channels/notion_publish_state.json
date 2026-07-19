@@ -111,7 +111,7 @@
     "updated_at": "2026-07-13T03:28:35.796803+00:00"
   },
   "38df2a3f-4320-81d8-ad8c-d2af43923c36": {
-    "status": "in_flight",
+    "status": "failed",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/a20bd948-9ea9-4134-b22d-c06d1a4d5acc/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UKQEGBTO%2F20260719%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260719T123620Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMH%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID%2Fl16KPlEXL%2FT7g%2B8Wme3RZMnZJQnQc6ACc2wZflsEgAiAlbb4I1GUr%2FHsZZ31yHe2V%2FXukCLNj70kU7b0y5yLG2SqIBAiK%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMs0EGEmjLcohdt2wfKtwD4Le8felil7SmSnHU1Um8eLDZV%2FcgZ6YFHx258cJZQiC7%2FppP1%2BLgc47WzR7Jz2uQfQ1PCIxUFJu6tZIcmVwG1%2Fx2Zom0PNxWRQm3J2NEdWSm5Gh4nwieKXIN0pH%2F%2FJcNIzNOv1L9dmk2wNQmx6y5qVLN4eWk5rjCwQRwEcmdJGrj%2BcZ1UzV3EHzcYCCCi6A5XnQgdzDIjiICr9K6BtprSmAzrdldOl8mbleuMcvm9P3aB%2B8fRCZ47aU2p8ODOpdxr6jyvNBhj3egyD2vQlRogGAR4uUF%2BLQbOhIb5rIX1Jm2GO1OwPvHob5AUnjj3DPbd3dGLw%2FYx%2BREsteTa9FJbXr3hS77OAJgZz%2BBU7eX%2Fdk5wTRiVcj%2FhJqNq66ilYsp7uc4EHJ26ykfSLS92OEr03JTU4QDXMAA49pHMdX8htvGQOd3ZmgQmVbe0avV2hyD5w%2BkK7Mh7qjBhswSpOryT3upqoy3rWamOlGs6E%2BFzEmsDd6EzHUZU1hgC1ZRIxm6ECM50aT769Cs79TxtuoCO9hqN7EY%2BEvrORL8I1Ox83M%2FkK20EmiIe63sg3sEOqonrEX6PVKrvtAxPj7whg2kZ0zOP0cdvNDk%2FXfCyVbBJYHSnXVwBASEryA9%2BhQw5qfy0gY6pgFV9gz1asWSFNgcEO4S30iH8Pb5Q2NUQzcbNUmMKcmtHO7bZLiNXkNK5GFdywb3dvoTIk62TkRSLmrOfnh1POJmBHaf2cs15hdzKP91kjlKDR43J6%2B73mOfDQ3uJhzAJckIbSl7aHDgzMYQ0BL50PTh%2BAhxcBbKyxu%2FPCC%2FQ8eJbXguTQnYkXiLGba9CT8IxmdLrhFHxomWybk8n3EWFlQ1vPjKM%2FGf&X-Amz-Signature=509e73b71c49b5f0474e347b43897ee4dbb65535f25c2e40c30e6699fda4db0a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/a20bd948-9ea9-4134-b22d-c06d1a4d5acc/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/neck-38df2a3f-4320-81d8-ad8c-d2af43923c36-cover.jpg",
@@ -121,7 +121,7 @@
     "ig_media_id": null,
     "posted_checkbox": false,
     "attempts": 1,
-    "last_error": "",
-    "updated_at": "2026-07-19T12:36:25.714418+00:00"
+    "last_error": "container status: ERROR",
+    "updated_at": "2026-07-19T12:40:24.068308+00:00"
   }
 }
