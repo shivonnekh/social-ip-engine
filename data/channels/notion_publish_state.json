@@ -111,17 +111,17 @@
     "updated_at": "2026-07-13T03:28:35.796803+00:00"
   },
   "38df2a3f-4320-81d8-ad8c-d2af43923c36": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/144edd30-6438-48a9-89f9-4a71bedb03a0/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZN2JAQCA%2F20260719%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260719T045924Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICQJ7AXvno%2FAQQCAz3Yco8AZhFaSqGgc4ApmxGv0v2zAAiAZdLzSW0qv0XGllF9Irorp3t64hOxNqSb%2BDtFmNEQixyqIBAiF%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIM0%2BfjvUkX%2FqjR0ngnKtwDWdxC3gL4gF6zvKQNOzJ92aZqVDOZg40XVW10jczy%2BEEKUk8mNP92BGDbB%2FdY%2BHndgxmpVwHkooL4LIxxWEtukbKm%2FEgScrh%2BobBWQyRuc7T5MLlRwQUXQKYRmj0mqX6LXPTuQB4DeXlh80yk%2BZUN1W%2FDX8hWPTKU0Ak1BKLk%2FYBH6cVJXnQVf8ti%2Bmxp%2B%2BFcXKNty4nm8nuagzPbGGuYf9P1%2Fx4tti9QYMddB8X8HD1jnP0gVpuTOOB%2FNeh7z7lIj0%2FTW2nkSWVkESXAuNlPFjZx6BC6B40%2F7DYTFR%2BDb9QAD0%2BsrdjLRINPnEeXXZdaoquBBgp8K8zoBbfO0eyN0KM%2F7XgRso0%2FvXb9KXZ10wzxYZVaHVYRCRFwpt3sXygnZkAKV9NIvO2PGWS%2FMczjsqjnBCoD%2FgyArmPrb8Yq1NPsd1lD%2BzUfgP3kcxUPfWfFfFnFuHnneQfvXU6RqbsTFjhhh1kDTlRqwY1mwdv2Q40tkCSMmRjkoxUNmGyeszZz5psZhKqbP22jFTTIL7RkSnq5jV5pzqB1ZSmZ%2Fk9v26nlR1OB7Fk1%2BDevc6S9x7sv9C5TJP82w6Z9qNVD0FquyYyXbLSZnRHN6CckXPmtJhwI%2BaiWpwSDFuFlbPEwsYfx0gY6pgFheKLwMhwMjwTKJrvMHUYW%2FVLMNCqyGElGPfPb%2BgbVgurEiiwrGLThb2At%2Bap7cCUBsLubHQj1070QZ1c9%2BoymyUq1JSGssnzD4NreNglJBzh934L99Cmr4CyTu5DEJeTGMSnl4sXUMF8VBBAdDiTWZ9HYmYj05Odd7eeHiR19IJjup6qxGY0NnRuXqT%2F%2Bq%2BCfEgn2MFfeKBVZB821pt093XRCmrl4&X-Amz-Signature=674002436d02a05002134343d93fcc305477a0669a4e89483852f1fba0204ffa&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/144edd30-6438-48a9-89f9-4a71bedb03a0/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/neck-38df2a3f-4320-81d8-ad8c-d2af43923c36-cover.jpg",
     "caption": "Is Your Phone Causing Hidden Pain? 😱\n\nComment \"neck\" 👇",
     "account_id": "17841417304649448",
     "creation_id": "18135186628576822",
-    "ig_media_id": null,
+    "ig_media_id": "17981434488043405",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-07-19T04:59:28.454982+00:00"
+    "updated_at": "2026-07-19T05:00:09.392931+00:00"
   }
 }
