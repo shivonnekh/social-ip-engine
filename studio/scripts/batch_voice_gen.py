@@ -481,7 +481,21 @@ def process_row(row_id: str, title: str, *,
         done += 1
         time.sleep(0.5)  # gentle rate-limit
 
-    if not dry_run and all(s["has_audio"] for s in extract_shots(row_id)):
+    # A shot is "voice-complete" if it either HAS audio, or was never SUPPOSED
+    # to have any (an intentionally silent/B-roll beat — empty Voice script,
+    # same convention notion_video.py uses for the silent-shot video path).
+    # Root-caused 2026-07-20: the previous check required has_audio on EVERY
+    # shot with no exception, so ANY row containing a legitimately-silent
+    # shot (a real, established, documented pattern — e.g. Tongue EP02 Shot 3,
+    # "second rejection": an old man waves Jackie off, no dialogue) could
+    # NEVER tick '🎙️ Voice', no matter how completely voice generation had
+    # actually finished for every shot that needed it. Found while
+    # investigating why a fully-voiced 9-shot row still showed the checkbox
+    # unticked and the row stuck at Stage='💡 Idea'.
+    voice_complete = all(
+        s["has_audio"] or not s["text"].strip() for s in extract_shots(row_id)
+    )
+    if not dry_run and voice_complete:
         # Mirrors notion_image.py ticking "🎨 Image" once every shot has one —
         # this checkbox was never actually set anywhere before (found 2026-07-08
         # while building state detection for the local dashboard), so "has voice"

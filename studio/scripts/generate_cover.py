@@ -159,8 +159,9 @@ def main() -> int:
 
     page = ni.ncall("GET", f"/pages/{args.row}")
     ip_rel = page["properties"].get("IP", {}).get("relation", [])
-    ip_name = ni.short_ip("".join(t["plain_text"] for t in
-                          ni.ncall("GET", f"/pages/{ip_rel[0]['id']}")["properties"]["IP"]["title"])) if ip_rel else ""
+    ip_title_raw = ("".join(t["plain_text"] for t in
+                    ni.ncall("GET", f"/pages/{ip_rel[0]['id']}")["properties"]["IP"]["title"])) if ip_rel else ""
+    ip_name = ni.short_ip(ip_title_raw)
     ip_refs = ni.ip_reference_images(ip_rel[0]["id"], ROOT / "campaigns" / "assets" / "faces" / ip_name) if ip_rel else []
 
     prompt, toggle_id, has_image = find_cover_prompt(args.row)
@@ -180,7 +181,9 @@ def main() -> int:
         print("[dry-run] would generate + upload now")
         return 0
 
-    outdir = ni._campaign_workdir(page, ip_name) / "images"
+    # Must match notion_video.py's folder exactly — see notion_image.py's
+    # 2026-07-20 fix comment for the full "short_ip() vs raw title" root cause.
+    outdir = ni._campaign_workdir(page, ip_title_raw) / "images"
     outdir.mkdir(parents=True, exist_ok=True)
     out_path = str(outdir / "cover.png")
     # The title is now baked directly into the image by gpt-image-2 itself —

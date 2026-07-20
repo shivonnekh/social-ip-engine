@@ -230,8 +230,9 @@ def main():
 
     page = ncall("GET", f"/pages/{args.row}")
     ip_rel = page["properties"].get("IP", {}).get("relation", [])
-    ip_name = short_ip("".join(t["plain_text"] for t in
-                              ncall("GET", f"/pages/{ip_rel[0]['id']}")["properties"]["IP"]["title"])) if ip_rel else ""
+    ip_title_raw = ("".join(t["plain_text"] for t in
+                    ncall("GET", f"/pages/{ip_rel[0]['id']}")["properties"]["IP"]["title"])) if ip_rel else ""
+    ip_name = short_ip(ip_title_raw)
     # face references: pull from the IP's Notion page (source of truth); fall back to assets map
     ip_refs = ip_reference_images(ip_rel[0]["id"], ROOT / "campaigns" / "assets" / "faces" / ip_name) if ip_rel else []
     if not ip_refs and ASSETS.get("faces", {}).get(ip_name):
@@ -250,7 +251,20 @@ def main():
     if not shots:
         sys.exit("[error] no image prompts found in row body")
 
-    outdir = _campaign_workdir(page, ip_name) / "images"
+    # Root-caused 2026-07-20: this MUST match notion_video.py::_campaign_workdir()'s
+    # folder exactly — that function slugifies the RAW IP page title with no
+    # stripping, while `ip_name` here is short_ip()'d (drops a parenthetical
+    # suffix like "(EN)" for cleaner display / shared face-ref-cache naming).
+    # For an IP titled "Jackie Chan (EN)" this produced "jackie-chan" here vs
+    # "jackie-chan-en" in notion_video.py — two DIFFERENT folders for the same
+    # row. Every image fixed via this script silently never reached the video
+    # pipeline's local image cache (which only re-downloads a shot's image if
+    # its local copy is MISSING — a stale copy in the other, wrong folder
+    # never got invalidated), so a corrected image kept getting silently
+    # ignored in favor of old stale content at video-generation time. Use the
+    # RAW title slug for the workdir specifically; `ip_name` (short_ip'd)
+    # stays as-is for face-ref caching and display strings above.
+    outdir = _campaign_workdir(page, ip_title_raw) / "images"
     outdir.mkdir(parents=True, exist_ok=True)
     def _img_prompt_code_id(shot_title):
         """The 🖼️ Image prompt code block id for a shot — we anchor the image toggle after it."""

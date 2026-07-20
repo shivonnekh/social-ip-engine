@@ -230,6 +230,27 @@ def _block_file_url(b):
     return o.get("file", {}).get("url") or o.get("external", {}).get("url")
 
 
+def _maybe_tick_video_checkbox(row_id: str) -> None:
+    """Tick '🎬 Video' once every shot has a video — mirrors notion_image.py's
+    '🎨 Image' tick and batch_voice_gen.py's '🎙️ Voice' tick, which both
+    already existed. notion_video.py never had the equivalent at all (found
+    2026-07-20 investigating why a fully-shot 9-shot row still showed the
+    checkbox unticked and Stage stuck at '💡 Idea' — Stage itself is a
+    deliberate, always-manual drag per studio/CLAUDE.md, but the checkbox is
+    meant to be an automatic progress signal, and this one had simply never
+    been wired). Unlike the Voice checkbox (which has a genuine "shot never
+    gets audio" exception for intentionally-silent beats), every shot DOES
+    get a video regardless of whether it has dialogue — silent beats still
+    render via image2video/Ken Burns — so a plain all() is correct here,
+    no exception needed. Never raises: a failed tick must not fail an
+    otherwise-successful merge."""
+    try:
+        if all(s["has_video"] for s in read_row_shots(row_id)):
+            ncall_w("PATCH", f"/pages/{row_id}", {"properties": {"🎬 Video": {"checkbox": True}}})
+    except Exception as exc:
+        print(f"    ⚠️  failed to tick '🎬 Video' checkbox: {exc}")
+
+
 def read_row_shots(row_id):
     """[{title, image_url, audio_url, jimeng, has_video}] pulled from the Notion row."""
     shots, cur, label = [], None, None
@@ -299,30 +320,66 @@ def _dur(path):
     return float(r.stdout.strip() or 0)
 
 
-# 即梦 rejects audio outside 2–15s. Over-length audio does NOT error — the task
-# hangs in "querying" FOREVER (indistinguishable from the hang-lottery, but
-# 100% reproducible for that shot). Root-caused 2026-07-16 on Phone Neck Shot 3
-# (15.84s VO → hung 6/6 across BOTH accounts). We time-compress in place so
-# every downstream consumer (multimodal + fallbacks) transparently gets a
-# submittable clip; target a small margin under the ceiling so float/encoder
-# rounding can't nudge it back over.
+# 即梦 rejects audio outside 2–15s. Both ends of this range fail the SAME
+# way — no error, the task just hangs "querying" FOREVER (indistinguishable
+# from the hang-lottery, but 100% reproducible for that shot). Over-length:
+# root-caused 2026-07-16 on Phone Neck Shot 3 (15.84s VO → hung 6/6 across
+# BOTH accounts). Under-length: root-caused 2026-07-20 on Tongue EP02 Shot 5
+# (a one-line "Show me your tongue." VO clip → only 1.17s, well under the
+# 2s floor → hung 6/6 across two separate generation runs, misread at first
+# as account throttling since it happened right after two OTHER shots also
+# hung for a real reason — two-person lip-sync frames, a different bug
+# entirely). This module's own duration calc (`dur = max(4, min(15,
+# round(_dur(aud)) or 5))`) ALSO clamps the requested clip length to a
+# 4s floor regardless of the audio file's real length — so a 1.17s clip
+# submitted for a 4s shot has ~3s with literally no audio to lip-sync to,
+# compounding the under-2s problem. Fixing both ends in one pass: speed up
+# over-length audio, pad under-length audio with trailing silence up to a
+# safe floor. An EARLIER version of this function deliberately left
+# under-length audio alone ("padding would desync lip-sync") — that
+# reasoning was wrong in practice: a closed-mouth silent tail is a minor
+# cosmetic issue; a guaranteed permanent hang is not a trade worth making
+# to avoid it.
 JIMENG_AUDIO_MAX_S = 15.0
 JIMENG_AUDIO_TARGET_S = 14.6
+JIMENG_AUDIO_MIN_S = 2.0
+JIMENG_AUDIO_MIN_TARGET_S = 4.2  # matches this module's own 4s clip-duration floor + margin
 
 
 def fit_audio_for_jimeng(path: str, max_s: float = JIMENG_AUDIO_MAX_S,
-                         target_s: float = JIMENG_AUDIO_TARGET_S) -> bool:
-    """If `path` is longer than max_s, speed it up (ffmpeg atempo, pitch-
-    preserving) to target_s IN PLACE. Returns True if it rewrote the file.
+                         target_s: float = JIMENG_AUDIO_TARGET_S,
+                         min_s: float = JIMENG_AUDIO_MIN_S,
+                         min_target_s: float = JIMENG_AUDIO_MIN_TARGET_S) -> bool:
+    """If `path` is outside 即梦's 2-15s window, fix it in place. Over-length:
+    speed up (ffmpeg atempo, pitch-preserving) to target_s. Under-length:
+    pad with trailing silence up to min_target_s. Returns True if rewritten.
 
-    atempo only accepts 0.5–2.0 per filter; our worst realistic case is a
-    ~16s clip → ~1.1x, comfortably inside one filter, so no chaining needed
-    (guarded anyway). Under-length (<2s) is left alone — that's a TTS problem
-    to fix upstream, not something speed-changing can repair, and padding
-    would desync lip-sync."""
+    atempo only accepts 0.5–2.0 per filter; our worst realistic over-length
+    case is a ~16s clip → ~1.1x, comfortably inside one filter (guarded
+    anyway). Padding (not speed-DOWN via atempo) is used for the short case
+    because a 1-2 word line slowed to fill 4+ seconds would sound
+    unnaturally draggy — a silent tail is the smaller quality hit."""
     dur = _dur(path)
-    if dur <= max_s or dur <= 0:
+    if dur <= 0:
         return False
+    if min_s <= dur <= max_s:
+        return False
+
+    if dur < min_s:
+        tmp = f"{path}.fit.mp3"
+        r = subprocess.run(
+            ["ffmpeg", "-y", "-v", "error", "-i", path,
+             "-af", f"apad=whole_dur={min_target_s:.3f}", "-c:a", "libmp3lame", tmp],
+            capture_output=True, text=True)
+        if r.returncode != 0 or not Path(tmp).exists():
+            print(f"    ⚠️  pad-to-min failed ({r.stderr.strip()[:120]}) — leaving audio as-is")
+            Path(tmp).unlink(missing_ok=True)
+            return False
+        os.replace(tmp, path)
+        print(f"    ⏱️  audio {dur:.2f}s < {min_s:.0f}s floor → padded with silence to "
+              f"{_dur(path):.1f}s (即梦-submittable)")
+        return True
+
     tempo = dur / target_s
     if tempo > 2.0:  # pathological; a single atempo can't do it — leave loud + visible
         print(f"    ⚠️  audio {dur:.1f}s needs {tempo:.2f}x (>2.0 atempo limit) — "
@@ -422,8 +479,22 @@ def submit_shot_multimodal(img, aud, jimeng_text, model):
     """Submit multimodal2video — image + audio → lip-sync talking-head video."""
     dur = max(4, min(15, round(_dur(aud)) or 5))
     prompt = compose_multimodal_prompt(jimeng_text) or "医生自然讲解，轻微点头眨眼，摄影机缓慢推入，9:16竖屏"
+    # --video_resolution is REQUIRED once --model_version is set explicitly —
+    # root-caused 2026-07-20 after a 4-DAY, 50+-attempt, 0%-success streak on
+    # multimodal2video that had been misdiagnosed as account throttling/
+    # compliance/network flakiness. The account's own web UI could generate
+    # digital-human video fine the whole time (ruling out account/compliance
+    # issues) — the actual CLI submission was returning either an inconsistent
+    # immediate "fail" or an indefinite "querying" limbo, and a raw manual
+    # CLI call surfaced the real error: `ret=10001 invalid param:
+    # video_resolution_type`. This exact fix was already applied to
+    # submit_shot_image2video()/submit_silent_shot() on 2026-07-20 (same root
+    # cause) but NOT here — the most-used submission path was the one left
+    # broken. Verified: identical prompt/image/audio went from failing/hanging
+    # to a genuine ~80s success immediately after adding this flag.
     res = _dreamina(["multimodal2video", "--image", img, "--audio", aud,
                      "--prompt", prompt, "--ratio", "9:16", "--duration", str(dur),
+                     "--video_resolution", "720p",
                      "--model_version", model, "--poll", "0"])
     return res.get("submit_id"), res
 
@@ -433,8 +504,14 @@ def submit_shot_image2video(img, aud, jimeng_text, model):
     Returns (submit_id, res). Audio must be mixed in via mix_audio() after download."""
     dur = max(4, min(15, round(_dur(aud)) or 5))
     prompt = compose_i2v_prompt(jimeng_text) or "画面自然流动，摄影机缓慢推入，9:16竖屏"
+    # --video_resolution is REQUIRED once --model_version is set explicitly —
+    # found 2026-07-20: omitting it now returns ret=10001 "invalid param:
+    # video_resolution_type" (the CLI's own --help doesn't flag this as
+    # mandatory, but the API rejects the omission). Always 720p here since
+    # only seedance2.0_vip supports 1080p/4k and that's not what we submit.
     res = _dreamina(["image2video", "--image", img,
                      "--prompt", prompt, "--duration", str(dur),
+                     "--video_resolution", "720p",
                      "--model_version", model, "--poll", "0"])
     return res.get("submit_id"), res
 
@@ -460,8 +537,11 @@ def submit_silent_shot(img, jimeng_text, model, duration):
     track afterward so the clip still has an [v][a] pair for concat().
     Returns (submit_id, res)."""
     prompt = compose_i2v_prompt(jimeng_text) or "画面自然流动，摄影机缓慢推入，9:16竖屏"
+    # --video_resolution required once --model_version is explicit — see
+    # submit_shot_image2video()'s docstring for the full 2026-07-20 finding.
     res = _dreamina(["image2video", "--image", img,
                      "--prompt", prompt, "--duration", str(duration),
+                     "--video_resolution", "720p",
                      "--model_version", model, "--poll", "0"])
     return res.get("submit_id"), res
 
@@ -848,6 +928,7 @@ def main():
         final = str(vdir / "final.mp4")
         concat(mp4s, final)  # already in shot order — do NOT re-sort
         strip_ai_watermark(final)
+        _maybe_tick_video_checkbox(args.row)
         # A new merge invalidates any cached caption transcript — nuke it so
         # add_karaoke_captions can never caption the previous final's audio
         # (belt-and-braces: it also fingerprints the video itself).
@@ -915,6 +996,7 @@ def main():
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
             strip_ai_watermark(final)
+            _maybe_tick_video_checkbox(args.row)
             (vdir / "words.json").unlink(missing_ok=True)  # stale caption transcript
             # NOT calling upload_raw_video_property here on purpose: the
             # Production Tracker has no "Raw Video" property (confirmed
@@ -1152,6 +1234,7 @@ def main():
             final = str(vdir / "final.mp4")
             concat(sorted(mp4s), final)
             strip_ai_watermark(final)
+            _maybe_tick_video_checkbox(args.row)
             (vdir / "words.json").unlink(missing_ok=True)  # stale caption transcript
             # NOT calling upload_raw_video_property here on purpose: the
             # Production Tracker has no "Raw Video" property (confirmed
