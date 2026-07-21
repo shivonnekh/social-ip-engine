@@ -26,6 +26,7 @@ def _clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
         "NOTION_PUBLISH_SCHEDULE_ENABLED",
         "NOTION_PUBLISH_SCHEDULE_HOUR_HKT",
         "NOTION_PUBLISH_SCHEDULE_MINUTE_HKT",
+        "NOTION_PUBLISH_SCHEDULE_INTERVAL_S",
     ):
         monkeypatch.delenv(var, raising=False)
 
@@ -105,6 +106,30 @@ def test_target_minute_defaults_to_0() -> None:
 def test_target_minute_out_of_range_falls_back_to_default(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("NOTION_PUBLISH_SCHEDULE_MINUTE_HKT", "-1")
     assert sched._target_minute() == 0
+
+
+# ------------------------------------------------------------- interval mode
+
+
+def test_interval_seconds_unset_by_default() -> None:
+    assert sched._interval_seconds() is None
+
+
+def test_interval_seconds_reads_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("NOTION_PUBLISH_SCHEDULE_INTERVAL_S", "120")
+    assert sched._interval_seconds() == 120
+
+
+def test_interval_seconds_non_numeric_falls_back_to_none(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("NOTION_PUBLISH_SCHEDULE_INTERVAL_S", "not-a-number")
+    assert sched._interval_seconds() is None
+
+
+def test_interval_seconds_zero_or_negative_falls_back_to_none(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("NOTION_PUBLISH_SCHEDULE_INTERVAL_S", "0")
+    assert sched._interval_seconds() is None
+    monkeypatch.setenv("NOTION_PUBLISH_SCHEDULE_INTERVAL_S", "-5")
+    assert sched._interval_seconds() is None
 
 
 # -------------------------------------------------------------- run_scheduled_sweep
@@ -230,3 +255,50 @@ async def test_start_loop_noop_when_disabled(monkeypatch: pytest.MonkeyPatch) ->
     # Must return immediately (not hang forever in the sleep loop).
     await sched.start_publish_schedule_loop()
     assert ran == []
+
+
+@pytest.mark.asyncio
+async def test_start_loop_uses_interval_mode_when_configured(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The daily-fixed-hour trigger depends on a Notion Automation existing
+    and firing correctly — root-caused 2026-07-21 as unreliable in
+    production (a Stage flip to '✅ Published' produced zero requests to
+    the live webhook for over an hour). NOTION_PUBLISH_SCHEDULE_INTERVAL_S
+    is the self-contained fallback: when set, this service checks Notion
+    itself on a short fixed cadence instead of waiting to be told, so
+    'the button works' no longer depends on a no-code automation staying
+    correctly wired forever. plan_and_dispatch()'s own duplicate-post
+    ledger makes checking frequently safe — a sweep with nothing new to do
+    is a no-op, exactly like the existing daily sweep."""
+    monkeypatch.setenv("NOTION_PUBLISH_SCHEDULE_ENABLED", "true")
+    monkeypatch.setenv("NOTION_PUBLISH_SCHEDULE_INTERVAL_S", "5")
+
+    sweep_calls = []
+
+    async def fake_sweep():
+        sweep_calls.append(True)
+
+    sleep_calls = []
+
+    async def fake_sleep(seconds):
+        # Raised from _sleep (not run_scheduled_sweep) deliberately: the
+        # loop body only wraps the sweep call in try/except Exception, so a
+        # stop signal raised from inside the sweep would just get logged
+        # and swallowed, hanging the test forever instead of stopping it.
+        sleep_calls.append(seconds)
+        if len(sleep_calls) >= 3:
+            raise _StopLoop
+
+    monkeypatch.setattr(sched, "run_scheduled_sweep", fake_sweep)
+    monkeypatch.setattr(sched, "_sleep", fake_sleep)
+
+    with pytest.raises(_StopLoop):
+        await sched.start_publish_schedule_loop()
+
+    assert len(sweep_calls) == 2  # sleep raises on its 3rd call, before a 3rd sweep runs
+    # Interval mode sleeps the configured interval every iteration —
+    # never the daily seconds_until_next_run() computation.
+    assert sleep_calls == [5, 5, 5]
+
+
+class _StopLoop(Exception):
+    """Sentinel to break out of the intentionally-infinite loop in tests."""

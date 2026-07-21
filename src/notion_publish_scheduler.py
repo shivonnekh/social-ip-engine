@@ -51,6 +51,23 @@ CONFIG (opt-in — default OFF)
                                          on the next deploy.
     NOTION_PUBLISH_SCHEDULE_HOUR_HKT    default 9  (0-23, Asia/Hong_Kong time)
     NOTION_PUBLISH_SCHEDULE_MINUTE_HKT  default 0  (0-59)
+    NOTION_PUBLISH_SCHEDULE_INTERVAL_S  unset by default (daily-fixed-hour mode).
+                                         When set to a positive integer, REPLACES
+                                         the daily-fixed-hour trigger with a short
+                                         fixed-cadence check every N seconds —
+                                         added 2026-07-21 after finding the Notion
+                                         Automation that's supposed to call the
+                                         live webhook on a Stage flip wasn't firing
+                                         at all in production (see
+                                         ``_interval_seconds()`` docstring for the
+                                         full root cause). Note the actual cadence
+                                         is N seconds PLUS however long
+                                         ``run_scheduled_sweep()`` takes to
+                                         complete (dominated by
+                                         ``resume_in_flight()``'s in-flight-task
+                                         polling, up to ``IG_PUBLISH_POLL_MAX_S``)
+                                         — this is a "check at least every N
+                                         seconds," not a precision timer.
 """
 
 from __future__ import annotations
@@ -103,6 +120,46 @@ def _target_minute() -> int:
     except ValueError:
         return 0
     return value if 0 <= value <= 59 else 0
+
+
+def _interval_seconds() -> int | None:
+    """Optional short-interval fallback mode. Root-caused 2026-07-21: the
+    Notion Automation that's supposed to call ``POST /admin/notion-publish``
+    the instant Stage flips to "✅ Published" was found to NOT be firing at
+    all in production (checked the live server's access logs for a >1hr
+    window after a Stage flip — zero requests to any /admin/* endpoint).
+    That's a no-code automation-wiring problem on Notion's side which isn't
+    inspectable or fixable via the Notion API (Automations aren't exposed
+    there), so "make the button reliably work" has to mean "stop depending
+    on the button firing at all."
+
+    When set, this makes ``start_publish_schedule_loop`` check Notion on a
+    short fixed cadence instead of (or in addition to, if a human later
+    fixes the automation too) waiting to be told. Safe to run frequently:
+    ``plan_and_dispatch()`` already has a duplicate-post ledger, so a sweep
+    that finds nothing new to do is a no-op — same guarantee the daily
+    sweep and the live webhook both already rely on.
+
+    Returns None (falls back to the daily fixed-hour trigger) if unset,
+    non-numeric, or <= 0."""
+    raw = os.environ.get("NOTION_PUBLISH_SCHEDULE_INTERVAL_S", "").strip()
+    if not raw:
+        return None
+    try:
+        value = int(raw)
+    except ValueError:
+        return None
+    return value if value > 0 else None
+
+
+async def _sleep(seconds: float) -> None:
+    """Thin wrapper around ``asyncio.sleep`` so tests can patch just this
+    module's sleeping behavior without touching the real, global
+    ``asyncio.sleep`` — monkeypatching the global directly was tried and
+    found to break pytest-asyncio's own internal loop scheduling (it
+    depends on the real function too), hanging the whole test run rather
+    than just this loop."""
+    await asyncio.sleep(seconds)
 
 
 def seconds_until_next_run(now: datetime, hour: int, minute: int = 0) -> float:
@@ -178,19 +235,47 @@ async def run_scheduled_sweep() -> dict[str, Any]:
 async def start_publish_schedule_loop() -> None:
     """Long-running coroutine — mirrors
     ``reconciliation.start_reconciliation_loop``'s sleep-loop pattern.
-    Recomputes the next target time FRESH on every iteration (rather than
-    sleeping a fixed 24h) so it self-corrects after a slow sweep or a
-    Render restart, instead of drifting later each day."""
+
+    Two modes, both dispatching through the exact same
+    ``run_scheduled_sweep()`` / ``plan_and_dispatch()`` path:
+
+    - **Interval mode** (``NOTION_PUBLISH_SCHEDULE_INTERVAL_S`` set): checks
+      Notion every N seconds. This is the fallback for when the Notion
+      Automation that's supposed to call the live webhook isn't firing
+      (see ``_interval_seconds()`` docstring for the 2026-07-21 root
+      cause) — "the button works" stops depending on that automation.
+    - **Daily mode** (default, no interval set): the original behavior —
+      recomputes the next target time FRESH on every iteration (rather
+      than sleeping a fixed 24h) so it self-corrects after a slow sweep or
+      a Render restart, instead of drifting later each day. Only useful
+      for catching a row deferred by a future ``Publish Date`` once that
+      date arrives.
+    """
     if not _enabled():
         logger.info(
             "[notion-publish-schedule] NOTION_PUBLISH_SCHEDULE_ENABLED is false — loop not started"
         )
         return
+
+    interval = _interval_seconds()
+    if interval is not None:
+        # "Every N seconds" is a floor, not a precision timer — actual cadence
+        # is N seconds PLUS however long run_scheduled_sweep() itself takes
+        # (dominated by resume_in_flight()'s in-flight-task polling). See the
+        # module CONFIG docstring for NOTION_PUBLISH_SCHEDULE_INTERVAL_S.
+        logger.info("[notion-publish-schedule] loop started — interval mode, every %ds", interval)
+        while True:  # infinite by design — this branch never falls through
+            await _sleep(interval)
+            try:
+                await run_scheduled_sweep()
+            except Exception:  # belt-and-suspenders — run_scheduled_sweep already catches
+                logger.exception("[notion-publish-schedule] loop error (will retry next cycle)")
+
     hour, minute = _target_hour(), _target_minute()
     logger.info("[notion-publish-schedule] loop started — target=%02d:%02d HKT daily", hour, minute)
     while True:
         wait_s = seconds_until_next_run(datetime.now(_HKT), hour, minute)
-        await asyncio.sleep(wait_s)
+        await _sleep(wait_s)
         try:
             await run_scheduled_sweep()
         except Exception:  # belt-and-suspenders — run_scheduled_sweep already catches

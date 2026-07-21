@@ -245,9 +245,9 @@ services:
         value: "10"     # cap Graph API calls per account per cycle
 
       # ── Notion publish-date schedule sweep (src/notion_publish_scheduler.py) ──
-      # The live "go live" trigger (POST /admin/notion-publish) is
-      # event-driven — a Notion Automation calls it the instant Stage flips
-      # to "✅ Published". notion_publish.py also respects an optional
+      # The live "go live" trigger (POST /admin/notion-publish) is SUPPOSED
+      # to be event-driven — a Notion Automation calls it the instant Stage
+      # flips to "✅ Published". notion_publish.py also respects an optional
       # "Publish Date" property, deferring a row whose date hasn't arrived
       # yet — but a deferred row has no future Stage-change event to
       # re-trigger it. This loop is that missing "somebody checks back":
@@ -264,3 +264,16 @@ services:
         value: "9"      # 0-23, Asia/Hong_Kong time
       - key: NOTION_PUBLISH_SCHEDULE_MINUTE_HKT
         value: "0"      # 0-59
+      # Root-caused 2026-07-21: the Notion Automation above was found NOT
+      # firing at all in production (checked live server access logs for a
+      # >1hr window after a Stage flip — zero requests to any /admin/*
+      # endpoint). Notion's public API doesn't expose Automations for
+      # inspection/repair, so this interval is the self-contained fix —
+      # when set, the daily-fixed-hour behavior above is replaced with a
+      # short fixed-cadence check instead, so "the button works" no longer
+      # depends on that automation staying correctly wired. Unset (the
+      # blueprint default) = original once-daily behavior. sync:false,
+      # same reasoning as ENABLED above — this is an operational dial, not
+      # a fixed constant, and must never be silently reset by a sync.
+      - key: NOTION_PUBLISH_SCHEDULE_INTERVAL_S
+        sync: false
