@@ -368,5 +368,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/guasha-page-1.png"
     ]
+  },
+  {
+    "keyword": "onion",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The onion-on-feet trick is an old warming remedy 🧅\n\nQuick q so I tailor it — are you mainly fighting a cough/cold, or cold feet at night?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM onion guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🧅 Onion Slices on Feet Overnight",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/onion-page-1.png"
+    ]
   }
 ]
