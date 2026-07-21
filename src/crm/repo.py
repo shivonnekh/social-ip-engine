@@ -73,6 +73,25 @@ class CRMRepo:
         await self._db.commit()
         return cur.rowcount == 1
 
+    async def release_webhook_event(self, event_id: str) -> None:
+        """Undo a claim made by ``try_claim_webhook_event`` when the send it
+        was guarding turned out to actually FAIL.
+
+        Root-caused 2026-07-21: ``handle_comment()`` claims its idempotency
+        keys before attempting any reply — correct for preventing a
+        double-send on Meta's at-least-once webhook redelivery, but with no
+        release path a single transient send failure (a Graph API hiccup,
+        a timeout) permanently blocked EVERY future retry of that exact
+        comment, including the same text posted again or a redelivered
+        webhook — the customer matched a real rule and never got a reply,
+        with no recovery short of a manual DB fix. A successful send must
+        NEVER call this (the claim staying permanent is exactly what
+        prevents a real duplicate DM) — only a confirmed failure should.
+        A no-op if the event was never claimed (or already released) —
+        callers don't need to track claim state to safely call this."""
+        await self._db.execute("DELETE FROM webhook_events WHERE event_id = ?", (event_id,))
+        await self._db.commit()
+
     # ---------------------------------------------------------------
     # Users
     # ---------------------------------------------------------------

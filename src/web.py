@@ -44,6 +44,11 @@ from src.channels.facebook import router as facebook_router
 from src.channels.facebook import set_pipeline as set_fb_pipeline
 from src.channels.instagram import router as instagram_router
 from src.channels.instagram import set_pipeline as set_ig_pipeline
+# Re-exported from notion_sync_runner.py (the canonical definition, shared
+# with the interval-poll scheduler) so `web._caption_enabled()` /
+# `web._caption_render_cap()` keep working exactly as before for anything
+# (tests included) that references them via this module.
+from src.notion_sync_runner import _caption_enabled, _caption_render_cap
 # WhatsApp channel removed — not routing IG/Messenger events to WhatsApp.
 # Consultation layer removed — Jessica partnership ended.
 
@@ -248,6 +253,15 @@ async def lifespan(app: FastAPI):
     # the flag and returns immediately (logged, not silent) if unset.
     from src.notion_publish_scheduler import start_publish_schedule_loop
     background_tasks.append(asyncio.create_task(start_publish_schedule_loop()))
+
+    # Interval-poll fallback for the "Ready to Publish" comment-keyword sync
+    # (POST /admin/notion-sync) — added 2026-07-21 after finding that
+    # Automation wasn't firing either (same root cause as the publish one
+    # above: checked live logs, zero requests for 35+ minutes after a real
+    # Stage flip). Opt-in via NOTION_SYNC_SCHEDULE_ENABLED (default off);
+    # see notion_sync_scheduler module docstring.
+    from src.notion_sync_scheduler import start_sync_schedule_loop
+    background_tasks.append(asyncio.create_task(start_sync_schedule_loop()))
 
     try:
         yield
@@ -475,33 +489,6 @@ async def admin_backfill_comments(request: Request) -> JSONResponse:
     return JSONResponse({"status": "done", "processed": summary})
 
 
-def _caption_enabled() -> bool:
-    """Whether ``POST /admin/notion-sync`` should ALSO dispatch caption-burn
-    background tasks for rows with a "Raw Video" but no "Production Video"
-    yet (see ``notion_sync._find_caption_eligible_rows``). OFF by default —
-    deliberately opt-in, mirroring ``NOTION_PUBLISH_SCHEDULE_ENABLED``'s
-    precedent in ``notion_publish_scheduler.py``: unlike cover-gen (a quick
-    outbound image-API call), a caption burn is a real CPU/RAM-heavy
-    moviepy/ffmpeg render running on THIS SAME process, which also answers
-    live Instagram DM replies and comment webhooks — a false default-on
-    here would silently start spending real compute on live traffic the
-    moment this deploys. Set ``NOTION_SYNC_CAPTION_ENABLED=1`` to turn on."""
-    return os.environ.get("NOTION_SYNC_CAPTION_ENABLED", "0").strip() == "1"
-
-
-def _caption_render_cap() -> int:
-    """Max caption-burn renders to DISPATCH per ``/admin/notion-sync`` call.
-    Deliberately stingier than the image-gen caps (default 5) — each unit
-    here is real CPU-seconds-to-minutes of rendering on the live-traffic
-    process, not a quick outbound API call. Override with
-    ``NOTION_SYNC_MAX_CAPTION_RENDERS`` (default 1)."""
-    raw = os.environ.get("NOTION_SYNC_MAX_CAPTION_RENDERS", "1").strip()
-    try:
-        return max(0, int(raw))
-    except ValueError:
-        return 1
-
-
 @app.post("/admin/notion-sync")
 async def admin_notion_sync(request: Request) -> JSONResponse:
     """Notion Automation calls this the moment a Production row's Stage
@@ -513,79 +500,38 @@ async def admin_notion_sync(request: Request) -> JSONResponse:
     Auth: shared-secret header (this endpoint writes to a live repo and
     triggers real outbound DMs' content going forward — must not be open).
     Configure the SAME value in the Notion Automation's webhook headers.
+
+    The actual work (sync + caption dispatch + git push) lives in
+    ``notion_sync_runner.run_sync()`` — shared with the interval-poll
+    fallback scheduler (``notion_sync_scheduler.py``, added 2026-07-21 after
+    finding this Automation doesn't always fire reliably in production) so
+    the two triggers can never diverge on behavior.
     """
     expected = os.environ.get("NOTION_SYNC_SECRET", "")
     if not expected or request.headers.get("X-Sync-Secret", "") != expected:
         return JSONResponse({"error": "unauthorized"}, status_code=401)
 
-    from starlette.concurrency import run_in_threadpool
+    from src import notion_sync
+    from src.notion_sync_runner import run_sync
 
-    from src import git_publish, notion_sync
-
-    try:
-        # sync_once() does blocking I/O (Notion API, image download, and now
-        # OpenAI image generation up to a few minutes) — never run it on the
-        # event loop or it stalls webhooks/health checks for the whole worker.
-        result = await run_in_threadpool(notion_sync.sync_once)
-    except notion_sync.NotionSyncError as exc:
-        logger.exception("[notion-sync] failed")
-        return JSONResponse({"error": str(exc)}, status_code=502)
-
-    # Caption-burn dispatch — a SEPARATE opt-in step from everything above.
-    # Placed AFTER sync_once() has already durably saved comment_responses.json
-    # / notion_sync_state.json / the cover-gen work, so this can never affect
-    # (or be affected by) that already-completed, higher-priority work. OFF
-    # by default (_caption_enabled) — see that helper's docstring for why a
-    # caption burn is materially riskier to leave default-on than cover-gen.
-    # Tasks are DISPATCHED (asyncio.create_task), never awaited here — same
-    # non-blocking pattern as notion_publish_tasks in admin_notion_publish,
-    # so a slow render (10-60+ seconds) never delays this webhook's response.
+    # Only ever create/touch app.state.notion_caption_tasks when captions
+    # are actually enabled — matches the pre-refactor behavior exactly
+    # (asserted by tests/test_admin_notion_sync_caption.py): the attribute
+    # must stay completely absent (not even an empty list) when
+    # NOTION_SYNC_CAPTION_ENABLED is off, so callers can distinguish
+    # "disabled" from "enabled with nothing pending."
+    caption_tasks = None
     if _caption_enabled():
-        from src import notion_caption_gen
-
         caption_tasks = getattr(request.app.state, "notion_caption_tasks", None)
         if caption_tasks is None:
             caption_tasks = []
             request.app.state.notion_caption_tasks = caption_tasks
-        cap = _caption_render_cap()
-        for pending in result.get("caption_pending", [])[:cap]:
-            task = asyncio.create_task(
-                notion_caption_gen.burn_captions_for_row(pending["row_id"], pending["video_url"])
-            )
-            caption_tasks.append(task)
 
-    if result["rules_changed"]:
-        # Persist the rules, the processed-row state, the media-attach state,
-        # the wired-checkbox retry state, AND the infographic PNGs themselves
-        # — git_publish only pushes what it is handed, and anything left off
-        # git vanishes on the next deploy. push_paths() silently skips any
-        # path that doesn't exist locally (e.g. no pending checkbox retries
-        # this run), so it's safe to always list it here.
-        paths = [
-            "data/channels/comment_responses.json",
-            "data/channels/notion_sync_state.json",
-            "data/channels/notion_media_state.json",
-            "data/channels/notion_wired_pending.json",
-            *result.get("media_paths", []),
-        ]
-        push = git_publish.push_paths(
-            paths,
-            message=f"chore: notion-sync — {len(result['added'])} new keyword rule(s)",
-        )
-        result["git_push"] = push
-    else:
-        # Still persist state (rows we decided to skip permanently, and any
-        # checkbox retry that resolved) even with no new rules, so we don't
-        # re-check them — or re-attempt an already-fixed checkbox — every
-        # trigger.
-        push = git_publish.push_paths(
-            [
-                "data/channels/notion_sync_state.json",
-                "data/channels/notion_wired_pending.json",
-            ],
-            message="chore: notion-sync — state update",
-        )
-        result["git_push"] = push
+    try:
+        result = await run_sync(caption_task_sink=caption_tasks)
+    except notion_sync.NotionSyncError as exc:
+        logger.exception("[notion-sync] failed")
+        return JSONResponse({"error": str(exc)}, status_code=502)
 
     logger.info("[notion-sync] added=%d skipped=%d errors=%d",
                 len(result["added"]), len(result["skipped"]), len(result["errors"]))

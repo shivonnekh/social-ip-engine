@@ -87,6 +87,14 @@ class CRMRepoPG:
             )
         return result.endswith(" 1")
 
+    async def release_webhook_event(self, event_id: str) -> None:
+        """Undo a claim made by ``try_claim_webhook_event`` when the send it
+        was guarding turned out to actually FAIL. See ``CRMRepo``'s
+        (SQLite) docstring for the full 2026-07-21 root cause — this is the
+        same fix, Postgres side. A no-op if the event was never claimed."""
+        async with self._pool.acquire() as conn:
+            await conn.execute("DELETE FROM webhook_events WHERE event_id = $1", event_id)
+
     # ---------------------------------------------------------------
     # Users
     # ---------------------------------------------------------------

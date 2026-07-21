@@ -347,6 +347,9 @@ class _FakeCRM:
         self.claimed.add(event_id)
         return True
 
+    async def release_webhook_event(self, event_id):
+        self.claimed.discard(event_id)
+
     async def get_user(self, phone):
         return self.users.get(phone)
 
@@ -409,6 +412,104 @@ async def test_handle_comment_persistent_dedup_blocks_repeat(monkeypatch, tmp_pa
     assert crm.messages[0][1].content == "gut pls"
     assert crm.messages[1][1].role == "chloe"
     assert crm.messages[1][1].media_urls == ["https://x/g.png"]
+
+
+@pytest.mark.asyncio
+async def test_handle_comment_failed_send_releases_claims_for_retry(monkeypatch, tmp_path):
+    """Root-caused 2026-07-21 (live incident): a real 'guasha' comment matched
+    its rule, claimed both idempotency keys, then the private-reply send
+    failed — with the claims never released, the customer's actual comment
+    (and every retry) was silently dropped as 'duplicate', with NO DM ever
+    sent and no way to recover short of a manual fix. This test locks in the
+    fix: a failed send must release its claims so the SAME comment posted
+    again (or a redelivered webhook) gets a genuine retry, while a comment
+    that eventually succeeds must stay permanently claimed (see the sibling
+    dedup test above) so a real duplicate send never happens."""
+    cfg = tmp_path / "rules.json"
+    cfg.write_text(json.dumps({
+        "guasha": {
+            "dm_text": "here's the map",
+            "public_ack": "sent!",
+        },
+    }), encoding="utf-8")
+    monkeypatch.setenv("COMMENT_RESPONSES_PATH", str(cfg))
+    comment_rules._load_raw.cache_clear()
+    monkeypatch.setattr(meta_webhook, "_MEDIA_PAUSE_S", 0.0)
+
+    private_attempts, public_sent = [], []
+
+    # First attempt fails (simulates the real incident's transient Graph API
+    # failure); second attempt (the retry) succeeds.
+    async def flaky_priv(cid, text, *, platform="instagram", **_):
+        private_attempts.append((cid, text))
+        if len(private_attempts) == 1:
+            return meta_client.SendResult(False, "transient error")
+        return meta_client.SendResult(True)
+
+    async def fake_pub(cid, text, *, platform="instagram", **_):
+        public_sent.append((cid, text)); return meta_client.SendResult(True)
+
+    monkeypatch.setattr(meta_client, "send_private_reply", flaky_priv)
+    monkeypatch.setattr(meta_client, "reply_to_comment", fake_pub)
+
+    comment = IncomingComment(platform="instagram", comment_id="c-guasha", text="guasha",
+                              from_id="U-shivonne", from_username="shivonne_ksw", media_id="m-reel")
+    pipe = _FakePipeline(["AGENT SHOULD NOT RUN"])
+    crm = _FakeCRM()
+    pipe._crm = crm
+
+    # First call: send fails — must NOT leave a permanent claim behind.
+    await meta_webhook.handle_comment(comment, pipe)
+    assert len(private_attempts) == 1
+    assert public_sent == []  # public ack only fires after a successful private send
+
+    # Retry with the SAME comment_id/text (mirrors a webhook redelivery, or
+    # the same person commenting "guasha" again after seeing nothing happen).
+    await meta_webhook.handle_comment(comment, pipe)
+
+    assert len(private_attempts) == 2          # retry actually re-attempted the send
+    assert public_sent == [("c-guasha", "sent!")]  # succeeded on retry
+
+
+@pytest.mark.asyncio
+async def test_handle_comment_unhandled_exception_still_releases_claims(monkeypatch, tmp_path):
+    """Code-review finding on the fix above: _comment_via_canned/_comment_via_agent
+    returning a clean `sent=False` isn't the only failure mode — an actual
+    UNHANDLED exception (a bug, an unexpected error type not caught
+    internally by meta_client) must ALSO release the claims, or it silently
+    reproduces the exact live incident through a different path (the
+    exception skips the `if not sent:` block entirely, leaving both claims
+    stuck forever). Forces send_private_reply to raise directly (not just
+    return a failed SendResult) to prove handle_comment's dispatch is
+    exception-safe end to end."""
+    cfg = tmp_path / "rules.json"
+    cfg.write_text(json.dumps({
+        "ask": {"dm_text": "", "use_agent": True},
+    }), encoding="utf-8")
+    monkeypatch.setenv("COMMENT_RESPONSES_PATH", str(cfg))
+    comment_rules._load_raw.cache_clear()
+
+    attempts = []
+
+    async def raising_priv(cid, text, *, platform="instagram", **_):
+        attempts.append((cid, text))
+        if len(attempts) == 1:
+            raise RuntimeError("simulated unexpected bug")
+        return meta_client.SendResult(True)
+
+    monkeypatch.setattr(meta_client, "send_private_reply", raising_priv)
+
+    comment = IncomingComment(platform="instagram", comment_id="c-exc", text="ask me anything",
+                              from_id="U-exc", from_username="amy", media_id="m42")
+    pipe = _FakePipeline(["你好", "想問咩"])
+    crm = _FakeCRM()
+    pipe._crm = crm
+
+    await meta_webhook.handle_comment(comment, pipe)  # raises internally, must not propagate
+    assert len(attempts) == 1
+
+    await meta_webhook.handle_comment(comment, pipe)  # retry must actually re-attempt
+    assert len(attempts) == 2
 
 
 @pytest.mark.asyncio

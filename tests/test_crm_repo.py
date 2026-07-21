@@ -271,3 +271,41 @@ async def test_upcoming_appointments_custom_window(repo: CRMRepo) -> None:
     phones_48h = await repo.list_phones_for_upcoming_appointments(within_hours=48)
     assert phone_near in phones_48h
     assert phone_far in phones_48h
+
+
+# ------------------------------------------------------- webhook idempotency
+
+
+@pytest.mark.asyncio
+async def test_try_claim_webhook_event_first_time_succeeds(repo: CRMRepo) -> None:
+    assert await repo.try_claim_webhook_event("evt-1", "comment") is True
+
+
+@pytest.mark.asyncio
+async def test_try_claim_webhook_event_second_time_fails(repo: CRMRepo) -> None:
+    """Same event_id claimed twice — the second claim must be rejected, or
+    Meta's at-least-once webhook redelivery would cause duplicate replies."""
+    assert await repo.try_claim_webhook_event("evt-2", "comment") is True
+    assert await repo.try_claim_webhook_event("evt-2", "comment") is False
+
+
+@pytest.mark.asyncio
+async def test_release_webhook_event_allows_reclaim(repo: CRMRepo) -> None:
+    """Root-caused 2026-07-21: a comment matched a rule, claimed its
+    idempotency keys, then failed to actually send (transient API error) —
+    with no way to release the claim, the customer never got a reply and no
+    retry (webhook redelivery, or the same comment text posted again) could
+    ever succeed. release_webhook_event() is the fix: call it after a
+    verified-failed send so a genuine retry gets a fresh chance, while a
+    genuinely successful send stays claimed forever (no release call)."""
+    assert await repo.try_claim_webhook_event("evt-3", "comment") is True
+    await repo.release_webhook_event("evt-3")
+    assert await repo.try_claim_webhook_event("evt-3", "comment") is True
+
+
+@pytest.mark.asyncio
+async def test_release_webhook_event_on_unclaimed_id_is_a_noop(repo: CRMRepo) -> None:
+    """Releasing an event_id that was never claimed must not raise — the
+    caller doesn't need to track claim state just to safely call this."""
+    await repo.release_webhook_event("never-claimed")  # must not raise
+    assert await repo.try_claim_webhook_event("never-claimed", "comment") is True

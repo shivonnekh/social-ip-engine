@@ -302,6 +302,36 @@ async def _claim_webhook_event(event_id: str, kind: str, pipeline: JessicaPipeli
         return False
 
 
+async def _release_webhook_event(event_id: str, kind: str, pipeline: JessicaPipeline) -> None:
+    """Undo a claim made by ``_claim_webhook_event`` when the send it was
+    guarding turned out to actually FAIL.
+
+    Root-caused 2026-07-21 (live incident): ``handle_comment`` claims both
+    its idempotency keys BEFORE attempting any reply — correct for
+    preventing a double-send on Meta's at-least-once webhook redelivery,
+    but with no release path a single transient send failure permanently
+    blocked every future retry of that exact comment (a redelivered
+    webhook, or the same person commenting the same keyword again), with
+    no recovery short of a manual DB fix — exactly what happened live: a
+    real "guasha" comment matched its rule, claimed its keys, the private
+    reply failed, and the customer never got a reply. Only call this after
+    a CONFIRMED failed send — a successful send must never release, since
+    that permanence is what prevents a genuine duplicate DM.
+    Never raises — same "must not break the caller" contract as
+    ``_claim_webhook_event``; a release failure just means the next retry
+    is blocked one more cycle, not a crash.
+    """
+    crm = getattr(pipeline, "_crm", None)
+    release = getattr(crm, "release_webhook_event", None)
+    if release is None:
+        return
+    key = f"meta:{kind}:{event_id}"
+    try:
+        await release(key)
+    except Exception:  # noqa: BLE001
+        logger.exception("[meta] webhook idempotency release failed for %s", key)
+
+
 # ---------------------------------------------------------------------------
 # POST processing
 # ---------------------------------------------------------------------------
@@ -755,10 +785,35 @@ async def handle_comment(comment: IncomingComment, pipeline: JessicaPipeline) ->
         await unmatched_comment.handle_unmatched_comment(comment, pipeline)
         return
 
-    if rule.use_agent:
-        sent = await _comment_via_agent(comment, pipeline)
-    else:
-        sent = await _comment_via_canned(comment, rule, pipeline)
+    try:
+        if rule.use_agent:
+            sent = await _comment_via_agent(comment, pipeline)
+        else:
+            sent = await _comment_via_canned(comment, rule, pipeline)
+    except Exception:  # noqa: BLE001
+        # Root-caused 2026-07-21 (code review on the release-on-failure fix
+        # below): _comment_via_canned/_comment_via_agent returning a clean
+        # `False` was the only failure mode originally handled — but an
+        # actual UNHANDLED exception (a bug, an unexpected error type not
+        # caught internally) would skip the `if not sent:` release block
+        # entirely, silently reproducing the exact live incident this fix
+        # exists for (claims stuck forever, customer never gets a reply).
+        # Treating any exception here the same as sent=False closes that
+        # gap — every path out of the dispatch call now either succeeds or
+        # releases the claims for a genuine retry.
+        logger.exception("[meta] comment dispatch raised for %s", comment.comment_id)
+        sent = False
+
+    if not sent:
+        # The rule matched but the actual send failed (transient Graph API
+        # error, timeout, etc.) — release both claims so a genuine retry
+        # (webhook redelivery, or the same comment posted again) gets a
+        # fresh chance instead of being silently dropped forever as a
+        # "duplicate." See _release_webhook_event()'s docstring for the
+        # live incident this fixes.
+        await _release_webhook_event(comment.comment_id, "comment", pipeline)
+        await _release_webhook_event(intent_key, "comment_intent", pipeline)
+        return
 
     # Optional public acknowledgement on the thread (per-rule). Send it after
     # the private path succeeds so failures do not create public-only spam.

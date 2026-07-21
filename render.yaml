@@ -277,3 +277,18 @@ services:
       # a fixed constant, and must never be silently reset by a sync.
       - key: NOTION_PUBLISH_SCHEDULE_INTERVAL_S
         sync: false
+
+      # ── Notion sync (Ready-to-Publish DM-rule) interval-poll fallback ──
+      # (src/notion_sync_scheduler.py) — same root cause and same fix as
+      # NOTION_PUBLISH_SCHEDULE_INTERVAL_S above, but for POST
+      # /admin/notion-sync (drafts the comment-keyword DM rule at "🟢 Ready
+      # to Publish") rather than /admin/notion-publish. Default OFF; when
+      # ENABLED, checks Notion every NOTION_SYNC_SCHEDULE_INTERVAL_S seconds
+      # (default 120 if unset) regardless of whether the Notion Automation
+      # itself is firing. sync:false on both — operational dials, not fixed
+      # constants, must never be silently reset by a blueprint sync (same
+      # reasoning as IG_ENABLED/FB_ENABLED elsewhere in this file).
+      - key: NOTION_SYNC_SCHEDULE_ENABLED
+        sync: false
+      - key: NOTION_SYNC_SCHEDULE_INTERVAL_S
+        sync: false
