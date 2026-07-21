@@ -392,29 +392,7 @@ def render(video_path: Path, chunks: list[list[dict[str, Any]]], out_path: Path)
 
     final = CompositeVideoClip([video, *overlay_clips])
     final.write_videofile(
-        str(out_path), codec="libx264", audio_codec="aac",
-        # Force the SAME clean, constant frame rate concat() already encoded
-        # the source at (nv._MERGE_FPS = 30), rather than trusting
-        # ``video.fps`` — moviepy can report a derived/rounded rate (e.g.
-        # 29.85 = 597/20) that doesn't match any real frame rate a camera or
-        # encoder would produce. Root-caused 2026-07-19: Meta's Reels
-        # ingestion (POST .../media -> poll status_code) returned a terminal
-        # container status of "ERROR" for a final_karaoke.mp4 carrying this
-        # exact 597/20 rate — a non-constant/non-standard frame rate is a
-        # documented cause of Graph API video processing failures. The
-        # underlying final.mp4 (concat()'s own output, pre-caption) already
-        # measured a clean 30/1 — this bug was introduced HERE, not upstream.
-        fps=nv._MERGE_FPS,
-        # +faststart moves the moov atom to the front of the file so a
-        # server can begin processing/streaming before the full download
-        # completes — every final_karaoke.mp4 produced so far (checked via
-        # ffprobe -v trace) had moov AFTER mdat. Cheap, standard, never
-        # hurts; added as a second, independent hardening alongside the fps
-        # fix since both are documented causes of platform ingestion
-        # failures and there's no reliable way to prove which one Meta's
-        # opaque "ERROR" actually was without a successful re-test.
-        ffmpeg_params=["-movflags", "+faststart"],
-        logger=None,
+        str(out_path), codec="libx264", audio_codec="aac", fps=video.fps or 30, logger=None,
     )
     video.close()
     final.close()
