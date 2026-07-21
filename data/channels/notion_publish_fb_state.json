@@ -109,5 +109,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-07-21T03:59:42.549452+00:00"
+  },
+  "395f2a3f-4320-8138-9904-efb6d6aa4e57": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/c05c8498-fd5b-4858-866c-162b15aa1233/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667XIWCSHH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T035911Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAKeUtAVko2VlLZ41YjzsZs7TnvnFF2%2FN%2B%2BFGsZEwVfoAiByGWT0noqUGdNflSmvIVRJmS%2FNrE9p9agkEBwBWT7qaCqIBAi0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMf%2B1FE6mL0ZegRBynKtwDpwBMkQfHblN79SxkJ%2F5tDiNNtlFwr6XqS%2BGCyLlWdz7t%2FixJ27h1HXLssftcrbL%2BIy9SWaLF%2F0PRF1l%2Fw2CFtygTC4Nubt9e4RnSxd28CpIporX8ddhOYy%2BErcqUUJMA0HM66va%2BqPLBwwE6obY66N6%2BgXxjR0vX%2FyJ2mzNjRTb6leqbYThVyZrwA69roj%2BywD%2BtE68pqkS1xjqYQYhKxlOuI40duNk73uf8LJu0yDqcXvhXUM6tJGM11CYC%2Bgs%2FdP3eE5Naf6wLLDHtnz1E4zm6yZPl2YxYFEbvYJJFOsPmhB%2Fo2LcG0%2FN0oHNG3jaU0NNJBenF6xdcuTGBAn6mx2XMpmqkXAFIP%2FP%2Fcnd%2FZrPY1syoYv8SJjgCT83TjxgdrrqsYj724610bLoUgVzUQrrPdHgFYWoGNyZk1F8zkdQ39BP0DK%2B74BJu3WiCP13orCY6YBqUcB9y0GCa7TuCydKRBHv%2FEn3Wdts%2B9Wpu9ciIX1RMXhqYiuPRG2HBW8McFFGpvowiAZv5W9bCCo7TxEKHdaT0888fKOhrHI0T3OB4vleAONe%2BRU%2Bz%2F2ZHXa1uopewkS%2F3U1RmfJrINu3HlfV5lD6XCC%2Bdpd6sU1XMuDaKPdhA%2FuJsB%2B8bd%2FUwrrz70gY6pgHU0ClR3tR2UxFro6W5NJ5%2B5Y7HBby9i8s9nlyeCaaDp%2B6le8Hvb69DmiEijFX%2B7O%2FUQO7Yc3UYTb77L8kYgbpncKanHwqAOwQ83TJyHanYjIDWzngp8g4I7%2BflgQzlLBy1sMC9gbaAmurGelWFixoGrSxI8arqWnjgz0j0uLjPPz%2Fbd3P8icNDDRjdDZjuDrTyfz%2FRnAQSnDKlBPfWzhyjegyuNIDq&X-Amz-Signature=427550bc244ef2b98a6c2c6c86026d06657d06ef01a83921f390b62ae7be2f79&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/c05c8498-fd5b-4858-866c-162b15aa1233/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/guasha-395f2a3f-4320-8138-9904-efb6d6aa4e57-cover.jpg",
+    "caption": "Are Those Gua Sha Marks Hiding Secrets? 😱\n\nComment \"guasha\" 👇",
+    "account_id": "528216523715336",
+    "creation_id": "1642612526806190",
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-07-21T04:22:26.000908+00:00"
   }
 }
