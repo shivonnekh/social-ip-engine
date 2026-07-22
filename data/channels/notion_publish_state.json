@@ -137,5 +137,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-07-21T04:00:18.761903+00:00"
+  },
+  "38ff2a3f-4320-81d5-a49d-c5be46a818f8": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/8d4523c8-7d9c-4f70-8626-d9de3237fd7b/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RP7HDP3X%2F20260722%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260722T022506Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAIaCXVzLXdlc3QtMiJHMEUCID7WkbR55bee3U1tv555TNnpDtt02jqys3P2ymsFB1iSAiEAvTVdW1%2FGOPwjbuK%2BsxDoWIdz%2BLPJitjheOLrtcDMMA0qiAQIy%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2Fk1U7KJR70d3hnryrcA5U2LO0PvaqTTouEtT2Nb%2Bu%2FmSfYcrVisO4nNqb6eisI57c3qDyCteluPTsEzpFk%2BDPG6E1WX2B0lpEJz9A4JdTw%2BnNJORm41EgUk6YizYOOIYZExtoNgKQjDZC%2FhsjM%2BEe7Fw768%2BTfHc8hQzkb0ITcLRQJBCluQT7CFTUX5G31EBdyrMw47gEDWV4zYFPEYKmyHIWeh9nTuoWYQSn2kQztwcRNrCoOgkVKtoZWglTtfZfYrhaub%2Bx4fcoXowJvqorSvewLvyjSVqEEkFqnB2IBgNou5WDTj7CuJNpMSue9gaC3D4ARV8HQJAV1LtkWMe9CXW%2F9eKjLJj%2BiM4ov398u3VDcjUqPzZpkJMlngS%2Fcm%2Bio%2FfWgsl%2Fwt5V651ijyPxuLZ9vNeUHmZ8dd%2Ft3AiFOPwAbyA4T8Qt849rgRx5GOymITKS%2BkbmCbcGpbbR%2BXUhztVnKXyHCYN%2BrB5N0PC7a7H%2F9%2BD3Effss1uYWckzw7To1kJ%2BVlwXO4EMN72qDAfymSvbIFTj4rb395fdUaZIY6nY8mW9o1t407mEY%2FNNFlMUrerO8qGUF5x0dYpp%2Fce3vRxSxaOzoFPNdP0Obe20LQ1wWjIly2rrk%2FIKMGJe4dSHqpo60EngU4uqQMNDEgNMGOqUBfWKC4PnEMEJD95pd2Tt8oRVpRU4KJR0IWb2ziHJCq230hR%2BRnriU%2F8m7N6x75c4%2FKws5zrS7lKS2UGbnmOc%2B3UlYijihMoRY34AZDHbAODzws8oye6iRJbnWeRRt%2BJtSh9KeKl0KUCSJTjTQjdin6UWyZUrFSQvl7pFxIZkzEiVpI5PyIrgPPsYrEze72PM%2Ft3D3VZz%2BQsAOXZVx3YiE2JFzXxe8&X-Amz-Signature=26ca21afd265abcf1b0769fa20f5a124c7833c4b65fba5a7f1221f94b5d479e1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/8d4523c8-7d9c-4f70-8626-d9de3237fd7b/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/onion-38ff2a3f-4320-81d5-a49d-c5be46a818f8-cover.jpg",
+    "caption": "What Happens When You Tape Onions to Your Feet? 😱\n\nComment \"onion\" 👇",
+    "account_id": "17841417304649448",
+    "creation_id": "18135888241576822",
+    "ig_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-07-22T02:25:10.921641+00:00"
   }
 }
