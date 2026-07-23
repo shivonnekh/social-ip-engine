@@ -137,5 +137,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-07-22T02:27:39.229214+00:00"
+  },
+  "395f2a3f-4320-81c5-bc37-f022829a06da": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/98e3f671-dc1f-4efe-9691-1b71472c54bf/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TMWHMPKP%2F20260723%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260723T023648Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEBoaCXVzLXdlc3QtMiJIMEYCIQCMZzZO75ci7Qd%2FAsZbmtcXP37VoktikGeGU5BYlUr8wgIhAKqZo6QXF3kj5QX3vwqoT1d8N%2FHjivEidTQdmxyJodBwKogECOP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgwV%2BYAC4fj9QwFRZMUq3AOz1EA%2FIghFZqJ7T7uU8oBwaZAZpu8HccAztlj7Gp9O6Pzs3J4%2B3Q8B1K0395bB4a6jxWydplqHDWF%2Fs9dKGWY%2F4kf7nV7JZp39uivsU1ld1%2F11pGrwYE7fI5OQ3Rk6PbyV61vHIq7kTQpOt79wa7x8oBDfdnp6PWmJzno2l%2BSjs%2BHqWD1EBLBO%2FpyiB8ieUS%2ByA9A042H0k9RXTJALzOHx7YmWOIE2wM1K7iznwvM4OPks%2F%2BBisxjo7oD1VHUkOU6S909EzDeZPXjI55rnrUdpcB%2Fc9OZlVLKoSxcLkDUsUrLTdMdFRCxJBi%2B5lxbzdWX0xq4BX9oYWQg%2BjhCTJFwU%2BYM5qgSGvYNN5%2FbD%2BjOKXgjbQ2NjcObLg0j1yrUPSk1DPMdRFblXZuK62cpqsRGaoeEZ0YCneevgf38bhzxveXnyMBHfFMIoeJJKSdm2%2BlsescsKmaOfq9z2ld1lJKByn8TmHtlGP7IOi9fb5nFKTD8frBbnsfysC9Y8cczsX1CJlMjbD0t9gNvJ5%2BPPtp7Vsf6YqMlu72Fxap3scUznVXNm16MVOpvviOIiIYNDzm6gLjJQpzjiqAToK0mDcRdZEmVjC8LLkhqjUHh3NVI%2FrFQug4FEelDS6kP6MzDj24XTBjqkAe4qfPoe3fpgHF8M%2FgtrqGvBUW8Im75Thcixeek8%2FERdkYyGg3mHJ9wRWinZ5E1EMzhjZ8rQOus4Kx7SyMIs39%2Fhau20BFQf8t1fRLpQ2meZF9lohLSwryE19j5gjp0N0X0td0aSETJKJ1qAoKas17UxkTEuJAOrC%2Fzp5Kbzo6i%2FOqe26iK7wD%2BEoJ35sFNLzqQTv6Xvqpui%2BEggx7F81HG3wiYB&X-Amz-Signature=c9d4fc1cf21ae6088ab396e648eba4bb2d65e1a86466364f3b2208e9b73395c4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/98e3f671-dc1f-4efe-9691-1b71472c54bf/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/scalp-395f2a3f-4320-81c5-bc37-f022829a06da-cover.jpg",
+    "caption": "Is Your Scalp Choking Your Hair? 😱\n\nComment \"scalp\" 👇",
+    "account_id": "528216523715336",
+    "creation_id": "4048301352129631",
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-07-23T02:38:58.088934+00:00"
   }
 }
