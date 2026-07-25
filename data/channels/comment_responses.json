@@ -383,5 +383,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/onion-page-1.png"
     ]
+  },
+  {
+    "keyword": "stress",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! So glad you caught that — stress is silent but it hits hard in TCM 🏥\n\nYour 3-minute organ stress release:\n• Press Neiguan (內關) — inside of wrist, 3 finger widths from wrist crease. 30 seconds each side.\n• Press Baihui (百會) — crown of your head. 60 seconds. Slow breath.\n• After: drink warm water with a slice of ginger. Helps Spleen recover.\n\nWhich organ feels most affected for you — heart (palpitations/anxiety), stomach (bloating/pain), or sleep (insomnia/restless)?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM stress guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "⚡ Stress is Attacking Your Organs",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/stress-page-1.png"
+    ]
   }
 ]
