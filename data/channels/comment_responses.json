@@ -443,5 +443,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/scalp-page-1.png"
     ]
+  },
+  {
+    "keyword": "legs",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nYour Leg Gua Sha map is coming right up — the exact ankle → knee → hip lines and how often to do it 🦵\n\nQuick one — are your legs mostly puffy by evening, or achy/heavy most of the day?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM legs guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🦵 Leg Gua Sha for Circulation and Puffiness",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/legs-page-1.png"
+    ]
   }
 ]
