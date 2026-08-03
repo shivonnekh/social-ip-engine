@@ -313,6 +313,34 @@ def api_stage(req: StageRequest):
     return {"ok": True}
 
 
+class DeleteRequest(BaseModel):
+    row_id: str | None = None       # archive ONE Production row
+    content_id: str | None = None   # archive a Concept + ALL its Production rows
+    confirm: bool = False
+
+
+@app.post("/api/delete")
+def api_delete(req: DeleteRequest):
+    """Delete = archive in Notion (Trash, not a hard delete — recoverable
+    there). This IS the "sync it to Notion too" the caller wants: the
+    dashboard has no separate local list, so archiving the Notion page(s)
+    directly is the only delete step that exists — see state.archive_page's
+    docstring. Mirrors /api/stage's confirm gate for the same reason
+    (destructive-ish, worth one deliberate extra flag from the caller)."""
+    if not req.row_id and not req.content_id:
+        raise HTTPException(400, "row_id or content_id required")
+    if not req.confirm:
+        raise HTTPException(409, "confirm required to delete")
+    try:
+        if req.content_id:
+            summary = state.archive_content(req.content_id)
+            return {"ok": True, **summary}
+        state.archive_page(req.row_id)
+        return {"ok": True, "row_id": req.row_id}
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(502, _friendly_notion_error(exc)) from exc
+
+
 @app.get("/api/jobs/{job_id}/stream")
 def api_job_stream(job_id: str):
     if jobs.get_job(job_id) is None:

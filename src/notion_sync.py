@@ -375,8 +375,7 @@ def sync_once() -> dict[str, Any]:
 
     for row in rows:
         row_id = row["id"]
-        if row_id in state_set:
-            continue
+        already_processed = row_id in state_set
 
         props = row["properties"]
         stage = (props.get("Stage", {}).get("select") or {}).get("name", "")
@@ -386,8 +385,11 @@ def sync_once() -> dict[str, Any]:
         content_rel = props.get("Content", {}).get("relation") or []
         ip_rel = props.get("IP", {}).get("relation") or []
         if not content_rel or not ip_rel:
-            state_set.add(row_id)
-            skipped.append(f"{row_id}: missing Content/IP relation")
+            # A stage flip can beat a human finishing the row's relations,
+            # especially now that Ready-to-Publish wiring is intentionally
+            # pre-flight. Treat this like missing First DM below: retry on the
+            # next sweep instead of poisoning notion_sync_state forever.
+            skipped.append(f"{row_id}: missing Content/IP relation — will retry")
             continue
 
         try:
@@ -400,8 +402,10 @@ def sync_once() -> dict[str, Any]:
         ip_full = _title(ip_page)
         account = _ip_account(ip_full)
         if account is None:
-            state_set.add(row_id)
-            skipped.append(f"{row_id}: no known account for IP '{ip_full}'")
+            # The IP relation/title can be corrected later, or a new IP can be
+            # added to the registry after the row already reached Ready/Published.
+            # Never mark processed here or the row can stay permanently unwired.
+            skipped.append(f"{row_id}: no known account for IP '{ip_full}' — will retry")
             continue
         account_id, language = account
 
@@ -411,8 +415,11 @@ def sync_once() -> dict[str, Any]:
         )
         keyword = normalize_keyword(cta)
         if not keyword:
-            state_set.add(row_id)
-            skipped.append(f"{row_id}: no CTA keyword ('{title}')")
+            # Authoring often lands in stages: the row may already be Ready or
+            # Published while CTA copy is still being filled in. If we mark the
+            # row processed now, the later CTA fix never gets another chance to
+            # wire the DM rule.
+            skipped.append(f"{row_id}: no CTA keyword ('{title}') — will retry")
             continue
 
         first_dm = _extract_first_dm(content_rel[0]["id"])
@@ -422,8 +429,15 @@ def sync_once() -> dict[str, Any]:
 
         key = (keyword, (account_id,))
         if key in existing_keys:
-            state_set.add(row_id)
-            skipped.append(f"{row_id}: '{keyword}' rule already exists for this account")
+            # Most rows in notion_sync_state are the normal happy path: the rule
+            # is already live, so an interval re-scan should stay quiet. But do
+            # NOT trust the state file alone anymore — older builds could mark a
+            # row processed before it actually became wireable. If the rule is
+            # present, we're safe to skip silently; if it is absent, fall through
+            # and self-heal by drafting it below even for an already_processed row.
+            if not already_processed:
+                state_set.add(row_id)
+                skipped.append(f"{row_id}: '{keyword}' rule already exists for this account")
             continue
 
         rule = _draft_rule(keyword, title, first_dm, language, account_id)

@@ -9981,3 +9981,3828 @@
 - **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
 - - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
 
+
+## 2026-07-19 13:03 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:02 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:11 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:14 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:59 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 21:37 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 22:07 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 22:38 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:07 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:40 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 01:27 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 01:54 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:13 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:21 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:29 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:37 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:43 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 03:33 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 03:47 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 03:55 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 04:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 04:53 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:00 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:11 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:15 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:36 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 06:04 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 09:40 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 09:43 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:02 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:03 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:26 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:42 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:52 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 11:39 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 11:40 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 11:43 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 12:48 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 13:19 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 13:53 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 15:38 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 15:50 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 16:55 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 17:20 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 18:07 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 18:39 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 19:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 20:01 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 20:51 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 20:54 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 09:50 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 09:57 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 10:08 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 10:48 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:02 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:29 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:46 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:54 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:00 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:24 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:26 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:37 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 13:01 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 13:13 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 14:59 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:01 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:02 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:19 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:40 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 16:14 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 16:17 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 16:58 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 18:23 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 10:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 14:20 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:00 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:03 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:16 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:18 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:35 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:37 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:42 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:50 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:40 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:45 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:47 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:48 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:13 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:34 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 22:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-25 22:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:12 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:12 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:16 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:18 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:28 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:32 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:33 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:44 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:45 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:09 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:40 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:41 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:08 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:09 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:19 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 08:06 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:06 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:06 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:14 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:30 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+
+
+## 2026-07-26 08:37 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:48 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 08:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:41 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:42 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:43 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:53 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:05 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:12 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:15 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:16 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:16 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:22 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 11:00 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:09 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:14 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:18 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:24 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:27 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:39 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:49 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:51 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:56 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:56 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:17 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:17 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:48 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:52 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 09:52 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 09:53 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 09:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:03 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:28 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:28 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:33 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:37 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:37 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:39 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:49 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:50 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:53 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:08 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:19 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:30 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:31 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:33 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 14:18 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+
+
+## 2026-07-27 14:28 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+
+
+## 2026-07-27 14:49 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+
+
+## 2026-07-27 14:59 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+
+
+## 2026-07-27 15:18 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+
+
+## 2026-07-27 15:21 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+
+
+## 2026-07-27 15:27 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+
+
+## 2026-07-27 15:57 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+
+
+## 2026-07-27 16:19 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+
+
+## 2026-07-27 16:25 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+
+
+## 2026-07-27 17:59 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+
+
+## 2026-07-27 18:01 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+
+
+## 2026-07-27 18:03 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+
+
+## 2026-07-27 18:08 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:10 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:18 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:36 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:43 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:45 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:53 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:00 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:01 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:01 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:02 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:03 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:58 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:04 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:07 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:07 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:07 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:08 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:09 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:09 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:10 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:11 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:11 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:12 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:14 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:17 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:17 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:17 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:18 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:20 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:22 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:22 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:26 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:27 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-31 12:34 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+
+
+## 2026-07-31 14:51 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+
+
+## 2026-07-31 15:19 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+- - 但 Shot 4 那句 "Comment 'legs' and I'll send you..." 会变成死 CTA —— 观众留言 "legs" 什么反应都不会有（这仓库的设计是 no rule match = 完全沉默，不会临时用 LLM 兜底）。这正是 CLAUDE.md 里记过的那个坑："caption CTA 跟 comment rule 是两件事，没配对 CTA 就是死的"。
+
+
+## 2026-07-31 15:31 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+- - 但 Shot 4 那句 "Comment 'legs' and I'll send you..." 会变成死 CTA —— 观众留言 "legs" 什么反应都不会有（这仓库的设计是 no rule match = 完全沉默，不会临时用 LLM 兜底）。这正是 CLAUDE.md 里记过的那个坑："caption CTA 跟 comment rule 是两件事，没配对 CTA 就是死的"。
+- 搞清楚了整个链路，先直接回答你的三选一，再报告现在的真实情况——比想象中复杂一点。
+- **Studio 点 Stage 按钮 = 直接改 Notion 的 Stage property**（`state.set_stage()` 就是一个 Notion API PATCH，跟你自己进 Notion 手动改这个下拉选项，效果上是**同一个动作**）。Notion 那边配置的 Automation 只认 Stage 的值变了没有，不管这个变化是 Studio 帮你点的、还是你自己在 Notion 里点的——两者对 Automation 来说完全等价，不需要你点完 Studio 又跑去 Notion 里再点一次。
+- - 但我刚查了 Notion，你这行的 Stage **现在已经是 "✅ Published"**——而 infographic 在那之前根本还没生成。这说明这个 Stage 变化不是通过 Studio 的「⚠ 发布」按钮点出来的（那个按钮当时应该是灰的、点不动），而是**直接在 Notion 里手动把下拉选项改成了 "✅ Published"**——这一步完全跳过了 Studio 帮你把的关。
+- 所以更准确的答案是：**Ready to Publish 这一步，Studio 点就够了（不用去 Notion）；但真正"发布"这一步，务必用 Studio 的按钮点，不要在 Notion 里直接手动改 Stage 到 ✅ Published**——因为只有 Studio 的按钮会先帮你检查 cover / infographic / 成片是不是都齐了。Notion 本身不知道这些检查逻辑。
+- 要不要我顺手把 dashboard 那个发布检查清单也修一下？我发现那条 "Stage = Ready（DM 关键词已布）" 的勾选项其实是假的——它只检查 Stage 的值，不检查真正的 `dm_wired` 状态（这个字段其实早就存在，别处已经在用），这就是这次容易被误导的根源之一。可以顺手改成读真实的 `dm_wired`。
+
+
+## 2026-07-31 15:43 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+- - 但 Shot 4 那句 "Comment 'legs' and I'll send you..." 会变成死 CTA —— 观众留言 "legs" 什么反应都不会有（这仓库的设计是 no rule match = 完全沉默，不会临时用 LLM 兜底）。这正是 CLAUDE.md 里记过的那个坑："caption CTA 跟 comment rule 是两件事，没配对 CTA 就是死的"。
+- 搞清楚了整个链路，先直接回答你的三选一，再报告现在的真实情况——比想象中复杂一点。
+- **Studio 点 Stage 按钮 = 直接改 Notion 的 Stage property**（`state.set_stage()` 就是一个 Notion API PATCH，跟你自己进 Notion 手动改这个下拉选项，效果上是**同一个动作**）。Notion 那边配置的 Automation 只认 Stage 的值变了没有，不管这个变化是 Studio 帮你点的、还是你自己在 Notion 里点的——两者对 Automation 来说完全等价，不需要你点完 Studio 又跑去 Notion 里再点一次。
+- - 但我刚查了 Notion，你这行的 Stage **现在已经是 "✅ Published"**——而 infographic 在那之前根本还没生成。这说明这个 Stage 变化不是通过 Studio 的「⚠ 发布」按钮点出来的（那个按钮当时应该是灰的、点不动），而是**直接在 Notion 里手动把下拉选项改成了 "✅ Published"**——这一步完全跳过了 Studio 帮你把的关。
+- 所以更准确的答案是：**Ready to Publish 这一步，Studio 点就够了（不用去 Notion）；但真正"发布"这一步，务必用 Studio 的按钮点，不要在 Notion 里直接手动改 Stage 到 ✅ Published**——因为只有 Studio 的按钮会先帮你检查 cover / infographic / 成片是不是都齐了。Notion 本身不知道这些检查逻辑。
+- 要不要我顺手把 dashboard 那个发布检查清单也修一下？我发现那条 "Stage = Ready（DM 关键词已布）" 的勾选项其实是假的——它只检查 Stage 的值，不检查真正的 `dm_wired` 状态（这个字段其实早就存在，别处已经在用），这就是这次容易被误导的根源之一。可以顺手改成读真实的 `dm_wired`。
+- 改好了，刷新一下 dashboard 就生效（静态 JS，不用重启服务）。
+
+
+## 2026-08-03 15:18 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+
+## 2026-08-03 15:47 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+
+## 2026-08-03 15:52 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+
+
+## 2026-08-03 16:07 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+
+
+## 2026-08-03 16:59 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+
+
+## 2026-08-03 17:16 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-03 17:20 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-03 18:50 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-03 18:58 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+- **I'd fix this properly rather than rely on timing:** add `d.dm_wired` as a required condition in `pubBtn.disabled`, so Publish is physically greyed out until the wired chip is confirmed true — same pattern as the existing safety gates (production video / cover / infographic all already block Publish this way). Want me to add that (small change, I'd still write a test for the button-state logic first per your TDD rule)?
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+

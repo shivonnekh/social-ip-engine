@@ -236,6 +236,51 @@ document.getElementById("btn-fanout").onclick = () => {
   startJob(label, body, () => loadRows(selectedContentId));
 };
 
+// 删除 = 在 Notion 里 archive（进 Trash，可恢复，不是硬删）。两次点击确认，
+// 跟发布按钮用同一套"再点一次"套路，不弹浏览器 confirm()。
+function armTwoClickDelete(btn, armedLabel, onConfirmed) {
+  let armed = false, disarmTimer = null;
+  const original = btn.textContent;
+  btn.onclick = async () => {
+    if (!armed) {
+      armed = true;
+      btn.classList.add("confirm");
+      btn.textContent = armedLabel;
+      disarmTimer = setTimeout(() => {
+        armed = false;
+        btn.classList.remove("confirm");
+        btn.textContent = original;
+      }, 6000);
+      return;
+    }
+    clearTimeout(disarmTimer);
+    btn.disabled = true;
+    btn.textContent = "删除中…";
+    try {
+      await onConfirmed();
+    } catch (e) {
+      alert(`删除失败：${e.message}`);
+      btn.disabled = false;
+      armed = false;
+      btn.classList.remove("confirm");
+      btn.textContent = original;
+    }
+  };
+}
+
+const deleteConceptBtn = document.getElementById("btn-delete-concept");
+armTwoClickDelete(deleteConceptBtn, "⚠ 再点一次 = 删除这个 concept 及其所有 shots", async () => {
+  if (!selectedContentId) return;
+  await api("/api/delete", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content_id: selectedContentId, confirm: true }),
+  });
+  selectedContentId = null;
+  document.getElementById("concept-toolbar").hidden = true;
+  document.getElementById("rows-panel").innerHTML = '<p class="hint">← 左边选一个 concept</p>';
+  await loadContentList();
+});
+
 // ---------- detail ----------
 
 const detailEl = document.getElementById("detail");
@@ -388,11 +433,12 @@ function renderDetail(d) {
         ${check(d.has_production_video, "成片（字幕版 Production Video）已上传")}
         ${check(d.has_cover_image, "Cover 已生成")}
         ${check(d.has_infographic_image, "Infographic 已生成")}
-        ${check(d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published", "Stage = Ready（DM 关键词已布）")}
+        ${check(d.dm_wired, "DM 关键词已布（🔗 DM Wired）")}
       </ul>
       <div class="publish-actions">
         <button class="btn" id="btn-ready">→ Ready to Publish</button>
         <button class="btn danger" id="btn-publish">⚠ 发布到 IG / FB（不可逆）</button>
+        <button class="btn danger" id="btn-delete-row" style="margin-left:auto;">🗑 删除这一行</button>
       </div>
     </div>`;
 
@@ -406,6 +452,16 @@ function renderDetail(d) {
   const infoBtn = document.getElementById("btn-info");
   const readyBtn = document.getElementById("btn-ready");
   const pubBtn = document.getElementById("btn-publish");
+  const deleteRowBtn = document.getElementById("btn-delete-row");
+
+  armTwoClickDelete(deleteRowBtn, "⚠ 再点一次 = 删除这一行", async () => {
+    await api("/api/delete", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ row_id: d.id, confirm: true }),
+    });
+    closeDetail();
+    loadQueue();
+  });
 
   assetsBtn.onclick = () => startJob("生成 image + voice", { action: "generate_assets_row", row_id: d.id }, refreshDetail);
   videoBtn.onclick = () => startJob("生成 shot 视频", { action: "generate_video", row_id: d.id }, refreshDetail);
@@ -421,8 +477,7 @@ function renderDetail(d) {
   coverBtn.disabled = jobRunning || !d.has_cover_prompt;
   infoBtn.disabled = jobRunning || !d.has_infographic_prompt;
   readyBtn.disabled = !d.has_production_video || d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published";
-  pubBtn.disabled = d.stage === "✅ Published"
-    || !(d.has_cover_image && d.has_infographic_image && d.has_production_video);
+  pubBtn.disabled = !canPublish(d); // canPublish() lives in publish_gate.js, loaded before this file
 
   // per-shot regenerate buttons — each reads its own instruction input
   const REGEN_LABELS = {

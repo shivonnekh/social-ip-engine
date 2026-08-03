@@ -230,6 +230,18 @@ def row_detail(row_id: str) -> dict:
         tx = ni._txt(b)
         low = tx.casefold()
 
+        if t == "toggle" and "dm infographic" in low and b.get("has_children"):
+            # Legacy placement (rows created before the trailer-section
+            # convention, e.g. via upload_infographics_to_notion.py): the
+            # image toggle is titled the same as its own section heading
+            # ("📊 DM Infographic") instead of being nested as "🖼️
+            # Infographic here" inside the "### 📊 DM Infographic" trailer
+            # section below. Match it regardless of `section` state so
+            # these older rows aren't reported as missing an infographic
+            # they actually already have.
+            pending.append(("image", info, b["id"], "image"))
+            continue
+
         if t == "heading_3":
             want_code = None
             if low.startswith("shot"):
@@ -326,6 +338,36 @@ def set_stage(row_id: str, stage_name: str) -> None:
     if stage_name not in STAGE_OPTIONS:
         raise ValueError(f"unknown stage {stage_name!r}")
     ni.ncall("PATCH", f"/pages/{row_id}", {"properties": {"Stage": {"select": {"name": stage_name}}}})
+
+
+def archive_page(page_id: str) -> None:
+    """Move a Notion page to Trash (Notion's own ``archived: true`` flag —
+    recoverable from Notion's Trash for the workspace's normal retention
+    window, not a hard delete). Works for BOTH a Production row and a
+    Content Library concept page — same property on any page object.
+
+    This is the ONLY correct way to "delete something in Studio": the
+    dashboard has no local database of its own (state.py is a read-only
+    live view over Notion, see module docstring) — there is no separate
+    local entry that could drift out of sync with Notion. Archiving the
+    Notion page directly IS the delete; the next queue/concept refresh
+    naturally stops returning it because _query_all() only sees
+    non-archived pages, no extra bookkeeping needed on this side."""
+    ni.ncall("PATCH", f"/pages/{page_id}", {"archived": True})
+
+
+def archive_content(content_id: str) -> dict:
+    """Archive a Content Library concept AND every Production row fanned
+    out from it, so deleting a concept never leaves orphaned rows behind
+    (a row whose Content relation points at an archived page would still
+    show up in the workbench queue, just permanently broken/un-actionable
+    — worse than gone). Returns a summary so the caller can report exactly
+    what was removed."""
+    row_ids = [r["id"] for r in content_rows(content_id)]
+    for row_id in row_ids:
+        archive_page(row_id)
+    archive_page(content_id)
+    return {"content_id": content_id, "archived_rows": row_ids}
 
 
 def shot_title_by_index(row_id: str, shot_index: int) -> str | None:
