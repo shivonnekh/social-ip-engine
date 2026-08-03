@@ -458,5 +458,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/legs-page-1.png"
     ]
+  },
+  {
+    "keyword": "breath",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Fresh-breath fix coming 🌬️ — but it works best when we target the right cause.\n\nQuick one: is your tongue more white-coated or yellow-coated in the morning?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM breath guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "💨 Bad Breath (Gut Root Cause + Oral Rinse Fix)",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/breath-page-1.png"
+    ]
   }
 ]
