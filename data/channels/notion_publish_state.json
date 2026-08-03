@@ -195,17 +195,17 @@
     "updated_at": "2026-07-31T06:50:47.620345+00:00"
   },
   "38ff2a3f-4320-8109-8565-f615a6e8a859": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/697544d9-7425-4961-9727-bebc2f0cee5f/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZUE7PW47%2F20260803%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260803T105337Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECgaCXVzLXdlc3QtMiJHMEUCIGonKuDZ4OELNst2PNN%2FnF3LvQJkRLo2uf6zFhVO%2BcLzAiEAhtp6oHvWQ%2BDdTB%2FdXIKM89btNLB8L%2B%2FdhUpT9vOW5yYqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEReJdBKSolWA2kVYSrcA5I5Nuo7WLz3h2zZORz6CnNkJyMEYf1x9r6PCX9QzZZh4FeXfhn9ZyzIl0CgUF98KJP%2BoirS%2BBjP82uoYp5ZvLThHOL%2Fdb767G9eDAOIXqiTmSfT8J3F3TFRfjuzFmpqLmbmrADHeWpxWwkjt7o0YYGH0Fhb9KGlGOr6sRpUKsU%2Fw2f1IViwSI42NHzKJ6rq5y0YFZ9sUMr1ke%2BJl0Isum0Ntzm8kto5cI6LtDv9ogeFg77SOqg9q%2BjdR6rAwT0nL7GOR1j4GLWi1wyeO8v%2BUfBv%2B%2FyIF2DYlD%2FjEZcua%2FxIMnpp6lEvMRmSeKxRzx1%2FfYhjOkn6ylgcsY7j8AIYom%2BAcDnFNjGVPWQCWXdWc1fOoDlP%2BcTwvqT3j7uQFujkRqbN%2FtchWzLz1sxddGtmJ7yIYIKJf6w8Ll0Mz%2Fy0%2B4PqQPKi4BJ7gky5CRM3SB6RnxuL02RYaoK8N9L6RgSvNwpqlB8cP9u6fh7GQenLAt6C09E3TU5v%2Fc%2F5JMU7TG7u58pHC6gNgSQF7BW68jV%2FlRL9Rzs3OK4ZGj%2FJkXZtY%2FBBBVuh1wOsHjRUo07KQ%2B8Gd3qhYkf09wgvT%2FuO3du7SNHt%2F4XbbW3%2BnwIbmP8so36hVy%2F1zKaItrbLaUjBML%2BIwdMGOqUB5FQASenk83sFFsoBDD29QZjgOGPSdXaVU0DpYD9tABA%2FOZI0vW9FoAaBBsKv6K52ybCRAi0F0TaqKIIx%2FEQrnzc3y%2BgY8xrGMucqrlvkFeBZvKDh2WO5K%2FPu975bvi4Lgflog5m6WmCkFN07aYW2SQkcP%2BmZPZfxSdsZM3g0Vo1jnRXo7Wy7JCkYJfCVGSrlN8hgcoJrXN7lDW%2BcSQ%2FkT7op5ekq&X-Amz-Signature=241af74af5e1b03b8dcedefc151e01f154af9d0157f1333671e5bd743333a5af&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/697544d9-7425-4961-9727-bebc2f0cee5f/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/breath-38ff2a3f-4320-8109-8565-f615a6e8a859-cover.jpg",
     "caption": "Is Your Breath Hiding a Secret? 😱\n\nComment \"breath\" 👇",
     "account_id": "17841417304649448",
     "creation_id": "18138703261576822",
-    "ig_media_id": null,
+    "ig_media_id": "18016498004873595",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-08-03T10:53:43.302453+00:00"
+    "updated_at": "2026-08-03T10:54:24.696916+00:00"
   }
 }
