@@ -473,5 +473,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/breath-page-1.png"
     ]
+  },
+  {
+    "keyword": "heels",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The overnight coconut-oil soak softens heels fast 🦶\n\nQuick check — are your cracks just dry, or deep and sometimes painful or bleeding?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM heels guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🦶 Dry Cracked Heels (Overnight Fix)",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/heels-page-1.png"
+    ]
   }
 ]

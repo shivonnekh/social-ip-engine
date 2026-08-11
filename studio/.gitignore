@@ -21,8 +21,5 @@ venv/
 # OS
 .DS_Store
 
-# LaunchAgent runtime logs (dashboard auto-start)
-.logs/
-
 # Playwright MCP debug logs
 .playwright-mcp/
