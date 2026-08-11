@@ -209,17 +209,17 @@
     "updated_at": "2026-08-03T10:54:24.696916+00:00"
   },
   "38ff2a3f-4320-81bc-8771-fa9029415882": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/40c95a44-ee5a-42c5-9b95-f9960f7661c8/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YYS2D23V%2F20260811%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260811T080052Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCscF7%2FaPQUsZNY8DPyJlxj7ZkNK4R9PO%2FOLLEJhMQv5QIhANODIG9FHiaQLJZxc4dIQWApKrDbRjApu%2FbCT4VA5E%2FBKogECLD%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxWCM9JqrU8z2CwLBEq3ANrTcl0AIffiqGOWnnPLGCa1SJpWPwKtTn58GbBp4aIxPFmEOxgWPcCKuhhlsK0YMEMymu2G1ds1BoTijnc7FaG2b77HrLkJCsV7RZUyVwerSS1JiMHz7YHzTW7Gg3%2Bny%2BSD2zDbM0TrcDmD2L2Y40xZAG%2F3dLYhXiCSQqqR21BLaa%2Fdmil1uQKPaFURgvc4STbs2qHsN9LUquBAny3oyyryqhC2rtPLdAYEwcCIs1kxJVgSFy0Ci8o8T297ubcSrhT39WtDVnpsdAxQsILg5hRx3RpffN8muynDrJne1ADKCp9x1tLPrM%2FPwlJL5mR99esR3YbxBzfo%2FdXZRG6OW0GP5Xn8kYDtC%2F6yjSDhj%2F%2B8PuhDvv3rIz8zbSdtR0mhj9lo2GAU%2FB5BkXlNSwlHzsc2ZsgFhRqFkV%2FCxdbhzMk2VRPrT1bWb4UFt5l5JXAZ%2FoTagS0BRQoxLmDc6eejZ2WpFRWDqMsBntej%2Fqp04qEpFd2rhJoCFnavRlqkO8V6fHdj1th4CQ4%2BoFsq42OOhoWr7Xi%2Fh48tXk89Qrtfje00Dkct777A1cNmwMrOqfa6p0VObfgGl%2BfQkse1mgaNiqOxLtwgei2ce4WQV4WuLrAZk5l%2BlW5wQm6DnAzNjC9kuvTBjqkAYhl%2FCxgkP6cETsFeO%2B27tCZXLcSVKQWu1jndvr4tWr8%2BxulJtMOw1f1fP0ikF2mR0IFm9bvw912IXDDPaBD9GHclnHfzUXyIbAz0AvpKCwiwP5rEYhCJTy9%2B%2Fw5eXrNOfR4Nlh9tejB34%2BTi%2BGld%2FnlUunsWl9dLa%2Bn3jN3CLUmfOL%2BBZsaDdLSJFt35t4XRMkVVA%2BLgGQc9Xe%2FvBn2jpgQ6nJa&X-Amz-Signature=1451c61adab5d80be2523860ee24d3a3657ab825a656571ae126ea72b798982d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/40c95a44-ee5a-42c5-9b95-f9960f7661c8/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/heels-38ff2a3f-4320-81bc-8771-fa9029415882-cover.jpg",
     "caption": "Ready to Heal Those Cracked Heels Overnight? 😱\n\nComment \"heels\" 👇",
     "account_id": "17841417304649448",
     "creation_id": "18140373481576822",
-    "ig_media_id": null,
+    "ig_media_id": "17900366556486340",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-08-11T08:00:57.121091+00:00"
+    "updated_at": "2026-08-11T08:01:38.056338+00:00"
   }
 }
