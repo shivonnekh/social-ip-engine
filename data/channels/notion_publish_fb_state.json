@@ -209,17 +209,17 @@
     "updated_at": "2026-08-11T08:03:14.562515+00:00"
   },
   "38df2a3f-4320-81bf-8afc-eb1e2039641f": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/c6826957-43ee-4c23-96fa-df5e5948c661/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QFPXZYHM%2F20260812%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260812T051241Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCDBOndrsrtnKKYyk9yHqWhF7IOkQsKpRogB8CQm9DBcAIhAPmcBzsRDj5cR7woADsUu4KF8MJox0KAPkRpSOAfvAwPKogECMX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgwmvKi1tREVoULXIwgq3AMiwSa6XKY04tD2mN9bHFsracHuu4QCxKb0l8UULXnE8gehSYzRo7%2F8iSgcdfbg2CfDOrDZX7sW7KHfxS6GkfGPT3P1DPi%2Fbf8INp44ImbqBupLn%2BIw426TpG%2BU7epVpq0wOuJFQfJQqBUjqT%2B%2FyojYYxvs2%2BTwvxRM%2BaBc0H%2BADelmepwPbsVDGtypzZLQcWB3GIaJWSiAqdGCZf3oOvfEXoV%2Bp%2BOlULpCRVVuW9XATVLL%2BZ2ehEG9boZMv2hzDXSU9omMFIv49wthgPWxoSvcDShWdsD67wQ49TftiExMnPWEQQzLHHylSzWV2R8vUWnTqJp5hQL6M4Qg%2FVV2QWiYzx2hh9Qo%2Fttwx2Lo4ZaMXYom90jSakh8TzJ61PMD7dKzw%2BvqdFrqyonyJIHlvP4m1bLA5VD4zQazkmHiwpS5Q7LG71nIkckJ19xR9IxiLZGeWMhBzqvsDGet5pCLBy3OWee1%2BPZosqoej%2B4KLBoUzgPdBWXXodMT7rid1zdvs5QCw3SMRDn5CSp6tXoxy6l1bCF8FEghjF4%2BMZXBMPryQ3Ofr3fouEsgwDjNc3YX3l1Yhx3TzxvR2aLDAO4azLwfXLh5IYTqf%2BKak0fEEBCRmCiLteArSGOY%2FG5StTDs3O%2FTBjqkAYN411Jae9wRHy7%2BaeZzR7WUN33flzAr9ywi%2FyniPayIqfA58XsSuo8ECsRJ4V35VJ1kby%2BR2Adto6OGwFQy1il%2F%2FgRp64necE2Jm31k57PSu9zkJmjMJY%2BRnE2JHmgl6naVXbQamAj8%2FmGA0pdG2NLHP%2B1TRQ4xlop%2FYqg3hUb3KV8mHwAOoyBvEfnv1pH2ioNrhJNZOQ7SpN35UVJHPv6qK6xy&X-Amz-Signature=f14d3c027b0274b44479c80a74a477bf9992126d8bc898f1319901f2b45ad116&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/c6826957-43ee-4c23-96fa-df5e5948c661/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/immune-38df2a3f-4320-81bf-8afc-eb1e2039641f-cover.jpg",
     "caption": "Why Do Some Never Get Sick? 😮\n\nComment \"immune\" 👇",
     "account_id": "528216523715336",
     "creation_id": "1375672221204985",
-    "fb_media_id": null,
+    "fb_media_id": "1375672221204985",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-08-12T05:14:53.046059+00:00"
+    "updated_at": "2026-08-12T05:15:00.820495+00:00"
   }
 }
