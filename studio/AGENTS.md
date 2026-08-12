@@ -14,7 +14,7 @@ All keys live in `.env` (gitignored). Scripts auto-load it.
 ## Notion board (3 linked DBs)
 Board page `389f2a3f432080678683fb82eb056ee6`. IDs in `scripts/notion_ids.json` (not secret).
 - **📚 Content Library** (`content_db`) — language-agnostic concepts. Props: Name, Topic, Hook, CTA, Concept Status. Body = **📜 Master Script (EN)** + optional **🇭🇰 Script (粤语)** + **🎬 Shot Guide**.
-- **👤 IP Registry** (`ip_db`) — one row per IP = SOURCE OF TRUTH for voice config. Props: IP, Language, Persona, voice_id, Speed, Pitch, Language Boost, Emotion, Active. Reference face photos live as **image blocks in the IP page body**. Active IPs: 🌸 Jessica (Cantonese), 👴 Jackie Chan (English).
+- **👤 IP Registry** (`ip_db`) — one row per IP = SOURCE OF TRUTH for voice config. Props: IP, Language, Persona, voice_id, Speed, Pitch, Language Boost, Emotion, Active. Reference face photos live as **image blocks in the IP page body**. Active IPs: 🌸 Chloe Chan (Cantonese), 👴 Jackie Chan (English). (Renamed from "Jessica" — there is no Jessica IP; that name is only the legacy, discontinued WhatsApp bot persona in the separate `social-ip-engine` repo, not a Content Engine IP. This doc had drifted stale — corrected 2026-08-04.)
 - **🎬 Production Tracker** (`prod_db`) — one row per Content×IP. Dual relations + Stage, 🎨/🎙️/🎬 checkboxes, Script (per-IP language, ONE LINE PER SHOT), Publish Date, Assets, Notes.
 
 ## The Shot Guide is the single source of truth
@@ -45,7 +45,7 @@ Shot N · ~Xs · beat
 
 ## Voice (MiniMax)
 - English IP (Jackie): `voice_id=elderly_man, speed=1.2, pitch=0, MINIMAX_TTS_LANGUAGE=English`
-- Cantonese IP (Jessica): `voice_id=Cantonese_GentleLady, speed=1.0, pitch=1, language=Chinese,Yue`
+- Cantonese IP (Chloe): `voice_id=Cantonese_GentleLady, speed=1.0, pitch=1, language=Chinese,Yue`
 - ⚠️ Commas (，/,) make MiniMax insert pauses — minimize in scripts. Keep each clip ≤13s.
 
 ## 即梦 / Dreamina CLI (video)

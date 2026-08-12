@@ -949,7 +949,27 @@ def main():
         if not ids_path.exists():
             print("nothing to collect — no video_submits.json for this row")
             return 0
-        submits = json.loads(ids_path.read_text())
+        submits_raw = json.loads(ids_path.read_text())
+        # DEDUPE by shot number, keep the LAST entry per shot (= most recent
+        # submission attempt). Root cause (2026-08-10, Hua Tuo EP01 row): the
+        # hang-lottery retry loop appends a NEW entry to video_submits.json on
+        # every attempt by design (so an earlier abandoned attempt can still
+        # be harvested later) — a shot that hung twice before succeeding ends
+        # up with 3 entries for the SAME shot number. Iterating the raw list
+        # here without dedup double/triple-counted shots with existing local
+        # mp4s (e.g. a shot retried 3x contributed 3 identical path strings to
+        # mp4s), so `len(mp4s) >= len(shots)` went true and triggered a merge
+        # while 4 real shots (13/17/18/19) were STILL missing — produced a
+        # 169s final.mp4 that silently duplicated finished shots instead of
+        # including the actual missing ones. `dict` preserves insertion order
+        # in py3.7+ and a later key overwrites, so this naturally keeps the
+        # LAST (most recent) submit_id per shot.
+        submits = list({s["shot"]: s for s in submits_raw}.values())
+        # Sort by shot NUMBER, not the mp4 path STRING — "shot10.mp4" sorts
+        # before "shot2.mp4" lexicographically, which silently reordered any
+        # row with 10+ shots. concat() below relies on this list already
+        # being in true shot order (see --merge-only's identical comment).
+        submits.sort(key=lambda s: s["shot"])
         mp4s = [str(vdir / f"shot{s['shot']}.mp4")
                 for s in submits if Path(vdir / f"shot{s['shot']}.mp4").exists()]
         pending = 0
@@ -994,7 +1014,14 @@ def main():
             print(f"⏳ {pending} task(s) still rendering on 即梦's side")
         if mp4s and len(mp4s) >= len(shots):
             final = str(vdir / "final.mp4")
-            concat(sorted(mp4s), final)
+            # mp4s is already in true shot order (submits was sorted by shot
+            # NUMBER above, then deduped) — do NOT re-sort here. A lexical
+            # sorted(mp4s) on the path STRING put "shot10.mp4" before
+            # "shot2.mp4" for any row with 10+ shots, scrambling playback
+            # order. Same fix as --merge-only's identical, already-correct
+            # convention (see its comment: "already in shot order — do NOT
+            # re-sort").
+            concat(mp4s, final)
             strip_ai_watermark(final)
             _maybe_tick_video_checkbox(args.row)
             (vdir / "words.json").unlink(missing_ok=True)  # stale caption transcript

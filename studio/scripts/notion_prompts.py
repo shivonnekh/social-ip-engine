@@ -403,6 +403,23 @@ _JIMENG_SAFE_SUBS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"诊所|医馆"), "养生工作室"),
     (re.compile(r"治疗"), "演示"),
     (re.compile(r"诊断"), "观察"),
+    # Vital-signs / procedure-intensity vocabulary (added 2026-08-10 after
+    # Hua Tuo EP01 Shot 18 hung 12/12 consecutive multimodal2video attempts
+    # across TWO different image compositions — a two-person frame AND a
+    # redesigned single-clear-face frame — while the image2video fallback
+    # for the SAME shot succeeded twice on the same account in between.
+    # Ruling out both "hang-lottery" (12/12 at the documented ~45% base rate
+    # is astronomically unlikely) and "account throttled" (the fallback
+    # succeeded mid-streak), the only remaining variable was the quoted
+    # dialogue itself: "his lips are dry, his breathing's shallow ... don't
+    # push anything too aggressive" reads as clinical vital-signs distress +
+    # treatment-intensity language, the same content-review trigger class as
+    # the 07-16 anatomy/acupoint fix above, just a different vocabulary
+    # register (patient-status concern rather than anatomy naming).
+    (re.compile(r"\bbreathing(?:'s| is)?\s+shallow\b", re.I), "breathing is quick"),
+    (re.compile(r"\btoo aggressive\b", re.I), "too intense"),
+    (re.compile(r"呼吸(?:有点|比较)?浅"), "呼吸有点急"),
+    (re.compile(r"太猛"), "太强"),
 ]
 
 _LANG_EN = {"英文": "English", "粤语": "Cantonese", "普通话": "Mandarin",
@@ -506,51 +523,78 @@ def build_jimeng_prompt(title: str, visual: str = "", lang: str = "", dialogue: 
     # clause resolves the guide-vs-lip-sync conflict positively (what IS:
     # face stays toward camera while speaking) instead of deleting the
     # creative beats.
-    if dialogue:
-        speech = (
-            "The presenter speaks directly to camera for the entire clip — face "
-            "frontal, mouth clearly visible, lips moving in precise sync with the "
-            f'uploaded audio from the first word to the last. The exact line: "{dialogue}" '
-            f"— this is the uploaded audio, spoken{lang_word}. Comfortable pace, "
-            "occasional natural blinking and breathing."
+    def _assemble(vc: str) -> str:
+        if dialogue:
+            speech = (
+                "The presenter speaks directly to camera for the entire clip — face "
+                "frontal, mouth clearly visible, lips moving in precise sync with the "
+                f'uploaded audio from the first word to the last. The exact line: "{dialogue}" '
+                f"— this is the uploaded audio, spoken{lang_word}. Comfortable pace, "
+                "occasional natural blinking and breathing."
+            )
+            guide_body = (
+                f"{vc.rstrip('。.; ')}. Throughout every beat the presenter "
+                "keeps facing the camera, mouth visible, speaking the line."
+            ) if vc else ""
+        else:
+            speech = (
+                f"Lip-sync to the uploaded audio reference — it is the dialogue"
+                f"{lang_word}, lips moving in precise sync with the uploaded audio from "
+                "the first word to the last. Comfortable pace, occasional natural "
+                "blinking and breathing."
+            )
+            guide_body = vc
+        shot_guide = f"【Shot Guide】{guide_body}\n" if guide_body else ""
+        speech_sec = f"【Speech】{speech}\n"
+        character_sec = (
+            "【Character】AI virtual presenter. Use the uploaded reference image as the "
+            "appearance reference. Keep the same hairstyle, clothing, facial features, "
+            "age and expression. Consistent identity throughout the video.\n"
         )
-        guide_body = (
-            f"{visual_clean.rstrip('。.; ')}. Throughout every beat the presenter "
-            "keeps facing the camera, mouth visible, speaking the line."
-        ) if visual_clean else ""
-    else:
-        speech = (
-            f"Lip-sync to the uploaded audio reference — it is the dialogue"
-            f"{lang_word}, lips moving in precise sync with the uploaded audio from "
-            "the first word to the last. Comfortable pace, occasional natural "
-            "blinking and breathing."
+        # Speaking shots: Speech outranks the Shot Guide. Silent shots: original order.
+        body = (speech_sec + shot_guide + character_sec) if dialogue else (shot_guide + character_sec + speech_sec)
+        return (
+            "音频驱动（Audio Native）数字人视频。\n"
+            f"{body}"
+            "【Style】Educational wellness presentation. Calm. Friendly. Professional. "
+            "Natural. No dramatic acting. No exaggerated gestures.\n"
+            f"【Camera】{_jimeng_camera(title, visual, lang)}。Maintain 9:16 vertical composition. "
+            "Warm soft natural lighting.\n"
+            "【Important】This is an AI-generated virtual presenter for educational "
+            "purposes. No patient. No treatment. No doctor. No diagnosis. No medical "
+            "advice. No medical procedures. No surgery. No injections. No blood. "
+            "NO glow. NO halo. NO light effects. NO magical particles. "
+            "Textless plate: NO subtitles. NO captions. NO burned-in text of any kind, "
+            "in any language. No lyrics text. "
+            "画面中绝对不要出现任何字幕、文字、标题 — 字幕由后期另行添加。No watermark.\n"
+            f"{JIMENG_DISCLAIMER}"
         )
-        guide_body = visual_clean
-    shot_guide = f"【Shot Guide】{guide_body}\n" if guide_body else ""
-    speech_sec = f"【Speech】{speech}\n"
-    character_sec = (
-        "【Character】AI virtual presenter. Use the uploaded reference image as the "
-        "appearance reference. Keep the same hairstyle, clothing, facial features, "
-        "age and expression. Consistent identity throughout the video.\n"
-    )
-    # Speaking shots: Speech outranks the Shot Guide. Silent shots: original order.
-    body = (speech_sec + shot_guide + character_sec) if dialogue else (shot_guide + character_sec + speech_sec)
-    return (
-        "音频驱动（Audio Native）数字人视频。\n"
-        f"{body}"
-        "【Style】Educational wellness presentation. Calm. Friendly. Professional. "
-        "Natural. No dramatic acting. No exaggerated gestures.\n"
-        f"【Camera】{_jimeng_camera(title, visual, lang)}。Maintain 9:16 vertical composition. "
-        "Warm soft natural lighting.\n"
-        "【Important】This is an AI-generated virtual presenter for educational "
-        "purposes. No patient. No treatment. No doctor. No diagnosis. No medical "
-        "advice. No medical procedures. No surgery. No injections. No blood. "
-        "NO glow. NO halo. NO light effects. NO magical particles. "
-        "Textless plate: NO subtitles. NO captions. NO burned-in text of any kind, "
-        "in any language. No lyrics text. "
-        "画面中绝对不要出现任何字幕、文字、标题 — 字幕由后期另行添加。No watermark.\n"
-        f"{JIMENG_DISCLAIMER}"
-    )
+
+    result = _assemble(visual_clean)
+    # Notion's code-block rich_text.content hard cap is 2000 chars. Root-caused
+    # 2026-08-04: a sufficiently rich/cinematic shot guide (seedance-20
+    # director-quality prose, several sentences of blocking/camera/light) can
+    # push the assembled prompt past that limit — apply_shot_plan's PATCH then
+    # fails outright (HTTP 400) partway through a fan-out, leaving a half-built
+    # Production row behind it. Fix trims ONLY the flexible shot-guide visual
+    # text (binary search for the longest prefix that still fits) — never the
+    # spoken dialogue (lip-sync needs the exact words verbatim) and never the
+    # trailing 【Important】 safety/disclaimer section.
+    NOTION_CODE_LIMIT = 1990  # small margin under Notion's hard 2000 cap
+    if len(result) > NOTION_CODE_LIMIT:
+        lo, hi, best = 0, len(visual_clean), ""
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            candidate = visual_clean[:mid].rstrip()
+            if candidate and mid < len(visual_clean):
+                candidate = candidate.rstrip(",;.，。；") + "…"
+            if len(_assemble(candidate)) <= NOTION_CODE_LIMIT:
+                best = candidate
+                lo = mid + 1
+            else:
+                hi = mid - 1
+        result = _assemble(best)
+    return result
 
 
 def _relation_id(page: dict, prop: str) -> str | None:
@@ -877,7 +921,9 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
                        "heading_3": {"rich_text": _rt(s["title"])}})
         blocks.append(_bold("🖼️ Image prompt (single frame → GPT)"))
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(build_prompt(persona, _primary_beat(s["visual"]))), "language": "plain text"}})
+            "rich_text": _rt(build_prompt(persona, _primary_beat(s["visual"]),
+                                          talking=bool(dialogue_for_jimeng))),
+            "language": "plain text"}})
         blocks.append(_bold("🗣️ Voice script"))
         blocks.append({"object": "block", "type": "code", "code": {
             "rich_text": _rt(voice_line), "language": "plain text"}})

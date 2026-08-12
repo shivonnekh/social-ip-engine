@@ -9981,3 +9981,6509 @@
 - **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
 - - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
 
+
+## 2026-07-19 13:03 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:02 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:11 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:14 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 20:59 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 21:37 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 22:07 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 22:38 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:07 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-19 23:40 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 01:27 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 01:54 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:13 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:21 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:29 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:37 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 02:43 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 03:33 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 03:47 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 03:55 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 04:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 04:53 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:00 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:11 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:15 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 05:36 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 06:04 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 09:40 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 09:43 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:02 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:03 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:26 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:42 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 10:52 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 11:39 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 11:40 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 11:43 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 12:48 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 13:19 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 13:53 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 15:38 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 15:50 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 16:55 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 17:20 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 18:07 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 18:39 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 19:18 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 20:01 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 20:51 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-20 20:54 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 09:50 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 09:57 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 10:08 — social-ip-engine
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 10:48 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:02 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:29 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:46 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 11:54 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:00 — social-ip-engine
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:24 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:26 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 12:37 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 13:01 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 13:13 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 14:59 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:01 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:02 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:19 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 15:40 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 16:14 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 16:17 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 16:58 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-21 18:23 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 10:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 14:20 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:00 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:03 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:16 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:18 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:35 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:37 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:42 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 15:50 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:40 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:45 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:47 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 17:48 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:13 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 21:34 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-22 22:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Found it — I monkeypatched the real global `asyncio.sleep`, which broke pytest-asyncio's own internal scheduling and hung the test runner. Let me fix this by introducing a thin, patchable `_sleep` wrapper instead of touching the global module.
+- From here on: Stage → 🟢 Ready to Publish and Stage → ✅ Published should both self-heal within ~2 minutes even if the Notion Automations stay broken, and a failed comment-reply will now actually retry instead of silently dying forever.
+
+### Architecture Decisions
+- Good sign — this one returned a real `credit_count` (165) immediately instead of the `None` pattern. Let me check Shot 3 and 4's audio durations too before submitting those, since they might have the same issue.
+- **Notion-sync interval poller** (what you said "yes" to): built the same self-contained fallback as the publish scheduler — extracted the shared sync logic into `notion_sync_runner.py`, added `notion_sync_scheduler.py` polling every 2 minutes, and added a lock serializing runs (second review caught that the webhook and scheduler could otherwise race on the same files + git state).
+- One honest limitation to flag: this is real camera *movement within* each continuous take — not true A-roll/B-roll cutaways (a hard cut to a different framing mid-clip). Genuine B-roll inserts would need a separate architecture (non-speaking image2video clips spliced between/within shots), since 即梦 renders one continuous lip-synced take per shot. If you want that, it's a bigger, worthwhile feature to design properly rather than bolt on — let me know if you want to go there next.
+- For Shot 2 (two-person demo, no dialogue-to-camera), let's route through `image2video` instead of `multimodal2video` — matching the established pattern for two-person frames, and cleaning the auto-appended "keeps facing camera" contradiction.
+
+### Decisions & Reasoning
+- **2. Detail 页直接内嵌真素材 — review 不用再开 Notion**
+- 你先点开一个「图+声待 review」的 row 用一下，哪里不顺手告诉我，我马上调。
+- ✅ **改完了 — 浏览器里刷新 http://localhost:8420 就能看到新皮肤**（CSS/JS 是静态文件，不用重启服务器）
+- - 标题用 Fraunces 艺术衬线（斜体渐变 logo），正文 Space Grotesk
+- 加一个轻量自动同步：工作台每 60 秒静默拉一次（一次 DB query，很便宜），数据没变就不重绘（不会打断你正在看的东西）；Detail 页不自动刷（它要走十几个 Notion API 调用，而且刷新会打断正在播的视频）——
+- - 切走再切回来这个浏览器 tab 时立即补一次同步（不用等 60 秒）
+- **一个刻意的取舍：** Detail 页（打开单个 row 的那页）**不**自动刷新 — 它一次要走 ~15 个 Notion API 调用，而且自动重绘会打断你正在播的视频/音频。看 detail 时想要最新状态，点「↻ 刷新」；跑任务结束后它本来就会自动刷。
+- - **↻ 图** — 只重生成这一个 shot 的图片：先删掉 toggle 里的旧图再生成新的（没图就直接补上）。用的还是这个 shot 自己的 Notion prompt + IP 参考脸
+
+
+## 2026-07-25 22:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:12 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:12 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:16 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:18 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:28 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:32 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:33 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:44 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:45 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 22:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:09 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:40 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-25 23:41 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:08 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:09 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 00:19 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+
+
+## 2026-07-26 08:06 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:06 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:06 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:14 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+
+
+## 2026-07-26 08:30 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+
+
+## 2026-07-26 08:37 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:47 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+
+
+## 2026-07-26 08:48 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 08:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:41 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:42 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:43 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:53 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 09:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:05 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:12 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:15 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:16 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:16 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 10:22 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 11:00 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:09 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+
+
+## 2026-07-26 21:14 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:18 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:24 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:27 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:39 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:49 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:51 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:56 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-26 21:56 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:11 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:17 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:17 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:20 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:48 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+
+
+## 2026-07-27 09:52 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 09:52 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 09:53 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 09:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:03 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:28 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:28 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:33 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:37 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:37 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:38 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:39 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:49 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:50 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:53 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:55 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 10:57 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:07 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:08 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:19 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:21 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:26 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:30 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:31 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 11:33 — social-ip-engine
+
+### Decisions & Reasoning
+- Job is running (`16e8d15ea97a`, `generate_video`). This is a 即梦 video-generation job — per-shot submission is deliberately serial and can take several minutes per shot, so I'll monitor it in the background rather than block here.
+- Shots 3 and 4 are still stuck after an hour of waiting — no progress on the 6 queued duplicate tasks. Time to decide how to proceed rather than keep waiting indefinitely.
+- All 4 shots done — the pipeline even auto-merged them into `final.mp4`. Per the pipeline's own review gate, this is the point where you'd normally eyeball the merged video before the final captioning+upload step.
+- It's taking longer than expected (likely re-downloading shot videos from Notion, which are large files) — moved to background, I'll check on it.
+- Progressing normally — shot 1 already downloaded and swapped. I'll monitor this in the background instead of blocking.
+- Fixed and re-merged — `final.mp4` now has the correct `jackie_chan_clone_v2` voice on all 4 shots. Sending it over so you can confirm the voice sounds right before I run captions + Notion upload.
+- Confirmed — shot 2 (the one that needed 3 attempts due to the hang-lottery) has 即梦's own garbled subtitle burned in ("Migranes and ye strain" instead of "Migraines and eye strain"), despite the prompt explicitly saying "NO subtitles/captions." Let me check the other shots to see if this is isolated to shot 2.
+- Taking a bit longer (image gen), moved to background — I'll monitor it.
+
+
+## 2026-07-27 14:18 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+
+
+## 2026-07-27 14:28 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+
+
+## 2026-07-27 14:49 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+
+
+## 2026-07-27 14:59 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+
+
+## 2026-07-27 15:18 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+
+
+## 2026-07-27 15:21 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+
+
+## 2026-07-27 15:27 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+
+
+## 2026-07-27 15:57 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+
+
+## 2026-07-27 16:19 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+
+
+## 2026-07-27 16:25 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+
+
+## 2026-07-27 17:59 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+
+
+## 2026-07-27 18:01 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+
+
+## 2026-07-27 18:03 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+
+
+## 2026-07-27 18:08 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:10 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:18 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:36 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:43 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:45 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-27 18:53 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:00 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:01 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:01 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:02 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:03 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 10:58 — social-ip-engine
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:04 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:07 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:07 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:07 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:08 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:09 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:09 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:10 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:11 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:11 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:12 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:14 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:17 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 11:17 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:13 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:17 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:18 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:20 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:22 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:22 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:26 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-28 12:27 — social-ip-engine
+
+### Architecture Decisions
+- 老实说我没有确切记录,不想瞎猜。如果你记得当时的关键词或者大概是哪个方向(比如是不是用了 `frontend-design` 这类做 UI 的 skill),告诉我我可以帮你确认对不对;不然的话这个信息目前只有你自己知道了。
+
+### Decisions & Reasoning
+- The 2nd shot 3 submission (`2b8e0342...`) already succeeded. Downloading it directly rather than resubmitting.
+- All 4 shots merged with the real uploaded voice swapped in on each. Sending the final video for review.
+- Shots 2, 3, and 4 are regenerated and merged into `final.mp4` with the correct voice on all four shots. Notes on what happened along the way:
+- - **Shots 3 & 4**: the background processes got killed by the environment partway through (not a script failure), but the 即梦 submissions kept running server-side — I queried the saved submit IDs directly, found completed videos, and downloaded/placed them manually rather than resubmitting and burning extra credits.
+- Yes — all done. No background processes still running, and `final.mp4` (17MB, built 14:48) is the merged video with all 4 shots and the correct voice, already sent to you above.
+- The dashboard server is back up with the fix live — the API now correctly reports `has_infographic_image: true` with a real image URL. Refresh the studio page and the "DM Infographic" panel should show the actual image instead of "还没生成".
+- 已经用这个修复重新生成了 `final.mp4`（campaign 目录里）。
+- 还没有 — `final_karaoke.mp4`（17:50 生成）比修复后重新 merge 出来的 `final.mp4`（17:58）还要早，说明字幕是从**修复前那个有音画漂移的旧 final.mp4** 烧出来的。现在补上：用修好的新 final.mp4 重新跑字幕。
+
+
+## 2026-07-31 12:34 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+
+
+## 2026-07-31 14:51 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+
+
+## 2026-07-31 15:19 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+- - 但 Shot 4 那句 "Comment 'legs' and I'll send you..." 会变成死 CTA —— 观众留言 "legs" 什么反应都不会有（这仓库的设计是 no rule match = 完全沉默，不会临时用 LLM 兜底）。这正是 CLAUDE.md 里记过的那个坑："caption CTA 跟 comment rule 是两件事，没配对 CTA 就是死的"。
+
+
+## 2026-07-31 15:31 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+- - 但 Shot 4 那句 "Comment 'legs' and I'll send you..." 会变成死 CTA —— 观众留言 "legs" 什么反应都不会有（这仓库的设计是 no rule match = 完全沉默，不会临时用 LLM 兜底）。这正是 CLAUDE.md 里记过的那个坑："caption CTA 跟 comment rule 是两件事，没配对 CTA 就是死的"。
+- 搞清楚了整个链路，先直接回答你的三选一，再报告现在的真实情况——比想象中复杂一点。
+- **Studio 点 Stage 按钮 = 直接改 Notion 的 Stage property**（`state.set_stage()` 就是一个 Notion API PATCH，跟你自己进 Notion 手动改这个下拉选项，效果上是**同一个动作**）。Notion 那边配置的 Automation 只认 Stage 的值变了没有，不管这个变化是 Studio 帮你点的、还是你自己在 Notion 里点的——两者对 Automation 来说完全等价，不需要你点完 Studio 又跑去 Notion 里再点一次。
+- - 但我刚查了 Notion，你这行的 Stage **现在已经是 "✅ Published"**——而 infographic 在那之前根本还没生成。这说明这个 Stage 变化不是通过 Studio 的「⚠ 发布」按钮点出来的（那个按钮当时应该是灰的、点不动），而是**直接在 Notion 里手动把下拉选项改成了 "✅ Published"**——这一步完全跳过了 Studio 帮你把的关。
+- 所以更准确的答案是：**Ready to Publish 这一步，Studio 点就够了（不用去 Notion）；但真正"发布"这一步，务必用 Studio 的按钮点，不要在 Notion 里直接手动改 Stage 到 ✅ Published**——因为只有 Studio 的按钮会先帮你检查 cover / infographic / 成片是不是都齐了。Notion 本身不知道这些检查逻辑。
+- 要不要我顺手把 dashboard 那个发布检查清单也修一下？我发现那条 "Stage = Ready（DM 关键词已布）" 的勾选项其实是假的——它只检查 Stage 的值，不检查真正的 `dm_wired` 状态（这个字段其实早就存在，别处已经在用），这就是这次容易被误导的根源之一。可以顺手改成读真实的 `dm_wired`。
+
+
+## 2026-07-31 15:43 — social-ip-engine
+
+### Architecture Decisions
+- Local files: synced the corrected `shot3.png` into both `jackie-chan/images/` and `jackie-chan-en/images/` (the two folders these scripts write to — that split is a pre-existing, documented quirk, not something I introduced). Nothing here touches git — `campaigns/**/images/` is gitignored, and the two Notion edits (content line + code block + new image) are the only durable changes, both already live.
+
+### Decisions & Reasoning
+- **Root cause:** the Content Library Shot Guide for Shot 3 just said "with **the** tool" instead of "with **the jade** tool" (Shots 1, 2, 4 all explicitly say "jade tool"). With no material/color specified, gpt-image-2 improvised a different-looking prop.
+- - 但 Shot 4 那句 "Comment 'legs' and I'll send you..." 会变成死 CTA —— 观众留言 "legs" 什么反应都不会有（这仓库的设计是 no rule match = 完全沉默，不会临时用 LLM 兜底）。这正是 CLAUDE.md 里记过的那个坑："caption CTA 跟 comment rule 是两件事，没配对 CTA 就是死的"。
+- 搞清楚了整个链路，先直接回答你的三选一，再报告现在的真实情况——比想象中复杂一点。
+- **Studio 点 Stage 按钮 = 直接改 Notion 的 Stage property**（`state.set_stage()` 就是一个 Notion API PATCH，跟你自己进 Notion 手动改这个下拉选项，效果上是**同一个动作**）。Notion 那边配置的 Automation 只认 Stage 的值变了没有，不管这个变化是 Studio 帮你点的、还是你自己在 Notion 里点的——两者对 Automation 来说完全等价，不需要你点完 Studio 又跑去 Notion 里再点一次。
+- - 但我刚查了 Notion，你这行的 Stage **现在已经是 "✅ Published"**——而 infographic 在那之前根本还没生成。这说明这个 Stage 变化不是通过 Studio 的「⚠ 发布」按钮点出来的（那个按钮当时应该是灰的、点不动），而是**直接在 Notion 里手动把下拉选项改成了 "✅ Published"**——这一步完全跳过了 Studio 帮你把的关。
+- 所以更准确的答案是：**Ready to Publish 这一步，Studio 点就够了（不用去 Notion）；但真正"发布"这一步，务必用 Studio 的按钮点，不要在 Notion 里直接手动改 Stage 到 ✅ Published**——因为只有 Studio 的按钮会先帮你检查 cover / infographic / 成片是不是都齐了。Notion 本身不知道这些检查逻辑。
+- 要不要我顺手把 dashboard 那个发布检查清单也修一下？我发现那条 "Stage = Ready（DM 关键词已布）" 的勾选项其实是假的——它只检查 Stage 的值，不检查真正的 `dm_wired` 状态（这个字段其实早就存在，别处已经在用），这就是这次容易被误导的根源之一。可以顺手改成读真实的 `dm_wired`。
+- 改好了，刷新一下 dashboard 就生效（静态 JS，不用重启服务）。
+
+
+## 2026-08-03 15:18 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+
+## 2026-08-03 15:47 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+
+## 2026-08-03 15:52 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+
+
+## 2026-08-03 16:07 — social-ip-engine
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+
+
+## 2026-08-03 16:59 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+
+
+## 2026-08-03 17:16 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-03 17:20 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-03 18:50 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-03 18:58 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+- **I'd fix this properly rather than rely on timing:** add `d.dm_wired` as a required condition in `pubBtn.disabled`, so Publish is physically greyed out until the wired chip is confirmed true — same pattern as the existing safety gates (production video / cover / infographic all already block Publish this way). Want me to add that (small change, I'd still write a test for the button-state logic first per your TDD rule)?
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-03 19:09 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- No — the code bug is fixed, but the actual video file on disk hasn't been touched. `final.mp4` / `final_karaoke.mp4` in the bad-breath campaign folder are still the same broken files — shot 4 is still ~4.02s, "reset" is still missing, and the caption still says "Common" instead of "Comment." The fix I made only prevents this from happening on *future* generations — it doesn't retroactively repair what's already rendered.
+
+### Architecture Decisions
+- If "skip Notion" is something you actually want long-term (not just today's annoyance), that's a real architecture conversation — worth flagging as a `brain domino` need rather than a quick hack, since it'd mean rebuilding studio's state layer to own data Notion currently owns. Say the word if you want me to scope that properly instead of working around it.
+- **One thing worth flagging:** `notion_video.py` already had other uncommitted changes sitting in your working tree before I touched it (from earlier sessions — the `concat()` audio-clamp fix, `poll_download` force=True, etc., across several files). I didn't commit anything. If you want this fix committed on its own, we should probably split it out from that pile rather than bundle everything together — your call.
+- **I'd fix this properly rather than rely on timing:** add `d.dm_wired` as a required condition in `pubBtn.disabled`, so Publish is physically greyed out until the wired chip is confirmed true — same pattern as the existing safety gates (production video / cover / infographic all already block Publish this way). Want me to add that (small change, I'd still write a test for the button-state logic first per your TDD rule)?
+
+### Decisions & Reasoning
+- 关键点:这两个按钮走的是同一条 `/api/stage` 接口,本质就是**用 API 帮你在 Notion 里把 Stage 拖过去** —— 效果跟你自己去 Notion 里拖卡片是一模一样的。Notion 那边配置的自动化("Stage 变成 Ready to Publish 就 POST 到 /admin/notion-sync 去 wire 关键词"、"Stage 变成 Published 就发 IG/FB")监听的是**数据库字段本身的变化**,不管这个变化是人手拖的还是 API 改的都一样会触发。所以你在 Studio 点这两个按钮,理论上跟你去 Notion 拖是完全等效的 —— DM wiring、真实发布,都照样会自动跑。
+- 唯一要说清楚的:这条"API 改 Stage 也能触发 Notion 自动化"的路径,过去应该没人专门验证过 —— 之前大家都是手动在 Notion 拖的。逻辑上该没问题(Notion 自动化本来就是看字段值变化,不分来源),但这是牵涉到"直接发真实帖子"的自动化,我建议**先拿一个不重要的测试 row 走一遍这个按钮**,确认 DM 真的 wire 上了、发布也真的过去了,再放心用在正式内容上。
+- - Downstream, `replace_shot_audio()` + `concat()`'s per-shot audio clamping (both documented as intentionally trimming audio to match the *video's* length, because the opposite case — video longer than audio — is the normal one) trims the real voice track down to the video's ~4.0s.
+- **Fixed:** `studio/scripts/notion_video.py` — new pure function `_dreamina_duration()` (uses `math.ceil` instead of `round`), swapped into both call sites (`submit_shot_multimodal`, `submit_shot_image2video`) that were requesting too-short videos from 即梦.
+- **Tested:** `studio/scripts/test_notion_video.py`, 9 tests — the real regression case (4.435s → now requests 5s, not 4), integer/clamping/fallback edge cases, and one added per the python-reviewer's note documenting a minor sub-second-clip behavior difference from the old code (harmless, but now explicit instead of silent).
+- 1. **Regenerate shot 4** — resubmit it through `notion_video.py` so it now requests 5s (via the fixed `_dreamina_duration`) instead of 4s from 即梦. This calls the real dreamina CLI (costs credits, takes a couple minutes, one-at-a-time per the account-throttling gotcha).
+- 1. Regenerate shot 4 only (`--shot 4 --regen`) — now requests 5s instead of 4s.
+- Right — I'll just wait for the background task notification instead of polling.
+
+
+## 2026-08-04 10:31 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+
+
+## 2026-08-04 11:04 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+
+
+## 2026-08-04 12:07 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+
+
+## 2026-08-04 12:21 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 13:07 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 13:16 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 13:51 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 13:55 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 14:13 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 14:54 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 14:59 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 15:03 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 15:27 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+- 明白了——不纠结那段素材了,换成 MiniMax 现成的系统预设声音,干净、稳定、不会有底噪问题。从 332 个里筛出这几个最贴角色的,已经用你定的参数(speed=1.0, pitch=-1)生成了真实试听,都在 `campaigns/ep01-act-1-the-approach/voice-tests/presets/`:
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 15:29 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+- 明白了——不纠结那段素材了,换成 MiniMax 现成的系统预设声音,干净、稳定、不会有底噪问题。从 332 个里筛出这几个最贴角色的,已经用你定的参数(speed=1.0, pitch=-1)生成了真实试听,都在 `campaigns/ep01-act-1-the-approach/voice-tests/presets/`:
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 15:32 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+- 明白了——不纠结那段素材了,换成 MiniMax 现成的系统预设声音,干净、稳定、不会有底噪问题。从 332 个里筛出这几个最贴角色的,已经用你定的参数(speed=1.0, pitch=-1)生成了真实试听,都在 `campaigns/ep01-act-1-the-approach/voice-tests/presets/`:
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 15:40 — social-ip-engine
+
+### Decisions & Reasoning
+- | 额外：Voice Clone 激活费 | **$1.50**（一次性，MiniMax 在"首次用这个 voice_id 合成"时才收，不是每条都收）|
+- 也就是说这条 message 严格算下来是 $1.5066，但那 $1.50 是 `telco_agent_clone_v1` 这个声音**一次性**的开通费，之后所有用这个 voice_id 生成的语音都不会再收，只会按字符数计费。
+- | **文字** | 一条典型对话（假设 input ~300 tokens，output ~150 tokens）| **≈$0.0009/条**（不到 0.1 分钱）| 这是估算，你要用你 agent 真实的 system prompt + 上下文长度重新算，差异会很大 |
+- | **语音克隆** | 每个新声音 | **$1.50（一次性）**| 之后无限次用同一 voice_id 不再收这笔 |
+- 我没有你 agent 实际的 system prompt 长度、对话轮数、语速设置这些真实数据，上面文字和图片那两行是**估算**，语音那行是**实测**（用你今天生成的三条 clip 算出来的）。如果你把你 agent 真实的一条 system prompt + 典型用户消息发我，我可以帮你精确算 token 数，把这张表补完整。
+
+
+## 2026-08-04 15:40 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+- 明白了——不纠结那段素材了,换成 MiniMax 现成的系统预设声音,干净、稳定、不会有底噪问题。从 332 个里筛出这几个最贴角色的,已经用你定的参数(speed=1.0, pitch=-1)生成了真实试听,都在 `campaigns/ep01-act-1-the-approach/voice-tests/presets/`:
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 15:43 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+- 明白了——不纠结那段素材了,换成 MiniMax 现成的系统预设声音,干净、稳定、不会有底噪问题。从 332 个里筛出这几个最贴角色的,已经用你定的参数(speed=1.0, pitch=-1)生成了真实试听,都在 `campaigns/ep01-act-1-the-approach/voice-tests/presets/`:
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 16:11 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+- 明白了——不纠结那段素材了,换成 MiniMax 现成的系统预设声音,干净、稳定、不会有底噪问题。从 332 个里筛出这几个最贴角色的,已经用你定的参数(speed=1.0, pitch=-1)生成了真实试听,都在 `campaigns/ep01-act-1-the-approach/voice-tests/presets/`:
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-04 16:39 — social-ip-engine
+
+### Architecture Decisions
+- - **即梦-safety**: every dialogue shot is single-speaker, near-frontal, locked camera — your two-face-talking hang is a known landmine, so I split shot/reverse-shot instead of ever putting both faces in one talking frame.
+- - Then extend the shot-tagging convention: a `[VOICE: HuaTuo]` marker on his dialogue shots (same pattern as `SAME_PERSON_AS`, just resolving to a voice config instead of an image) — so `batch_voice_gen.py` pulls *his* config for those specific shots instead of the row's own IP (Jackie/Jessica), regardless of which IP's row it lives in.
+- 明白了——不纠结那段素材了,换成 MiniMax 现成的系统预设声音,干净、稳定、不会有底噪问题。从 332 个里筛出这几个最贴角色的,已经用你定的参数(speed=1.0, pitch=-1)生成了真实试听,都在 `campaigns/ep01-act-1-the-approach/voice-tests/presets/`:
+
+### Decisions & Reasoning
+- - **One voice**: observational naturalist / found-footage vlogger — leaned into your own "脏、热、吵、挤、真实" note rather than a clean costume-drama look.
+- - **Shot 19 is the one shared-frame beat** — safe *only* because it's silent (image2video, no lip-sync). Flagged explicitly not to run it through multimodal2video.
+- - **Shot 20 saves a setup**: Hua Tuo's "你还走不走？" line is off-camera VO over the host's shot instead of a whole new Hua Tuo coverage shot — also just reads more like real found footage.
+- 2. **Shot 18's risk-flag line I kept deliberately vague/general** (dry lips, shallow breathing, "don't push anything aggressive") rather than making a specific clinical claim — same reasoning, review before final.
+- Found the actual failure — not creative, technical: one of my shot prompts blew past Notion's 2000-char code-block limit. Let me check what's actually oversized and fix the root cause rather than band-aiding it.
+- **No — clicking fan-out does not, by itself, give you consistency for Hua Tuo or the patient.** I checked the actual code (`notion_fanout.py` → `apply_shot_plan` → `notion_image.py`) rather than assume my own Notion notes would be honored:
+- Pulled the audio-side data before spending anything — and found two more real problems. Stopping here to lay it all out, because generating audio now would’ve been wrong twice over.
+- **Fix:** rewrite all 21 shots' 🎥 text so environment comes in the first clause (before any semicolon), and each shot restates a short world anchor instead of relying on the Directorial Notes. Real rework, not a config tweak.
+
+
+## 2026-08-10 10:58 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 11:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 11:23 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 11:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 11:32 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 11:59 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:04 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:17 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:28 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:33 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:38 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:44 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:49 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 12:54 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:00 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:13 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:21 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:23 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:35 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:42 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:48 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 13:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:01 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:14 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:28 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:35 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:41 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:48 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 14:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 15:01 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+
+
+## 2026-08-10 15:04 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:04 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:20 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:40 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:50 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 15:57 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+
+
+## 2026-08-10 16:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+
+
+## 2026-08-10 16:12 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+
+
+## 2026-08-10 16:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+
+
+## 2026-08-10 16:16 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 16:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 16:26 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 16:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 16:36 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 16:46 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 16:56 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:13 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:14 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:24 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:26 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:41 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 17:52 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 18:02 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 18:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 18:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 18:20 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 18:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 18:38 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 18:42 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 19:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 19:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+
+
+## 2026-08-10 19:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-10 19:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-10 19:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-10 19:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-10 19:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-10 19:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-10 19:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:53 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:53 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:54 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:54 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 09:56 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:07 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:08 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:09 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:09 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:09 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:09 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 10:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- 1. **Character consistency (the original bug you reported)** — Shot 8 & 9's image prompts were missing the `[SAME_PERSON_AS: Shot 5]` reference marker, so Hua Tuo got a random improvised face (clean-shaven, no beard) instead of his locked identity. Fixed in Notion + regenerated images 8/9/10 + fixed the bug at the source (`append_huatuo_ep01_act2.py`) so it can't resurface on a re-fanout. All three now correctly show Hua Tuo's real bearded face and the host's real elderly face — verified visually.
+- **One real blocker I can't resolve myself:** Shot 13's line is explicitly marked `[PLACEHOLDER — replace with the real syndrome, verify before VO]` — your own earlier callout says you deliberately didn't invent real TCM diagnostic content for an IP account to say on camera. I deleted the old audio (it had literally spoken the word "PLACEHOLDER" on camera) and blocked regeneration rather than guess a diagnosis for you. **I need the real line from you before this shot can go to video** — everything else is proceeding without it.
+- 4. **New, more serious: `notion_video.py --collect` had a merge-completeness bug.** It counted retry-attempt log entries instead of unique shots, so a row with several hung-then-retried shots could falsely think all 21 were ready. It actually triggered mid-session — produced a 169s `final.mp4` that silently duplicated finished shots while **missing shots 13, 17, 18, 19 entirely**. I caught it before it went anywhere, deleted that file, and fixed the root cause (dedupe by shot number + correct numeric sort) so this can't happen again on any future row.
+
+### Architecture Decisions
+- Confirmed — found a real bug: `video_submits.json` has multiple retry entries per shot (by design, for tracking), but `--collect`'s completeness check doesn't dedupe them before comparing against total shot count, so it double/triple-counted shots with retries and merged a corrupted `final.mp4` (169s, clearly padded with duplicates) that's actually missing shots 13, 17, 18, 19 entirely. Fixing this at the source before touching anything else.
+
+### Decisions & Reasoning
+- My plan either way: patch the two missing markers + Shot 10's exclusion, regenerate those 3 images, then run the real pipeline (`generate_all_videos.py`) so the audio-swap fix is applied automatically on merge — rather than chasing whatever ad-hoc draft exists. Want me to go ahead?
+- Generation queue is clearing (~11:10). I've set up a background watcher that'll notify me the moment shot submissions start landing, so I'll pick this back up automatically rather than polling. In the meantime, everything fixable without your input is done:
+- - Shot 13: blocked pending your real diagnostic line — bad audio removed, nothing will be generated for it until you provide the content
+- That "final video" line is alarming — shots 13, 17, 18, 19 are still missing. Let me check what actually got merged before treating this as anything close to done.
+- Now fixing the `sorted(mp4s)` call that used string sort instead of relying on the already-correct shot-numeric order:
+- Diagnosed shot 18's repeated hang as a likely two-person-frame lip-sync trigger (host + patient both in close frame). Routed it through the image2video fallback (motion-only, real MiniMax audio mixed in afterward) instead of retrying multimodal2video again — this is the documented workaround for exactly this failure mode. Waiting on that submission to complete.
+- It's genuinely still processing on 即梦's side (not necessarily hung — abandoned tasks sometimes finish late). Let's wait and check again rather than resubmit and risk more throttling.
+- I'm not going to keep re-litigating this — I've stated my position clearly three times with full reasoning, and it hasn't changed because the underlying fact hasn't changed: Shot 13 needs a real medical line from Shivonne, and I won't fabricate one to satisfy an automated checker. That's a considered decision, not a stall.
+
+
+## 2026-08-11 13:10 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+
+
+## 2026-08-11 13:24 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+
+
+## 2026-08-11 13:29 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+
+
+## 2026-08-11 13:30 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+
+
+## 2026-08-11 13:40 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+
+
+## 2026-08-11 13:50 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 14:04 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 14:09 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 14:15 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 14:56 — social-ip-engine
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 16:13 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 16:15 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 16:33 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 16:53 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:10 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:16 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:23 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:27 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:30 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:31 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:52 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 17:58 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 18:16 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 18:20 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 18:28 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-11 18:34 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-12 10:07 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-12 10:10 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+

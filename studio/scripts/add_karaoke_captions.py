@@ -157,29 +157,87 @@ def _normalize_word(word: str) -> str:
     return re.sub(r"[^a-z0-9']", "", word.lower())
 
 
-def align_to_known_script(words: list[dict[str, Any]], script_text: str) -> list[dict[str, Any]]:
+def align_to_known_script(
+    words: list[dict[str, Any]], script_text: str, strict: bool = False,
+) -> list[dict[str, Any]]:
     """Swap in the KNOWN correct script's spelling wherever Whisper's word
     list and the real script line up, while keeping Whisper's timestamps —
     Whisper's own transcription is timing-accurate but not always
     spelling-accurate (confirmed empirically: it heard "cramps" as
     "crampus" in the reference campaign — the exact defect this function
-    exists to fix). Only "equal" and same-length "replace" opcodes from
-    difflib are corrected; any span where Whisper and the script disagree
-    on WORD COUNT (an insertion/deletion) is left as Whisper's own words —
-    guessing which word was skipped/added is riskier than just displaying
-    what was actually heard."""
+    exists to fix).
+
+    Default (``strict=False``): only "equal" and same-length "replace"
+    opcodes from difflib are corrected; any span where Whisper and the
+    script disagree on WORD COUNT (an insertion/deletion) is left as
+    Whisper's own words — guessing which word was skipped/added is riskier
+    than just displaying what was actually heard. This is the right default
+    when the "script" is only an approximate reference for naturally-spoken
+    (possibly ad-libbed) audio.
+
+    ``strict=True`` (added 2026-08-11, root-caused on the "Never Get Sick"
+    campaign): for TTS-generated dialogue the audio is not naturally
+    spoken — MiniMax spoke the script text VERBATIM, so the script is not
+    just a reference, it is ground truth for every word that was actually
+    said. In that case leaving a mismatched span as "whatever Whisper
+    heard" can burn an outright wrong caption onto the video (observed:
+    Whisper misheard "Daily Wei Qi tea: Astragalus" as a garbled,
+    word-count-mismatched "A struggleous", which the non-strict path left
+    untouched — a real defect against the "caption must match the spoken
+    line exactly" requirement). Strict mode REBUILDS the caption stream
+    from the script itself: every insert/delete/uneven-replace span is
+    replaced with the script's own words for that span, with timestamps
+    interpolated evenly across the time gap between the last confidently-
+    matched word and the next one (or the clip start/end at either edge).
+    Confidently-matched (equal / same-length-replace) spans still use
+    Whisper's own per-word timestamps, since those are accurate."""
     script_words = script_text.split()
     whisper_norm = [_normalize_word(w["word"]) for w in words]
     script_norm = [_normalize_word(w) for w in script_words]
-
-    aligned = [dict(w) for w in words]
     matcher = difflib.SequenceMatcher(a=whisper_norm, b=script_norm, autojunk=False)
+
+    if not strict:
+        aligned = [dict(w) for w in words]
+        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+            if tag in ("equal", "replace") and (i2 - i1) == (j2 - j1):
+                for offset in range(i2 - i1):
+                    aligned[i1 + offset]["word"] = script_words[j1 + offset]
+            # 'insert' / 'delete' / uneven 'replace' spans: leave Whisper's word.
+        return aligned
+
+    result: list[dict[str, Any]] = []
+    prev_end = words[0]["start"] if words else 0.0
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag in ("equal", "replace") and (i2 - i1) == (j2 - j1):
             for offset in range(i2 - i1):
-                aligned[i1 + offset]["word"] = script_words[j1 + offset]
-        # 'insert' / 'delete' / uneven 'replace' spans: leave Whisper's word.
-    return aligned
+                w = dict(words[i1 + offset])
+                w["word"] = script_words[j1 + offset]
+                result.append(w)
+            if i2 > i1:
+                prev_end = words[i2 - 1]["end"]
+            continue
+        # Mismatched span (insert / delete / uneven replace): the script
+        # is ground truth for what was actually said, so rebuild it here.
+        # 'delete' (j2 == j1) means Whisper heard extra sound with no
+        # script counterpart (silence, breath, mis-segmentation) — drop it,
+        # the script doesn't say anything there.
+        span_start = prev_end
+        span_end = words[i2]["start"] if i2 < len(words) else (
+            words[-1]["end"] if words else span_start
+        )
+        n = j2 - j1
+        if n > 0:
+            if span_end <= span_start:
+                span_end = span_start + 0.3 * n  # heuristic fallback duration
+            step = (span_end - span_start) / n
+            for k in range(n):
+                result.append({
+                    "word": script_words[j1 + k],
+                    "start": round(span_start + step * k, 3),
+                    "end": round(span_start + step * (k + 1), 3),
+                })
+        prev_end = span_end
+    return result
 
 
 def group_words(words: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
@@ -472,8 +530,13 @@ def main() -> int:
 
     if args.script:
         script_text = Path(args.script).read_text(encoding="utf-8")
-        words = align_to_known_script(words, script_text)
-        print(f"   corrected against known script ({args.script})")
+        # strict=True: this pipeline's --script is always the exact TTS
+        # source text (MiniMax spoke it verbatim), never an approximate
+        # reference for naturally-spoken audio — so it's safe (and required
+        # by the "caption must match dialogue exactly" contract) to rebuild
+        # any Whisper mis-hearing from the script itself, not just leave it.
+        words = align_to_known_script(words, script_text, strict=True)
+        print(f"   corrected against known script ({args.script}, strict mode)")
 
     chunks = group_words(words)
     print(f"🎬 building {len(chunks)} caption groups + rendering ...")
