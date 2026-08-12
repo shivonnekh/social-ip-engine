@@ -16487,3 +16487,19 @@
 - Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
 - Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
 
+
+## 2026-08-12 11:28 — social-ip-engine
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+

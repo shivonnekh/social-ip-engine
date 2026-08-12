@@ -260,6 +260,113 @@ def test_sync_once_second_row_still_wires_after_first_rows_checkbox_blows_up(
     assert any("mark_wired_failed" in w and "prod-row-1" in w for w in result["warnings"])
 
 
+def test_sync_once_retries_row_when_content_or_ip_relation_lands_late(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A row can hit Ready/Published before a human finishes linking Content/IP.
+    That must stay retryable, or the later relation fix never gets another
+    chance to wire the DM rule."""
+    rules_path = _wire_test_paths(tmp_path, monkeypatch)
+    row, pages, children = _base_row_and_pages()
+    row["properties"]["Content"] = {"relation": []}
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+
+    first = notion_sync.sync_once()
+
+    assert first["added"] == []
+    assert any("missing Content/IP relation" in s and "will retry" in s for s in first["skipped"])
+    assert json.loads((tmp_path / "notion_sync_state.json").read_text(encoding="utf-8")) == []
+    assert not rules_path.exists()
+
+    row["properties"]["Content"] = {"relation": [{"id": "content-1"}]}
+    second = notion_sync.sync_once()
+
+    assert len(second["added"]) == 1
+    assert json.loads(rules_path.read_text(encoding="utf-8"))[0]["keyword"] == "sleep"
+
+
+def test_sync_once_retries_row_when_cta_lands_late(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """CTA copy is often filled after the row already became armable.
+    Missing CTA must not permanently poison notion_sync_state."""
+    rules_path = _wire_test_paths(tmp_path, monkeypatch)
+    row, pages, children = _base_row_and_pages()
+    pages["/pages/content-1"]["properties"]["CTA"] = {"rich_text": []}
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+
+    first = notion_sync.sync_once()
+
+    assert first["added"] == []
+    assert any("no CTA keyword" in s and "will retry" in s for s in first["skipped"])
+    assert json.loads((tmp_path / "notion_sync_state.json").read_text(encoding="utf-8")) == []
+    assert not rules_path.exists()
+
+    pages["/pages/content-1"]["properties"]["CTA"] = {"rich_text": [{"plain_text": 'Comment "sleep" below'}]}
+    second = notion_sync.sync_once()
+
+    assert len(second["added"]) == 1
+    assert json.loads(rules_path.read_text(encoding="utf-8"))[0]["keyword"] == "sleep"
+
+
+def test_sync_once_retries_row_when_ip_registry_lands_late(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A row whose IP name is not registered yet should wire as soon as the
+    registry catches up, without anyone manually clearing state."""
+    rules_path = _wire_test_paths(tmp_path, monkeypatch)
+    row, pages, children = _base_row_and_pages()
+
+    account = None
+
+    def fake_ip_account(_: str):
+        return account
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+    monkeypatch.setattr(notion_sync, "_ip_account", fake_ip_account)
+
+    first = notion_sync.sync_once()
+
+    assert first["added"] == []
+    assert any("no known account for IP" in s and "will retry" in s for s in first["skipped"])
+    assert json.loads((tmp_path / "notion_sync_state.json").read_text(encoding="utf-8")) == []
+    assert not rules_path.exists()
+
+    account = ("17841417304649448", "en")
+    second = notion_sync.sync_once()
+
+    assert len(second["added"]) == 1
+    assert json.loads(rules_path.read_text(encoding="utf-8"))[0]["keyword"] == "sleep"
+
+
+def test_sync_once_self_heals_previously_processed_row_missing_rule(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Older builds could poison notion_sync_state before a rule was actually
+    created. A later sweep should draft the missing rule anyway instead of
+    trusting the processed-row ledger blindly."""
+    rules_path = _wire_test_paths(tmp_path, monkeypatch)
+    row, pages, children = _base_row_and_pages()
+    (tmp_path / "notion_sync_state.json").write_text(json.dumps(["prod-row-1"]), encoding="utf-8")
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+
+    result = notion_sync.sync_once()
+
+    assert len(result["added"]) == 1
+    assert json.loads(rules_path.read_text(encoding="utf-8"))[0]["keyword"] == "sleep"
+
+
 def test_sync_once_never_ticks_checkbox_before_rules_are_persisted(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

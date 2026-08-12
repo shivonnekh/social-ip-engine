@@ -200,7 +200,7 @@ body {
 .content-item .ci-title { font-size: 13px; font-weight: 700; }
 .content-item .ci-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
 .concept-main { flex: 1; min-width: 0; }
-.concept-toolbar { margin-bottom: 16px; }
+.concept-toolbar { margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 .rows-panel { display: grid; grid-template-columns: repeat(auto-fill, minmax(295px, 1fr)); gap: 16px; }
 
 /* ===== buttons ===== */
