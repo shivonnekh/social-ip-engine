@@ -330,43 +330,27 @@ def _jimeng_camera(title: str, visual: str = "", lang: str = "") -> str:
     one. English/Cantonese-tagged IPs now get an English camera direction —
     only genuinely Chinese-language IPs (Mandarin) keep the Chinese phrasing,
     since 运镜 vocabulary in Chinese is native/correct for that case, not a
-    leftover default.
-
-    Rewritten 2026-07-21 after Shivonne flagged every campaign coming back
-    visually monotonous — "都是同一个死的画面...没有左右、上下、大小的那种运镜
-    的感觉" (all the same static frame, no left-right/up-down/scale camera
-    movement). Root cause: every one of the 5 beat categories below reduced
-    to some flavor of "push-in" — a single, fixed axis of motion repeated
-    across every shot of every video, campaign after campaign. Each category
-    now moves the camera on TWO different axes (a pan or tilt combined with
-    a push/pull), so a single continuous take reads as camera work rather
-    than a locked-off zoom. This does NOT add true B-roll/cutaway inserts —
-    multimodal2video renders ONE continuous lip-synced take per shot from a
-    single reference image, so a hard cut to a different framing mid-clip
-    risks breaking lip-sync (same failure class as the documented
-    two-person-frame / off-axis-face triggers). Real inserted B-roll needs a
-    separate non-speaking image2video clip spliced into the shot, which is a
-    bigger pipeline change, not a prompt fix — flag it as its own ask."""
+    leftover default."""
     t = title.lower()
     if lang not in ("", "普通话"):  # English, Cantonese, and every other non-Mandarin IP language
         if "hook" in t:
-            return "Camera pans slowly across the props before settling and pushing in on the face, drawing the viewer in"
+            return "Slow push-in, drawing the viewer in"
         if "cta" in t:
-            return "Slow tilt up from the hands to the face, gentle push-in for a warm, personal close"
+            return "Slow push-in to the face, warm and personal close"
         if any(k in t for k in ("quick", "win", "demo", "method", "try", "remedy", "recipe")):
-            return "Medium shot, camera follows the hand action with a slight handheld pan and tilt, drifting to reveal the demonstration before settling back on the face"
+            return "Medium shot, camera naturally follows the hand action, slight handheld feel"
         if any(k in t for k in ("safety", "principle", "caution", "root")):
-            return "Camera pans slightly while pushing in, reframing from the visual aid to the face, serious expression"
-        return "Camera drifts in a slow arc around the subject, panning gently while pushing in, natural breathing and blinking"
+            return "Stable frame, slight push-in, serious expression"
+        return "Subject centered, slow gentle push-in, natural breathing and blinking"
     if "hook" in t:
-        return "镜头缓慢横摇掠过道具，随后停在脸部并缓缓推近，营造代入感"
+        return "缓慢推近，营造代入感"
     if "cta" in t:
-        return "镜头由手部缓慢上摇至脸部，并缓缓推近，温暖亲切收尾"
+        return "缓慢推近至面部，温暖亲切收尾"
     if any(k in t for k in ("quick", "win", "demo", "method", "try", "remedy", "recipe")):
-        return "中景，镜头随手上动作轻微横摇与俯仰，先展示动作细节再缓缓带回脸部，轻微手持感"
+        return "中景，镜头自然跟随手上的动作，轻微手持感"
     if any(k in t for k in ("safety", "principle", "caution", "root")):
-        return "镜头轻微横摇并推近，由道具画面重新构图至脸部，神情认真"
-    return "镜头缓慢环绕主体轻摇并推近，自然呼吸与眨眼"
+        return "画面稳定，轻微推近，神情认真"
+    return "人物居中，轻微缓推，自然呼吸与眨眼"
 
 
 _LANG_MAP = {"cantonese": "粤语", "english": "英文", "mandarin": "普通话",
@@ -893,9 +877,7 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
                        "heading_3": {"rich_text": _rt(s["title"])}})
         blocks.append(_bold("🖼️ Image prompt (single frame → GPT)"))
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(build_prompt(persona, _primary_beat(s["visual"]),
-                                          talking=bool(dialogue_for_jimeng))),
-            "language": "plain text"}})
+            "rich_text": _rt(build_prompt(persona, _primary_beat(s["visual"]))), "language": "plain text"}})
         blocks.append(_bold("🗣️ Voice script"))
         blocks.append({"object": "block", "type": "code", "code": {
             "rich_text": _rt(voice_line), "language": "plain text"}})

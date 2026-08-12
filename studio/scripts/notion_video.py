@@ -25,7 +25,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import os
 import re
 import subprocess
@@ -321,16 +320,6 @@ def _dur(path):
     return float(r.stdout.strip() or 0)
 
 
-def _video_stream_dur(path: str) -> float:
-    """Duration of the VIDEO stream specifically, not the container's overall
-    `format=duration` (which can reflect a slightly-longer audio track — see
-    concat()'s docstring for why that distinction matters for a/v sync)."""
-    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
-                        "-show_entries", "stream=duration",
-                        "-of", "default=noprint_wrappers=1:nokey=1", path], capture_output=True, text=True)
-    return float(r.stdout.strip() or 0)
-
-
 # 即梦 rejects audio outside 2–15s. Both ends of this range fail the SAME
 # way — no error, the task just hangs "querying" FOREVER (indistinguishable
 # from the hang-lottery, but 100% reproducible for that shot). Over-length:
@@ -486,33 +475,9 @@ def compose_multimodal_prompt(jimeng_text: str) -> str:
     return "\n".join(out)
 
 
-def _dreamina_duration(audio_dur_s: float, default: int = 5) -> int:
-    """即梦 needs an explicit integer 4-15s duration for a shot's video. Uses
-    `math.ceil`, NOT `round`, so the requested video is never shorter than
-    the real audio that has to play over it.
-
-    Root-caused 2026-08-03 on the Bad Breath campaign's CTA shot: the real
-    voice clip was 4.435s, and the old `round(4.435) == 4` (nearest, not
-    up) asked 即梦 for only a 4s video. 即梦 rendered ~4.02s — shorter than
-    the real audio — and concat()'s per-shot audio clamping (which
-    intentionally trims audio to match ITS OWN shot's video length, since
-    the opposite case — video longer than audio — is the normal one)
-    silently cut the real voice track down to match, chopping the
-    sentence's tail off entirely. Confirmed via that shot's own Whisper
-    transcript: the word list ends at "...and breath." — the script's
-    actual last word, "reset", was never spoken in the merged video at
-    all, not merely mis-captioned. `ceil()` guarantees the requested
-    duration is always >= the real audio's length, closing this for any
-    shot whose audio's fractional-second part is under .5 (the range
-    `round()` used to silently round down)."""
-    if audio_dur_s <= 0:
-        return default
-    return max(4, min(15, math.ceil(audio_dur_s)))
-
-
 def submit_shot_multimodal(img, aud, jimeng_text, model):
     """Submit multimodal2video — image + audio → lip-sync talking-head video."""
-    dur = _dreamina_duration(_dur(aud))
+    dur = max(4, min(15, round(_dur(aud)) or 5))
     prompt = compose_multimodal_prompt(jimeng_text) or "医生自然讲解，轻微点头眨眼，摄影机缓慢推入，9:16竖屏"
     # --video_resolution is REQUIRED once --model_version is set explicitly —
     # root-caused 2026-07-20 after a 4-DAY, 50+-attempt, 0%-success streak on
@@ -537,7 +502,7 @@ def submit_shot_multimodal(img, aud, jimeng_text, model):
 def submit_shot_image2video(img, aud, jimeng_text, model):
     """Fallback: image2video (no lip sync) — for B-roll shots or two-person frames.
     Returns (submit_id, res). Audio must be mixed in via mix_audio() after download."""
-    dur = _dreamina_duration(_dur(aud))
+    dur = max(4, min(15, round(_dur(aud)) or 5))
     prompt = compose_i2v_prompt(jimeng_text) or "画面自然流动，摄影机缓慢推入，9:16竖屏"
     # --video_resolution is REQUIRED once --model_version is set explicitly —
     # found 2026-07-20: omitting it now returns ret=10001 "invalid param:
@@ -692,14 +657,7 @@ def poll_download(submit_id, out, timeout=_POLL_TIMEOUT_S, interval=20):
         status = d.get("gen_status", "?")
         if status == "success":
             url = _video_url(d)
-            # force=True: `out` is almost always an already-existing path on a
-            # regen (shotN_regen.mp4 from a prior attempt) — without this,
-            # _download() silently skips writing and every "regen" keeps
-            # returning the ORIGINAL take forever, no matter what changed
-            # upstream (image/audio/prompt). Root-caused 2026-07-27 after 7
-            # consecutive shot-2 regens all came back byte-identical despite
-            # genuinely different inputs each time.
-            return (_download(url, out, force=True) if url else None), ("success" if url else "fail")
+            return (_download(url, out) if url else None), ("success" if url else "fail")
         if status == "fail":
             print(f"    fail_reason: {d.get('fail_reason')}")
             return None, "fail"
@@ -773,31 +731,11 @@ def concat(mp4s, out):
     `setpts=PTS-STARTPTS` so each shot's own internal offset never leaks
     into the next one) makes the merged file's timing unambiguous
     regardless of what quirky metadata any individual shot carried in.
-
-    Per-shot audio is also hard-clamped (atrim+apad) to that SAME shot's own
-    video duration before concatenation — root-caused 2026-07-27 on the
-    Stress campaign: replace_shot_audio()'s `-t {vdur}` cut does NOT actually
-    force the encoded AAC track to that exact length (AAC's fixed-size frames
-    mean the real output overshoots the requested cutoff by ~50-90ms,
-    confirmed via ffprobe on all 4 shots — e.g. shot2_realvoice.mp4 measured
-    video=15.066s / audio=15.116s). The concat filter only resets each
-    segment's PTS to 0 (`asetpts`) — it does NOT trim one stream to match the
-    other's length — so a per-shot overshoot doesn't cancel out, it ADDS:
-    shot 1's extra ~90ms delays shot 2's audio start against shot 2's video,
-    shot 2's own extra ~50ms stacks on top for shot 3, and so on. Every
-    individual shotN_realvoice.mp4 plays back in perfect sync (checked in
-    isolation), but the merged final.mp4 drifts more with every additional
-    shot — exactly the "each shot is fine alone, wrong once merged" symptom.
-    Clamping every input's audio to ITS OWN video duration here, inside the
-    same filtergraph that already re-times everything else, closes this for
-    good regardless of how any upstream step (replace_shot_audio, or 即梦's
-    own output) rounds its duration.
     """
     inputs: list[str] = []
     filter_parts: list[str] = []
     for i, p in enumerate(mp4s):
         inputs += ["-i", p]
-        seg_dur = _video_stream_dur(p)
         # Normalize RESOLUTION too, not just fps: 即梦 does NOT always render at
         # the 9:16 720x1280 you asked for — a shot can come back at e.g.
         # 832x1120 (found 2026-07-18 on Phone Neck Shot 3, regenerated on the
@@ -816,7 +754,7 @@ def concat(mp4s, out):
         filter_parts.append(
             f"[{i}:v]scale={_MERGE_W}:{_MERGE_H}:force_original_aspect_ratio=increase,"
             f"crop={_MERGE_W}:{_MERGE_H},setsar=1,fps={_MERGE_FPS},setpts=PTS-STARTPTS[v{i}];"
-            f"[{i}:a]atrim=0:{seg_dur:.3f},apad=whole_dur={seg_dur:.3f},asetpts=PTS-STARTPTS[a{i}]"
+            f"[{i}:a]asetpts=PTS-STARTPTS[a{i}]"
         )
     concat_refs = "".join(f"[v{i}][a{i}]" for i in range(len(mp4s)))
     filter_complex = (
@@ -1011,27 +949,7 @@ def main():
         if not ids_path.exists():
             print("nothing to collect — no video_submits.json for this row")
             return 0
-        submits_raw = json.loads(ids_path.read_text())
-        # DEDUPE by shot number, keep the LAST entry per shot (= most recent
-        # submission attempt). Root cause (2026-08-10, Hua Tuo EP01 row): the
-        # hang-lottery retry loop appends a NEW entry to video_submits.json on
-        # every attempt by design (so an earlier abandoned attempt can still
-        # be harvested later) — a shot that hung twice before succeeding ends
-        # up with 3 entries for the SAME shot number. Iterating the raw list
-        # here without dedup double/triple-counted shots with existing local
-        # mp4s (e.g. a shot retried 3x contributed 3 identical path strings to
-        # mp4s), so `len(mp4s) >= len(shots)` went true and triggered a merge
-        # while 4 real shots (13/17/18/19) were STILL missing — produced a
-        # 169s final.mp4 that silently duplicated finished shots instead of
-        # including the actual missing ones. `dict` preserves insertion order
-        # in py3.7+ and a later key overwrites, so this naturally keeps the
-        # LAST (most recent) submit_id per shot.
-        submits = list({s["shot"]: s for s in submits_raw}.values())
-        # Sort by shot NUMBER, not the mp4 path STRING — "shot10.mp4" sorts
-        # before "shot2.mp4" lexicographically, which silently reordered any
-        # row with 10+ shots. concat() below relies on this list already
-        # being in true shot order (see --merge-only's identical comment).
-        submits.sort(key=lambda s: s["shot"])
+        submits = json.loads(ids_path.read_text())
         mp4s = [str(vdir / f"shot{s['shot']}.mp4")
                 for s in submits if Path(vdir / f"shot{s['shot']}.mp4").exists()]
         pending = 0
@@ -1076,14 +994,7 @@ def main():
             print(f"⏳ {pending} task(s) still rendering on 即梦's side")
         if mp4s and len(mp4s) >= len(shots):
             final = str(vdir / "final.mp4")
-            # mp4s is already in true shot order (submits was sorted by shot
-            # NUMBER above, then deduped) — do NOT re-sort here. A lexical
-            # sorted(mp4s) on the path STRING put "shot10.mp4" before
-            # "shot2.mp4" for any row with 10+ shots, scrambling playback
-            # order. Same fix as --merge-only's identical, already-correct
-            # convention (see its comment: "already in shot order — do NOT
-            # re-sort").
-            concat(mp4s, final)
+            concat(sorted(mp4s), final)
             strip_ai_watermark(final)
             _maybe_tick_video_checkbox(args.row)
             (vdir / "words.json").unlink(missing_ok=True)  # stale caption transcript

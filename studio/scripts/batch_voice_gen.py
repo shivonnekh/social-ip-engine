@@ -202,62 +202,6 @@ def _campaign_voicedir(row_id: str) -> Path:
     return ROOT / "campaigns" / content_slug / ip_slug / "voice"
 
 
-# ─── Stage-direction / bracket cleaning ──────────────────────────────────────
-# Root cause (2026-08-10, Hua Tuo EP01 row): a Voice script property is
-# authored text meant for TWO audiences — a human reading the Shot Guide AND
-# MiniMax TTS — but `process_row()` used to send the raw property straight to
-# `synthesize()` with zero cleaning. Any stage direction or speaker label
-# living in that same property (`(no dialogue — pure transition)`,
-# `(voiceover) actual line...`, `(host) ... (Hua Tuo) ...`, a
-# `[black card: ...]` on-screen-text instruction, even a `[PLACEHOLDER ...]`
-# warning) got read out loud verbatim as if it were 台词 — confirmed via
-# Whisper on Shot 9 ("(no dialogue — pure transition)" -> literally spoken
-# "No dialogue pure transition.") and Shot 19 (same pattern). This is
-# systemic, not a one-shot glitch — see EXPECTED_NEW_COLUMNS-style forcing
-# function note: any future row with a stage-direction-style Voice script
-# hits the same bug without this cleaner.
-_PLACEHOLDER_RE = re.compile(r"\[\s*PLACEHOLDER\b", re.I)
-_SQUARE_BRACKET_RE = re.compile(r"\[[^\]]*\]")
-_PAREN_WITH_COLON_RE = re.compile(r"\(([^():]*):\s*([^()]*)\)")
-_PAREN_RE = re.compile(r"\([^()]*\)")
-
-
-def clean_for_tts(raw: str) -> str | None:
-    """Strip stage directions / speaker labels / on-screen-text instructions
-    out of a Voice script property before it's sent to TTS.
-
-    Returns None in two distinct cases the caller must NOT treat the same way:
-      - the line is genuinely silent (nothing left after stripping stage
-        directions, e.g. "(no dialogue — pure transition)") — a normal,
-        expected outcome, same convention as an empty Voice script.
-      - the line contains an unresolved `[PLACEHOLDER ...]` warning — NOT
-        normal; the caller should block and surface this loudly rather than
-        silently skip, because it means real content is still pending human
-        approval (see the Shot 13 callout in this row: "I did not invent
-        real TCM diagnostic content for an IP account to say on camera").
-        Signalled via the sentinel string "__PLACEHOLDER_BLOCKED__".
-    """
-    text = raw.strip()
-    if _PLACEHOLDER_RE.search(text):
-        return "__PLACEHOLDER_BLOCKED__"
-    # [black card: ...] and similar bracketed on-screen-text instructions are
-    # never spoken — post-production typography, not dialogue (see
-    # delivery-qc.md: "do not rely on generated burned-in text as final
-    # deliverable subtitles" — the inverse also holds, a caption instruction
-    # must never leak INTO the audio track either).
-    text = _SQUARE_BRACKET_RE.sub(" ", text)
-    # A parenthetical with a colon wraps real spoken content behind a label,
-    # e.g. "(no on-camera dialogue — carries as voiceover: Hua Tuo reads
-    # color, breath...)" — keep everything after the colon, drop the label.
-    text = _PAREN_WITH_COLON_RE.sub(lambda m: " " + m.group(2) + " ", text)
-    # Any remaining parenthetical is a pure stage direction / speaker tag
-    # with no real content inside — e.g. "(voiceover)", "(host)", "(Hua
-    # Tuo)", "(off-camera, Hua Tuo)", "(no dialogue — a look and a nod)".
-    text = _PAREN_RE.sub(" ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text or None
-
-
 # ─── Parse voice scripts from row body ───────────────────────────────────────
 
 def extract_shots(row_id: str) -> list[dict]:
@@ -511,20 +455,6 @@ def process_row(row_id: str, title: str, *,
             print(f"    Shot {i}: no script text — skip")
             skipped += 1
             continue
-
-        cleaned = clean_for_tts(text)
-        if cleaned == "__PLACEHOLDER_BLOCKED__":
-            print(f"    Shot {i}: 🚫 BLOCKED — Voice script still has an unresolved "
-                  f"[PLACEHOLDER ...] marker. This line has not been approved for VO. "
-                  f"Fix the script in Notion before generating audio for this shot.")
-            skipped += 1
-            continue
-        if cleaned is None:
-            print(f"    Shot {i}: script is pure stage direction (e.g. \"(no dialogue...)\") "
-                  f"— no real line to speak, treating as a silent shot, skipping TTS")
-            skipped += 1
-            continue
-        text = cleaned
 
         print(f"    Shot {i}: {text[:60]}…")
         if dry_run:
