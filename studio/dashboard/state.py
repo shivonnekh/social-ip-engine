@@ -38,6 +38,14 @@ STAGE_OPTIONS = ["💡 Idea", "🎬 Pending Video", "✂️ Edit", "🟢 Ready t
 STAGE_READY = "🟢 Ready to Publish"
 STAGE_PUBLISHED = "✅ Published"
 
+# The carousel's own, INDEPENDENT publish lifecycle (see
+# docs/carousel-format-plan.md Part 2.1) — a second, separate select on the
+# same Production row so "Reel live, carousel not yet" is representable.
+# Deliberately never touches `Stage`/STAGE_OPTIONS above.
+CAROUSEL_STAGE_OPTIONS = ["💡 Idea", "🎨 Drafted", "🟢 Ready to Publish", "✅ Published"]
+CAROUSEL_STAGE_READY = "🟢 Ready to Publish"
+CAROUSEL_STAGE_PUBLISHED = "✅ Published"
+
 # next_action values, in human priority order (closest-to-live first).
 # NOTE: there is no Raw Video step anywhere — the Production Tracker has no
 # "Raw Video" property (confirmed 2026-07-10) and per-shot videos are reviewed
@@ -190,11 +198,21 @@ def _resolve_toggle_media(item: tuple[str, dict, str, str]) -> tuple[dict, str, 
 
 
 def _next_action_detail(stage: str, shots: list[dict],
-                        cover_img: bool, info_img: bool, has_prod: bool) -> str:
+                        cover_img: bool, info_img: bool, has_prod: bool,
+                        has_carousel_prompts: bool = False) -> str:
     if stage == STAGE_PUBLISHED:
         return "done"
     if not shots:
-        return "fan_out"
+        # A row with no video shots but a real 🎠 Carousel Guide is NOT
+        # missing a fan-out — it's carousel-only, a completely different,
+        # valid content system (not video with a step skipped). Reporting
+        # "fan_out" here was a real bug: it told the dashboard to show the
+        # video "this row has no shots yet, go fan-out" banner + empty
+        # shot-grid + disabled batch buttons on a row that was never
+        # SUPPOSED to have shots. See docs/carousel-format-plan.md — video
+        # and carousel are separate systems; a carousel-only row should
+        # never surface video UI at all, not even an empty/disabled state.
+        return "carousel_only" if has_carousel_prompts else "fan_out"
     assets_done = all(s["image_url"] for s in shots) and all(s.get("audio_url") or s.get("is_silent") for s in shots)
     if not assets_done:
         return "generate_assets"
@@ -217,6 +235,7 @@ def row_detail(row_id: str) -> dict:
     blocks = ni._children(row_id)
 
     shots: list[dict] = []
+    panels: list[dict] = []
     cover: dict = {"prompt": None, "image_url": None}
     info: dict = {"prompt": None, "image_url": None}
     pending: list[tuple[str, dict, str, str]] = []  # (kind, target, toggle_id, want_type)
@@ -249,6 +268,14 @@ def row_detail(row_id: str) -> dict:
                        "video_url": None, "voice_text": ""}
                 shots.append(cur)
                 section = "shot"
+            elif low.startswith("panel"):
+                # Matches notion_carousel_prompts.carousel_blocks()'s
+                # "Panel N · <role>" heading_3 exactly — same title-prefix
+                # detection convention "shot" above already uses, no
+                # separate sentinel-callout tracking needed.
+                cur = {"title": tx, "prompt": None, "image_url": None}
+                panels.append(cur)
+                section = "carousel"
             elif "cover photo" in low:
                 section, cur = "cover", None
             elif "dm infographic" in low:
@@ -269,6 +296,14 @@ def row_detail(row_id: str) -> dict:
                 pending.append(("image", cur, b["id"], "image"))
             elif t == "toggle" and "video here" in low and b.get("has_children"):
                 pending.append(("video", cur, b["id"], "video"))
+        elif section == "carousel" and cur is not None:
+            if t == "paragraph" and "panel prompt" in low:
+                want_code = "panel"
+            elif want_code == "panel" and t == "code":
+                cur["prompt"] = tx
+                want_code = None
+            elif t == "toggle" and "panel here" in low and b.get("has_children"):
+                pending.append(("image", cur, b["id"], "image"))
         elif section == "cover":
             if t == "paragraph" and "cover prompt" in low:
                 want_code = "cover"
@@ -309,6 +344,8 @@ def row_detail(row_id: str) -> dict:
                   "has_image": bool(s["image_url"]),
                   "has_voice": bool(s["audio_url"]),
                   "is_silent": not s["audio_url"] and not s["voice_text"]} for s in shots]
+    panels_out = [{**pnl, "has_image": bool(pnl["image_url"])} for pnl in panels]
+    carousel_stage = _sel(p.get("🎠 Carousel Stage", {}))
 
     return {
         "id": row_id,
@@ -327,10 +364,17 @@ def row_detail(row_id: str) -> dict:
         "has_infographic_prompt": bool(info["prompt"]) and not info_is_placeholder,
         "has_infographic_image": bool(info["image_url"]),
         "infographic_image_url": info["image_url"],
+        # ---- carousel (independent format, own stage — see CAROUSEL_STAGE_OPTIONS) ----
+        "panels": panels_out,
+        "has_carousel_prompts": bool(panels_out),
+        "carousel_panel_count": len(panels_out),
+        "all_panels_have_image": bool(panels_out) and all(pnl["has_image"] for pnl in panels_out),
+        "carousel_stage": carousel_stage,
+        "carousel_posted": bool(p.get("🚀 Posted (Carousel)", {}).get("checkbox", False)),
         "dm_wired": bool(p.get("🔗 DM Wired", {}).get("checkbox", False)),
         "next_action": _next_action_detail(stage, shots_out,
                                            bool(cover["image_url"]), bool(info["image_url"]),
-                                           bool(prod_url)),
+                                           bool(prod_url), bool(panels_out)),
     }
 
 
@@ -338,6 +382,18 @@ def set_stage(row_id: str, stage_name: str) -> None:
     if stage_name not in STAGE_OPTIONS:
         raise ValueError(f"unknown stage {stage_name!r}")
     ni.ncall("PATCH", f"/pages/{row_id}", {"properties": {"Stage": {"select": {"name": stage_name}}}})
+
+
+def set_carousel_stage(row_id: str, stage_name: str) -> None:
+    """Independent of set_stage() on purpose — the carousel has its own
+    publish lifecycle (CAROUSEL_STAGE_OPTIONS) on a SEPARATE Notion
+    property (`🎠 Carousel Stage`), never `Stage`. See
+    docs/carousel-format-plan.md Part 2.1 for why this row-level split
+    (not a forked row) is the chosen design."""
+    if stage_name not in CAROUSEL_STAGE_OPTIONS:
+        raise ValueError(f"unknown carousel stage {stage_name!r}")
+    ni.ncall("PATCH", f"/pages/{row_id}",
+             {"properties": {"🎠 Carousel Stage": {"select": {"name": stage_name}}}})
 
 
 def archive_page(page_id: str) -> None:
@@ -386,13 +442,31 @@ def shot_title_by_index(row_id: str, shot_index: int) -> str | None:
     return None
 
 
+def panel_title_by_index(row_id: str, panel_index: int) -> str | None:
+    """1-based panel index -> its exact heading_3 title text (e.g. 'Panel 2 ·
+    Hegu'). Sibling of shot_title_by_index() — same lightweight single-purpose
+    walk, same reason (avoid row_detail()'s full media-URL resolution just to
+    answer "what's panel N called")."""
+    n = 0
+    for b in ni._children(row_id):
+        if b["type"] == "heading_3":
+            tx = ni._txt(b)
+            if tx.lower().startswith("panel"):
+                n += 1
+                if n == panel_index:
+                    return tx
+    return None
+
+
 # Which paragraph label precedes the code block for each regen kind, per the
-# shot template built by notion_prompts.apply_shot_plan(). Matched by
+# shot template built by notion_prompts.apply_shot_plan() / the panel
+# template built by notion_carousel_prompts.carousel_blocks(). Matched by
 # substring, same convention every reader in this codebase already uses.
 _INSTRUCTION_LABEL = {
     "image": "Image prompt",
     "voice": "Voice script",
     "video": "即梦",
+    "panel": "Panel prompt",
 }
 
 

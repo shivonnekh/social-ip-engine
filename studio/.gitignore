@@ -11,6 +11,7 @@ server/.env
 campaigns/**/voice/
 campaigns/**/video/
 campaigns/**/images/
+campaigns/**/carousel/
 
 # Python
 __pycache__/

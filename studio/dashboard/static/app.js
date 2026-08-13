@@ -322,6 +322,36 @@ function mediaImg(url, alt) {
     : `<span class="missing">还没生成</span>`;
 }
 
+// Reuses the SAME .chip.stage-* CSS as the video Stage chip (STAGE_CLASS
+// above) — visually consistent, just a different underlying Notion
+// property. "🎨 Drafted" has no video-Stage equivalent, so it gets its own
+// small CSS rule (see style.css).
+const CAROUSEL_STAGE_CLASS = {
+  "💡 Idea": "stage-idea", "🎨 Drafted": "stage-drafted",
+  "🟢 Ready to Publish": "stage-ready", "✅ Published": "stage-published",
+};
+
+function panelsHTML(d) {
+  if (!d.panels.length) {
+    return d.has_carousel_prompts === false
+      ? '<p class="hint">这个 Content 还没有 🎠 Carousel Guide — 这是正常的，多数内容只做 video。要加 carousel 就去 Notion 的 Content Library 页面写 Carousel Guide，然后回来点上面的「▶ 生成 carousel」。</p>'
+      : '<p class="hint">还没有 panel。</p>';
+  }
+  return d.panels.map((pnl, i) => `
+    <div class="shot-card" style="--i:${i}">
+      <span class="sc-title">${esc(pnl.title)}</span>
+      <div class="media-frame square">${mediaImg(pnl.image_url, pnl.title)}</div>
+      <div class="instruction-row">
+        <input type="text" class="panel-instruction-input" data-panel="${i + 1}"
+          placeholder="改动说明（可选）— 会写进这个 panel 的 prompt">
+      </div>
+      <div class="shot-tools">
+        <button class="btn mini regen-panel" data-act="regen_panel" data-panel="${i + 1}"
+          title="重新生成这个 panel 的图片（会替换旧图；上面填了说明会一并加进 prompt）">↻ 图</button>
+      </div>
+    </div>`).join("");
+}
+
 function renderDetail(d) {
   const b = BANNERS[d.next_action] || BANNERS.done;
   const notionUrl = "https://www.notion.so/" + d.id.replaceAll("-", "");
@@ -358,16 +388,22 @@ function renderDetail(d) {
 
   const check = (ok, label) => `<li class="${ok ? "ok" : "no"}">${label}</li>`;
 
-  detailEl.innerHTML = `
-    <div class="detail-head">
-      <button class="btn" id="btn-back">← 返回</button>
-      <h1>${esc(d.name)}</h1>
-      <span class="chip ${STAGE_CLASS[d.stage] || ""}">${esc(d.stage || "?")}</span>
-      ${d.dm_wired ? '<span class="chip dm">🔗 DM wired</span>' : ""}
-      <a class="notion-link" href="${notionUrl}" target="_blank">在 Notion 打开 ↗</a>
-    </div>
-    ${d.title ? `<div class="sub" style="color:var(--muted);font-size:13px;">🏷️ ${esc(d.title)}</div>` : ""}
+  const carouselChip = d.has_carousel_prompts
+    ? `<span class="chip ${CAROUSEL_STAGE_CLASS[d.carousel_stage] || ""}">🎠 ${esc(d.carousel_stage || "?")}</span>` : "";
 
+  // A row is one of two COMPLETELY SEPARATE content systems (video / shots,
+  // or carousel / panels) — see docs/carousel-format-plan.md. Root-caused
+  // live 2026-08-13: rendering both sections behind tabs still surfaced
+  // video's empty-state clutter (还没有 shots banner, disabled batch
+  // buttons, empty 成片/封面 sections) by default on a row that is 100%
+  // carousel and was never supposed to have any shots. Fix: a row only
+  // ever gets the ONE section that actually applies to it. Tabs only
+  // appear on the rare row that genuinely has BOTH (a concept someone
+  // deliberately gave both a Shot Guide and a Carousel Guide).
+  const hasVideo = d.shots.length > 0;
+  const hasCarousel = d.has_carousel_prompts;
+
+  const videoHTML = `
     <div class="banner ${b.cls}">
       <span class="b-icon">${b.icon}</span>
       <span class="b-text">${b.text}<small>${b.sub}</small></span>
@@ -438,11 +474,68 @@ function renderDetail(d) {
       <div class="publish-actions">
         <button class="btn" id="btn-ready">→ Ready to Publish</button>
         <button class="btn danger" id="btn-publish">⚠ 发布到 IG / FB（不可逆）</button>
-        <button class="btn danger" id="btn-delete-row" style="margin-left:auto;">🗑 删除这一行</button>
       </div>
     </div>`;
 
-  // wiring
+  // Deliberately MINIMAL, per direct feedback (2026-08-13): a carousel is
+  // "click in → see the panels → generate → publish". No batch-select bar,
+  // no checklist wall, no progress-bar-shaped clutter — those all read as
+  // "video machinery" even when carousel-specific, so they're gone here.
+  // Per-panel regen buttons stay (useful, carousel-native — fixing one bad
+  // panel without touching the rest), just without the batch-selection
+  // scaffolding around them.
+  const carouselHTML = `
+    <div class="section">
+      <h3>🎠 Carousel Panels（${d.carousel_panel_count}）
+        <span class="sec-actions"><button class="btn" id="btn-carousel">▶ 生成 carousel</button></span>
+      </h3>
+      <div class="shot-grid">${panelsHTML(d)}</div>
+    </div>
+    <div class="publish-actions">
+      <button class="btn" id="btn-carousel-ready" ${!d.has_carousel_prompts ? "disabled" : ""}>→ Ready to Publish</button>
+      <button class="btn danger" id="btn-carousel-publish">⚠ 发布 Carousel（不可逆）</button>
+    </div>`;
+
+  const tabsHTML = (hasVideo && hasCarousel) ? `
+    <div class="ftabs">
+      <button class="ftab active" data-ftab="video">🎬 Video</button>
+      <button class="ftab" data-ftab="carousel">🎠 Carousel（${d.carousel_panel_count}）</button>
+    </div>` : "";
+
+  let bodyHTML;
+  if (hasVideo && hasCarousel) {
+    bodyHTML = `${tabsHTML}
+      <div class="ftab-content" data-ftab-content="video">${videoHTML}</div>
+      <div class="ftab-content" data-ftab-content="carousel" hidden>${carouselHTML}</div>`;
+  } else if (hasCarousel) {
+    bodyHTML = carouselHTML;
+  } else if (hasVideo) {
+    bodyHTML = videoHTML;
+  } else {
+    // Neither — a genuinely empty concept (no Shot Guide, no Carousel
+    // Guide). Keep the original "go fan-out" banner for this real edge
+    // case; it's the one row-state that's actually still missing content.
+    bodyHTML = `<div class="banner ${b.cls}"><span class="b-icon">${b.icon}</span>
+      <span class="b-text">${b.text}<small>${b.sub}</small></span></div>`;
+  }
+
+  detailEl.innerHTML = `
+    <div class="detail-head">
+      <button class="btn" id="btn-back">← 返回</button>
+      <h1>${esc(d.name)}</h1>
+      ${hasVideo ? `<span class="chip ${STAGE_CLASS[d.stage] || ""}">${esc(d.stage || "?")}</span>` : ""}
+      ${carouselChip}
+      ${d.dm_wired ? '<span class="chip dm">🔗 DM wired</span>' : ""}
+      <a class="notion-link" href="${notionUrl}" target="_blank">在 Notion 打开 ↗</a>
+      <button class="btn danger mini" id="btn-delete-row" title="删除这一行（Notion 归档，Trash 里可恢复）">🗑 删除</button>
+    </div>
+    ${d.title ? `<div class="sub" style="color:var(--muted);font-size:13px;">🏷️ ${esc(d.title)}</div>` : ""}
+    ${bodyHTML}`;
+
+  // wiring — every lookup is null-safe (`?.`) since which elements exist
+  // depends on hasVideo/hasCarousel above; a carousel-only row simply has
+  // no #btn-assets etc. to find, and that's correct, not a bug to guard
+  // against loudly.
   document.getElementById("btn-back").onclick = closeDetail;
   const assetsBtn = document.getElementById("btn-assets");
   const videoBtn = document.getElementById("btn-video");
@@ -453,6 +546,9 @@ function renderDetail(d) {
   const readyBtn = document.getElementById("btn-ready");
   const pubBtn = document.getElementById("btn-publish");
   const deleteRowBtn = document.getElementById("btn-delete-row");
+  const carouselBtn = document.getElementById("btn-carousel");
+  const carouselReadyBtn = document.getElementById("btn-carousel-ready");
+  const carouselPubBtn = document.getElementById("btn-carousel-publish");
 
   armTwoClickDelete(deleteRowBtn, "⚠ 再点一次 = 删除这一行", async () => {
     await api("/api/delete", {
@@ -463,128 +559,211 @@ function renderDetail(d) {
     loadQueue();
   });
 
-  assetsBtn.onclick = () => startJob("生成 image + voice", { action: "generate_assets_row", row_id: d.id }, refreshDetail);
-  videoBtn.onclick = () => startJob("生成 shot 视频", { action: "generate_video", row_id: d.id }, refreshDetail);
-  collectBtn.onclick = () => startJob("收割已提交的视频", { action: "collect_video", row_id: d.id }, refreshDetail);
-  finBtn.onclick = () => startJob("一键成片（合并+字幕+上传）", { action: "finalize_video", row_id: d.id }, refreshDetail);
-  coverBtn.onclick = () => startJob("生成 cover", { action: "generate_cover", row_id: d.id }, refreshDetail);
-  infoBtn.onclick = () => startJob("生成 infographic", { action: "generate_infographic", row_id: d.id }, refreshDetail);
+  // ---- video-only wiring — skipped entirely on a carousel-only row, since
+  // none of these elements exist there (see hasVideo/hasCarousel above) ----
+  if (hasVideo) {
+    assetsBtn.onclick = () => startJob("生成 image + voice", { action: "generate_assets_row", row_id: d.id }, refreshDetail);
+    videoBtn.onclick = () => startJob("生成 shot 视频", { action: "generate_video", row_id: d.id }, refreshDetail);
+    collectBtn.onclick = () => startJob("收割已提交的视频", { action: "collect_video", row_id: d.id }, refreshDetail);
+    finBtn.onclick = () => startJob("一键成片（合并+字幕+上传）", { action: "finalize_video", row_id: d.id }, refreshDetail);
+    coverBtn.onclick = () => startJob("生成 cover", { action: "generate_cover", row_id: d.id }, refreshDetail);
+    infoBtn.onclick = () => startJob("生成 infographic", { action: "generate_infographic", row_id: d.id }, refreshDetail);
 
-  assetsBtn.disabled = jobRunning || !d.shots.length;
-  videoBtn.disabled = jobRunning || !(d.all_shots_have_image && d.all_shots_have_voice);
-  collectBtn.disabled = jobRunning;
-  finBtn.disabled = jobRunning || !d.all_shots_have_video;
-  coverBtn.disabled = jobRunning || !d.has_cover_prompt;
-  infoBtn.disabled = jobRunning || !d.has_infographic_prompt;
-  readyBtn.disabled = !d.has_production_video || d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published";
-  pubBtn.disabled = !canPublish(d); // canPublish() lives in publish_gate.js, loaded before this file
+    assetsBtn.disabled = jobRunning || !d.shots.length;
+    videoBtn.disabled = jobRunning || !(d.all_shots_have_image && d.all_shots_have_voice);
+    collectBtn.disabled = jobRunning;
+    finBtn.disabled = jobRunning || !d.all_shots_have_video;
+    coverBtn.disabled = jobRunning || !d.has_cover_prompt;
+    infoBtn.disabled = jobRunning || !d.has_infographic_prompt;
+    readyBtn.disabled = !d.has_production_video || d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published";
+    pubBtn.disabled = !canPublish(d); // canPublish() lives in publish_gate.js, loaded before this file
 
-  // per-shot regenerate buttons — each reads its own instruction input
-  const REGEN_LABELS = {
-    regen_image_shot: "重生成图片",
-    regen_voice_shot: "重生成配音",
-    regen_video_shot: "重生成视频（即梦）",
-  };
-  detailEl.querySelectorAll(".shot-tools .regen").forEach(btn => {
-    if (jobRunning) btn.disabled = true;
-    btn.onclick = () => {
-      const shotNum = Number(btn.dataset.shot);
-      const input = detailEl.querySelector(`.instruction-input[data-shot="${shotNum}"]`);
-      const instruction = input ? input.value.trim() : "";
-      const label = instruction
-        ? `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}（+指令）`
-        : `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}`;
-      const body = { action: btn.dataset.act, row_id: d.id, shot: shotNum };
-      if (instruction) body.instruction = instruction;
-      startJob(label, body, refreshDetail);
+    // per-shot regenerate buttons — each reads its own instruction input
+    const REGEN_LABELS = {
+      regen_image_shot: "重生成图片",
+      regen_voice_shot: "重生成配音",
+      regen_video_shot: "重生成视频（即梦）",
     };
-  });
-
-  // ---- multi-select + batch regenerate ----
-  // Solves "I click one shot's ↻ and every other button greys out until it
-  // finishes" — check several shots, then run them as ONE sequential job
-  // (jobs.py already chains multi-step jobs for finalize_video; reused here)
-  // instead of clicking → waiting → clicking → waiting for every shot.
-  const batchBar = document.getElementById("batch-bar");
-  const batchCount = document.getElementById("batch-count");
-  const batchButtons = {
-    regen_image_shot: document.getElementById("batch-image"),
-    regen_voice_shot: document.getElementById("batch-voice"),
-    regen_video_shot: document.getElementById("batch-video"),
-  };
-  const clearBtn = document.getElementById("batch-clear");
-
-  function selectedShots() {
-    return [...detailEl.querySelectorAll(".shot-check:checked")].map(cb => Number(cb.dataset.shot));
-  }
-  function refreshBatchBar() {
-    const n = selectedShots().length;
-    batchCount.textContent = `已选 ${n} 个`;
-    for (const btn of Object.values(batchButtons)) btn.disabled = jobRunning || n === 0;
-    clearBtn.disabled = n === 0;
-  }
-  detailEl.querySelectorAll(".shot-check").forEach(cb => { cb.onchange = refreshBatchBar; });
-  clearBtn.onclick = () => {
-    detailEl.querySelectorAll(".shot-check").forEach(cb => { cb.checked = false; });
-    refreshBatchBar();
-  };
-  for (const [action, btn] of Object.entries(batchButtons)) {
-    btn.onclick = () => {
-      const shots = selectedShots();
-      if (!shots.length) return;
-      const instructions = {};
-      for (const n of shots) {
-        const input = detailEl.querySelector(`.instruction-input[data-shot="${n}"]`);
-        const v = input ? input.value.trim() : "";
-        if (v) instructions[String(n)] = v;
-      }
-      const label = `${REGEN_LABELS[action]} — Shots ${shots.join(", ")}`;
-      const body = { action, row_id: d.id, shots };
-      if (Object.keys(instructions).length) body.instructions = instructions;
-      startJob(label, body, refreshDetail);
-    };
-  }
-  refreshBatchBar();
-
-  readyBtn.onclick = async () => {
-    readyBtn.disabled = true;
-    await api("/api/stage", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ row_id: d.id, stage: "🟢 Ready to Publish" }),
+    detailEl.querySelectorAll(".shot-tools .regen").forEach(btn => {
+      if (jobRunning) btn.disabled = true;
+      btn.onclick = () => {
+        const shotNum = Number(btn.dataset.shot);
+        const input = detailEl.querySelector(`.instruction-input[data-shot="${shotNum}"]`);
+        const instruction = input ? input.value.trim() : "";
+        const label = instruction
+          ? `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}（+指令）`
+          : `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}`;
+        const body = { action: btn.dataset.act, row_id: d.id, shot: shotNum };
+        if (instruction) body.instruction = instruction;
+        startJob(label, body, refreshDetail);
+      };
     });
-    refreshDetail();
-    loadQueue();
-  };
 
-  // publish = two explicit clicks, no browser confirm() dialog
-  let armed = false, disarmTimer = null;
-  pubBtn.onclick = async () => {
-    if (!armed) {
-      armed = true;
-      pubBtn.classList.add("confirm");
-      pubBtn.textContent = "⚠ 再点一次 = 真的发布（不可逆）";
-      disarmTimer = setTimeout(() => {
-        armed = false;
-        pubBtn.classList.remove("confirm");
-        pubBtn.textContent = "⚠ 发布到 IG / FB（不可逆）";
-      }, 6000);
-      return;
+    // ---- multi-select + batch regenerate ----
+    // Solves "I click one shot's ↻ and every other button greys out until it
+    // finishes" — check several shots, then run them as ONE sequential job
+    // (jobs.py already chains multi-step jobs for finalize_video; reused here)
+    // instead of clicking → waiting → clicking → waiting for every shot.
+    const batchCount = document.getElementById("batch-count");
+    const batchButtons = {
+      regen_image_shot: document.getElementById("batch-image"),
+      regen_voice_shot: document.getElementById("batch-voice"),
+      regen_video_shot: document.getElementById("batch-video"),
+    };
+    const clearBtn = document.getElementById("batch-clear");
+
+    const selectedShots = () =>
+      [...detailEl.querySelectorAll(".shot-check:checked")].map(cb => Number(cb.dataset.shot));
+    const refreshBatchBar = () => {
+      const n = selectedShots().length;
+      batchCount.textContent = `已选 ${n} 个`;
+      for (const btn of Object.values(batchButtons)) btn.disabled = jobRunning || n === 0;
+      clearBtn.disabled = n === 0;
+    };
+    detailEl.querySelectorAll(".shot-check").forEach(cb => { cb.onchange = refreshBatchBar; });
+    clearBtn.onclick = () => {
+      detailEl.querySelectorAll(".shot-check").forEach(cb => { cb.checked = false; });
+      refreshBatchBar();
+    };
+    for (const [action, btn] of Object.entries(batchButtons)) {
+      btn.onclick = () => {
+        const shots = selectedShots();
+        if (!shots.length) return;
+        const instructions = {};
+        for (const n of shots) {
+          const input = detailEl.querySelector(`.instruction-input[data-shot="${n}"]`);
+          const v = input ? input.value.trim() : "";
+          if (v) instructions[String(n)] = v;
+        }
+        const label = `${REGEN_LABELS[action]} — Shots ${shots.join(", ")}`;
+        const body = { action, row_id: d.id, shots };
+        if (Object.keys(instructions).length) body.instructions = instructions;
+        startJob(label, body, refreshDetail);
+      };
     }
-    clearTimeout(disarmTimer);
-    pubBtn.disabled = true;
-    pubBtn.textContent = "发布中…";
-    try {
+    refreshBatchBar();
+
+    readyBtn.onclick = async () => {
+      readyBtn.disabled = true;
       await api("/api/stage", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ row_id: d.id, stage: "✅ Published", confirm: true }),
+        body: JSON.stringify({ row_id: d.id, stage: "🟢 Ready to Publish" }),
       });
       refreshDetail();
       loadQueue();
-    } catch (e) {
-      pubBtn.textContent = "失败: " + e.message;
-      pubBtn.disabled = false;
-    }
-  };
+    };
+
+    // publish = two explicit clicks, no browser confirm() dialog
+    let armed = false, disarmTimer = null;
+    pubBtn.onclick = async () => {
+      if (!armed) {
+        armed = true;
+        pubBtn.classList.add("confirm");
+        pubBtn.textContent = "⚠ 再点一次 = 真的发布（不可逆）";
+        disarmTimer = setTimeout(() => {
+          armed = false;
+          pubBtn.classList.remove("confirm");
+          pubBtn.textContent = "⚠ 发布到 IG / FB（不可逆）";
+        }, 6000);
+        return;
+      }
+      clearTimeout(disarmTimer);
+      pubBtn.disabled = true;
+      pubBtn.textContent = "发布中…";
+      try {
+        await api("/api/stage", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ row_id: d.id, stage: "✅ Published", confirm: true }),
+        });
+        refreshDetail();
+        loadQueue();
+      } catch (e) {
+        pubBtn.textContent = "失败: " + e.message;
+        pubBtn.disabled = false;
+      }
+    };
+  }
+
+  // ---- carousel-only wiring — skipped entirely on a video-only row ----
+  if (hasCarousel) {
+    carouselBtn.onclick = () => startJob("生成 carousel", { action: "generate_carousel", row_id: d.id }, refreshDetail);
+    carouselBtn.disabled = jobRunning;
+    carouselReadyBtn.disabled = jobRunning || !d.all_panels_have_image
+      || d.carousel_stage === "🟢 Ready to Publish" || d.carousel_stage === "✅ Published";
+    carouselPubBtn.disabled = !canPublishCarousel(d); // canPublishCarousel() lives in publish_gate.js
+
+    // per-panel regenerate — same shape as the shot version above, no batch
+    // select (deliberately dropped per direct feedback 2026-08-13: a
+    // carousel's UI should read as "generate → publish", not "video
+    // machinery" — batch-selecting panels wasn't asked for and one-at-a-time
+    // ↻ covers the real need, fixing a single bad panel).
+    detailEl.querySelectorAll(".shot-tools .regen-panel").forEach(btn => {
+      if (jobRunning) btn.disabled = true;
+      btn.onclick = () => {
+        const panelNum = Number(btn.dataset.panel);
+        const input = detailEl.querySelector(`.panel-instruction-input[data-panel="${panelNum}"]`);
+        const instruction = input ? input.value.trim() : "";
+        const label = instruction ? `重生成图片 — Panel ${panelNum}（+指令）` : `重生成图片 — Panel ${panelNum}`;
+        const body = { action: "regen_panel", row_id: d.id, shot: panelNum };
+        if (instruction) body.instruction = instruction;
+        startJob(label, body, refreshDetail);
+      };
+    });
+
+    carouselReadyBtn.onclick = async () => {
+      carouselReadyBtn.disabled = true;
+      await api("/api/carousel-stage", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ row_id: d.id, stage: "🟢 Ready to Publish" }),
+      });
+      refreshDetail();
+      loadQueue();
+    };
+
+    // publish = two explicit clicks, same pattern as video's pubBtn — a
+    // real, irreversible Instagram/Facebook post, never a confirm() dialog.
+    let carouselArmed = false, carouselDisarmTimer = null;
+    carouselPubBtn.onclick = async () => {
+      if (!carouselArmed) {
+        carouselArmed = true;
+        carouselPubBtn.classList.add("confirm");
+        carouselPubBtn.textContent = "⚠ 再点一次 = 真的发布（不可逆）";
+        carouselDisarmTimer = setTimeout(() => {
+          carouselArmed = false;
+          carouselPubBtn.classList.remove("confirm");
+          carouselPubBtn.textContent = "⚠ 发布 Carousel（不可逆）";
+        }, 6000);
+        return;
+      }
+      clearTimeout(carouselDisarmTimer);
+      carouselPubBtn.disabled = true;
+      carouselPubBtn.textContent = "发布中…";
+      try {
+        await api("/api/carousel-stage", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ row_id: d.id, stage: "✅ Published", confirm: true }),
+        });
+        refreshDetail();
+        loadQueue();
+      } catch (e) {
+        carouselPubBtn.textContent = "失败: " + e.message;
+        carouselPubBtn.disabled = false;
+      }
+    };
+  }
+
+  // ---- format tabs (only rendered/wired when a row genuinely has both) ----
+  if (hasVideo && hasCarousel) {
+    detailEl.querySelectorAll(".ftab").forEach(t => {
+      t.onclick = () => {
+        detailEl.querySelectorAll(".ftab").forEach(x => x.classList.toggle("active", x === t));
+        const which = t.dataset.ftab;
+        detailEl.querySelectorAll(".ftab-content").forEach(el => {
+          el.hidden = el.dataset.ftabContent !== which;
+        });
+      };
+    });
+  }
 
   // apply the "this is your next step" highlight
   if (b.btn) {

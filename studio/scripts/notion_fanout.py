@@ -31,6 +31,7 @@ import urllib.request
 from pathlib import Path
 
 from notion_prompts import apply_shot_plan, ip_language, draft_title, apply_script_property
+from notion_carousel_prompts import apply_carousel_plan
 
 BASE = "https://api.notion.com/v1"
 IDS_PATH = Path(__file__).resolve().parent / "notion_ids.json"
@@ -190,7 +191,25 @@ def main() -> int:
         new_row = call("POST", "/pages", {"parent": {"database_id": ids["prod_db"]}, "properties": _props})
         sp = apply_script_property(new_row["id"])  # fill Script property (IP language) FIRST
         print(f"      Script: {sp}")
-        apply_shot_plan(new_row["id"])  # then build body — reads the Script property
+        apply_shot_plan(new_row["id"])  # video body — reads the Script property
+
+        # Carousel is a genuinely separate content system from video (not a
+        # section bolted onto apply_shot_plan — that coupling was tried and
+        # reverted 2026-08-13: a function named for VIDEO shots has no
+        # business also deciding whether a row gets carousel panels). Called
+        # independently, unconditionally — apply_carousel_plan() itself is
+        # the one that decides "no-carousel-guide" (most concepts, silent,
+        # not an error) vs "applied" (the concept actually has a 🎠 Carousel
+        # Guide). Runs regardless of whether this concept has a Shot Guide
+        # at all, so a carousel-only concept (no video) still gets its
+        # panels populated at fan-out time — the bug this call fixes.
+        try:
+            cs = apply_carousel_plan(new_row["id"])
+            if cs not in ("no-carousel-guide", "no-content"):
+                print(f"      Carousel: {cs}")
+        except Exception as exc:  # noqa: BLE001 - never let this abort the fan-out
+            print(f"      ⚠️  carousel section skipped ({exc})")
+
         time.sleep(0.34)
 
     if args.dry_run:

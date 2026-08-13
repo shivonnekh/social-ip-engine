@@ -30,9 +30,30 @@ function canPublish(d) {
   return Boolean(d.has_cover_image && d.has_infographic_image && d.has_production_video && d.dm_wired);
 }
 
+/**
+ * Whether the "发布 Carousel" button should be enabled — sibling gate to
+ * canPublish() above, but checks `carousel_stage` (a SEPARATE property from
+ * `stage`, see docs/carousel-format-plan.md Part 2.1) so a carousel's own
+ * publish readiness is never confused with the Reel's. `dm_wired` is reused
+ * unchanged: a carousel post shares its row's Content relation and CTA
+ * keyword, so the same DM-wiring gate that protects the Reel's CTA already
+ * protects the carousel's (see the plan's R8 — this is the whole reason the
+ * "same row, extra section" design was chosen over forking rows).
+ * Meta's own 2-10 image bound (MIN/MAX_CAROUSEL_PANELS in
+ * notion_carousel_prompts.py) is checked here too — a carousel with 1 panel
+ * or with a hole (some panels generated, not all) must never be publishable.
+ * @param {{carousel_stage: string, all_panels_have_image: boolean, carousel_panel_count: number, dm_wired: boolean}} d
+ * @returns {boolean}
+ */
+function canPublishCarousel(d) {
+  if (d.carousel_stage === "✅ Published") return false;
+  const n = d.carousel_panel_count || 0;
+  return Boolean(d.all_panels_have_image && n >= 2 && n <= 10 && d.dm_wired);
+}
+
 // Node-only export for publish_gate.test.js (node --test). `module` is
 // undefined in the browser, where this file is loaded as a plain
 // <script> — harmless no-op there.
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { canPublish };
+  module.exports = { canPublish, canPublishCarousel };
 }

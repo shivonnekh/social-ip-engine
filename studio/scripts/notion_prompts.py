@@ -182,6 +182,26 @@ def apply_script_property(row_id: str, force: bool = False) -> str:
 
 
 def _rt(t): return [{"type": "text", "text": {"content": t}}]
+
+
+def _rt_chunked(t: str, size: int = 1900) -> list[dict]:
+    """Same shape as `_rt()`, but splits `t` across multiple rich_text items
+    when it exceeds Notion's 2000-char-per-item ceiling. `_rt()` puts the
+    WHOLE string in one item — any code block built from a composed prompt
+    that crosses that ceiling gets a hard HTTP 400 on the PATCH, taking down
+    the whole batched write (blocks are PATCHed in pages of 25) if it's
+    part of one. `size=1900` matches the existing chunking precedent in
+    this codebase (`dashboard/state.py::append_shot_instruction`,
+    `scripts/regenerate_all_covers.py`) — a small margin under the hard
+    2000 cap. `t=""` still returns one (empty-content) chunk, matching
+    `_rt("")`'s shape, since an empty rich_text array is a different,
+    separately-valid thing from "one empty chunk"."""
+    if not t:
+        return _rt(t)
+    return [{"type": "text", "text": {"content": t[i:i + size]}}
+            for i in range(0, len(t), size)]
+
+
 def _txt(block) -> str:
     t = block["type"]
     return "".join(x.get("plain_text", "") for x in block.get(t, {}).get("rich_text", []))
@@ -685,7 +705,7 @@ def _bold_block(t: str) -> dict:
 
 def _code_block(t: str) -> dict:
     return {"object": "block", "type": "code",
-            "code": {"rich_text": _rt(t), "language": "plain text"}}
+            "code": {"rich_text": _rt_chunked(t), "language": "plain text"}}
 
 
 def cover_blocks(persona: str, title: str, hook_visual: str = "") -> list[dict]:
@@ -764,7 +784,7 @@ def apply_prompts(row_id: str, force: bool = False) -> str:
                            "annotations": {"bold": True, "italic": False, "strikethrough": False,
                                            "underline": False, "code": False, "color": "default"}}]}})
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(build_prompt(persona, s["visual"])), "language": "plain text"}})
+            "rich_text": _rt_chunked(build_prompt(persona, s["visual"])), "language": "plain text"}})
     for i in range(0, len(blocks), 25):
         call("PATCH", f"/blocks/{row_id}/children", {"children": blocks[i:i + 25]})
     return f"added {len(shots)} prompts"
@@ -893,15 +913,15 @@ def apply_shot_plan(row_id: str, rebuild: bool = True) -> str:
                        "heading_3": {"rich_text": _rt(s["title"])}})
         blocks.append(_bold("🖼️ Image prompt (single frame → GPT)"))
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(build_prompt(persona, _primary_beat(s["visual"]),
-                                          talking=bool(dialogue_for_jimeng))),
+            "rich_text": _rt_chunked(build_prompt(persona, _primary_beat(s["visual"]),
+                                                   talking=bool(dialogue_for_jimeng))),
             "language": "plain text"}})
         blocks.append(_bold("🗣️ Voice script"))
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(voice_line), "language": "plain text"}})
+            "rich_text": _rt_chunked(voice_line), "language": "plain text"}})
         blocks.append(_bold("🎬 即梦 prompt (rich shot guide → video)"))
         blocks.append({"object": "block", "type": "code", "code": {
-            "rich_text": _rt(build_jimeng_prompt(s["title"], s["visual"], lang, dialogue_for_jimeng)),
+            "rich_text": _rt_chunked(build_jimeng_prompt(s["title"], s["visual"], lang, dialogue_for_jimeng)),
             "language": "plain text"}})
         blocks.append(_empty_toggle("🖼️ Image here"))   # leave blank — drop assets in later
         blocks.append(_empty_toggle("🎬 Video here"))   # leave blank — drop assets in later
@@ -942,7 +962,7 @@ def add_jimeng_prompts(row_id: str) -> str:
                  "annotations": {"bold": True, "italic": False, "strikethrough": False,
                                  "underline": False, "code": False, "color": "default"}}]}},
             {"object": "block", "type": "code", "code": {
-                "rich_text": _rt(build_jimeng_prompt(title, dialogue=dialogue)), "language": "plain text"}},
+                "rich_text": _rt_chunked(build_jimeng_prompt(title, dialogue=dialogue)), "language": "plain text"}},
         ]})
         time.sleep(0.25)
     return f"added {len(targets)} 即梦 prompts"
@@ -974,7 +994,7 @@ def refresh_jimeng(row_id: str) -> str:
     for s in shots:
         if s["jid"]:
             call("PATCH", f"/blocks/{s['jid']}", {"code": {
-                "rich_text": _rt(build_jimeng_prompt(s["title"], s["scene"], lang, s["dialogue"])),
+                "rich_text": _rt_chunked(build_jimeng_prompt(s["title"], s["scene"], lang, s["dialogue"])),
                 "language": "plain text"}})
             n += 1; time.sleep(0.25)
     return f"refreshed {n} 即梦 prompts"

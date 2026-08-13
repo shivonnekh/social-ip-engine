@@ -23,6 +23,7 @@ Usage:
   python3 scripts/generate_assets.py --row <production_row_id>   # single row, skip fan-out
   python3 scripts/generate_assets.py --content "Detox" --all-ips
   python3 scripts/generate_assets.py --content "Detox" --ip Jackie   # only this IP, skip the rest
+  python3 scripts/generate_assets.py --content "Detox" --with-carousel  # also run generate_carousel.py
 """
 from __future__ import annotations
 
@@ -49,6 +50,13 @@ def main() -> int:
         "--ip", help="Only fan out (and only generate assets for) this IP — substring match, "
                      "e.g. 'Jackie'. Existing rows for OTHER IPs under this concept are left alone "
                      "(not touched, not regenerated) — this scopes the WHOLE step to one IP.",
+    )
+    ap.add_argument(
+        "--with-carousel", action="store_true",
+        help="Also run generate_carousel.py for this content after image+voice — a genuine "
+             "one-command run for a concept that has BOTH a Shot Guide and a Carousel Guide. "
+             "Off by default: most concepts are video-only, and this step spends gpt-image-2 "
+             "credits per panel, so it's opt-in rather than run unconditionally on every concept.",
     )
     args = ap.parse_args()
 
@@ -101,6 +109,13 @@ def main() -> int:
 
         ok_voice = pc.run_step(["python3", "batch_voice_gen.py", "--row", row_id], "voice")
         results.append((name, "voice", ok_voice))
+
+        if args.with_carousel:
+            # generate_carousel.py itself no-ops (exit 0, not a failure) for
+            # a row whose concept has no Carousel Guide — most concepts are
+            # video-only, so this is expected, not an error.
+            ok_carousel = pc.run_step(["python3", "generate_carousel.py", "--row", row_id], "carousel")
+            results.append((name, "carousel", ok_carousel))
 
     all_ok = pc.print_batch_summary(results)
     print("\nNext: review the image + voice for each row above in Notion, "

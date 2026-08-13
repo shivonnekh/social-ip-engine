@@ -190,15 +190,26 @@ _ROW_ACTIONS: dict[str, str] = {
     "generate_video": "notion_video.py",
     "generate_cover": "generate_cover.py",
     "generate_infographic": "generate_infographic.py",
+    "generate_carousel": "generate_carousel.py",
 }
 
 # Per-shot regenerate: replace ONE bad image / voice clip / shot video without
 # touching the other shots. action -> (script, extra flags after --row/--shot,
-# instruction_kind for append_shot_instruction()).
-_SHOT_ACTIONS: dict[str, tuple[str, list[str], str]] = {
-    "regen_image_shot": ("notion_image.py", ["--force"], "image"),
-    "regen_voice_shot": ("batch_voice_gen.py", ["--force"], "voice"),
-    "regen_video_shot": ("notion_video.py", ["--regen"], "video"),
+# instruction_kind for append_shot_instruction(), the CLI flag this script
+# uses for its index — "--shot" for the video scripts, "--panel" for the
+# carousel one).
+_SHOT_ACTIONS: dict[str, tuple[str, list[str], str, str]] = {
+    "regen_image_shot": ("notion_image.py", ["--force"], "image", "--shot"),
+    "regen_voice_shot": ("batch_voice_gen.py", ["--force"], "voice", "--shot"),
+    "regen_video_shot": ("notion_video.py", ["--regen"], "video", "--shot"),
+}
+
+# Per-panel regenerate: same shape as _SHOT_ACTIONS, sibling table so
+# carousel panels get the identical single/batch/instruction UX without
+# forcing a panel index into the same namespace as a shot index (a row can
+# legitimately have both "shot 3" and "panel 3").
+_PANEL_ACTIONS: dict[str, tuple[str, list[str], str, str]] = {
+    "regen_panel": ("notion_carousel_image.py", ["--force"], "panel", "--panel"),
 }
 
 
@@ -219,25 +230,34 @@ def api_action(req: ActionRequest):
         job = jobs.start_job(req.action, [(_ROW_ACTIONS[req.action], ["--row", req.row_id])])
         return {"job_id": job.id}
 
-    if req.action in _SHOT_ACTIONS:
-        if not req.row_id or not (req.shot or req.shots):
-            raise HTTPException(400, "row_id and shot (or shots) required")
-        script, extra, kind = _SHOT_ACTIONS[req.action]
-        shot_list = req.shots if req.shots else [req.shot]
+    if req.action in _SHOT_ACTIONS or req.action in _PANEL_ACTIONS:
+        # Shared handling for both tables — the only real difference is which
+        # title-lookup function resolves an index to its heading_3 text (a
+        # row can legitimately have both "shot 3" and "panel 3", so these
+        # never share an index namespace).
+        is_panel = req.action in _PANEL_ACTIONS
+        table = _PANEL_ACTIONS if is_panel else _SHOT_ACTIONS
+        title_lookup = state.panel_title_by_index if is_panel else state.shot_title_by_index
+        noun = "panel" if is_panel else "shot"
 
-        def _apply_instruction(shot_num: int, text: str) -> None:
-            # Persist the instruction onto the shot's own prompt BEFORE
+        if not req.row_id or not (req.shot or req.shots):
+            raise HTTPException(400, f"row_id and {noun} (or {noun}s) required")
+        script, extra, kind, index_flag = table[req.action]
+        item_list = req.shots if req.shots else [req.shot]
+
+        def _apply_instruction(item_num: int, text: str) -> None:
+            # Persist the instruction onto the item's own prompt BEFORE
             # regenerating, so the script (which always re-reads the prompt
             # fresh from Notion) picks it up on this run — and it sticks for
-            # any future regen of this shot too, not just this one call.
-            shot_title = state.shot_title_by_index(req.row_id, shot_num)
-            if shot_title is None:
-                raise HTTPException(400, f"row has no shot {shot_num}")
-            if not state.append_shot_instruction(req.row_id, shot_title, kind, text):
-                raise HTTPException(400, f"shot {shot_num} has no {kind} prompt section yet")
+            # any future regen of this item too, not just this one call.
+            item_title = title_lookup(req.row_id, item_num)
+            if item_title is None:
+                raise HTTPException(400, f"row has no {noun} {item_num}")
+            if not state.append_shot_instruction(req.row_id, item_title, kind, text):
+                raise HTTPException(400, f"{noun} {item_num} has no {kind} prompt section yet")
 
         try:
-            for n in shot_list:
+            for n in item_list:
                 text = (req.instructions or {}).get(str(n)) or (req.instruction if n == req.shot else None)
                 if text and text.strip():
                     _apply_instruction(n, text.strip())
@@ -248,13 +268,13 @@ def api_action(req: ActionRequest):
 
         # Batch = one job, multiple sequential steps (same chaining jobs.py
         # already uses for finalize_video) — a single continuous log instead
-        # of making the user click, wait, click, wait for every shot. A
+        # of making the user click, wait, click, wait for every item. A
         # failing step still aborts the chain (jobs.start_job's existing
-        # behavior) so a bad shot can't silently skip and leave you thinking
+        # behavior) so a bad item can't silently skip and leave you thinking
         # everything succeeded.
-        steps = [(script, ["--row", req.row_id, "--shot", str(n), *extra]) for n in shot_list]
-        label = (f"{req.action} (shot {shot_list[0]})" if len(shot_list) == 1
-                 else f"{req.action} (shots {', '.join(map(str, shot_list))})")
+        steps = [(script, ["--row", req.row_id, index_flag, str(n), *extra]) for n in item_list]
+        label = (f"{req.action} ({noun} {item_list[0]})" if len(item_list) == 1
+                 else f"{req.action} ({noun}s {', '.join(map(str, item_list))})")
         if req.instruction or req.instructions:
             label += " + 自定义指令"
         job = jobs.start_job(label, steps)
@@ -310,6 +330,32 @@ def api_stage(req: StageRequest):
         # prep/inspect is one click, the point-of-no-return is a separate one.
         raise HTTPException(409, "confirm required to publish — this is irreversible")
     state.set_stage(req.row_id, req.stage)
+    return {"ok": True}
+
+
+class CarouselStageRequest(BaseModel):
+    row_id: str
+    stage: str
+    confirm: bool = False
+
+
+_CAROUSEL_PUBLISH_STAGE = "✅ Published"
+
+
+@app.post("/api/carousel-stage")
+def api_carousel_stage(req: CarouselStageRequest):
+    """Separate endpoint from /api/stage on purpose — writes `🎠 Carousel
+    Stage`, never `Stage`, so a carousel's own publish lifecycle can never
+    accidentally touch (or be gated by) the Reel's. See
+    docs/carousel-format-plan.md Part 2.1."""
+    if req.stage not in state.CAROUSEL_STAGE_OPTIONS:
+        raise HTTPException(400, f"unknown carousel stage {req.stage!r}")
+    if req.stage == _CAROUSEL_PUBLISH_STAGE and not req.confirm:
+        # Same irreversibility reasoning as /api/stage above — the carousel
+        # publish pipeline (docs/carousel-format-plan.md Phase 2) fires off
+        # this exact Stage flip.
+        raise HTTPException(409, "confirm required to publish — this is irreversible")
+    state.set_carousel_stage(req.row_id, req.stage)
     return {"ok": True}
 
 
