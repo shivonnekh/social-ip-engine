@@ -379,7 +379,17 @@ def sync_once() -> dict[str, Any]:
 
         props = row["properties"]
         stage = (props.get("Stage", {}).get("select") or {}).get("name", "")
-        if stage not in _WIREABLE_STAGES:
+        # Carousel-only rows have no video, so their "Stage" (a video-pipeline
+        # property) never leaves "💡 Idea" — it has nothing to advance it. Their
+        # readiness signal is the separate "🎠 Carousel Stage" property instead
+        # (see studio's carousel-format-plan.md). Without this OR, a
+        # carousel-only row could never get its DM keyword rule / "🔗 DM Wired"
+        # checkbox wired, which permanently blocks canPublishCarousel()'s gate
+        # in the dashboard even after a human sets Carousel Stage to Ready to
+        # Publish. A row with BOTH formats is unaffected — its video Stage
+        # already made it wireable before this change.
+        carousel_stage = (props.get("🎠 Carousel Stage", {}).get("select") or {}).get("name", "")
+        if stage not in _WIREABLE_STAGES and carousel_stage not in _WIREABLE_STAGES:
             continue  # not ready yet — leave unmarked, check again next sync
 
         content_rel = props.get("Content", {}).get("relation") or []

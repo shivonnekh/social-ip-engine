@@ -186,6 +186,61 @@ def test_sync_once_ticks_checkbox_for_newly_wired_row(
     ]
 
 
+def test_sync_once_wires_carousel_only_row_via_carousel_stage(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A carousel-only row has no video, so its "Stage" property (a
+    video-pipeline field) never leaves "💡 Idea" — nothing ever advances it.
+    Its own readiness signal is the separate "🎠 Carousel Stage" property.
+    Before this fix, sync_once() only ever looked at "Stage", so a
+    carousel-only row could NEVER get its DM keyword rule / "🔗 DM Wired"
+    checkbox wired — permanently blocking the dashboard's
+    canPublishCarousel() gate even after a human set Carousel Stage to
+    Ready to Publish. Root-caused 2026-08-13 live on a real row ("3 Sleep
+    Points to Press Before Bed × Jackie Chan")."""
+    rules_path = _wire_test_paths(tmp_path, monkeypatch)
+    row, pages, children = _base_row_and_pages(stage="💡 Idea")
+    row["properties"]["🎠 Carousel Stage"] = {"select": {"name": "🟢 Ready to Publish"}}
+
+    patch_calls: list[tuple[str, dict | None]] = []
+
+    def fake_ncall(method: str, path: str, body: dict | None = None) -> dict:
+        if method == "PATCH":
+            patch_calls.append((path, body))
+            return {}
+        return pages[path]
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(notion_sync, "_ncall", fake_ncall)
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+
+    result = notion_sync.sync_once()
+
+    assert len(result["added"]) == 1
+    assert json.loads(rules_path.read_text(encoding="utf-8"))[0]["keyword"] == "sleep"
+    assert patch_calls == [
+        ("/pages/prod-row-1", {"properties": {"🔗 DM Wired": {"checkbox": True}}})
+    ]
+
+
+def test_sync_once_skips_row_wireable_by_neither_stage(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Neither Stage nor Carousel Stage has reached a wireable value — must
+    stay skipped, same as before this fix. Guards against the new OR check
+    becoming an accidental always-true."""
+    _wire_test_paths(tmp_path, monkeypatch)
+    row, pages, children = _base_row_and_pages(stage="💡 Idea")
+
+    monkeypatch.setattr(notion_sync, "_query_all", lambda db_id: [row])
+    monkeypatch.setattr(notion_sync, "_ncall", lambda method, path, body=None: pages[path])
+    monkeypatch.setattr(notion_sync, "_children", lambda block_id: children.get(block_id, []))
+
+    result = notion_sync.sync_once()
+
+    assert result["added"] == []
+
+
 def test_sync_once_ships_rule_even_when_checkbox_patch_fails(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
