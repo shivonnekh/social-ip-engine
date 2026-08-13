@@ -488,5 +488,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/heels-page-1.png"
     ]
+  },
+  {
+    "keyword": "immune",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Wei Qi is everything when it comes to not catching every cold 🛡️\n\nYour quick Wei Qi protocol:\n• Morning tea: Astragalus (黃耆) + Prince Ginseng (太子參) — simmer 20 min, drink before 9am\n• Sleep before 11pm: Wei Qi rebuilds during deep sleep. Past midnight = Wei Qi drain.\n• 20 min of sunlight daily: Lung Qi (which generates Wei Qi) needs sunlight to stay active\n\nTell me — do you get sick after every season change, or is it more like you're always tired and never feel 100%?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM immune guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🛡️ Never Get Sick — Strengthen Your Wei Qi",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/immune-page-1.png"
+    ]
   }
 ]
