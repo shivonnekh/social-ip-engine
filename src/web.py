@@ -245,6 +245,17 @@ async def lifespan(app: FastAPI):
     from src.notion_publish_fb_runner import resume_in_flight as fb_resume_in_flight
     background_tasks.append(asyncio.create_task(fb_resume_in_flight()))
 
+    # Carousel analogues of the two resumes above — no-ops unless
+    # NOTION_PUBLISH_CAROUSEL_ENABLED / NOTION_PUBLISH_CAROUSEL_FB_ENABLED
+    # are "true" (see notion_publish_carousel_runner / _fb_runner module
+    # docstrings). Own ledgers, own background tasks — a bug in either can
+    # never touch the Reel resumes above.
+    from src.notion_publish_carousel_runner import resume_in_flight as carousel_resume_in_flight
+    background_tasks.append(asyncio.create_task(carousel_resume_in_flight()))
+
+    from src.notion_publish_carousel_fb_runner import resume_in_flight as carousel_fb_resume_in_flight
+    background_tasks.append(asyncio.create_task(carousel_fb_resume_in_flight()))
+
     # Daily sweep so a row deferred by a future Publish Date actually gets
     # published once that date arrives (the live webhook above only fires
     # ONCE, when Stage flips — see notion_publish_scheduler module
@@ -629,6 +640,52 @@ async def admin_notion_publish(request: Request) -> JSONResponse:
         # notion_publish_scheduler.py's FB sweep.
         logger.exception("[notion-publish-fb] resume/plan failed — IG result above is unaffected")
         result["facebook"] = {"error": str(exc)}
+
+    # Instagram carousel — a THIRD, independently `except Exception`-wrapped
+    # block, same isolation reasoning as the Facebook block above: a
+    # carousel-publish failure must never discard the already-succeeded
+    # Reel (or FB) results computed above. No-op, zero-cost when
+    # NOTION_PUBLISH_CAROUSEL_ENABLED is unset/false (see
+    # notion_publish_carousel_runner.carousel_enabled).
+    from src.notion_publish_carousel_runner import plan_and_dispatch_carousel
+
+    carousel_live_tasks = getattr(request.app.state, "notion_publish_carousel_tasks", None)
+    if carousel_live_tasks is None:
+        carousel_live_tasks = []
+        request.app.state.notion_publish_carousel_tasks = carousel_live_tasks
+    try:
+        carousel_result = await plan_and_dispatch_carousel(task_sink=carousel_live_tasks)
+        result["carousel"] = carousel_result
+        logger.info(
+            "[notion-publish-carousel] enabled=%s checked=%d claimed=%d resumed=%d",
+            carousel_result.get("enabled"), carousel_result.get("checked", 0),
+            len(carousel_result.get("claimed", [])), carousel_result.get("resumed", 0),
+        )
+    except Exception as exc:  # noqa: BLE001 - must never crash this handler / discard prior results
+        logger.exception("[notion-publish-carousel] resume/plan failed — prior results unaffected")
+        result["carousel"] = {"error": str(exc)}
+
+    # Facebook carousel mirror — a FOURTH, independently wrapped block, same
+    # reasoning as the Reel FB mirror: mirrors Instagram's OWN carousel
+    # ledger (never independently decides), so it only has anything to do
+    # once the IG carousel block above has actually published something.
+    from src.notion_publish_carousel_fb_runner import plan_and_dispatch_carousel_fb
+
+    carousel_fb_live_tasks = getattr(request.app.state, "notion_publish_carousel_fb_tasks", None)
+    if carousel_fb_live_tasks is None:
+        carousel_fb_live_tasks = []
+        request.app.state.notion_publish_carousel_fb_tasks = carousel_fb_live_tasks
+    try:
+        carousel_fb_result = await plan_and_dispatch_carousel_fb(task_sink=carousel_fb_live_tasks)
+        result["carousel_facebook"] = carousel_fb_result
+        logger.info(
+            "[notion-publish-carousel-fb] enabled=%s checked=%d claimed=%d resumed=%d",
+            carousel_fb_result.get("enabled"), carousel_fb_result.get("checked", 0),
+            len(carousel_fb_result.get("claimed", [])), carousel_fb_result.get("resumed", 0),
+        )
+    except Exception as exc:  # noqa: BLE001 - must never crash this handler / discard prior results
+        logger.exception("[notion-publish-carousel-fb] resume/plan failed — prior results unaffected")
+        result["carousel_facebook"] = {"error": str(exc)}
 
     return JSONResponse(result)
 

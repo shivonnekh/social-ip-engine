@@ -98,6 +98,10 @@ _scheduler_tasks: Final[list[asyncio.Task[bool]]] = []
 # same reasoning as _scheduler_tasks above, kept independent so it can never
 # be confused with (or accidentally share GC lifetime issues with) IG's.
 _scheduler_fb_tasks: Final[list[asyncio.Task[bool]]] = []
+# Carousel analogues of the two lists above — own strong references, own
+# ledgers, same isolation reasoning.
+_scheduler_carousel_tasks: Final[list[asyncio.Task[bool]]] = []
+_scheduler_carousel_fb_tasks: Final[list[asyncio.Task[bool]]] = []
 
 
 def _enabled() -> bool:
@@ -228,6 +232,41 @@ async def run_scheduled_sweep() -> dict[str, Any]:
         logger.exception("[notion-publish-fb-schedule] sweep failed")
         await send_ops_alert(_OPS_ALERT_KEY, f"🔴 Notion FB publish-date sweep failed: {exc}")
         result["facebook"] = {"error": str(exc)}
+
+    # Instagram carousel sweep — same isolation as the FB block above, its
+    # own try/except so it can never suppress or be suppressed by the Reel
+    # or FB results already computed. No-op when
+    # NOTION_PUBLISH_CAROUSEL_ENABLED is unset/false.
+    from src.notion_publish_carousel_runner import plan_and_dispatch_carousel
+
+    try:
+        carousel_result = await plan_and_dispatch_carousel(task_sink=_scheduler_carousel_tasks)
+        result["carousel"] = carousel_result
+        if carousel_result.get("enabled"):
+            logger.info(
+                "[notion-publish-carousel-schedule] checked=%d claimed=%d resumed=%d",
+                carousel_result["checked"], len(carousel_result["claimed"]), carousel_result["resumed"],
+            )
+    except Exception as exc:  # noqa: BLE001 - must never crash the loop, see docstring
+        logger.exception("[notion-publish-carousel-schedule] sweep failed")
+        await send_ops_alert(_OPS_ALERT_KEY, f"🔴 Notion carousel publish-date sweep failed: {exc}")
+        result["carousel"] = {"error": str(exc)}
+
+    # Facebook carousel mirror sweep — same isolation again.
+    from src.notion_publish_carousel_fb_runner import plan_and_dispatch_carousel_fb
+
+    try:
+        carousel_fb_result = await plan_and_dispatch_carousel_fb(task_sink=_scheduler_carousel_fb_tasks)
+        result["carousel_facebook"] = carousel_fb_result
+        if carousel_fb_result.get("enabled"):
+            logger.info(
+                "[notion-publish-carousel-fb-schedule] checked=%d claimed=%d resumed=%d",
+                carousel_fb_result["checked"], len(carousel_fb_result["claimed"]), carousel_fb_result["resumed"],
+            )
+    except Exception as exc:  # noqa: BLE001 - must never crash the loop, see docstring
+        logger.exception("[notion-publish-carousel-fb-schedule] sweep failed")
+        await send_ops_alert(_OPS_ALERT_KEY, f"🔴 Notion carousel FB publish-date sweep failed: {exc}")
+        result["carousel_facebook"] = {"error": str(exc)}
 
     return result
 
