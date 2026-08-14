@@ -237,17 +237,17 @@
     "updated_at": "2026-08-13T09:01:37.025044+00:00"
   },
   "38df2a3f-4320-812a-97c8-fdcedf6e10cd": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/6d5ccfbe-298f-454c-9b5c-80b5044179f4/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YA4AYEAN%2F20260814%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260814T075608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEC4aCXVzLXdlc3QtMiJIMEYCIQDX1%2FqTbB67JtAj61jEtUifcGFxCHlcjG0Ja7CXZPVQqgIhAL7ziQf9oBUJyL5QwfIIpwQljOVkFjeyD%2BOZw7eDhIXGKogECPf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igxb4AJllsXKEDj5Au0q3AOOt1n8QOh8Y9Hz0azZ9%2BGWdq%2BBWE0qTHqMivQpGmd6%2Fz8ilTKB5HnBW71PtXNFaY6cJAF2ii9fRAb9MP9jl7r9yTzpdn4N2Z%2F4ZoLpjYTgUeeqyKlnkkj85e%2BLKEJzI7m7xyIx32gETr%2FasJU%2Bl49%2BZO7t0zp%2BIUJ89P4n5Y%2B4gjk%2FsD4CZpNcmXh4Ylyn0jWH77JsWkIDRBEKRMZ6yesxXOgnrmBl9NKmvtCDW692h3XOOjwrlBvP7DDJKvvGGUUDkuu8CD35UUDtakPy9AerZDz0Z75WrmyRtTIgDoW5h%2FrgEwDOL%2Fe9q1lSNaA6fciUQ376lHnOSshsJB%2FBsGtiw92YTHOFLXUVxtOvZ22Mpc9Q2MPOr28UggravJEZDSxGpEFe%2BbPQtgYkA%2BndDKMjFQ%2Bt8ssJXG0Qw0LmymjBwE4zxpjB7E6UTLABmAJuYdQE7Kt2C4otEaOb2U21RXrrz%2B3eLmyMbntGqpj%2Fkbm9KLo%2BXU6LGY%2BYWiPDCwglU3ukqieDAKDRLANRFItAaK3WbMgj%2FrFMs4fh5IB4F9lLfSo%2BAHEuu%2Fc7nrSmTdyGQ2yg0fNHQYZPHCw9TOcXIa%2F%2F35%2BmQ%2BItQ2Qckog2ABs%2FYa%2BIV0vkmjRHjRefvDDW3frTBjqkAQqmKRjTnKvuoAUgFhku4FQgG0G76SZ6u%2Bdbmdt0eRmmwZSp%2BnqbTuhBbcLd9bPM1XlIubJTTJzH6BxGR3ZZEJYg77K8z%2BWt9keVWLKOiLtio5FIEkAoazL%2FohQGN2mzif3JbEnt2OhPQsiP7ktk2oK9lMl1pVKqVoRMupHfnZxq5H9pJbLU483E6ZpDTnnBWuQtcwcAVDM6h6eion4POLpp37x1&X-Amz-Signature=caf0b8ca216d00cdc84a53c8cae78081c3d4a9a760ae994483ad19badaad6a2e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/6d5ccfbe-298f-454c-9b5c-80b5044179f4/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/hormone-38df2a3f-4320-812a-97c8-fdcedf6e10cd-cover.jpg",
     "caption": "Is Your Period Causing Those Migraines? 😱\n\nComment \"hormone\" 👇",
     "account_id": "17841417304649448",
     "creation_id": "18141027460576822",
-    "ig_media_id": null,
+    "ig_media_id": "18091734785388664",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-08-14T07:56:12.813917+00:00"
+    "updated_at": "2026-08-14T07:57:26.517310+00:00"
   }
 }
