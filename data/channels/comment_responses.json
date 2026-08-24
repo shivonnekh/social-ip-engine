@@ -680,5 +680,17 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/hormone-page-1.png"
     ]
+  },
+  {
+    "keyword": "snack",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Here's your snack guide for your body type 🌿\n\n• Qi Deficiency — jujube + longan (dried), a small handful. Best if you're low energy or tired easily — great mid-afternoon, not late at night.\n• Yang Deficiency — walnuts + black sesame, a small handful. Best if you're always cold or get low back ache — warms you from the inside.\n• Damp-Heat — mung bean soup, lightly sweetened. Best if you have oily skin or feel heavy/sluggish — cooling, great in warm weather.\n\nNot sure which one is you? Match the snack to how your body feels, not just what you're craving.\n\nSave this and swap in the right snack today 🍵\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM snack guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "3 Snacks for 3 Body Types"
   }
 ]
