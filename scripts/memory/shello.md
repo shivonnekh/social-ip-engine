@@ -936,3 +936,66 @@ Still open:
   🟢 Ready to Publish still double-generates its infographic and still DMs the unreviewed copy.
 - `rapidfuzz` installed into `.venv` this session — full suite now actually runs end to end
   (1484 passed, 2 skipped). It was 13 collection errors + 2 failures before.
+
+## Session — 2026-09-01 (10-campaign Jackie batch + three infrastructure bugs)
+What happened: Asked for 10 new Jackie campaigns end-to-end. Authored and built all
+10 through images/voice/cover/infographic; video generation is the long serial leg and
+was still running at report time. Found and fixed three real infrastructure bugs on the
+way, and surfaced one production blocker that needs Shivonne.
+
+**🔴 BLOCKER — `tcm-jessica-db-2` (Render Postgres) is SUSPENDED.** `suspenders: ["user"]`,
+so a human did it deliberately; it's a paid basic_256mb plan, so I did NOT resume it.
+Consequences: the app cannot start (`socket.gaierror` on the DB host →
+`Application startup failed. Exiting.`), it is in a restart loop, and `/health` only
+answers because Render is holding an older container up. Last SUCCESSFUL deploy was
+2026-08-13 — ~3 weeks of undeployed commits. **Deploy is blocked until the DB is resumed.**
+
+**🔴 The git bot was deleting my work — and had already deleted its own fix.**
+`chore: notion-publish` reverted commit c0f672e wholesale (stripped the notion_sync_media
+fix + 91 lines of tests, undid a doc correction, DELETED add_prop_markers.py and
+create_dark_circles_concept.py) while adding one line to a ledger JSON.
+Root cause: `git_publish.py` used `git reset --soft FETCH_HEAD`. `--soft` leaves the INDEX
+at the stale container's tree, so `git add <paths>` + `commit` commits the whole index and
+reverts everything that moved upstream. **853fa0a already fixed this in July; bot commit
+94fec13 — from the still-unfixed DEPLOYED instance — reverted both the fix and its
+regression test. The bug reverted its own fix.** Fixed again (`--mixed`) + a REAL-git
+regression test (the pre-existing tests mock subprocess and only assert THAT a reset
+happened, which is equally true of --soft and --mixed, so they could never catch this).
+Mutation-tested. ⚠️ Inert until deployed — i.e. blocked behind the DB.
+
+**Notion `urlopen` had no timeout anywhere.** A fan-out sat at 0.17s CPU for 30 MINUTES
+and stalled the batch, having already created the row and hung mid-`apply_shot_plan` —
+leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as
+slowness. Added timeouts + transport/5xx/429 retries to `notion_fanout`, `notion_prompts`,
+`notion_image` (3 separate copies of the same helper) and the batch driver. 10 tests.
+
+Decisions / lessons:
+- **Beat NAMES are load-bearing.** `_jimeng_camera()` keys the video 运镜 off the beat
+  title, and Hook / Root Cause / Quick Win / CTA each map to a DIFFERENT move. So the
+  four-different-moves problem is already solved by naming beats correctly — the 🎥 line
+  only needs to vary scale / camera side / height. Renaming a beat silently collapses the
+  camera work to the generic default while the still still looks right.
+- **Props must be split into held vs desk.** First draft had Jackie holding the comb AND a
+  comb on the desk; gpt-image-2 renders two combs. `actions[i]` names the held item,
+  `prop_rest` names the desk item, and they must never be the same object.
+- **gpt-image-2 rate-limits concurrent generations.** 3 workers failed 3 of 4 concepts; a
+  solo re-run of the same row succeeded immediately. assets/trailer stages are serial now.
+- **A skipped consistency step is invisible.** `stage_assets` discarded the prop-marker
+  step's result — when the bot revert briefly deleted add_prop_markers.py, that step would
+  have failed on every concept and produced mismatched props with a clean ✅ beside each.
+- 即梦 hang-lottery is worse than the documented ~45%: `hair` shot 3 lost all 3 attempts
+  (hung shots are never charged). notion_video correctly refuses to merge around the gap.
+  Suspected trigger: a raised arm crossing the head silhouette (hand ON the scalp, elbow
+  out) — shot 2 with a hand merely resting on the crown succeeded, so it's the large
+  raised-arm mass, not head-touching per se. UNCONFIRMED — needs a controlled retry.
+- `repair_and_merge.py` added: merges repaired shots with a plain concat. **Never use
+  `--merge-only` after a single-shot repair** — it runs the audio swap reversed on
+  2026-08-11 and desyncs the whole clip.
+
+Still open:
+- Resume the DB, then deploy (git_publish + notion_sync_media + timeout fixes all pending).
+- Video: 10 concepts still rendering (~45 min each with hangs, so ~6-7h). `hair` needs
+  shot 3 repaired.
+- Then: finalize (karaoke --script), then Stage → 🟢 Ready to Publish to wire the DMs.
+- 3 pre-existing stash entries (stash@{1..3}) are NOT mine — do not pop them; per the
+  updated git-workflow rule, back them up to named branches before touching the stack.
