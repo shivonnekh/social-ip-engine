@@ -16503,3 +16503,516 @@
 - Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
 - Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
 
+
+## 2026-08-13 16:43 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 16:43 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 16:46 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 17:04 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 18:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 18:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 18:33 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 18:35 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 18:36 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 18:37 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-13 18:38 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Key decision:** Carousel panels live as an *additional section* in the same Content×IP row (like Cover Photo/DM Infographic already do today), **not** a forked row-per-format. Forking would silently break fan-out's dedup logic and double-draft DM keyword rules. But since one `Stage` can't mean "Reel live, carousel not yet," the carousel gets its **own** `🎠 Carousel Stage` property — completely separate publish lifecycle, zero risk to the existing Reels path.
+- 3. Tests for both — 9 new, all passing, including one that fails if `DEFAULT_CAROUSEL_STYLE` ever drifts from the source it was copied from.
+
+### Architecture Decisions
+- This confirms the pattern: all 4 shots here predate my `talking=True` fix — the prompts still carry the old "a patient may appear" boilerplate with no face-forward override, and GPT interpreted that as license to add a second person into every single shot (even shots whose Shot Guide never mentioned one). The Shot Guide source-of-truth text itself is already clean — I just need to rebuild the derived prompts with the current fixed code, since all 4 shots need regeneration anyway.
+- - Extend `notion_publish_runner.py`'s dispatch: `Format = Carousel` rows route to the carousel publish path instead of video, with their own `notion_publish_carousel_state.json` idempotency ledger (same duplicate-post-guard pattern the video path already has — non-negotiable, a duplicate carousel post is just as irreversible).
+- 1. `_rt_chunked()` in `notion_prompts.py` — splits any Notion rich_text write into ≤1900-char pieces instead of one unbounded item. Wired into every code-block site that builds a prompt from potentially-long, dynamic content (image prompts, 即梦 prompts, voice scripts, across `apply_shot_plan`, `add_jimeng_prompts`, `refresh_jimeng`, the legacy `add_image_prompts`). Left the two fixed-format voice-config blocks alone since they're always short — no need to touch what's never at risk.
+- All 5 panels are excellent — visually consistent, correct footers, correct on-image text. One authoring note: I left panel 5's CTA copy unspecified, so the model improvised "SAVE THIS POST & TRY TONIGHT" instead of the real DM keyword — confirms the design point that exact copy must be specified in the `✏️` field when it needs to match exactly (e.g., a real CTA keyword). Let's verify idempotency now.
+- **One real finding from actually using it:** panel 5's CTA came out as "SAVE THIS POST & TRY TONIGHT" instead of a real DM-keyword CTA like "Comment PRESSURE" — because I left that panel's `✏️` copy field blank, so the model improvised something plausible from the visual brief alone. Confirms the design choice (D1): if on-image text needs to match exactly — especially a CTA keyword that a DM rule depends on — it has to be spelled out in the `✏️` field, not left to the model's judgment.
+- Both platforms are live — Instagram (`media_id=18119631925852622`) and Facebook (`post_id=...122199626678760914`). Also nicely confirms the concurrency guard worked exactly as designed (my manual trigger raced the auto-scheduler's dispatch for the same row, and it correctly skipped the duplicate rather than double-posting). Let's confirm the Notion checkboxes ticked as the final check.
+
+### Decisions & Reasoning
+- Still running — GPT image gen + Notion upload takes a moment. I'll wait for the background notification rather than poll.
+- This will take a few minutes (即梦 submission + polling, with retry-on-hang logic built in). I'll wait for the completion notification rather than poll.
+- This one is taking longer (likely hit the hang-lottery retry). I'll wait for its notification rather than poll further.
+- Waiting for shot 1's second regen attempt to finish — I'll pick this back up when notified rather than keep polling.
+- Shot 1's second regeneration attempt is still running in the background (即梦 video gen can take several minutes, sometimes hitting the hang-lottery). I've got a watcher job that'll notify me the moment it exits, so I'll pick this back up then — pausing here rather than spamming checks.
+- - ✅ Root-caused shot 3's failure: its still image had Jackie looking down at a foot with a second person's leg in frame — exactly the two-person/eyes-down trigger that hangs 即梦's lip-sync. Fixed the underlying **code bug** (`apply_shot_plan` wasn't wiring the existing `talking=True` safety override into the image-prompt builder), updated the Shot Guide source of truth in Notion, regenerated shot 3's still (face-forward, rubbing coconut oil, props beside him instead of a second leg), and it generated successfully on the first 即梦 attempt.
+- Shot 1 hit 6 hangs in a row — unusual even for the documented ~45% hang-lottery. Rather than keep burning attempts blind, I'll make progress on shots 2 and 4 in parallel, then come back to shot 1 with a fresh image (a full "new lottery ticket," which is what fixed shot 3).
+- Shot 1 is the one real blocker — it's hung 6 times on the same content even after a fresh image, which is more than the documented ~45% hang-lottery would predict. I'll let this current attempt finish, and if it hangs again I'll try one more variable change (e.g. simplify the shot guide/prompt) rather than keep brute-forcing identical retries. Will flag you the moment it resolves either way.
+
+
+## 2026-08-24 09:06 — social-ip-engine
+
+### Decisions & Reasoning
+- Good — the venv's site-packages are intact, only the `python3.13` binary symlink is dangling (the old Framework Python was removed). Homebrew has `python3.13` installed, so I'll just repoint the symlink rather than rebuilding the whole venv.
+
+
+## 2026-08-24 09:26 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Quick note on what happened: the shared `.venv` at the repo root was broken — its `python3.13` binary pointed at a Framework Python install that's since been removed (probably during an OS/Python update). The packages (fastapi, uvicorn, etc.) were all still intact in site-packages, so rather than rebuilding the venv I just repointed the `python3.13` symlink to Homebrew's `python3.13` (3.13.15, same minor version) — zero package reinstall needed, and nothing else in the repo should notice the difference.
+
+### Decisions & Reasoning
+- Good — the venv's site-packages are intact, only the `python3.13` binary symlink is dangling (the old Framework Python was removed). Homebrew has `python3.13` installed, so I'll just repoint the symlink rather than rebuilding the whole venv.
+
+
+## 2026-08-24 09:28 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Quick note on what happened: the shared `.venv` at the repo root was broken — its `python3.13` binary pointed at a Framework Python install that's since been removed (probably during an OS/Python update). The packages (fastapi, uvicorn, etc.) were all still intact in site-packages, so rather than rebuilding the venv I just repointed the `python3.13` symlink to Homebrew's `python3.13` (3.13.15, same minor version) — zero package reinstall needed, and nothing else in the repo should notice the difference.
+
+### Decisions & Reasoning
+- Good — the venv's site-packages are intact, only the `python3.13` binary symlink is dangling (the old Framework Python was removed). Homebrew has `python3.13` installed, so I'll just repoint the symlink rather than rebuilding the whole venv.
+- 2. Added `[SAME_PERSON_AS: Shot 1]` to Shots 2 and 3's prompts — this is the studio's existing mechanism (`notion_image.py`) that feeds Shot 1's actual generated image back in as a reference so gpt-image-2 locks the same face/hair/outfit instead of reinventing her.
+
+
+## 2026-08-24 09:30 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Quick note on what happened: the shared `.venv` at the repo root was broken — its `python3.13` binary pointed at a Framework Python install that's since been removed (probably during an OS/Python update). The packages (fastapi, uvicorn, etc.) were all still intact in site-packages, so rather than rebuilding the venv I just repointed the `python3.13` symlink to Homebrew's `python3.13` (3.13.15, same minor version) — zero package reinstall needed, and nothing else in the repo should notice the difference.
+
+### Decisions & Reasoning
+- Good — the venv's site-packages are intact, only the `python3.13` binary symlink is dangling (the old Framework Python was removed). Homebrew has `python3.13` installed, so I'll just repoint the symlink rather than rebuilding the whole venv.
+- 2. Added `[SAME_PERSON_AS: Shot 1]` to Shots 2 and 3's prompts — this is the studio's existing mechanism (`notion_image.py`) that feeds Shot 1's actual generated image back in as a reference so gpt-image-2 locks the same face/hair/outfit instead of reinventing her.
+
+
+## 2026-08-24 09:49 — social-ip-engine
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+
+
+## 2026-08-24 09:55 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+
+
+## 2026-08-24 10:49 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+
+
+## 2026-08-24 10:53 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+
+
+## 2026-08-24 11:01 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+
+
+## 2026-08-24 11:02 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+
+
+## 2026-08-24 11:14 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+- That last check matters — CLAUDE.md documents a real incident (2026-07-14) where every audio shot came back with 即梦-invented speech instead of the uploaded voice. I Whisper-transcribed the rendered video's own audio track to rule that out rather than assuming. Clean.
+
+
+## 2026-08-24 11:19 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+- That last check matters — CLAUDE.md documents a real incident (2026-07-14) where every audio shot came back with 即梦-invented speech instead of the uploaded voice. I Whisper-transcribed the rendered video's own audio track to rule that out rather than assuming. Clean.
+
+
+## 2026-08-24 11:34 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+- That last check matters — CLAUDE.md documents a real incident (2026-07-14) where every audio shot came back with 即梦-invented speech instead of the uploaded voice. I Whisper-transcribed the rendered video's own audio track to rule that out rather than assuming. Clean.
+
+
+## 2026-08-24 11:36 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+- That last check matters — CLAUDE.md documents a real incident (2026-07-14) where every audio shot came back with 即梦-invented speech instead of the uploaded voice. I Whisper-transcribed the rendered video's own audio track to rule that out rather than assuming. Clean.
+
+
+## 2026-08-24 11:41 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+- That last check matters — CLAUDE.md documents a real incident (2026-07-14) where every audio shot came back with 即梦-invented speech instead of the uploaded voice. I Whisper-transcribed the rendered video's own audio track to rule that out rather than assuming. Clean.
+
+
+## 2026-08-24 11:45 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+- That last check matters — CLAUDE.md documents a real incident (2026-07-14) where every audio shot came back with 即梦-invented speech instead of the uploaded voice. I Whisper-transcribed the rendered video's own audio track to rule that out rather than assuming. Clean.
+
+
+## 2026-08-24 11:48 — social-ip-engine
+
+### Architecture Decisions
+- **So to your actual question — "I clicked publish, shouldn't it auto-publish?"** Yes, and it did. First attempt failed on a credentials timing issue that's since been fixed; the retry mechanism (built into `notion_publish_carousel_runner.py`, up to 3 attempts) picked it up and succeeded. The system worked exactly as designed — you just never saw the update because your local repo wasn't syncing.
+
+### Decisions & Reasoning
+- **Why it's still sitting there instead of retrying itself:** it's marked `failed` with `attempts: 1` of `NOTION_PUBLISH_MAX_ATTEMPTS=3`, so it's *eligible* to retry — but retries only happen when (a) the Notion webhook re-fires (it won't — Stage isn't changing again) or (b) the daily scheduler sweep runs, which is also off by default (`NOTION_PUBLISH_SCHEDULE_ENABLED`). So it's just stuck.
+- **One habit worth adopting:** since this Render service auto-commits state back to `main` continuously (I count 211 auto-commits since Aug 13 alone), your local checkout will drift stale fast if you're not pulling regularly before checking "is X published" locally — always more reliable to check Notion directly or the IG API itself rather than trust a local file that could be hours or days behind.
+- I then manually triggered production's sync (`POST /admin/notion-sync` on the live Render service) instead of waiting on the automation, and got the exact reason back:
+- Now let me look at your new goal (the "Week Before Your Period" episode) before doing anything — this is a bigger, cost-real action (video gen credits + lip sync), so I want to scope it first rather than fire blind.
+- - Ran the built-in `finalize_video` pipeline (same one used for all prior productions): `notion_video.py --merge-only` → merged 4 shots into `final.mp4` → `add_karaoke_captions.py --upload` → Whisper transcription (92 words) → karaoke captions rendered → uploaded straight to the row's **Production Video** property in Notion.
+- - `has_production_video: True` now on the row. Next step for you in Studio: review the merged video in the Shots panel, then move Stage to 🟢 Ready to Publish when happy.
+- **Currently running** (`job 4ad7a47897b7`): shots 1→4 sequentially, each up to ~10 min render, so roughly 20-40 min total. `--regen` appends new `🎬 Video (regen)` toggles alongside the old ones in Notion rather than destroying the originals, so nothing is lost if a shot comes back bad.
+- That last check matters — CLAUDE.md documents a real incident (2026-07-14) where every audio shot came back with 即梦-invented speech instead of the uploaded voice. I Whisper-transcribed the rendered video's own audio track to rule that out rather than assuming. Clean.
+
+
+## 2026-08-28 10:06 — social-ip-engine
+
+### Decisions & Reasoning
+- 配好了，一直在用——`dreamina-switch list` 刚查了一下，当前是 新号（3717881781040169），上次会话记录是 6160 credits、maestro 权限，seedance2.0fast_vip 能跑。CLI 本身没问题。
+- - **hang-lottery**：提交后挂在"querying"不动是正常现象（~45%概率），代码里有自动重试，不用干等着重提交
+- **核心概念**：不是常规的"卖货口播"，是一段纯情绪的角色开场——Jackie 独自走进清晨的老诊所，被一格药柜勾起对师承往事的怀念，情绪从怀念→释然→坚定，为后续系列建立"这个人不只是卖草药的，他背负着传统"的角色深度。用跟拍长镜头做代入感，不靠台词，靠光影和步伐节奏说话——完全按情绪导演 skill 的思路来，不给抽象情绪词，全部外化成微表情/肢体/镜头语言。
+- 10 秒测试的静帧图还在 gpt-image-2 生成中（后台跑着），一出来我立刻用 `multimodal2video --ratio 16:9 --duration 10` 提交即梦，跑完直接发你看。
+
+
+## 2026-08-28 12:44 — social-ip-engine
+
+### Decisions & Reasoning
+- 配好了，一直在用——`dreamina-switch list` 刚查了一下，当前是 新号（3717881781040169），上次会话记录是 6160 credits、maestro 权限，seedance2.0fast_vip 能跑。CLI 本身没问题。
+- - **hang-lottery**：提交后挂在"querying"不动是正常现象（~45%概率），代码里有自动重试，不用干等着重提交
+- **核心概念**：不是常规的"卖货口播"，是一段纯情绪的角色开场——Jackie 独自走进清晨的老诊所，被一格药柜勾起对师承往事的怀念，情绪从怀念→释然→坚定，为后续系列建立"这个人不只是卖草药的，他背负着传统"的角色深度。用跟拍长镜头做代入感，不靠台词，靠光影和步伐节奏说话——完全按情绪导演 skill 的思路来，不给抽象情绪词，全部外化成微表情/肢体/镜头语言。
+- 10 秒测试的静帧图还在 gpt-image-2 生成中（后台跑着），一出来我立刻用 `multimodal2video --ratio 16:9 --duration 10` 提交即梦，跑完直接发你看。
+
+
+## 2026-08-28 13:04 — social-ip-engine
+
+### Decisions & Reasoning
+- 配好了，一直在用——`dreamina-switch list` 刚查了一下，当前是 新号（3717881781040169），上次会话记录是 6160 credits、maestro 权限，seedance2.0fast_vip 能跑。CLI 本身没问题。
+- - **hang-lottery**：提交后挂在"querying"不动是正常现象（~45%概率），代码里有自动重试，不用干等着重提交
+- **核心概念**：不是常规的"卖货口播"，是一段纯情绪的角色开场——Jackie 独自走进清晨的老诊所，被一格药柜勾起对师承往事的怀念，情绪从怀念→释然→坚定，为后续系列建立"这个人不只是卖草药的，他背负着传统"的角色深度。用跟拍长镜头做代入感，不靠台词，靠光影和步伐节奏说话——完全按情绪导演 skill 的思路来，不给抽象情绪词，全部外化成微表情/肢体/镜头语言。
+- 10 秒测试的静帧图还在 gpt-image-2 生成中（后台跑着），一出来我立刻用 `multimodal2video --ratio 16:9 --duration 10` 提交即梦，跑完直接发你看。
+- - `multimodal2video` 用 `--ratio 16:9` 时**必须显式带 `--video_resolution 720p`**，否则报 `invalid param:video_resolution_type`。9:16 的老流程没带也能跑，所以 `notion_video.py` 里没有这个参数——以后要出横版得补。
+- - 这条镜头**没有音频**，不需要对口型。`multimodal2video`（全能参考）是给"图+视频+音频混合参考"用的，是文档里记录得最不稳的一条路。纯运镜动画本来就该走 `image2video`。
+- 情绪导演 skill 那套"不给抽象词、全部外化成微表情+光影+运镜"是有效的——**结尾那一帧就是这条片子的价值**，抬头迎光那个瞬间把"怀念→释然→坚定"的转折做完了，一句台词都没用。这就是后续可以接口播的完美接口。
+
