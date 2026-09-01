@@ -827,5 +827,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/acne-page-1.png"
     ]
+  },
+  {
+    "keyword": "piles",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The warm mugwort sitz bath calms things down fast 🪑\n\nQuick check — is it more itching and swelling, or bleeding when you go? They're handled differently.\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM piles guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🪑 Hemorrhoids — Your Energy Has Sunk",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/piles-page-1.png"
+    ]
   }
 ]
