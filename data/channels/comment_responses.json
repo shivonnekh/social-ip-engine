@@ -752,5 +752,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/ringing-page-1.png"
     ]
+  },
+  {
+    "keyword": "sweat",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Lily bulb and goji simmered into a light evening soup is the classic fix for night sweats 💦\n\nQuick check — do you also get warm palms and soles, or wake around three in the morning?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM sweat guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "💦 Night Sweats — Your Yin Is Running Low",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/sweat-page-1.png"
+    ]
   }
 ]
