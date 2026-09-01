@@ -93,15 +93,38 @@ def _nh():
     return {"Authorization": f"Bearer {key}", "Notion-Version": "2022-06-28"}
 
 
-def ncall(method, path, body=None):
+# Notion rate-limits the public API per integration token, and a batch run has
+# several tools sharing one token at once. Without backoff a single 429 killed
+# the whole cover/infographic stage for 8 of 10 concepts on 2026-09-01 — and
+# because ncall() calls sys.exit(), it took the caller down with it rather than
+# failing one request. The untimed urlopen() below was also the same shape that
+# hung a fan-out for 30 minutes that day.
+NOTION_TIMEOUT_S = 30
+_NOTION_RETRY_CODES = (429, 502, 503, 504)
+
+
+def ncall(method, path, body=None, retries=6):
     h = dict(_nh()); h["Content-Type"] = "application/json"
     data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(f"{NOTION}{path}", data=data, headers=h, method=method)
-    try:
-        with urllib.request.urlopen(req) as r:
-            return json.loads(r.read().decode())
-    except urllib.error.HTTPError as e:
-        sys.exit(f"[notion] {method} {path}: {e.read().decode()}")
+    for attempt in range(retries):
+        req = urllib.request.Request(f"{NOTION}{path}", data=data, headers=h, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=NOTION_TIMEOUT_S) as r:
+                return json.loads(r.read().decode())
+        except urllib.error.HTTPError as e:
+            if e.code in _NOTION_RETRY_CODES and attempt < retries - 1:
+                wait = float(e.headers.get("Retry-After", 0) or 0) or min(2 ** attempt, 30)
+                print(f"[notion] {e.code} on {method} {path} — retrying in {wait:.0f}s "
+                      f"({attempt + 1}/{retries - 1})", flush=True)
+                time.sleep(wait + 0.5)
+                continue
+            sys.exit(f"[notion] {method} {path}: {e.read().decode()}")
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            if attempt < retries - 1:
+                time.sleep(min(2 ** attempt, 30))
+                continue
+            sys.exit(f"[notion] {method} {path}: {type(e).__name__}: {e}")
+    sys.exit(f"[notion] {method} {path}: exhausted {retries} retries")
 
 
 def _txt(b):
