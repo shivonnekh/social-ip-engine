@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import time
 import sys
 import urllib.error
 import urllib.request
@@ -68,17 +69,34 @@ HEADERS = {
 NAMES = {c["key"]: c["name"] for c in CONCEPTS}
 
 
-def notion(method: str, path: str, body: dict | None = None) -> dict:
-    req = urllib.request.Request(
-        f"https://api.notion.com/v1/{path}",
-        data=json.dumps(body).encode() if body is not None else None,
-        method=method,
-        headers=HEADERS,
-    )
-    try:
-        return json.load(urllib.request.urlopen(req))
-    except urllib.error.HTTPError as exc:
-        raise RuntimeError(f"Notion {method} {path}: {exc.read().decode()[:300]}") from exc
+def notion(method: str, path: str, body: dict | None = None, retries: int = 6) -> dict:
+    """Notion request with a timeout, 429 backoff and transport retries.
+
+    All three matter here. Notion rate-limits the public API per integration
+    token, and this driver runs several pipeline children that each hammer the
+    same token — a bare status query 429'd mid-batch on 2026-09-01. And an
+    untimed urlopen() is what hung a fan-out for 30 minutes the same day.
+    """
+    data = json.dumps(body).encode() if body is not None else None
+    for attempt in range(retries):
+        req = urllib.request.Request(
+            f"https://api.notion.com/v1/{path}", data=data, method=method, headers=HEADERS,
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return json.loads(resp.read().decode())
+        except urllib.error.HTTPError as exc:
+            if exc.code in (429, 502, 503, 504) and attempt < retries - 1:
+                wait = float(exc.headers.get("Retry-After", 0)) or min(2 ** attempt, 30)
+                time.sleep(wait + 0.5)
+                continue
+            raise RuntimeError(f"Notion {method} {path}: {exc.read().decode()[:300]}") from exc
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            if attempt < retries - 1:
+                time.sleep(min(2 ** attempt, 30))
+                continue
+            raise RuntimeError(f"Notion {method} {path}: {type(exc).__name__}: {exc}") from exc
+    raise RuntimeError(f"Notion {method} {path}: exhausted {retries} retries")
 
 
 def _prop(page: dict, name: str):
@@ -188,8 +206,16 @@ def stage_assets(keys: list[str], workers: int = 1) -> None:
             return key, False, "row not found"
         rid = row["id"]
         # Prop consistency BEFORE image gen — shots 2-4 reference shot 1's render.
-        run(["python3", "scripts/add_prop_markers.py", "--row", rid,
-             "--shots", "2,3,4", "--prop-ref", "1"], key)
+        # This result is CHECKED, not discarded. An earlier version ignored it,
+        # and on 2026-09-01 add_prop_markers.py was briefly deleted from the
+        # working tree by a bad bot revert: the step would have failed silently
+        # on every concept and produced four shots with mismatched props, with a
+        # clean ✅ next to each. A consistency step that can be skipped without
+        # anyone noticing is not a consistency step.
+        lbl, ok, tail = run(["python3", "scripts/add_prop_markers.py", "--row", rid,
+                             "--shots", "2,3,4", "--prop-ref", "1"], key)
+        if not ok:
+            return key, False, f"prop markers: {tail}"
         lbl, ok, tail = run([PY, "scripts/notion_image.py", "--row", rid], key)
         if not ok:
             return key, False, f"image: {tail}"
