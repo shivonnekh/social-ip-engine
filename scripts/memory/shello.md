@@ -999,3 +999,28 @@ Still open:
 - Then: finalize (karaoke --script), then Stage → 🟢 Ready to Publish to wire the DMs.
 - 3 pre-existing stash entries (stash@{1..3}) are NOT mine — do not pop them; per the
   updated git-workflow rule, back them up to named branches before touching the stack.
+
+### 2026-09-01 addendum — Jimeng cooldown tuning: what was tested, what's actually true
+Do not re-litigate this without new data.
+
+- **120s submission cooldown is the operating point.** Measured: ~12 shots completed in ~2h.
+- **540s (9 min) cooldown is WORSE, not better: 0 shots in 20 min.** I raised it on the
+  strength of ONE observation (hair shot 3 failed 5x under load, then succeeded on the first
+  try after a 10-min quiet window) and predicted fewer, better-spaced submissions would land
+  more reliably. It did not. That single success was most likely regression to the mean on a
+  ~45% lottery, not causation. Reverted.
+- Lesson: run the A/B BEFORE changing the setting, not after. Two of my three "optimisations"
+  this session (shortening the poll, lengthening the cooldown) made throughput worse and cost
+  ~2h between them.
+- The face-proximity hypothesis is also NOT supported: `bowel` shot 4 ("rests both hands
+  together beside the glass" — completely benign) washed out too. Softening the 6 at-risk
+  shots was cheap insurance, but it is not the explanation.
+- **What IS solid:** hung tasks sit in `querying` forever, are never scheduled, and cost
+  nothing. Retrying is the only lever. Everything else I tried was noise on top of a bad
+  Jimeng day.
+
+Self-inflicted time costs this session, for the record: a 1h subprocess timeout that killed a
+render mid-flight and cascaded 7 concepts; an untimed urlopen that hung 30 min and left a row
+half-built; a poll-shortening that tightened the resubmit loop; three restarts each leaving
+in-flight tasks that blocked the next start. All now fixed in code, but they are why 10
+campaigns took a day instead of an evening.
