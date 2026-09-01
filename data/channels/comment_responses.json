@@ -707,5 +707,35 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/circles-page-1.png"
     ]
+  },
+  {
+    "keyword": "snoring",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Warm tangerine-peel tea after dinner is the easiest first step for snoring 😴\n\nQuick check — do you also wake with a thick coating on your tongue or phlegm in your throat?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM snoring guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "😴 Snoring Isn't About Your Nose",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/snoring-page-1.png"
+    ]
+  },
+  {
+    "keyword": "hair",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Scalp tapping plus black sesame is the combination that actually moves the needle 💇\n\nQuick check — is yours more thinning all over, or receding at the temples and hairline? They point to different roots.\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM hair guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "💇 Thinning Hair — It's Not Your Shampoo",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/hair-page-1.png"
+    ]
   }
 ]
