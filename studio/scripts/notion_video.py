@@ -648,9 +648,21 @@ def _video_url(d):
 # Measured 2026-07-10 across 236 historical tasks: 81% of successes finish
 # in <5 min, 95% in <15 min, NONE ever succeeded past ~62 min — while ~45% of
 # audio-driven multimodal submissions hang in "querying" FOREVER (the 即梦
-# hang-lottery). So poll 10 min per attempt, then treat the task as hung and
-# resubmit the same thing ("retry usually works", studio/CLAUDE.md).
-_POLL_TIMEOUT_S = 600
+# hang-lottery). So poll, then treat the task as hung and resubmit the same
+# thing ("retry usually works", studio/CLAUDE.md).
+#
+# Tunable via JIMENG_POLL_TIMEOUT_S. Shortening it is close to free, because a
+# shorter poll cannot LOSE a slow success: after the final attempt the code
+# re-queries every abandoned attempt and uses one that finished late (see the
+# "actually finished (just slower than N min)" branch). So the only cost of a
+# short poll is the credits for an extra submission — and hung tasks are never
+# charged at all.
+#
+# On 2026-09-01 the hang rate ran far above the historical 45% and each hung
+# attempt burned the full 10 minutes while real successes were landing in 3-5,
+# so a 10-concept batch was pacing at ~1 hour per concept. At 6 minutes a
+# 3-attempt washout costs 18 min instead of 30.
+_POLL_TIMEOUT_S = int(os.environ.get("JIMENG_POLL_TIMEOUT_S", "600"))
 _MM_ATTEMPTS = 3  # multimodal submission attempts per shot before falling back
 
 

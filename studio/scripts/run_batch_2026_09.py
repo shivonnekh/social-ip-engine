@@ -68,6 +68,12 @@ HEADERS = {
 }
 NAMES = {c["key"]: c["name"] for c in CONCEPTS}
 
+# Caller-environment keys the pipeline children are allowed to see.
+_PASSTHROUGH_ENV = frozenset({
+    "PATH", "HOME", "LANG", "LC_ALL", "TMPDIR",
+    "JIMENG_POLL_TIMEOUT_S",  # notion_video poll budget per attempt
+})
+
 
 def notion(method: str, path: str, body: dict | None = None, retries: int = 6) -> dict:
     """Notion request with a timeout, 429 backoff and transport retries.
@@ -147,8 +153,13 @@ def run(cmd: list[str], label: str, timeout_s: int = 3600) -> tuple[str, bool, s
     try:
         proc = subprocess.run(
             cmd, cwd=str(STUDIO), capture_output=True, text=True, timeout=timeout_s,
-            env={**ENV, "PATH": __import__("os").environ.get("PATH", ""),
-                 "HOME": __import__("os").environ.get("HOME", "")},
+            # Pass studio/.env PLUS a small allow-list from the caller's own
+            # environment. The child env is rebuilt rather than inherited so a
+            # stray shell var can't change pipeline behaviour, but that also
+            # silently dropped JIMENG_POLL_TIMEOUT_S when it was set on the
+            # command line — the setting appeared to apply and did nothing.
+            env={**ENV, **{k: v for k, v in __import__("os").environ.items()
+                           if k in _PASSTHROUGH_ENV}},
         )
     except subprocess.TimeoutExpired:
         return label, False, f"TIMEOUT after {timeout_s}s: {' '.join(cmd[-4:])}"
