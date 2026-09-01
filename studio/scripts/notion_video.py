@@ -665,6 +665,23 @@ def _video_url(d):
 _POLL_TIMEOUT_S = int(os.environ.get("JIMENG_POLL_TIMEOUT_S", "600"))
 _MM_ATTEMPTS = 3  # multimodal submission attempts per shot before falling back
 
+# Pacing between multimodal submissions. Both default to 0 so existing callers
+# are unchanged.
+#
+# Root-caused 2026-09-01 by controlled test, and it partly corrects the
+# "hang-lottery" story above. Across a long back-to-back batch the hang rate ran
+# at 10-of-12, and the SAME shot hung five times running. After a 10-minute
+# window with zero submissions, that identical shot — same image, same prompt,
+# same audio — succeeded on the first attempt. Two attempts with an already
+# -changed image had hung during the busy period, so the image was not the
+# variable; sustained submission RATE was.
+#
+# That also means resubmitting fast is actively counterproductive: each hang
+# triggers another submission, which adds load, which causes more hangs. Hence a
+# cooldown before every submission and an escalating backoff after a hang.
+_SUBMIT_COOLDOWN_S = int(os.environ.get("JIMENG_SUBMIT_COOLDOWN_S", "0"))
+_HANG_BACKOFF_S = int(os.environ.get("JIMENG_HANG_BACKOFF_S", "0"))
+
 
 def _fresh_querying_tasks(max_age_s=900):
     """submit_ids of 即梦 tasks created in the last ~15 min still 'querying' —
@@ -1229,6 +1246,9 @@ def main():
         path, pstat, sid = None, None, None
         abandoned: list[str] = []  # submit_ids we gave up polling on — may still finish later
         for attempt in range(1, _MM_ATTEMPTS + 1):
+            if _SUBMIT_COOLDOWN_S:
+                print(f"    ⏳ pacing {_SUBMIT_COOLDOWN_S}s before submit ...", flush=True)
+                time.sleep(_SUBMIT_COOLDOWN_S)
             sid, res = submit_shot(img, aud, s["jimeng"], args.model)
             tag = f" (attempt {attempt}/{_MM_ATTEMPTS})" if attempt > 1 else ""
             print(f"  Shot {i}: submit_id={sid} credits={res.get('credit_count')}{tag}")
@@ -1245,6 +1265,11 @@ def main():
             path, pstat = poll_download(sid, out)
             if path or pstat == "fail":
                 break
+            if _HANG_BACKOFF_S and attempt < _MM_ATTEMPTS:
+                wait = _HANG_BACKOFF_S * attempt
+                print(f"    😴 backing off {wait}s before resubmit — a hang usually means "
+                      f"the account is being submitted to too fast", flush=True)
+                time.sleep(wait)
             print(f"    🕳️ shot {i} attempt {attempt} hung >{_POLL_TIMEOUT_S // 60} min — "
                   "即梦 hang-lottery (task likely never scheduled), resubmitting ...")
             abandoned.append(sid)

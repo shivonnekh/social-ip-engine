@@ -71,7 +71,9 @@ NAMES = {c["key"]: c["name"] for c in CONCEPTS}
 # Caller-environment keys the pipeline children are allowed to see.
 _PASSTHROUGH_ENV = frozenset({
     "PATH", "HOME", "LANG", "LC_ALL", "TMPDIR",
-    "JIMENG_POLL_TIMEOUT_S",  # notion_video poll budget per attempt
+    "JIMENG_POLL_TIMEOUT_S",     # notion_video poll budget per attempt
+    "JIMENG_SUBMIT_COOLDOWN_S",  # pause before every 即梦 submission
+    "JIMENG_HANG_BACKOFF_S",     # escalating pause after a hung attempt
 })
 
 
