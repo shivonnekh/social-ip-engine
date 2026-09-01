@@ -177,3 +177,127 @@ class TestPushPathsFetchBeforePush:
         mock_run.assert_not_called()
         assert result["ok"] is False
         assert "GITHUB_PUSH_TOKEN" in result["detail"]
+
+
+# ---------------------------------------------------------------------------
+# Real-git regression test for the --soft/--mixed revert bug.
+#
+# The mock-based tests above CANNOT catch this class of bug: they assert that a
+# reset happened, which is equally true of `--soft` (broken) and `--mixed`
+# (correct). Only a real repository shows the difference, because the difference
+# lives entirely in what `git reset` does to the INDEX.
+#
+# The bug, precisely: `reset --soft FETCH_HEAD` moves HEAD but leaves the index
+# holding the STALE checkout's tree. `git add <state paths>` then updates only
+# those entries, and `git commit` commits the WHOLE index — so every file that
+# advanced upstream since this container last pulled is committed back at its
+# old blob. A one-line ledger write silently reverts unrelated work.
+#
+# History, which is the reason this test is written the way it is:
+#   853fa0a  fixed --soft -> --mixed and added a regression test
+#   94fec13  "chore: notion-sync" — a BOT auto-commit that reverted BOTH the fix
+#            and its test, because the deployed instance was still running the
+#            unfixed code
+# The bug reverted its own fix. It then did it again on 2026-09-01, wiping a
+# commit and deleting two scripts outright.
+# ---------------------------------------------------------------------------
+
+
+def _git(cwd, *args: str) -> None:
+    subprocess.run(
+        ["git", "-c", "user.name=t", "-c", "user.email=t@t", *args],
+        cwd=str(cwd), check=True, capture_output=True, text=True,
+    )
+
+
+def _read_from_origin(origin, path: str) -> str:
+    out = subprocess.run(
+        ["git", "show", f"main:{path}"], cwd=str(origin),
+        check=True, capture_output=True, text=True,
+    )
+    return out.stdout
+
+
+class TestPushPathsDoesNotRevertUnrelatedFiles:
+    def test_a_ledger_write_never_reverts_files_that_moved_upstream(
+        self, tmp_path, monkeypatch
+    ):
+        origin = tmp_path / "origin.git"
+        origin.mkdir()
+        _git(origin, "init", "--bare", "--initial-branch=main", ".")
+
+        # ---- author the base commit, then advance origin/main ----
+        work = tmp_path / "work"
+        work.mkdir()
+        _git(work, "init", "--initial-branch=main", ".")
+        (work / "shared.py").write_text("VERSION = 1\n")
+        (work / "state.json").write_text("{}\n")
+        _git(work, "add", ".")
+        _git(work, "commit", "-m", "base")
+        _git(work, "remote", "add", "origin", str(origin))
+        _git(work, "push", "origin", "main")
+
+        # The STALE container clones here — at the base commit.
+        container = tmp_path / "container"
+        _git(tmp_path, "clone", str(origin), str(container))
+
+        # ...and only THEN does someone land real work upstream.
+        (work / "shared.py").write_text("VERSION = 2  # important fix\n")
+        _git(work, "add", "shared.py")
+        _git(work, "commit", "-m", "upstream fix the container never pulled")
+        _git(work, "push", "origin", "main")
+
+        # ---- the container writes its ledger and pushes, as in production ----
+        (container / "state.json").write_text('{"published": ["row-1"]}\n')
+
+        monkeypatch.setattr(git_publish, "REPO_ROOT", container)
+        monkeypatch.setattr(git_publish, "_REMOTE", str(origin))
+        monkeypatch.setenv("GITHUB_PUSH_TOKEN", "test-token")
+
+        result = git_publish.push_paths(["state.json"], "chore: notion-publish — ledger")
+        assert result["ok"], result
+
+        # The ledger write must land...
+        assert "row-1" in _read_from_origin(origin, "state.json")
+        # ...and must NOT drag the upstream file back to the stale version.
+        # Under `reset --soft` this reads "VERSION = 1" — the production bug.
+        assert _read_from_origin(origin, "shared.py") == "VERSION = 2  # important fix\n"
+
+    def test_the_commit_touches_only_the_paths_it_was_given(self, tmp_path, monkeypatch):
+        """Same setup, asserted from the other side: the resulting commit's diff
+        must name exactly the state file. A commit that also 'changes'
+        shared.py is the revert, whatever its content happens to be."""
+        origin = tmp_path / "origin.git"
+        origin.mkdir()
+        _git(origin, "init", "--bare", "--initial-branch=main", ".")
+
+        work = tmp_path / "work"
+        work.mkdir()
+        _git(work, "init", "--initial-branch=main", ".")
+        (work / "shared.py").write_text("VERSION = 1\n")
+        (work / "state.json").write_text("{}\n")
+        _git(work, "add", ".")
+        _git(work, "commit", "-m", "base")
+        _git(work, "remote", "add", "origin", str(origin))
+        _git(work, "push", "origin", "main")
+
+        container = tmp_path / "container"
+        _git(tmp_path, "clone", str(origin), str(container))
+
+        (work / "shared.py").write_text("VERSION = 2\n")
+        _git(work, "add", "shared.py")
+        _git(work, "commit", "-m", "upstream")
+        _git(work, "push", "origin", "main")
+
+        (container / "state.json").write_text('{"published": ["row-1"]}\n')
+        monkeypatch.setattr(git_publish, "REPO_ROOT", container)
+        monkeypatch.setattr(git_publish, "_REMOTE", str(origin))
+        monkeypatch.setenv("GITHUB_PUSH_TOKEN", "test-token")
+
+        assert git_publish.push_paths(["state.json"], "chore: ledger")["ok"]
+
+        changed = subprocess.run(
+            ["git", "show", "--name-only", "--format=", "main"], cwd=str(origin),
+            check=True, capture_output=True, text=True,
+        ).stdout.split()
+        assert changed == ["state.json"], f"commit touched unrelated files: {changed}"

@@ -6,10 +6,14 @@ drafts a keyword rule the moment a Production Tracker row hits
 PNG into ``data/media/guides/`` and hand-write ``image_urls``). This module
 closes that step:
 
-1. Walk the Production Tracker row's body for a toggle whose text contains
-   "DM Infographic" (the 📊 emoji is optional) and take the first image
-   block inside it. Notion image blocks carry either a ``file`` (expiring
-   S3 signed URL) or ``external`` URL — both are handled.
+1. Walk the Production Tracker row's body for the toggle holding the
+   infographic and take the first image block inside it. Two slots are
+   recognised, in TRUST order (see ``_SOURCE_TOGGLE_MARKERS``): the
+   studio-pipeline "🖼️ Infographic here" toggle a human reviewed wins over
+   the "📊 DM Infographic here" toggle this module writes back itself.
+   Emoji are optional and matching is case-insensitive. Notion image blocks
+   carry either a ``file`` (expiring S3 signed URL) or ``external`` URL —
+   both are handled.
 2. Download it (stdlib ``urllib`` only, same rule as notion_sync.py) to
    ``data/media/guides/<keyword>-page-1.png``.
 3. Set the rule's ``image_urls`` to the public URL served by this app:
@@ -49,6 +53,33 @@ STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_media_state.json"
 DEFAULT_BASE_URL = "https://tcm-jessica.onrender.com"
 _BASE_URL_ENV_VARS = ("PUBLIC_BASE_URL", "JESSICA_BASE_URL")
 _TOGGLE_MARKER = "dm infographic"
+# READ-side markers only. `_TOGGLE_MARKER` above stays the single marker used
+# for WRITE-back targeting (`_find_empty_dm_infographic_toggle` /
+# `write_infographic_to_row`) — widening that would change where generated
+# images get written, which is not what this is for.
+#
+# Ordered by trust, and `find_infographic_source` scans them in this order
+# rather than in document order: a "🖼️ Infographic here" toggle is the slot
+# studio/'s `apply_shot_plan` builds and `generate_infographic.py` fills, i.e.
+# the image a HUMAN reviewed in Notion. A "📊 DM Infographic here" toggle is
+# written back by our own previous server-side generation — a derivative. When
+# both exist, the reviewed one must win.
+#
+# Added 2026-09-01: only "dm infographic" was matched before, and the
+# studio-built slot is named "🖼️ Infographic here" (the "📊 DM Infographic"
+# text sits on a childless sibling heading_3). So every pipeline-built row
+# looked infographic-less, `enrich_rule` fell through to `_generate_infographic`,
+# and viewers were DM'd a second, different, never-reviewed image — while a
+# real image-API call was spent per row. Caught on the "Dark Circles & Eye
+# Bags" row, which ended up holding two different infographics.
+# Each entry is (must_contain, must_NOT_contain). The exclusion matters: our
+# own write-back toggle is literally "📊 DM Infographic here", which contains
+# "infographic here" too — without excluding "dm infographic" from the first
+# pass, the derivative would still shadow the reviewed image.
+_SOURCE_TOGGLE_MARKERS: tuple[tuple[str, str | None], ...] = (
+    ("infographic here", _TOGGLE_MARKER),  # studio slot — human-reviewed
+    (_TOGGLE_MARKER, None),  # our own write-back — fallback
+)
 _INFOGRAPHIC_PROMPT_MARKER = "infographic prompt"
 _GENERATED_MARKER = "generated:"
 _TOGGLE_TYPES = ("toggle", "heading_1", "heading_2", "heading_3")
@@ -139,21 +170,29 @@ def _image_url(block: dict) -> str | None:
 
 
 def find_infographic_source(row_page_id: str, children_fn: ChildrenFn) -> str | None:
-    """First image URL inside the row's "DM Infographic" toggle, else None.
+    """First image URL inside the row's infographic toggle, else None.
 
     Matching is loose: any toggle (or toggleable heading) whose text contains
-    "dm infographic" case-insensitively — the 📊 emoji may or may not be there.
+    one of ``_SOURCE_TOGGLE_MARKERS`` case-insensitively — emoji optional.
+
+    Markers are tried in trust order, NOT document order (see
+    ``_SOURCE_TOGGLE_MARKERS``): the human-reviewed studio slot beats a
+    toggle we previously wrote back ourselves. Within a single marker,
+    document order decides.
     """
-    for block in children_fn(row_page_id):
-        if block.get("type") not in _TOGGLE_TYPES:
-            continue
-        if _TOGGLE_MARKER not in _block_plain_text(block).casefold():
-            continue
-        for child in children_fn(block["id"]):
-            if child.get("type") == "image":
-                url = _image_url(child)
-                if url:
-                    return url
+    blocks = [b for b in children_fn(row_page_id) if b.get("type") in _TOGGLE_TYPES]
+    for wanted, excluded in _SOURCE_TOGGLE_MARKERS:
+        for block in blocks:
+            label = _block_plain_text(block).casefold()
+            if wanted not in label:
+                continue
+            if excluded is not None and excluded in label:
+                continue
+            for child in children_fn(block["id"]):
+                if child.get("type") == "image":
+                    url = _image_url(child)
+                    if url:
+                        return url
     return None
 
 
