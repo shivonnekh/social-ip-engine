@@ -74,6 +74,7 @@ _PASSTHROUGH_ENV = frozenset({
     "JIMENG_POLL_TIMEOUT_S",     # notion_video poll budget per attempt
     "JIMENG_SUBMIT_COOLDOWN_S",  # pause before every 即梦 submission
     "JIMENG_HANG_BACKOFF_S",     # escalating pause after a hung attempt
+    "JIMENG_MM_ATTEMPTS",        # attempts per shot (set from measured success rate)
 })
 
 

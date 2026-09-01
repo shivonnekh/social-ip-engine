@@ -663,7 +663,16 @@ def _video_url(d):
 # so a 10-concept batch was pacing at ~1 hour per concept. At 6 minutes a
 # 3-attempt washout costs 18 min instead of 30.
 _POLL_TIMEOUT_S = int(os.environ.get("JIMENG_POLL_TIMEOUT_S", "600"))
-_MM_ATTEMPTS = 3  # multimodal submission attempts per shot before falling back
+# Attempts per shot before giving up. Tunable because the right value is a
+# direct function of the account's CURRENT per-attempt success rate, which
+# varies day to day — this is arithmetic, not taste:
+#     P(shot completes) = 1 - (1 - p)^attempts
+# At the 30% rate measured on 2026-09-01, 3 attempts completes only 66% of
+# shots — i.e. 1 shot in 3 can never finish, which is exactly why `piles` lost
+# two shots and `bowel` one. 6 attempts gives 88%, 8 gives 94%.
+# Extra attempts cost TIME but not credits: a hung task is never scheduled and
+# never charged.
+_MM_ATTEMPTS = int(os.environ.get("JIMENG_MM_ATTEMPTS", "3"))
 
 # Pacing between multimodal submissions. Both default to 0 so existing callers
 # are unchanged.
