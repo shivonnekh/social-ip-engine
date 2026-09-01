@@ -842,5 +842,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/piles-page-1.png"
     ]
+  },
+  {
+    "keyword": "bowel",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Warm honey water plus the clockwise belly rub is the combination that gets things moving 🚽\n\nQuick check — is your stool more dry and hard like pellets, or soft but still hard to pass?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM bowel guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🚽 Can't Go Every Morning? It's Dryness, Not Laziness",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/bowel-page-1.png"
+    ]
   }
 ]
