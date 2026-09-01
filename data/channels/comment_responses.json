@@ -767,5 +767,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/sweat-page-1.png"
     ]
+  },
+  {
+    "keyword": "reflux",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Warm rice water with ginger before meals settles the stomach downward 🔥\n\nQuick check — is it worse when you lie down, or worse on an empty stomach? Different pattern, different fix.\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM reflux guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🔥 Reflux and Burping — It's a Direction Problem",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/reflux-page-1.png"
+    ]
   }
 ]
