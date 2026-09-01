@@ -812,5 +812,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/memory-page-1.png"
     ]
+  },
+  {
+    "keyword": "acne",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Face mapping tells you which organ to cool instead of just attacking the skin 🗺️\n\nQuick check — where do yours cluster most: forehead, cheeks, or chin and jawline?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM acne guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🗺️ Your Face Is a Map — Where Acne Appears Matters",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/acne-page-1.png"
+    ]
   }
 ]
