@@ -48,19 +48,39 @@ def _headers() -> dict[str, str]:
     }
 
 
+# Every Notion request gets a hard timeout. Without one, urlopen() blocks
+# FOREVER on a stalled TCP connection: no exception, no retry, no output. A
+# fan-out sat at 0.17s of CPU for 30 minutes that way on 2026-09-01 and silently
+# stalled a 10-concept batch behind it. A timeout turns that dead hang into a
+# normal retry, which the loop below already knows how to handle.
+NOTION_TIMEOUT_S = 30
+
+
 def call(method: str, path: str, body: dict | None = None, retries: int = 5) -> dict:
     data = json.dumps(body).encode() if body is not None else None
     for attempt in range(retries):
         req = urllib.request.Request(f"{BASE}{path}", data=data, headers=_headers(), method=method)
         try:
-            with urllib.request.urlopen(req) as resp:
+            with urllib.request.urlopen(req, timeout=NOTION_TIMEOUT_S) as resp:
                 return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             payload = exc.read().decode()
             if exc.code == 429 and attempt < retries - 1:
                 time.sleep(float(exc.headers.get("Retry-After", 1)) + 0.5)
                 continue
+            if exc.code >= 500 and attempt < retries - 1:
+                time.sleep(2 ** attempt)
+                continue
             sys.exit(f"[error] {method} {path} -> HTTP {exc.code}: {payload}")
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            # Transport-level failure (timeout, DNS, reset). Retry with backoff
+            # rather than dying — these are routine on a long batch run.
+            if attempt < retries - 1:
+                print(f"[warn] {method} {path} -> {type(exc).__name__}: {exc} "
+                      f"(retry {attempt + 1}/{retries - 1})", file=sys.stderr, flush=True)
+                time.sleep(2 ** attempt)
+                continue
+            sys.exit(f"[error] {method} {path} -> {type(exc).__name__}: {exc}")
     sys.exit("[error] exhausted retries")
 
 
@@ -216,16 +236,33 @@ def main() -> int:
         print("[fanout] dry-run — nothing written")
     else:
         print(f"[fanout] done — created {len(to_create)} production rows")
-        if to_create:
+        if to_create and _dm_map_enabled():
             _sync_dm_map()
     return 0
+
+
+def _dm_map_enabled() -> bool:
+    """Whether the legacy dm_map.json export should still run.
+
+    OFF by default since 2026-09-01. `dm_map.json` fed studio/server/, which was
+    retired to docs/legacy/ai-tcm-ip-server/ — the LIVE keyword->DM path is
+    social-ip-engine's data/channels/comment_responses.json, wired by
+    src/notion_sync.py on the Stage flip. Nothing reads dm_map.json any more, so
+    the export could only ever fail, and it did: every single fan-out printed a
+    FileNotFoundError traceback for a missing studio/server/dm_map.json.
+
+    That noise is not cosmetic. During the 2026-09-01 ten-concept batch it sat in
+    the tail of every fan-out's captured output, which is exactly where a real
+    error would have appeared — a routine failure that trains you to ignore the
+    place real failures show up. Set FANOUT_DM_MAP=1 to re-enable.
+    """
+    return os.environ.get("FANOUT_DM_MAP", "").strip().lower() in {"1", "true", "yes"}
 
 
 def _sync_dm_map() -> None:
     """Re-export dm_map.json and auto-push so Render picks up new keywords.
 
-    Called automatically after any non-dry-run fan-out that created rows.
-    The push is safe — dm_map.json is a generated file with no secrets.
+    LEGACY — disabled by default, see _dm_map_enabled().
     Set FANOUT_NO_PUSH=1 to skip the git push (e.g. during local dev).
     """
     scripts_dir = Path(__file__).resolve().parent

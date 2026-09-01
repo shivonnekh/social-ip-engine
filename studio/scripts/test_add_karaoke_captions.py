@@ -24,18 +24,47 @@ Run: cd studio && python3 -m pytest scripts/test_add_karaoke_captions.py -q
 """
 from __future__ import annotations
 
-from add_karaoke_captions import align_to_known_script, group_words, wrap_chunk_to_lines
+from add_karaoke_captions import (
+    HARD_MAX_WORDS_PER_CHUNK,
+    MAX_WORDS_PER_CHUNK,
+    align_to_known_script,
+    group_words,
+    wrap_chunk_to_lines,
+)
 
 
 def _word(text: str, start: float, end: float) -> dict:
     return {"word": text, "start": start, "end": end}
 
 
-def test_group_words_caps_at_max_words_per_chunk():
-    # 10 words, no pauses at all -> must split 5 + 5 (MAX_WORDS_PER_CHUNK=5)
+def test_group_words_run_on_with_no_punctuation_stops_at_the_hard_ceiling():
+    """A run-on with no punctuation and no pause falls back to HARD_MAX (9).
+
+    This test asserted [5, 5] until 2026-09-01 and had been failing since the
+    2026-07-19 rewrite made chunking sentence-boundary-driven rather than
+    fixed-width. The OLD assertion was pinning behaviour that was deliberately
+    removed: a hard cut at 5 words chopped real sentences into disconnected
+    fragments (a 9-word CTA became two unrelated halves). MAX_WORDS_PER_CHUNK is
+    now a soft target a sentence may run past; HARD_MAX_WORDS_PER_CHUNK is the
+    only real ceiling, and it exists purely so a Whisper transcription that
+    dropped a period can't produce one unbounded, unreadable caption.
+
+    A stale red test is worse than no test — it trains you to skim past the exact
+    place a real regression would announce itself.
+    """
     words = [_word(f"w{i}", i * 0.2, i * 0.2 + 0.15) for i in range(10)]
     chunks = group_words(words)
-    assert [len(c) for c in chunks] == [5, 5]
+    assert [len(c) for c in chunks] == [HARD_MAX_WORDS_PER_CHUNK, 1]
+
+
+def test_group_words_lets_a_real_sentence_run_past_the_soft_cap():
+    """The point of the rewrite: a 7-word sentence stays whole, not cut at 5."""
+    text = "Comment neck and I will send it".split()
+    words = [_word(w, i * 0.2, i * 0.2 + 0.15) for i, w in enumerate(text)]
+    words[-1]["word"] += "."  # sentence-ending punctuation
+    chunks = group_words(words)
+    assert len(chunks) == 1, "a complete sentence must not be split mid-clause"
+    assert len(chunks[0]) > MAX_WORDS_PER_CHUNK
 
 
 def test_group_words_breaks_early_on_a_long_pause():
