@@ -930,3 +930,9 @@ Still open:
   `studio/server/dm_map.json` (that folder moved to docs/legacy). Harmless — dm_map.json is
   dead, `comment_responses.json` is the live path — but it prints a scary traceback every
   fan-out. Delete the call or the script.
+- ⚠️ **The notion_sync_media fix is pushed (c0f672e) but NOT DEPLOYED** — no `RENDER_API_KEY`
+  available in this session, and the auto-deploy webhook is still broken. Until someone runs
+  the documented `POST /v1/services/srv-d879lsmq1p3s73av6f80/deploys`, the NEXT row that hits
+  🟢 Ready to Publish still double-generates its infographic and still DMs the unreviewed copy.
+- `rapidfuzz` installed into `.venv` this session — full suite now actually runs end to end
+  (1484 passed, 2 skipped). It was 13 collection errors + 2 failures before.
