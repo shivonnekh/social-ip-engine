@@ -737,5 +737,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/hair-page-1.png"
     ]
+  },
+  {
+    "keyword": "ringing",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The drumming-the-heavenly-drum technique is the one to start with 👂\n\nQuick check — is your ringing a HIGH sharp tone, or a LOW steady hum? That one answer changes the whole protocol.\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM ringing guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "👂 Ringing Ears — High Pitch vs Low Hum",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/ringing-page-1.png"
+    ]
   }
 ]
