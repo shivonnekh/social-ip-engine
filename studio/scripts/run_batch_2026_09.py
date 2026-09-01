@@ -256,6 +256,21 @@ def stage_trailer(keys: list[str], workers: int = 1) -> None:
     _fan(one, keys, workers, "trailer")
 
 
+# A 4-shot concept can legitimately run for HOURS once pacing is on:
+# 3 attempts x (8 min poll + 5 min hang-backoff + 2 min cooldown) is ~45 min for
+# ONE shot. The generic 1-hour subprocess backstop killed `bowel` mid-render on
+# 2026-09-01 — the guard meant to catch a hang became the thing that caused one.
+_VIDEO_TIMEOUT_S = int(__import__("os").environ.get("BATCH_VIDEO_TIMEOUT_S", str(4 * 3600)))
+
+# When notion_video refuses to start because a submission from a KILLED previous
+# run is still 'querying' (<15 min old), the right response is to wait it out —
+# not to burn through every remaining concept in seconds. That cascade cost 7
+# concepts in one minute on 2026-09-01.
+_INFLIGHT_MARKER = "still 'querying'"
+_INFLIGHT_WAIT_S = 300
+_INFLIGHT_RETRIES = 4
+
+
 def stage_video(keys: list[str]) -> None:
     """STRICTLY serial. See module docstring."""
     rows = jackie_rows()
@@ -265,7 +280,15 @@ def stage_video(keys: list[str]) -> None:
             print(f"  ❌ {key}: row not found", flush=True)
             continue
         print(f"  ▶ {key} — generating 4 shots (serial) ...", flush=True)
-        lbl, ok, tail = run([PY, "scripts/notion_video.py", "--row", row["id"]], key)
+        for attempt in range(1, _INFLIGHT_RETRIES + 2):
+            lbl, ok, tail = run([PY, "scripts/notion_video.py", "--row", row["id"]],
+                                key, timeout_s=_VIDEO_TIMEOUT_S)
+            if ok or _INFLIGHT_MARKER not in tail or attempt > _INFLIGHT_RETRIES:
+                break
+            print(f"  ⏸ {key}: a previous submission is still in flight — waiting "
+                  f"{_INFLIGHT_WAIT_S}s before retrying ({attempt}/{_INFLIGHT_RETRIES})",
+                  flush=True)
+            time.sleep(_INFLIGHT_WAIT_S)
         print(f"  {'✅' if ok else '❌'} {key}\n      {tail}", flush=True)
 
 
