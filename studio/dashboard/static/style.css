@@ -169,6 +169,7 @@ body {
 .chip.stage-ready     { background: #d9f4e0; color: #157a41; border-color: #157a41; }
 .chip.stage-published { background: #d8f2ee; color: #0b7d6f; border-color: #0b7d6f; }
 .chip.dm              { background: #d8f2ee; color: #0b7d6f; border-color: #0b7d6f; }
+.chip.ip              { background: #ece2ff; color: #5b34c4; border-color: #5b34c4; }
 
 .done-strip { display: flex; gap: 9px; flex-wrap: wrap; }
 .done-strip .done-pill {
@@ -203,6 +204,102 @@ body {
 .concept-main { flex: 1; min-width: 0; }
 .concept-toolbar { margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 .rows-panel { display: grid; grid-template-columns: repeat(auto-fill, minmax(295px, 1fr)); gap: 16px; }
+
+/* ===== calendar view ===== */
+.cal-toolbar { display: flex; align-items: center; gap: 4px; margin-bottom: 18px; }
+.cal-label {
+  font-family: var(--display-font); font-size: 19px; font-weight: 800;
+  margin: 0 10px; min-width: 130px; text-align: center;
+}
+.cal-weekdays, .cal-cells { display: grid; grid-template-columns: repeat(7, 1fr); }
+.cal-weekday {
+  font-size: 11.5px; font-weight: 700; color: var(--muted); text-align: center;
+  padding-bottom: 6px;
+}
+/* fixed row height so a busy day never stretches its whole week — extra
+   events scroll inside the cell instead (see .cal-events overflow below) */
+.cal-cells { gap: 8px; grid-auto-rows: 128px; }
+.cal-cell {
+  height: 128px; background: var(--card); border: 2px solid var(--line);
+  border-radius: 10px; padding: 7px 8px;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.cal-cell.cal-outside { background: transparent; border-color: transparent; opacity: .45; }
+.cal-cell.cal-today { border-color: var(--ink); box-shadow: 3px 3px 0 rgba(255,93,59,.4); }
+.cal-daynum { font-size: 12px; font-weight: 700; color: var(--ink-soft); margin-bottom: 5px; flex-shrink: 0; }
+.cal-outside .cal-daynum { color: var(--dim); }
+.cal-events {
+  display: flex; flex-direction: column; gap: 4px;
+  flex: 1; min-height: 0; overflow-y: auto;
+}
+.cal-event {
+  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+  background: #d8f2ee; border: 1.5px solid #0b7d6f; color: #0b7d6f;
+  border-radius: 7px; padding: 2px 6px; font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: transform .12s ease;
+}
+.cal-event:hover { transform: translateX(2px); }
+.cal-event.scheduled {
+  background: #fff1d1; border-color: #a3720a; color: #8a5a00; border-style: dashed;
+}
+.cal-cell.cal-clickable { cursor: pointer; transition: border-color .12s ease, box-shadow .12s ease; }
+.cal-cell.cal-clickable:hover { border-color: var(--ink); box-shadow: 3px 3px 0 rgba(63,123,255,.35); }
+.cal-cell.cal-past { cursor: default; }
+
+/* ===== modal (calendar schedule dialog) ===== */
+.modal {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(35, 32, 26, .45); padding: 24px;
+}
+/* MUST come after `.modal` above: a class selector outranks the UA
+   stylesheet's `[hidden] { display: none }`, so without this the closed
+   modal stays a full-screen invisible layer that eats every click in the
+   dashboard (found 2026-09-02 — the whole UI went unclickable). The
+   sibling `.view` sections get away with a bare `hidden` attribute only
+   because no CSS rule sets their `display` at all. */
+.modal[hidden] { display: none; }
+.modal-box {
+  background: var(--card); border: 2px solid var(--ink); border-radius: var(--radius);
+  box-shadow: 7px 8px 0 rgba(35,32,26,.35);
+  width: min(560px, 100%); max-height: 82vh; padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 14px;
+  animation: riseIn .25s ease both;
+}
+.modal-head { display: flex; align-items: center; gap: 12px; }
+.modal-head h2 {
+  font-family: var(--display-font); font-size: 19px; font-weight: 800; margin: 0; flex: 1;
+}
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.sched-time { display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 700; }
+.sched-time input {
+  font-family: var(--body-font); font-size: 13px;
+  background: var(--card); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 9px; padding: 5px 10px;
+}
+.sched-list { overflow-y: auto; display: flex; flex-direction: column; gap: 7px; min-height: 0; }
+.sched-item {
+  display: flex; align-items: flex-start; gap: 9px; cursor: pointer;
+  border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 11px;
+  transition: border-color .12s ease, background .12s ease;
+}
+.sched-item:hover { border-color: var(--ink); background: #fff; }
+.sched-item.blocked { opacity: .5; cursor: not-allowed; border-style: dashed; }
+.sched-item.blocked:hover { border-color: var(--line); background: none; }
+.sched-item input { margin-top: 2px; }
+.sched-item-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.sched-item-title { font-size: 13px; font-weight: 700; }
+.sched-item-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sched-item-why { font-size: 11px; color: var(--red); font-weight: 600; }
+.sched-blocked-head {
+  font-size: 11.5px; font-weight: 700; color: var(--muted);
+  margin: 8px 0 0; text-transform: uppercase; letter-spacing: .04em;
+}
+.sched-result { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; font-weight: 600; }
+.sched-ok { color: #0b7d6f; }
+.sched-fail { color: var(--red); }
+.cal-event-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cal-event-channels { font-size: 10px; flex-shrink: 0; }
 
 /* ===== buttons ===== */
 .btn {
@@ -363,6 +460,18 @@ body {
 .checklist li.no::before { content: "⬜ "; }
 .publish-actions { display: flex; gap: 12px; }
 
+.publish-schedule { margin: 0 0 12px; }
+.publish-schedule .sched-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; }
+.publish-schedule .sched-row { display: flex; gap: 8px; align-items: center; }
+.publish-schedule .sched-input {
+  font-family: var(--body-font); font-size: 13.5px; color: var(--ink);
+  background: var(--card); border: 1.5px solid var(--line); border-radius: 8px;
+  padding: 6px 8px;
+}
+.publish-schedule .sched-input:disabled { opacity: .5; }
+.publish-schedule .hint { margin: 6px 0 0; font-size: 12px; }
+.publish-schedule .sched-pending { color: var(--amber); font-weight: 600; }
+
 /* ===== log drawer ===== */
 .log-drawer {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
@@ -428,3 +537,344 @@ body {
   padding: 8px 12px; background: var(--card); color: var(--ink);
   box-shadow: var(--shadow); cursor: pointer;
 }
+
+/* ===================================================================
+   🗂 Database tab — the whole Notion board, local and editable,
+   with the assistant pinned on the right.
+
+   Layout: [ switcher + table | record editor ] | assistant
+   The three panes each own their own scroll so the toolbar and the
+   chat composer never scroll out of reach on a long concept.
+   =================================================================== */
+
+.db-layout {
+  display: flex;
+  gap: 18px;
+  /* Fill the viewport below the sticky topbar, minus .main's own padding,
+     so the panes scroll internally instead of the page growing forever. */
+  height: calc(100vh - 190px);
+  min-height: 460px;
+}
+.db-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+
+/* --- toolbar --- */
+.db-toolbar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.db-switcher { display: flex; gap: 6px; }
+.db-tab {
+  font-family: var(--body-font); font-size: 13px; font-weight: 600;
+  padding: 7px 13px; cursor: pointer;
+  background: var(--card); color: var(--ink-soft);
+  border: 2px solid var(--ink); border-radius: 10px;
+  box-shadow: 2px 2px 0 rgba(35, 32, 26, .5);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.db-tab:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 rgba(35,32,26,.6); }
+.db-tab.active { background: var(--ink); color: var(--paper); box-shadow: 2px 2px 0 var(--coral); }
+.db-count {
+  display: inline-block; margin-left: 6px; padding: 0 5px;
+  border-radius: 6px; font-size: 11px; font-weight: 700;
+  background: rgba(35, 32, 26, .1);
+}
+.db-tab.active .db-count { background: rgba(250, 244, 232, .22); }
+
+.db-search {
+  flex: 1; min-width: 160px; max-width: 320px;
+  font-family: var(--body-font); font-size: 13px;
+  padding: 7px 11px; color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--line); border-radius: 10px;
+}
+.db-search:focus { outline: none; border-color: var(--ink); }
+
+.db-pending {
+  font-size: 12px; font-weight: 700; color: var(--amber);
+  padding: 4px 9px; border-radius: 8px;
+  border: 2px solid var(--amber); background: rgba(255, 171, 26, .1);
+  cursor: help;
+}
+.db-deep { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+
+/* --- table / editor split --- */
+.db-split { flex: 1; display: flex; gap: 16px; min-height: 0; }
+.db-table-wrap {
+  flex: 1 1 44%; min-width: 0; overflow: auto;
+  background: var(--card);
+  border: 2px solid var(--ink); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+/* Collapsed while nothing is open — see renderDbRecord()'s comment: an
+   empty editor pane squeezes the table into truncated columns. */
+.db-split.no-record .db-record-wrap { display: none; }
+.db-split.no-record .db-table-wrap { flex: 1 1 100%; }
+.db-record-wrap {
+  flex: 1 1 56%; min-width: 0; overflow: auto;
+  background: var(--card);
+  border: 2px solid var(--ink); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+}
+
+.db-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.db-table thead th {
+  position: sticky; top: 0; z-index: 2;
+  text-align: left; white-space: nowrap; cursor: pointer;
+  padding: 10px 10px; font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+  background: var(--card); border-bottom: 2px solid var(--ink);
+}
+.db-table thead th:hover { color: var(--ink); }
+.db-table td {
+  padding: 8px 10px; border-bottom: 1px solid var(--line);
+  max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* Tuned so the concepts table's six columns fit a 1050px pane without a
+   horizontal scrollbar — the full value is still in the cell's title
+   attribute, and in the editor. */
+.db-table td.wide { max-width: 260px; }
+.db-row { cursor: pointer; }
+.db-row:hover { background: rgba(255, 93, 59, .07); }
+.db-row.selected { background: rgba(124, 92, 255, .12); box-shadow: inset 3px 0 0 var(--violet); }
+.db-flag { width: 18px; text-align: center; }
+.db-dot { color: var(--amber); font-size: 13px; }
+.db-rowcount { padding: 8px 12px; margin: 0; font-size: 11px; color: var(--dim); }
+
+/* --- record editor --- */
+.db-empty { display: grid; place-items: center; height: 100%; color: var(--muted);
+  text-align: center; padding: 30px; }
+.db-record-head {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding-bottom: 10px; margin-bottom: 12px; border-bottom: 2px solid var(--line);
+  position: sticky; top: -16px; background: var(--card); z-index: 3;
+  padding-top: 4px;
+}
+.db-record-head h3 {
+  margin: 0; flex: 1; min-width: 0; font-family: var(--display-font);
+  font-size: 17px; font-weight: 800;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.db-record-actions { display: flex; align-items: center; gap: 8px; }
+.db-changes { font-size: 11px; font-weight: 700; color: var(--coral); }
+.db-meta { margin: 0 0 14px; font-size: 11px; color: var(--dim); }
+.db-meta code { font-size: 10px; }
+
+.db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-bottom: 12px; }
+.db-field, .db-record-wrap label { display: block; margin-bottom: 12px; }
+.db-field > span, .db-record-wrap label > span {
+  display: block; margin-bottom: 4px;
+  font-size: 11px; font-weight: 700; letter-spacing: .03em;
+  text-transform: uppercase; color: var(--muted);
+}
+.db-field > span em, .db-record-wrap label > span em {
+  font-style: normal; text-transform: none; font-weight: 500;
+  color: var(--dim); margin-left: 6px; letter-spacing: 0;
+}
+.db-record-wrap input[type="text"], .db-record-wrap input[type="number"],
+.db-record-wrap input:not([type]), .db-record-wrap input[type="search"],
+.db-record-wrap textarea {
+  width: 100%; font-family: var(--body-font); font-size: 13px; color: var(--ink);
+  padding: 7px 10px; background: var(--paper);
+  border: 2px solid var(--line); border-radius: 9px; resize: vertical;
+}
+.db-record-wrap input:focus, .db-record-wrap textarea:focus {
+  outline: none; border-color: var(--violet); background: #fff;
+}
+.db-check { display: flex !important; align-items: center; gap: 8px; font-size: 13px; }
+.db-check input { width: auto; }
+
+.db-subhead {
+  margin: 18px 0 10px; font-family: var(--display-font);
+  font-size: 14px; font-weight: 800;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.db-subhead span { font-family: var(--body-font); font-size: 11px; color: var(--dim); font-weight: 500; }
+
+.db-shot {
+  padding: 12px 13px; margin-bottom: 12px;
+  background: var(--paper);
+  border: 2px solid var(--line); border-radius: 11px;
+}
+.db-shot.flash { animation: popIn .5s ease; border-color: var(--coral); }
+.db-shot-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.db-shot-head strong { font-size: 12px; white-space: nowrap; }
+.db-shot-head input { flex: 1; }
+.db-shot-head .db-secs { flex: 0 0 70px; }
+.db-shot label { margin-bottom: 8px; }
+.db-shot label:last-child { margin-bottom: 0; }
+
+.db-readonly {
+  display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0;
+  padding: 10px 12px; font-size: 12px; color: var(--muted);
+  background: var(--paper); border: 2px dashed var(--line); border-radius: 10px;
+}
+.db-readonly b { color: var(--ink); font-weight: 700; }
+
+.db-section { margin: 14px 0; }
+.db-section > summary {
+  cursor: pointer; font-size: 12px; font-weight: 700; color: var(--ink-soft);
+  padding: 7px 10px; background: var(--paper);
+  border: 2px solid var(--line); border-radius: 9px;
+}
+.db-panel { padding: 10px 12px; margin-top: 8px; border-left: 3px solid var(--line); }
+.db-panel strong { font-size: 12px; }
+.db-panel pre {
+  margin: 6px 0 0; padding: 8px 10px; font-size: 11.5px;
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--paper); border-radius: 8px; color: var(--ink-soft);
+}
+.db-shot-assets { float: right; font-size: 12px; }
+
+/* --- toast --- */
+.db-toast {
+  position: fixed; right: 24px; bottom: 78px; z-index: 60;
+  max-width: 460px; padding: 11px 15px; font-size: 13px; font-weight: 600;
+  background: var(--card); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 11px;
+  box-shadow: var(--shadow); animation: riseIn .22s ease;
+}
+.db-toast.ok { border-color: var(--green); }
+.db-toast.warn { border-color: var(--amber); }
+.db-toast.error { border-color: var(--red); color: var(--red); }
+
+/* ===== assistant panel ===== */
+.db-agent {
+  flex: 0 0 360px; display: flex; flex-direction: column;
+  background: var(--card);
+  border: 2px solid var(--ink); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  transition: flex-basis .18s ease;
+}
+.db-agent.collapsed { flex-basis: 46px; }
+.db-agent.collapsed .agent-log,
+.db-agent.collapsed .agent-composer,
+.db-agent.collapsed .agent-head strong,
+.db-agent.collapsed .agent-head .agent-status,
+.db-agent.collapsed #agent-clear { display: none; }
+
+.agent-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-bottom: 2px solid var(--ink);
+  background: linear-gradient(100deg, rgba(255,93,59,.10), rgba(124,92,255,.10));
+}
+.agent-head strong { flex: 1; font-size: 13px; }
+.agent-status { font-size: 10px; color: var(--dim); }
+.agent-status.off { color: var(--red); font-weight: 700; }
+
+.agent-log { flex: 1; overflow-y: auto; padding: 14px; display: flex;
+  flex-direction: column; gap: 12px; }
+.agent-intro { font-size: 12.5px; color: var(--ink-soft); }
+.agent-intro ul { padding-left: 18px; margin: 8px 0; }
+.agent-intro li { margin-bottom: 5px; color: var(--muted); font-style: italic; }
+
+.agent-msg { display: flex; flex-direction: column; gap: 5px; }
+.agent-msg.user { align-items: flex-end; }
+.agent-bubble {
+  max-width: 94%; padding: 9px 12px; font-size: 13px; line-height: 1.5;
+  border-radius: 12px; word-break: break-word;
+}
+.agent-msg.user .agent-bubble {
+  background: var(--ink); color: var(--paper); border-bottom-right-radius: 4px;
+}
+.agent-msg.assistant .agent-bubble {
+  background: var(--paper); border: 2px solid var(--line);
+  border-bottom-left-radius: 4px;
+}
+.agent-bubble.thinking { color: var(--muted); font-style: italic; }
+
+.agent-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+.agent-chip {
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 7px;
+  background: var(--paper); border: 1px solid var(--line); color: var(--ink-soft);
+}
+.agent-chip[data-open-concept] { cursor: pointer; }
+.agent-chip[data-open-concept]:hover { border-color: var(--violet); color: var(--violet); }
+.agent-chip.created { border-color: var(--green); }
+.agent-chip.updated { border-color: var(--blue); }
+.agent-chip.error { border-color: var(--red); color: var(--red); }
+.agent-chip .ok { color: var(--green); }
+.agent-chip .warn { color: var(--amber); }
+
+.agent-composer { padding: 10px; border-top: 2px solid var(--line); display: flex;
+  flex-direction: column; gap: 8px; }
+.agent-composer textarea {
+  width: 100%; font-family: var(--body-font); font-size: 13px; color: var(--ink);
+  padding: 8px 10px; background: var(--paper);
+  border: 2px solid var(--line); border-radius: 10px; resize: none;
+}
+.agent-composer textarea:focus { outline: none; border-color: var(--violet); background: #fff; }
+.agent-composer textarea:disabled { opacity: .5; }
+
+/* Narrow screens: stack the assistant under the board rather than
+   squeezing three panes into a laptop width. */
+@media (max-width: 1180px) {
+  .db-layout { flex-direction: column; height: auto; }
+  .db-agent { flex: none; height: 420px; }
+  .db-split { flex-direction: column; }
+  .db-table-wrap, .db-record-wrap { flex: none; max-height: 420px; }
+  .db-grid { grid-template-columns: 1fr; }
+}
+
+/* Agent replies are markdown-formatted (database_view.js::formatAgentText).
+   Tight margins so a short answer stays one visual block. */
+.agent-bubble p { margin: 0 0 7px; }
+.agent-bubble p:last-child { margin-bottom: 0; }
+.agent-bubble ul { margin: 4px 0 7px; padding-left: 19px; }
+.agent-bubble li { margin-bottom: 3px; }
+.agent-bubble code {
+  padding: 1px 5px; font-size: 11.5px; border-radius: 5px;
+  background: rgba(35, 32, 26, .08);
+}
+.agent-msg.user .agent-bubble code { background: rgba(250, 244, 232, .2); }
+
+/* Reel vs carousel filter chips (concepts only). Reel and carousel are
+   separate production pipelines, so an unsplit 95-row list buries the 11
+   carousel concepts entirely. */
+.db-formats { display: flex; gap: 6px; flex-basis: 100%; }
+.db-chip {
+  font-family: var(--body-font); font-size: 12px; font-weight: 600;
+  padding: 5px 11px; cursor: pointer;
+  background: var(--card); color: var(--muted);
+  border: 2px solid var(--line); border-radius: 999px;
+}
+.db-chip:hover { color: var(--ink); border-color: var(--ink); }
+.db-chip.active {
+  color: var(--ink); border-color: var(--violet);
+  background: rgba(124, 92, 255, .1);
+}
+
+/* Fan-out panel inside the concept editor */
+.db-fanout { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+.db-fanout .ip-select {
+  font-family: var(--body-font); font-size: 13px; padding: 7px 10px;
+  background: var(--paper); border: 2px solid var(--line); border-radius: 9px;
+}
+.db-rowlist { list-style: none; margin: 8px 0; padding: 0; }
+.db-rowlist li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 10px; margin-bottom: 5px; font-size: 12.5px;
+  background: var(--paper); border-radius: 9px;
+}
+.db-rowlist li span:first-child { flex: 1; min-width: 0; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; }
+.db-rowlist li em { font-style: normal; font-size: 11px; color: var(--muted); }
+.db-blocked {
+  padding: 10px 12px; margin: 10px 0; font-size: 12.5px;
+  color: var(--ink-soft); background: rgba(255, 171, 26, .12);
+  border: 2px solid var(--amber); border-radius: 10px;
+}
+
+/* Per-IP fan-out status — "have I fanned out Jackie yet?" at a glance. */
+.db-iplist { list-style: none; margin: 8px 0; padding: 0; }
+.db-iplist li {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 11px; margin-bottom: 5px; font-size: 12.5px;
+  background: var(--paper); border: 2px solid var(--line); border-radius: 10px;
+}
+.db-iplist li.done { border-color: var(--green); background: rgba(34, 165, 91, .07); }
+.db-iplist li.todo { border-style: dashed; }
+.db-ipmark { font-size: 13px; }
+.db-ipname { flex: 1; font-weight: 600; }
+.db-ipname em { font-style: normal; font-weight: 400; color: var(--dim); font-size: 11px; }
+.db-iplist li em { font-style: normal; font-size: 11px; color: var(--muted); }
+.db-iplist li.todo em { color: var(--dim); }

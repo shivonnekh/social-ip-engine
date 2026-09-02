@@ -12,6 +12,20 @@ campaigns/**/voice/
 campaigns/**/video/
 campaigns/**/images/
 campaigns/**/carousel/
+# CLAUDE.md already describes campaigns/_generated/ as gitignored, but the
+# patterns above only covered its media SUBDIRS — stray stills, contact
+# sheets and one-off submit/poll scripts at the top of a run folder were
+# still untracked-but-committable (~8.5MB of PNGs found staged-in-waiting on
+# 2026-09-02). The whole directory is derived output; ignore it wholesale.
+campaigns/_generated/
+campaigns/**/voice-tests/
+
+# Local Studio mirror of the Notion board (studio_sync.py --import rebuilds it
+# from Notion at any time, so it is derived data, not source). Committing it
+# would also mean committing every concept's full script into git history.
+data/studio.db
+data/studio.db-wal
+data/studio.db-shm
 
 # Python
 __pycache__/

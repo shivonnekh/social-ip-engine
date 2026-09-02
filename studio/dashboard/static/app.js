@@ -42,38 +42,50 @@ const STAGE_CLASS = {
 // workbench groups, in human priority order (closest-to-live first);
 // each group carries its own accent colour (--g) used by cards + headers
 const GROUPS = [
-  ["publish", "🚀 待发布 — 最后确认一下就能发", "#ff5d3b"],
-  ["make_cover", "🖼️ 封面 / Infographic 阶段", "#ff5da2"],
-  ["review_video", "🎬 成片待 Review → Ready", "#7c5cff"],
-  ["finalize", "🧵 待一键成片（合并+字幕+上传）", "#f59e0b"],
-  ["review_assets", "🎨 素材待 Review / 待生成视频", "#00a98f"],
-  ["generate_assets", "⚙️ 待生成素材", "#3f7bff"],
-  ["fan_out", "💡 还没开始", "#b5aa93"],
+  ["publish", "🚀 Ready to publish — one last check", "#ff5d3b"],
+  ["make_cover", "🖼️ Cover / infographic stage", "#ff5da2"],
+  ["review_video", "🎬 Final cut to review → Ready", "#7c5cff"],
+  ["finalize", "🧵 Ready to assemble (merge + captions + upload)", "#f59e0b"],
+  ["review_assets", "🎨 Assets to review / videos to generate", "#00a98f"],
+  ["generate_assets", "⚙️ Assets to generate", "#3f7bff"],
+  // Carousel-only rows have no video/Script, so their video Stage never
+  // leaves 💡 Idea — they used to land in "Not started yet" looking untouched even
+  // when the carousel was Ready to Publish. Own group, own accent.
+  // NOTE: loadQueue() only renders next_action values listed HERE (plus
+  // "done") — a new action without a row in this table silently disappears
+  // from the workbench.
+  ["carousel_only", "🎠 Carousel (no video)", "#c026d3"],
+  ["fan_out", "💡 Not started yet", "#b5aa93"],
 ];
 
 const BANNERS = {
-  fan_out:         { icon: "💡", cls: "warn", text: "这一行还没有 shots", sub: "去 Concepts 页对这个 concept 跑 fan-out", btn: null },
-  generate_assets: { icon: "⚙️", cls: "",     text: "下一步：生成 image + voice", sub: "一个 command 跑完所有 shot", btn: "btn-assets" },
-  review_assets:   { icon: "🎨", cls: "",     text: "Review 下面的图和声音", sub: "满意就点「生成视频」；单个不满意用卡片下面的 ↻ 按钮单独重来", btn: "btn-video" },
-  finalize:        { icon: "🧵", cls: "",     text: "Shot 视频都齐了 — 一键成片", sub: "合并 → 加字幕 → 上传 Production Video，一个任务跑完（不花即梦额度）", btn: "btn-finalize" },
-  review_video:    { icon: "🎬", cls: "",     text: "Review 带字幕的成片", sub: "满意就点「Ready to Publish」— 会自动布好 DM 关键词规则", btn: "btn-ready" },
-  make_cover:      { icon: "🖼️", cls: "",     text: "生成并 review 封面 + infographic", sub: "生成结果会直接显示在下面", btn: "btn-cover" },
-  publish:         { icon: "🚀", cls: "warn", text: "全部就绪 — 最后看一遍成片再发布", sub: "发布不可逆：真的会发到 Instagram / Facebook", btn: "btn-publish" },
-  done:            { icon: "✅", cls: "ok",   text: "已发布", sub: "这行不需要再做什么", btn: null },
+  fan_out:         { icon: "💡", cls: "warn", text: "This row has no shots yet", sub: "Go to Concepts and run fan-out on this concept", btn: null },
+  generate_assets: { icon: "⚙️", cls: "",     text: "Next: generate image + voice", sub: "One command covers every shot", btn: "btn-assets" },
+  review_assets:   { icon: "🎨", cls: "",     text: "Review the images and audio below", sub: "Happy? Hit \"Generate videos\". For a single bad one, use the ↻ button on its card to redo just that shot", btn: "btn-video" },
+  finalize:        { icon: "🧵", cls: "",     text: "All shot videos are in — assemble the final cut", sub: "Merge → captions → upload Production Video, all in one job (costs no Dreamina credits)", btn: "btn-finalize" },
+  review_video:    { icon: "🎬", cls: "",     text: "Review the captioned final cut", sub: "Happy? Hit \"Ready to Publish\" — the DM keyword rule gets wired automatically", btn: "btn-ready" },
+  make_cover:      { icon: "🖼️", cls: "",     text: "Generate and review the cover + infographic", sub: "Results appear directly below", btn: "btn-cover" },
+  publish:         { icon: "🚀", cls: "warn", text: "Everything's ready — watch the final cut once more, then publish", sub: "Publishing is irreversible: this really does post to Instagram / Facebook", btn: "btn-publish" },
+  done:            { icon: "✅", cls: "ok",   text: "Published", sub: "Nothing left to do on this row", btn: null },
 };
 
 // ---------- view switching ----------
 
 document.querySelectorAll(".tab").forEach(t => {
   t.onclick = () => {
-    closeDetail(); // the detail overlay sits ABOVE both views — without this,
+    closeDetail(); // the detail overlay sits ABOVE all views — without this,
                    // switching tabs changes the view underneath and looks dead
     document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x === t));
     const v = t.dataset.view;
     document.getElementById("view-queue").hidden = v !== "queue";
+    document.getElementById("view-database").hidden = v !== "database";
     document.getElementById("view-concepts").hidden = v !== "concepts";
+    document.getElementById("view-calendar").hidden = v !== "calendar";
     if (v === "queue") loadQueue();
-    else loadContentList();
+    else if (v === "database") ensureDatabaseTab(); // lazy: nothing is fetched
+                                                    // until the tab is opened
+    else if (v === "concepts") loadContentList();
+    else loadCalendar();
   };
 });
 
@@ -83,12 +95,19 @@ document.getElementById("btn-refresh").onclick = (e) => {
   void btn.offsetWidth; // restart the animation
   btn.classList.add("spinning");
   if (!document.getElementById("view-queue").hidden) loadQueue();
-  else { loadContentList(); if (selectedContentId) loadRows(selectedContentId); }
+  else if (!document.getElementById("view-database").hidden) {
+    loadDbRecords(); loadDbSummary();
+  } else if (!document.getElementById("view-concepts").hidden) {
+    loadContentList(); if (selectedContentId) loadRows(selectedContentId);
+  } else if (!document.getElementById("view-calendar").hidden) {
+    calendarEvents = null; // force a fresh /api/calendar fetch
+    loadCalendar();
+  }
   if (!document.getElementById("detail").hidden) refreshDetail();
   loadCredit();
 };
 
-// ---------- 即梦 credit chip ----------
+// ---------- Dreamina credit chip ----------
 // Advisory only — a video shot costs credits; running out mid-batch turns
 // the job red with a "check credits" hint in the log, but this chip lets you
 // see it coming before you spend anything.
@@ -100,9 +119,9 @@ async function loadCredit() {
     if (!chip) return;
     if (c.total_credit == null) { chip.hidden = true; return; }
     chip.hidden = false;
-    chip.textContent = `⚡ 即梦 ${c.total_credit}`;
+    chip.textContent = `⚡ Dreamina ${c.total_credit}`;
     chip.classList.toggle("low", c.total_credit < CREDIT_LOW_THRESHOLD);
-    chip.title = `即梦剩余额度 ${c.total_credit}（${c.vip_level || "?"}）— 低于 ${CREDIT_LOW_THRESHOLD} 会变红`;
+    chip.title = `Dreamina credits left: ${c.total_credit} (${c.vip_level || "?"}) — turns red below ${CREDIT_LOW_THRESHOLD}`;
   } catch { /* advisory only */ }
 }
 
@@ -112,13 +131,19 @@ function rowCardHTML(r, i = 0) {
   const steps = [
     ["📜", r.has_script], ["🎨", r.has_image], ["🎙️", r.has_voice],
     ["📝", r.has_production_video],
-  ].map(([ic, on]) => `<span class="${on ? "step-on" : "step-off"}" title="${on ? "已完成" : "未完成"}">${ic}</span>`).join("");
+  ].map(([ic, on]) => `<span class="${on ? "step-on" : "step-off"}" title="${on ? "done" : "not done"}">${ic}</span>`).join("");
   return `
     <div class="row-card" data-row="${r.id}" style="--i:${i}">
       <div class="rc-name">${esc(r.name)}</div>
       ${r.title ? `<div class="rc-title">${esc(r.title)}</div>` : ""}
       <div class="rc-meta">
-        <span class="chip ${STAGE_CLASS[r.stage] || ""}">${esc(r.stage || "?")}</span>
+        <!-- A carousel-only row's video Stage is meaningless (always 💡 Idea);
+             showing it alone made a Ready-to-Publish carousel look untouched. -->
+        ${r.carousel_stage && !r.has_script
+          ? `<span class="chip ${STAGE_CLASS[r.carousel_stage] || ""}">🎠 ${esc(r.carousel_stage)}</span>`
+          : `<span class="chip ${STAGE_CLASS[r.stage] || ""}">${esc(r.stage || "?")}</span>`}
+        ${r.carousel_stage && r.has_script
+          ? `<span class="chip ${STAGE_CLASS[r.carousel_stage] || ""}">🎠 ${esc(r.carousel_stage)}</span>` : ""}
         ${r.dm_wired ? '<span class="chip dm">🔗 DM wired</span>' : ""}
       </div>
       <div class="rc-steps">${steps}</div>
@@ -138,7 +163,7 @@ let lastQueueRaw = "";
 function markSynced() {
   const t = new Date();
   const el = document.getElementById("last-sync");
-  if (el) el.textContent = "同步于 " + String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
+  if (el) el.textContent = "Synced at " + String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
 }
 
 async function loadQueue() {
@@ -168,17 +193,17 @@ async function loadQueue() {
     if (done.length) {
       html += `
         <div class="queue-group" style="--g:#22a55b">
-          <h2>✅ 已发布 <span class="count">${done.length}</span></h2>
+          <h2>✅ Published <span class="count">${done.length}</span></h2>
           <div class="done-strip">
             ${done.map((r, i) => `<span class="done-pill" data-row="${r.id}" style="--i:${i}">${esc(r.name)}</span>`).join("")}
           </div>
         </div>`;
     }
-    body.innerHTML = html || '<p class="hint">Production Tracker 目前是空的。</p>';
+    body.innerHTML = html || '<p class="hint">The Production Tracker is empty right now.</p>';
     bindRowCards(body);
     body.querySelectorAll(".done-pill").forEach(el => { el.onclick = () => openRow(el.dataset.row); });
   } catch (e) {
-    body.innerHTML = `<p class="hint">读取失败: ${esc(e.message)}</p>`;
+    body.innerHTML = `<p class="hint">Failed to load: ${esc(e.message)}</p>`;
   }
 }
 
@@ -207,11 +232,279 @@ async function loadRows(contentId) {
   const rows = await api(`/api/content/${contentId}/rows`);
   panel.innerHTML = rows.length
     ? rows.map((r, i) => rowCardHTML(r, i)).join("")
-    : '<p class="hint">这个 concept 还没有 fan out 到任何 IP — 点上面的按钮。</p>';
+    : '<p class="hint">This concept hasn\'t been fanned out to any IP yet — use the button above.</p>';
   bindRowCards(panel);
 }
 
-// IP selector — "只 fan out Jackie 的，不要 fan out Chloe 的" (2026-07-15).
+// ---------- calendar view ----------
+// Shows every post that has actually gone live PLUS every row scheduled to
+// go live later, one cell per day — data comes from /api/calendar (the
+// local publish ledgers + Notion's Publish Date, see published_log.py /
+// state.published_events() for why that split exists). Fetched once per
+// tab-open; month navigation re-renders from the cached list with no extra
+// request.
+
+const CAL_FORMAT_ICON = { reel: "🎬", carousel: "🖼️" };
+const CAL_CHANNEL_ICON = { instagram: "📸", facebook: "📘" };
+
+let calendarEvents = null;
+let calYear = null;
+let calMonth = null; // 1-based
+
+function calEventChipHTML(ev) {
+  const channels = (ev.channels || []).map(c => CAL_CHANNEL_ICON[c] || "").join("");
+  const label = ev.title || ev.name;
+  const scheduled = ev.status === "scheduled";
+  const icon = (scheduled ? "🕒" : "") + (CAL_FORMAT_ICON[ev.format] || "•");
+  return `
+    <div class="cal-event ${scheduled ? "scheduled" : ""}" data-row="${ev.row_id}"
+         title="${scheduled ? "Scheduled — " : ""}${esc(ev.name)}${ev.title ? " — " + esc(ev.title) : ""}">
+      <span class="cal-event-icon">${icon}</span>
+      <span class="cal-event-label">${esc(label)}</span>
+      <span class="cal-event-channels">${channels}</span>
+    </div>`;
+}
+
+const CAL_MONTH_NAME = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
+
+function renderCalendar() {
+  document.getElementById("cal-label").textContent = `${CAL_MONTH_NAME[calMonth - 1]} ${calYear}`;
+  const today = todayMYTDate();
+  const weeks = buildMonthGrid(calYear, calMonth, groupEventsByDate(calendarEvents || []), today);
+  const weekdayRow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    .map(w => `<div class="cal-weekday">${w}</div>`).join("");
+  const cellsHTML = weeks.flat().map(cell => {
+    // A past day can't be scheduled into — the backend's ensure_future()
+    // would reject it anyway, so don't offer the click at all.
+    const past = cell.iso < today;
+    return `
+    <div class="cal-cell ${cell.inMonth ? "" : "cal-outside"} ${cell.isToday ? "cal-today" : ""} ${past ? "cal-past" : "cal-clickable"}"
+         ${past ? "" : `data-date="${cell.iso}" title="Schedule posts for ${cell.iso}"`}>
+      <div class="cal-daynum">${cell.day}</div>
+      <div class="cal-events">${cell.events.map(calEventChipHTML).join("")}</div>
+    </div>`;
+  }).join("");
+  const grid = document.getElementById("cal-grid");
+  grid.innerHTML = `<div class="cal-weekdays">${weekdayRow}</div><div class="cal-cells">${cellsHTML}</div>`;
+  grid.querySelectorAll(".cal-cell[data-date]").forEach(el => {
+    el.onclick = () => openScheduleDialog(el.dataset.date);
+  });
+  grid.querySelectorAll(".cal-event").forEach(el => {
+    // stopPropagation: a chip sits INSIDE a clickable day cell — without
+    // this, opening a post's card would also open the schedule dialog.
+    el.onclick = (e) => { e.stopPropagation(); openRow(el.dataset.row); };
+  });
+}
+
+// ---------- schedule-a-day dialog ----------
+// Click an empty part of a day -> pick a time, tick the ready posts you
+// want, confirm. Each ticked post is scheduled through the SAME
+// /api/stage (or /api/carousel-stage) endpoint the individual Publish
+// button uses — one call per post, so the irreversible write has exactly
+// one code path and its confirm/validation can never drift.
+
+const SCHED_DEFAULT_TIME = "09:00";
+
+let schedDate = null;            // "YYYY-MM-DD" being scheduled into
+let schedCandidates = null;      // /api/ready-to-schedule result, per dialog open
+let schedSelected = new Set();   // `${row_id}:${format}` keys
+let schedBusy = false;
+
+const schedModal = document.getElementById("sched-modal");
+
+function schedKey(c) { return `${c.row_id}:${c.format}`; }
+
+/** Runs the SAME gate as the row-detail Publish button (publish_gate.js). */
+function schedGate(c) {
+  return c.format === "carousel"
+    ? { ok: canPublishCarousel(c), reasons: carouselPublishBlockReasons(c) }
+    : { ok: canPublish(c), reasons: publishBlockReasons(c) };
+}
+
+function closeScheduleDialog() {
+  if (schedBusy) return; // never yank the dialog out from under in-flight publishes
+  schedModal.hidden = true;
+  schedModal.innerHTML = "";
+  schedDate = null;
+  schedCandidates = null;
+  schedSelected = new Set();
+}
+
+async function openScheduleDialog(iso) {
+  schedDate = iso;
+  schedSelected = new Set();
+  schedCandidates = null;
+  schedModal.hidden = false;
+  schedModal.innerHTML = `<div class="modal-box"><p class="hint">loading ready posts…</p></div>`;
+  try {
+    schedCandidates = await api("/api/ready-to-schedule");
+  } catch (e) {
+    schedModal.innerHTML = `
+      <div class="modal-box">
+        <p class="hint">❌ ${esc(e.message)}</p>
+        <div class="modal-actions"><button class="btn" id="sched-cancel">Close</button></div>
+      </div>`;
+    document.getElementById("sched-cancel").onclick = closeScheduleDialog;
+    return;
+  }
+  renderScheduleDialog();
+}
+
+function schedCandidateHTML(c) {
+  const { ok, reasons } = schedGate(c);
+  const key = schedKey(c);
+  const checked = schedSelected.has(key);
+  const badge = c.format === "carousel" ? "🖼️ Carousel" : "🎬 Reel";
+  return `
+    <label class="sched-item ${ok ? "" : "blocked"}">
+      <input type="checkbox" data-key="${key}" ${checked ? "checked" : ""} ${ok ? "" : "disabled"}>
+      <span class="sched-item-body">
+        <span class="sched-item-title">${esc(c.title || c.name)}</span>
+        <span class="sched-item-meta">
+          <!-- IP first: with more than one persona live, "whose post is
+               this" is the thing you need before format or status. -->
+          <span class="chip ip">${esc(c.ip)}</span>
+          <span class="chip">${badge}</span>
+          ${ok ? "" : `<span class="sched-item-why">${esc(reasons.join(" · "))}</span>`}
+        </span>
+      </span>
+    </label>`;
+}
+
+function renderScheduleDialog() {
+  const ready = schedCandidates.filter(c => schedGate(c).ok);
+  const blocked = schedCandidates.filter(c => !schedGate(c).ok);
+  const n = schedSelected.size;
+  schedModal.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Schedule for ${esc(schedDate)}</h2>
+        <button class="icon-btn" id="sched-close">✕</button>
+      </div>
+      <div class="sched-time">
+        <label for="sched-time-input">Time (MYT)</label>
+        <input type="time" id="sched-time-input" value="${SCHED_DEFAULT_TIME}">
+      </div>
+      <div class="sched-list">
+        ${ready.length ? ready.map(schedCandidateHTML).join("")
+                       : '<p class="hint">Nothing is ready to publish right now.</p>'}
+        ${blocked.length ? `<p class="sched-blocked-head">Not ready yet (${blocked.length})</p>
+                            ${blocked.map(schedCandidateHTML).join("")}` : ""}
+      </div>
+      <div id="sched-result" class="sched-result" hidden></div>
+      <div class="modal-actions">
+        <button class="btn" id="sched-cancel">Cancel</button>
+        <button class="btn danger" id="sched-confirm" ${n ? "" : "disabled"}>
+          ${n ? `🚀 Schedule ${n} post${n > 1 ? "s" : ""}` : "Select posts to schedule"}
+        </button>
+      </div>
+    </div>`;
+
+  schedModal.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.onchange = () => {
+      if (cb.checked) schedSelected.add(cb.dataset.key);
+      else schedSelected.delete(cb.dataset.key);
+      const time = document.getElementById("sched-time-input").value;
+      renderScheduleDialog();
+      document.getElementById("sched-time-input").value = time; // survive the re-render
+    };
+  });
+  document.getElementById("sched-close").onclick = closeScheduleDialog;
+  document.getElementById("sched-cancel").onclick = closeScheduleDialog;
+
+  const confirmBtn = document.getElementById("sched-confirm");
+  if (schedSelected.size) {
+    // Same two-click arming as the delete/publish buttons — this schedules
+    // REAL Instagram posts, just deferred, so the point-of-no-return is
+    // never the same click that made the selection.
+    armTwoClickAction(confirmBtn, `⚠ Click again to schedule ${schedSelected.size}`,
+                      "Scheduling…", "Scheduling failed: ", runScheduleBatch);
+  }
+}
+
+async function runScheduleBatch() {
+  const timeValue = document.getElementById("sched-time-input").value || SCHED_DEFAULT_TIME;
+  const publishDateIso = toPublishDateIso(`${schedDate}T${timeValue}`);
+  if (!isFuturePublishDate(publishDateIso)) {
+    alert(`${schedDate} ${timeValue} (MYT) is not in the future — pick a later time.`);
+    renderScheduleDialog();
+    return;
+  }
+
+  const picked = schedCandidates.filter(c => schedSelected.has(schedKey(c)));
+  const resultEl = document.getElementById("sched-result");
+  resultEl.hidden = false;
+  schedBusy = true;
+  const lines = [];
+  for (const c of picked) {
+    const label = esc(c.title || c.name);
+    try {
+      // One post at a time, through the existing single-row endpoint —
+      // a partial failure then leaves the remaining posts untouched and
+      // visibly reported, instead of a half-applied bulk write.
+      const endpoint = c.format === "carousel" ? "/api/carousel-stage" : "/api/stage";
+      await api(endpoint, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          row_id: c.row_id, stage: "✅ Published",
+          confirm: true, publish_date: publishDateIso,
+        }),
+      });
+      lines.push(`<div class="sched-ok">✅ ${label}</div>`);
+    } catch (e) {
+      lines.push(`<div class="sched-fail">❌ ${label} — ${esc(e.message)}</div>`);
+    }
+    resultEl.innerHTML = lines.join("");
+  }
+  schedBusy = false;
+
+  calendarEvents = null; // force a refetch so the new chips appear
+  await loadCalendar();
+  const done = document.getElementById("sched-confirm");
+  if (done) {
+    done.disabled = true;
+    done.textContent = "Done";
+  }
+}
+
+async function loadCalendar() {
+  const grid = document.getElementById("cal-grid");
+  if (calYear == null) {
+    const [y, m] = todayMYTDate().split("-");
+    calYear = +y;
+    calMonth = +m;
+  }
+  if (calendarEvents === null) {
+    grid.innerHTML = '<p class="hint">loading…</p>';
+    try {
+      calendarEvents = await api("/api/calendar");
+    } catch (e) {
+      grid.innerHTML = `<p class="hint">❌ ${esc(e.message)}</p>`;
+      return;
+    }
+  }
+  renderCalendar();
+}
+
+document.getElementById("cal-prev").onclick = () => {
+  calMonth -= 1;
+  if (calMonth < 1) { calMonth = 12; calYear -= 1; }
+  renderCalendar();
+};
+document.getElementById("cal-next").onclick = () => {
+  calMonth += 1;
+  if (calMonth > 12) { calMonth = 1; calYear += 1; }
+  renderCalendar();
+};
+document.getElementById("cal-today").onclick = () => {
+  const [y, m] = todayMYTDate().split("-");
+  calYear = +y;
+  calMonth = +m;
+  renderCalendar();
+};
+
+// IP selector — "fan out only Jackie's, not Chloe's" (2026-07-15).
 // Loaded once at boot; the <select> stays populated across concept switches.
 async function loadIpOptions() {
   try {
@@ -223,53 +516,61 @@ async function loadIpOptions() {
       opt.textContent = ip.name;
       sel.appendChild(opt);
     }
-  } catch { /* selector just stays at "所有 active IP" if this fails */ }
+  } catch { /* selector just stays at "All active IPs" if this fails */ }
 }
 loadIpOptions();
 
 document.getElementById("btn-fanout").onclick = () => {
   if (!selectedContentId) return;
   const ip = document.getElementById("fanout-ip-select").value;
-  const label = ip ? `fan-out + 生成素材 — 只 ${ip}` : "fan-out + 生成素材（所有 active IP）";
+  const label = ip ? `fan-out + generate assets — ${ip} only` : "fan-out + generate assets (all active IPs)";
   const body = { action: "generate_assets_content", content_id: selectedContentId };
   if (ip) body.ip = ip;
   startJob(label, body, () => loadRows(selectedContentId));
 };
 
-// 删除 = 在 Notion 里 archive（进 Trash，可恢复，不是硬删）。两次点击确认，
-// 跟发布按钮用同一套"再点一次"套路，不弹浏览器 confirm()。
-function armTwoClickDelete(btn, armedLabel, onConfirmed) {
+// Two-click confirm, same "click again" idiom the publish button uses —
+// deliberately not a browser confirm() dialog.
+// Generic core: one implementation for every irreversible two-click action
+// (archive a row/concept, batch-schedule posts) so the arm → disarm-after-6s
+// → busy → restore-on-failure behaviour can't drift between them. Only the
+// wording differs per caller.
+function armTwoClickAction(btn, armedLabel, busyLabel, errorPrefix, onConfirmed) {
   let armed = false, disarmTimer = null;
   const original = btn.textContent;
+  const restore = () => {
+    btn.disabled = false;
+    armed = false;
+    btn.classList.remove("confirm");
+    btn.textContent = original;
+  };
   btn.onclick = async () => {
     if (!armed) {
       armed = true;
       btn.classList.add("confirm");
       btn.textContent = armedLabel;
-      disarmTimer = setTimeout(() => {
-        armed = false;
-        btn.classList.remove("confirm");
-        btn.textContent = original;
-      }, 6000);
+      disarmTimer = setTimeout(restore, 6000);
       return;
     }
     clearTimeout(disarmTimer);
     btn.disabled = true;
-    btn.textContent = "删除中…";
+    btn.textContent = busyLabel;
     try {
       await onConfirmed();
     } catch (e) {
-      alert(`删除失败：${e.message}`);
-      btn.disabled = false;
-      armed = false;
-      btn.classList.remove("confirm");
-      btn.textContent = original;
+      alert(`${errorPrefix}${e.message}`);
+      restore();
     }
   };
 }
 
+// Delete = archive in Notion (goes to Trash, recoverable, not a hard delete).
+function armTwoClickDelete(btn, armedLabel, onConfirmed) {
+  armTwoClickAction(btn, armedLabel, "Deleting…", "Delete failed: ", onConfirmed);
+}
+
 const deleteConceptBtn = document.getElementById("btn-delete-concept");
-armTwoClickDelete(deleteConceptBtn, "⚠ 再点一次 = 删除这个 concept 及其所有 shots", async () => {
+armTwoClickDelete(deleteConceptBtn, "⚠ Click again = delete this concept and all its shots", async () => {
   if (!selectedContentId) return;
   await api("/api/delete", {
     method: "POST", headers: { "Content-Type": "application/json" },
@@ -277,7 +578,7 @@ armTwoClickDelete(deleteConceptBtn, "⚠ 再点一次 = 删除这个 concept 及
   });
   selectedContentId = null;
   document.getElementById("concept-toolbar").hidden = true;
-  document.getElementById("rows-panel").innerHTML = '<p class="hint">← 左边选一个 concept</p>';
+  document.getElementById("rows-panel").innerHTML = '<p class="hint">← Pick a concept on the left</p>';
   await loadContentList();
 });
 
@@ -295,14 +596,14 @@ function closeDetail() {
 async function openRow(rowId) {
   selectedRowId = rowId;
   detailEl.hidden = false;
-  detailEl.innerHTML = '<div class="detail-head"><button class="btn" id="btn-back">← 返回</button><h1>读取 Notion…（要几秒）</h1></div>';
+  detailEl.innerHTML = '<div class="detail-head"><button class="btn" id="btn-back">← Back</button><h1>Reading Notion… (takes a few seconds)</h1></div>';
   document.getElementById("btn-back").onclick = closeDetail;
   try {
     const d = await api(`/api/rows/${rowId}/detail`);
     lastDetail = d;
     renderDetail(d);
   } catch (e) {
-    detailEl.innerHTML = `<div class="detail-head"><button class="btn" id="btn-back">← 返回</button><h1>读取失败</h1></div><p class="hint">${esc(e.message)}</p>`;
+    detailEl.innerHTML = `<div class="detail-head"><button class="btn" id="btn-back">← Back</button><h1>Failed to load</h1></div><p class="hint">${esc(e.message)}</p>`;
     document.getElementById("btn-back").onclick = closeDetail;
   }
 }
@@ -316,10 +617,62 @@ async function refreshDetail() {
   } catch { /* keep the current view on transient errors */ }
 }
 
+// Scheduling widget shared by the video 🚀 Publish section and the carousel's —
+// pure markup only; the datetime <input>'s min/prefill/wiring happens in
+// wireScheduleInput() below since those need DOM handles that don't exist
+// until this HTML is actually in the document. `kind` is "publish" or
+// "carousel" — keeps the two forms' element ids from colliding when a row
+// has both a video AND a carousel section rendered at once (see tabsHTML).
+//
+// The input is disabled the moment `stage` is already "✅ Published",
+// EVEN IF the row is still sitting on a future (not-yet-reached) Publish
+// Date — matching the existing, deliberate invariant that canPublish()/
+// canPublishCarousel() (publish_gate.js) disable the Publish button itself
+// the instant Stage flips, with no dashboard path back in. Making the
+// picker editable in that window while the button that would submit the
+// change stays disabled would be a dead control, not a real "reschedule"
+// feature — changing a Publish Date on an already-✅-Published row has to
+// be done in Notion directly (a deliberate scope cut, not an oversight).
+function publishScheduleHTML(kind, stage, publishDateIso) {
+  const alreadyLive = stage === "✅ Published";
+  const scheduledButNotYetLive = alreadyLive && publishDateIso
+    && typeof isFuturePublishDate === "function" && isFuturePublishDate(publishDateIso);
+  return `
+    <div class="publish-schedule">
+      <label for="sched-${kind}" class="sched-label">📅 Schedule publish (optional — timezone Asia/Kuala_Lumpur / MYT)</label>
+      <div class="sched-row">
+        <input type="datetime-local" id="sched-${kind}" class="sched-input" ${alreadyLive ? "disabled" : ""}>
+        <button type="button" class="btn mini" id="sched-clear-${kind}" ${alreadyLive ? "disabled" : ""}>Clear</button>
+      </div>
+      ${scheduledButNotYetLive
+        ? `<p class="hint sched-pending">⏳ Scheduled, waiting to publish — social-ip-engine checks every ~2 minutes and posts automatically when the time arrives. To change the time, edit Publish Date in Notion.</p>`
+        : `<p class="hint">Leave empty = "Publish" goes live immediately. Set a time = the service publishes it automatically when that time arrives (checked every ~2 minutes).</p>`}
+    </div>`;
+}
+
+// Wires the datetime-local input rendered by publishScheduleHTML() above:
+// sets `min` so the picker can't produce a past MYT instant, prefills it
+// from any existing Publish Date, and wires the "Clear" button. Returns the
+// <input> element (or null if this row has no schedule section, e.g. a
+// row that's already Published and past its schedule — see
+// publishScheduleHTML's `disabled` condition) so the caller can read its
+// value at publish-click time. nowMYTInputValue / publishDateIsoToInputValue
+// come from publish_schedule.js (loaded before this file, same convention
+// as publish_gate.js's canPublish/canPublishCarousel).
+function wireScheduleInput(kind, existingPublishDateIso) {
+  const input = document.getElementById(`sched-${kind}`);
+  if (!input) return null;
+  input.min = nowMYTInputValue();
+  input.value = publishDateIsoToInputValue(existingPublishDateIso);
+  const clearBtn = document.getElementById(`sched-clear-${kind}`);
+  if (clearBtn) clearBtn.onclick = () => { input.value = ""; };
+  return input;
+}
+
 function mediaImg(url, alt) {
   return url
     ? `<img src="${esc(url)}" alt="${esc(alt)}" onclick="window.open('${esc(url)}')">`
-    : `<span class="missing">还没生成</span>`;
+    : `<span class="missing">not generated yet</span>`;
 }
 
 // Reuses the SAME .chip.stage-* CSS as the video Stage chip (STAGE_CLASS
@@ -334,8 +687,8 @@ const CAROUSEL_STAGE_CLASS = {
 function panelsHTML(d) {
   if (!d.panels.length) {
     return d.has_carousel_prompts === false
-      ? '<p class="hint">这个 Content 还没有 🎠 Carousel Guide — 这是正常的，多数内容只做 video。要加 carousel 就去 Notion 的 Content Library 页面写 Carousel Guide，然后回来点上面的「▶ 生成 carousel」。</p>'
-      : '<p class="hint">还没有 panel。</p>';
+      ? '<p class="hint">This Content has no 🎠 Carousel Guide yet — that\'s normal, most content is video-only. To add a carousel, write a Carousel Guide on the Content Library page in Notion, then come back and hit "▶ Generate carousel" above.</p>'
+      : '<p class="hint">No panels yet.</p>';
   }
   return d.panels.map((pnl, i) => `
     <div class="shot-card" style="--i:${i}">
@@ -343,11 +696,11 @@ function panelsHTML(d) {
       <div class="media-frame square">${mediaImg(pnl.image_url, pnl.title)}</div>
       <div class="instruction-row">
         <input type="text" class="panel-instruction-input" data-panel="${i + 1}"
-          placeholder="改动说明（可选）— 会写进这个 panel 的 prompt">
+          placeholder="What to change (optional) — gets written into this panel's prompt">
       </div>
       <div class="shot-tools">
         <button class="btn mini regen-panel" data-act="regen_panel" data-panel="${i + 1}"
-          title="重新生成这个 panel 的图片（会替换旧图；上面填了说明会一并加进 prompt）">↻ 图</button>
+          title="Regenerate this panel's image (replaces the old one; any note above is added to the prompt)">↻ Image</button>
       </div>
     </div>`).join("");
 }
@@ -366,25 +719,25 @@ function renderDetail(d) {
       ${s.audio_url
         ? `<audio controls preload="none" src="${esc(s.audio_url)}"></audio>`
         : s.is_silent
-          ? '<span class="missing">🔇 静音 shot（无台词，正常）</span>'
-          : '<span class="missing">🎙️ 还没有 voice</span>'}
+          ? '<span class="missing">🔇 Silent shot (no dialogue — this is normal)</span>'
+          : '<span class="missing">🎙️ No voice yet</span>'}
       ${s.video_url
         ? `<div class="media-frame"><video controls preload="none" src="${esc(s.video_url)}"></video></div>`
         : ""}
       <div class="instruction-row">
         <input type="text" class="instruction-input" data-shot="${i + 1}"
-          placeholder="改动说明（可选，如「表情更自然」）— 会写进这个 shot 的 prompt">
+          placeholder="What to change (optional, e.g. &quot;more natural expression&quot;) — gets written into this shot's prompt">
       </div>
       <div class="shot-tools">
         <button class="btn mini regen" data-act="regen_image_shot" data-shot="${i + 1}"
-          title="重新生成这个 shot 的图片（会替换旧图；上面填了说明会一并加进 prompt）">↻ 图</button>
+          title="Regenerate this shot's image (replaces the old one; any note above is added to the prompt)">↻ Image</button>
         <button class="btn mini regen" data-act="regen_voice_shot" data-shot="${i + 1}"
-          title="重新生成这个 shot 的配音（会替换旧配音；上面填了说明会一并加进 prompt）">↻ 声</button>
+          title="Regenerate this shot's voiceover (replaces the old one; any note above is added to the prompt)">↻ Voice</button>
         <button class="btn mini regen" data-act="regen_video_shot" data-shot="${i + 1}"
-          ${s.image_url && (s.audio_url || s.is_silent) ? "" : "disabled"} title="重新生成这个 shot 的视频（即梦，花额度；新视频自动生效；上面填了说明会一并加进 prompt）">↻ 视频</button>
+          ${s.image_url && (s.audio_url || s.is_silent) ? "" : "disabled"} title="Regenerate this shot's video (Dreamina — costs credits; the new video takes effect automatically; any note above is added to the prompt)">↻ Video</button>
       </div>
     </div>`).join("")
-    : '<p class="hint">还没有 shot — 先 fan-out。</p>';
+    : '<p class="hint">No shots yet — run fan-out first.</p>';
 
   const check = (ok, label) => `<li class="${ok ? "ok" : "no"}">${label}</li>`;
 
@@ -394,8 +747,8 @@ function renderDetail(d) {
   // A row is one of two COMPLETELY SEPARATE content systems (video / shots,
   // or carousel / panels) — see docs/carousel-format-plan.md. Root-caused
   // live 2026-08-13: rendering both sections behind tabs still surfaced
-  // video's empty-state clutter (还没有 shots banner, disabled batch
-  // buttons, empty 成片/封面 sections) by default on a row that is 100%
+  // video's empty-state clutter ("no shots yet" banner, disabled batch
+  // buttons, empty final-cut/cover sections) by default on a row that is 100%
   // carousel and was never supposed to have any shots. Fix: a row only
   // ever gets the ONE section that actually applies to it. Tabs only
   // appear on the rare row that genuinely has BOTH (a concept someone
@@ -410,70 +763,71 @@ function renderDetail(d) {
     </div>
 
     <div class="section">
-      <h3>🎨 素材（${d.shots.length} shots）
-        <span class="sec-actions"><button class="btn" id="btn-assets">▶ 生成 image + voice</button></span>
+      <h3>🎨 Assets (${d.shots.length} shots)
+        <span class="sec-actions"><button class="btn" id="btn-assets">▶ Generate image + voice</button></span>
       </h3>
       <div class="batch-bar" id="batch-bar">
-        <span id="batch-count" class="batch-count">已选 0 个</span>
-        <button class="btn mini" id="batch-image" disabled>↻ 批量重生成图片</button>
-        <button class="btn mini" id="batch-voice" disabled>↻ 批量重生成配音</button>
-        <button class="btn mini" id="batch-video" disabled>↻ 批量重生成视频</button>
-        <button class="btn mini" id="batch-clear">清空选择</button>
-        <span class="hint" style="font-size:11px;">勾选多个 shot 后一次性排队执行；有填改动说明的会一起带上</span>
+        <span id="batch-count" class="batch-count">0 selected</span>
+        <button class="btn mini" id="batch-image" disabled>↻ Regenerate images</button>
+        <button class="btn mini" id="batch-voice" disabled>↻ Regenerate voiceovers</button>
+        <button class="btn mini" id="batch-video" disabled>↻ Regenerate videos</button>
+        <button class="btn mini" id="batch-clear">Clear selection</button>
+        <span class="hint" style="font-size:11px;">Tick several shots to queue them in one run; any change notes you wrote are carried along</span>
       </div>
       <div class="shot-grid">${shotsHTML}</div>
     </div>
 
     <div class="section">
-      <h3>🎬 成片
+      <h3>🎬 Final cut
         <span class="sec-actions">
-          <button class="btn" id="btn-video">▶ 生成 shot 视频（即梦）</button>
-          <button class="btn" id="btn-collect" title="把之前已提交、但当时没等到的即梦任务收割回来（不新提交、不花额度）">📥 收割已提交</button>
-          <button class="btn" id="btn-finalize">🧵 一键成片（合并 + 字幕 + 上传）</button>
+          <button class="btn" id="btn-video">▶ Generate shot videos (Dreamina)</button>
+          <button class="btn" id="btn-collect" title="Collect Dreamina tasks that were submitted earlier but never waited on (submits nothing new, costs no credits)">📥 Collect submitted</button>
+          <button class="btn" id="btn-finalize">🧵 Assemble final cut (merge + captions + upload)</button>
         </span>
       </h3>
       <div class="video-row">
         <div class="video-col">
-          <div class="v-label">Production video（带字幕 = 会发布的版本）</div>
+          <div class="v-label">Production video (captioned — this is the version that gets published)</div>
           <div class="media-frame">${d.production_video_url
             ? `<video controls preload="metadata" src="${esc(d.production_video_url)}"></video>`
-            : '<span class="missing">还没成片 — shot 视频齐了就点「一键成片」</span>'}</div>
+            : '<span class="missing">No final cut yet — once every shot video is in, hit "Assemble final cut"</span>'}</div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h3>🖼️ 封面 &amp; Infographic
+      <h3>🖼️ Cover &amp; Infographic
         <span class="sec-actions">
-          <button class="btn" id="btn-cover">▶ 生成 cover</button>
-          <button class="btn" id="btn-info">▶ 生成 infographic</button>
+          <button class="btn" id="btn-cover">▶ Generate cover</button>
+          <button class="btn" id="btn-info">▶ Generate infographic</button>
         </span>
       </h3>
       <div class="img-row">
         <div class="img-col">
-          <div class="v-label">Cover${d.has_cover_prompt ? "" : "（还没有 prompt）"}</div>
+          <div class="v-label">Cover${d.has_cover_prompt ? "" : " (no prompt yet)"}</div>
           <div class="img-frame">${mediaImg(d.cover_image_url, "cover")}</div>
         </div>
         <div class="img-col">
-          <div class="v-label">DM Infographic${d.has_infographic_prompt ? "" : "（还没有 brief）"}</div>
+          <div class="v-label">DM Infographic${d.has_infographic_prompt ? "" : " (no brief yet)"}</div>
           <div class="img-frame">${mediaImg(d.infographic_image_url, "infographic")}</div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h3>🚀 发布</h3>
+      <h3>🚀 Publish</h3>
       <ul class="checklist">
-        ${check(d.all_shots_have_image && d.all_shots_have_voice, "所有 shot 有 image + voice")}
-        ${check(d.all_shots_have_video, "所有 shot 已生成视频")}
-        ${check(d.has_production_video, "成片（字幕版 Production Video）已上传")}
-        ${check(d.has_cover_image, "Cover 已生成")}
-        ${check(d.has_infographic_image, "Infographic 已生成")}
-        ${check(d.dm_wired, "DM 关键词已布（🔗 DM Wired）")}
+        ${check(d.all_shots_have_image && d.all_shots_have_voice, "Every shot has image + voice")}
+        ${check(d.all_shots_have_video, "Every shot has a video")}
+        ${check(d.has_production_video, "Final cut (captioned Production Video) uploaded")}
+        ${check(d.has_cover_image, "Cover generated")}
+        ${check(d.has_infographic_image, "Infographic generated")}
+        ${check(d.dm_wired, "DM keyword wired (🔗 DM Wired)")}
       </ul>
+      ${publishScheduleHTML("publish", d.stage, d.publish_date)}
       <div class="publish-actions">
         <button class="btn" id="btn-ready">→ Ready to Publish</button>
-        <button class="btn danger" id="btn-publish">⚠ 发布到 IG / FB（不可逆）</button>
+        <button class="btn danger" id="btn-publish">⚠ Publish to IG / FB (irreversible)</button>
       </div>
     </div>`;
 
@@ -487,13 +841,14 @@ function renderDetail(d) {
   const carouselHTML = `
     <div class="section">
       <h3>🎠 Carousel Panels（${d.carousel_panel_count}）
-        <span class="sec-actions"><button class="btn" id="btn-carousel">▶ 生成 carousel</button></span>
+        <span class="sec-actions"><button class="btn" id="btn-carousel">▶ Generate carousel</button></span>
       </h3>
       <div class="shot-grid">${panelsHTML(d)}</div>
     </div>
+    ${publishScheduleHTML("carousel", d.carousel_stage, d.carousel_publish_date)}
     <div class="publish-actions">
       <button class="btn" id="btn-carousel-ready" ${!d.has_carousel_prompts ? "disabled" : ""}>→ Ready to Publish</button>
-      <button class="btn danger" id="btn-carousel-publish">⚠ 发布 Carousel（不可逆）</button>
+      <button class="btn danger" id="btn-carousel-publish">⚠ Publish carousel (irreversible)</button>
     </div>`;
 
   const tabsHTML = (hasVideo && hasCarousel) ? `
@@ -521,13 +876,13 @@ function renderDetail(d) {
 
   detailEl.innerHTML = `
     <div class="detail-head">
-      <button class="btn" id="btn-back">← 返回</button>
+      <button class="btn" id="btn-back">← Back</button>
       <h1>${esc(d.name)}</h1>
       ${hasVideo ? `<span class="chip ${STAGE_CLASS[d.stage] || ""}">${esc(d.stage || "?")}</span>` : ""}
       ${carouselChip}
       ${d.dm_wired ? '<span class="chip dm">🔗 DM wired</span>' : ""}
-      <a class="notion-link" href="${notionUrl}" target="_blank">在 Notion 打开 ↗</a>
-      <button class="btn danger mini" id="btn-delete-row" title="删除这一行（Notion 归档，Trash 里可恢复）">🗑 删除</button>
+      <a class="notion-link" href="${notionUrl}" target="_blank">Open in Notion ↗</a>
+      <button class="btn danger mini" id="btn-delete-row" title="Delete this row (archived in Notion, recoverable from Trash)">🗑 Delete</button>
     </div>
     ${d.title ? `<div class="sub" style="color:var(--muted);font-size:13px;">🏷️ ${esc(d.title)}</div>` : ""}
     ${bodyHTML}`;
@@ -550,7 +905,7 @@ function renderDetail(d) {
   const carouselReadyBtn = document.getElementById("btn-carousel-ready");
   const carouselPubBtn = document.getElementById("btn-carousel-publish");
 
-  armTwoClickDelete(deleteRowBtn, "⚠ 再点一次 = 删除这一行", async () => {
+  armTwoClickDelete(deleteRowBtn, "⚠ Click again = delete this row", async () => {
     await api("/api/delete", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ row_id: d.id, confirm: true }),
@@ -562,12 +917,12 @@ function renderDetail(d) {
   // ---- video-only wiring — skipped entirely on a carousel-only row, since
   // none of these elements exist there (see hasVideo/hasCarousel above) ----
   if (hasVideo) {
-    assetsBtn.onclick = () => startJob("生成 image + voice", { action: "generate_assets_row", row_id: d.id }, refreshDetail);
-    videoBtn.onclick = () => startJob("生成 shot 视频", { action: "generate_video", row_id: d.id }, refreshDetail);
-    collectBtn.onclick = () => startJob("收割已提交的视频", { action: "collect_video", row_id: d.id }, refreshDetail);
-    finBtn.onclick = () => startJob("一键成片（合并+字幕+上传）", { action: "finalize_video", row_id: d.id }, refreshDetail);
-    coverBtn.onclick = () => startJob("生成 cover", { action: "generate_cover", row_id: d.id }, refreshDetail);
-    infoBtn.onclick = () => startJob("生成 infographic", { action: "generate_infographic", row_id: d.id }, refreshDetail);
+    assetsBtn.onclick = () => startJob("Generate image + voice", { action: "generate_assets_row", row_id: d.id }, refreshDetail);
+    videoBtn.onclick = () => startJob("Generate shot videos", { action: "generate_video", row_id: d.id }, refreshDetail);
+    collectBtn.onclick = () => startJob("Collect submitted videos", { action: "collect_video", row_id: d.id }, refreshDetail);
+    finBtn.onclick = () => startJob("Assemble final cut (merge + captions + upload)", { action: "finalize_video", row_id: d.id }, refreshDetail);
+    coverBtn.onclick = () => startJob("Generate cover", { action: "generate_cover", row_id: d.id }, refreshDetail);
+    infoBtn.onclick = () => startJob("Generate infographic", { action: "generate_infographic", row_id: d.id }, refreshDetail);
 
     assetsBtn.disabled = jobRunning || !d.shots.length;
     videoBtn.disabled = jobRunning || !(d.all_shots_have_image && d.all_shots_have_voice);
@@ -577,12 +932,13 @@ function renderDetail(d) {
     infoBtn.disabled = jobRunning || !d.has_infographic_prompt;
     readyBtn.disabled = !d.has_production_video || d.stage === "🟢 Ready to Publish" || d.stage === "✅ Published";
     pubBtn.disabled = !canPublish(d); // canPublish() lives in publish_gate.js, loaded before this file
+    const schedInput = wireScheduleInput("publish", d.publish_date);
 
     // per-shot regenerate buttons — each reads its own instruction input
     const REGEN_LABELS = {
-      regen_image_shot: "重生成图片",
-      regen_voice_shot: "重生成配音",
-      regen_video_shot: "重生成视频（即梦）",
+      regen_image_shot: "Regenerate image",
+      regen_voice_shot: "Regenerate voiceover",
+      regen_video_shot: "Regenerate video (Dreamina)",
     };
     detailEl.querySelectorAll(".shot-tools .regen").forEach(btn => {
       if (jobRunning) btn.disabled = true;
@@ -591,7 +947,7 @@ function renderDetail(d) {
         const input = detailEl.querySelector(`.instruction-input[data-shot="${shotNum}"]`);
         const instruction = input ? input.value.trim() : "";
         const label = instruction
-          ? `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}（+指令）`
+          ? `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum} (+instruction)`
           : `${REGEN_LABELS[btn.dataset.act]} — Shot ${shotNum}`;
         const body = { action: btn.dataset.act, row_id: d.id, shot: shotNum };
         if (instruction) body.instruction = instruction;
@@ -616,7 +972,7 @@ function renderDetail(d) {
       [...detailEl.querySelectorAll(".shot-check:checked")].map(cb => Number(cb.dataset.shot));
     const refreshBatchBar = () => {
       const n = selectedShots().length;
-      batchCount.textContent = `已选 ${n} 个`;
+      batchCount.textContent = `${n} selected`;
       for (const btn of Object.values(batchButtons)) btn.disabled = jobRunning || n === 0;
       clearBtn.disabled = n === 0;
     };
@@ -653,32 +1009,48 @@ function renderDetail(d) {
       loadQueue();
     };
 
-    // publish = two explicit clicks, no browser confirm() dialog
+    // publish = two explicit clicks, no browser confirm() dialog. The
+    // schedule input (if filled) is folded into the SAME confirmed call —
+    // see state.set_stage_with_publish_date's docstring for why "set a
+    // date, then separately click Publish" was rejected: it lets a human
+    // set a date and forget to flip Stage, or flip Stage out of habit
+    // before setting the date and publish immediately by mistake.
+    const DEFAULT_PUB_LABEL = "⚠ Publish to IG / FB (irreversible)";
     let armed = false, disarmTimer = null;
     pubBtn.onclick = async () => {
+      const iso = schedInput ? toPublishDateIso(schedInput.value) : null;
+      if (iso && !isFuturePublishDate(iso)) {
+        pubBtn.textContent = "Scheduled time must be in the future (Asia/Kuala_Lumpur)";
+        setTimeout(() => { pubBtn.textContent = DEFAULT_PUB_LABEL; }, 2500);
+        return;
+      }
       if (!armed) {
         armed = true;
         pubBtn.classList.add("confirm");
-        pubBtn.textContent = "⚠ 再点一次 = 真的发布（不可逆）";
+        pubBtn.textContent = iso
+          ? `⚠ Click again = schedule for ${schedInput.value.replace("T", " ")} (MYT)`
+          : "⚠ Click again = publish now (irreversible)";
         disarmTimer = setTimeout(() => {
           armed = false;
           pubBtn.classList.remove("confirm");
-          pubBtn.textContent = "⚠ 发布到 IG / FB（不可逆）";
+          pubBtn.textContent = DEFAULT_PUB_LABEL;
         }, 6000);
         return;
       }
       clearTimeout(disarmTimer);
       pubBtn.disabled = true;
-      pubBtn.textContent = "发布中…";
+      pubBtn.textContent = iso ? "Scheduling…" : "Publishing…";
       try {
+        const body = { row_id: d.id, stage: "✅ Published", confirm: true };
+        if (iso) body.publish_date = iso;
         await api("/api/stage", {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ row_id: d.id, stage: "✅ Published", confirm: true }),
+          body: JSON.stringify(body),
         });
         refreshDetail();
         loadQueue();
       } catch (e) {
-        pubBtn.textContent = "失败: " + e.message;
+        pubBtn.textContent = "Failed: " + e.message;
         pubBtn.disabled = false;
       }
     };
@@ -686,11 +1058,12 @@ function renderDetail(d) {
 
   // ---- carousel-only wiring — skipped entirely on a video-only row ----
   if (hasCarousel) {
-    carouselBtn.onclick = () => startJob("生成 carousel", { action: "generate_carousel", row_id: d.id }, refreshDetail);
+    carouselBtn.onclick = () => startJob("Generate carousel", { action: "generate_carousel", row_id: d.id }, refreshDetail);
     carouselBtn.disabled = jobRunning;
     carouselReadyBtn.disabled = jobRunning || !d.all_panels_have_image
       || d.carousel_stage === "🟢 Ready to Publish" || d.carousel_stage === "✅ Published";
     carouselPubBtn.disabled = !canPublishCarousel(d); // canPublishCarousel() lives in publish_gate.js
+    const carouselSchedInput = wireScheduleInput("carousel", d.carousel_publish_date);
 
     // per-panel regenerate — same shape as the shot version above, no batch
     // select (deliberately dropped per direct feedback 2026-08-13: a
@@ -703,7 +1076,7 @@ function renderDetail(d) {
         const panelNum = Number(btn.dataset.panel);
         const input = detailEl.querySelector(`.panel-instruction-input[data-panel="${panelNum}"]`);
         const instruction = input ? input.value.trim() : "";
-        const label = instruction ? `重生成图片 — Panel ${panelNum}（+指令）` : `重生成图片 — Panel ${panelNum}`;
+        const label = instruction ? `Regenerate image — Panel ${panelNum} (+instruction)` : `Regenerate image — Panel ${panelNum}`;
         const body = { action: "regen_panel", row_id: d.id, shot: panelNum };
         if (instruction) body.instruction = instruction;
         startJob(label, body, refreshDetail);
@@ -722,31 +1095,43 @@ function renderDetail(d) {
 
     // publish = two explicit clicks, same pattern as video's pubBtn — a
     // real, irreversible Instagram/Facebook post, never a confirm() dialog.
+    // Same schedule-folded-into-the-confirmed-call reasoning as pubBtn above.
+    const DEFAULT_CAROUSEL_PUB_LABEL = "⚠ Publish carousel (irreversible)";
     let carouselArmed = false, carouselDisarmTimer = null;
     carouselPubBtn.onclick = async () => {
+      const iso = carouselSchedInput ? toPublishDateIso(carouselSchedInput.value) : null;
+      if (iso && !isFuturePublishDate(iso)) {
+        carouselPubBtn.textContent = "Scheduled time must be in the future (Asia/Kuala_Lumpur)";
+        setTimeout(() => { carouselPubBtn.textContent = DEFAULT_CAROUSEL_PUB_LABEL; }, 2500);
+        return;
+      }
       if (!carouselArmed) {
         carouselArmed = true;
         carouselPubBtn.classList.add("confirm");
-        carouselPubBtn.textContent = "⚠ 再点一次 = 真的发布（不可逆）";
+        carouselPubBtn.textContent = iso
+          ? `⚠ Click again = schedule for ${carouselSchedInput.value.replace("T", " ")} (MYT)`
+          : "⚠ Click again = publish now (irreversible)";
         carouselDisarmTimer = setTimeout(() => {
           carouselArmed = false;
           carouselPubBtn.classList.remove("confirm");
-          carouselPubBtn.textContent = "⚠ 发布 Carousel（不可逆）";
+          carouselPubBtn.textContent = DEFAULT_CAROUSEL_PUB_LABEL;
         }, 6000);
         return;
       }
       clearTimeout(carouselDisarmTimer);
       carouselPubBtn.disabled = true;
-      carouselPubBtn.textContent = "发布中…";
+      carouselPubBtn.textContent = iso ? "Scheduling…" : "Publishing…";
       try {
+        const body = { row_id: d.id, stage: "✅ Published", confirm: true };
+        if (iso) body.publish_date = iso;
         await api("/api/carousel-stage", {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ row_id: d.id, stage: "✅ Published", confirm: true }),
+          body: JSON.stringify(body),
         });
         refreshDetail();
         loadQueue();
       } catch (e) {
-        carouselPubBtn.textContent = "失败: " + e.message;
+        carouselPubBtn.textContent = "Failed: " + e.message;
         carouselPubBtn.disabled = false;
       }
     };
@@ -793,7 +1178,7 @@ async function startJob(label, body, onDone) {
     });
     streamJob(job_id, label, onDone);
   } catch (e) {
-    document.getElementById("log-status").textContent = "启动失败: " + e.message;
+    document.getElementById("log-status").textContent = "Failed to start: " + e.message;
     drawer.classList.remove("collapsed");
   }
 }

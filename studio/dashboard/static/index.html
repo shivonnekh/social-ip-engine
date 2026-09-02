@@ -13,20 +13,63 @@
   <header class="topbar">
     <div class="brand">🎬 AI-IP Studio</div>
     <nav class="tabs">
-      <button class="tab active" data-view="queue">🔥 工作台</button>
+      <button class="tab active" data-view="queue">🔥 Workbench</button>
+      <button class="tab" data-view="database">🗂 Database</button>
       <button class="tab" data-view="concepts">📚 Concepts</button>
+      <button class="tab" data-view="calendar">📅 Calendar</button>
     </nav>
     <span id="last-sync" class="sync-note"></span>
-    <button id="btn-refresh" class="icon-btn" title="刷新">↻ 刷新</button>
+    <button id="btn-refresh" class="icon-btn" title="Refresh">↻ Refresh</button>
   </header>
 
   <main class="main">
-    <!-- 工作台：所有 row 按「下一步该做什么」分组 -->
+    <!-- Workbench: every row grouped by "what do I do next" -->
     <section id="view-queue" class="view">
       <div id="queue-body" class="queue-body"><p class="hint">loading…</p></div>
     </section>
 
-    <!-- Concepts 浏览 + fan-out -->
+    <!-- Database: the whole Notion board, local and editable, + the assistant -->
+    <section id="view-database" class="view" hidden>
+      <div class="db-layout">
+        <div class="db-main">
+          <div class="db-toolbar">
+            <div id="db-switcher" class="db-switcher"></div>
+            <div id="db-formats" class="db-formats" hidden></div>
+            <input id="db-search" class="db-search" type="search"
+                   placeholder="Search…" autocomplete="off">
+            <span id="db-pending" class="db-pending" hidden></span>
+            <button id="db-new-concept" class="btn">＋ New concept</button>
+            <label class="db-deep" title="Also mirror every production row's per-shot prompts and media (slow)">
+              <input type="checkbox" id="db-import-shots"> deep
+            </label>
+            <button id="db-import" class="btn">↓ Import from Notion</button>
+            <button id="db-push" class="btn primary" disabled>↑ Push to Notion</button>
+          </div>
+          <div class="db-split">
+            <div id="db-table" class="db-table-wrap"><p class="hint">loading…</p></div>
+            <div id="db-record" class="db-record-wrap"></div>
+          </div>
+        </div>
+
+        <aside id="db-agent" class="db-agent">
+          <div class="agent-head">
+            <button id="agent-collapse" class="icon-btn" title="Hide the assistant">›</button>
+            <strong>🤖 Assistant</strong>
+            <span id="agent-status" class="agent-status"></span>
+            <button id="agent-clear" class="icon-btn" title="Clear chat">🗑</button>
+          </div>
+          <div id="agent-log" class="agent-log"></div>
+          <div class="agent-composer">
+            <textarea id="agent-input" rows="3"
+              placeholder="New idea, a question about the board, an edit to make…"></textarea>
+            <button id="agent-send" class="btn primary">Send</button>
+          </div>
+        </aside>
+      </div>
+      <div id="db-toast" class="db-toast" hidden></div>
+    </section>
+
+    <!-- Concepts browser + fan-out -->
     <section id="view-concepts" class="view" hidden>
       <div class="concepts-layout">
         <aside class="sidebar">
@@ -36,27 +79,41 @@
         <div class="concept-main">
           <div id="concept-toolbar" class="concept-toolbar" hidden>
             <select id="fanout-ip-select" class="ip-select">
-              <option value="">所有 active IP</option>
+              <option value="">All active IPs</option>
             </select>
-            <button id="btn-fanout" class="btn primary">▶ Fan out + 生成素材</button>
-            <button id="btn-delete-concept" class="btn danger" style="margin-left:auto;">🗑 删除这个 concept</button>
+            <button id="btn-fanout" class="btn primary">▶ Fan out + generate assets</button>
+            <button id="btn-delete-concept" class="btn danger" style="margin-left:auto;">🗑 Delete this concept</button>
           </div>
           <div id="rows-panel" class="rows-panel">
-            <p class="hint">← 左边选一个 concept</p>
+            <p class="hint">← Pick a concept on the left</p>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- Calendar: see what's actually gone live, day by day; click to open the card -->
+    <section id="view-calendar" class="view" hidden>
+      <div class="cal-toolbar">
+        <button id="cal-prev" class="icon-btn" title="Previous month">‹</button>
+        <h2 id="cal-label" class="cal-label"></h2>
+        <button id="cal-next" class="icon-btn" title="Next month">›</button>
+        <button id="cal-today" class="btn" style="margin-left:10px;">Today</button>
+      </div>
+      <div id="cal-grid" class="cal-grid"><p class="hint">loading…</p></div>
+    </section>
   </main>
 
-  <!-- row 详情（JS 渲染） -->
+  <!-- row detail (rendered by JS) -->
   <div id="detail" class="detail" hidden></div>
 
-  <!-- 任务日志抽屉 -->
+  <!-- Calendar: schedule-a-day dialog (JS-rendered) -->
+  <div id="sched-modal" class="modal" hidden></div>
+
+  <!-- job log drawer -->
   <div id="log-drawer" class="log-drawer collapsed">
     <div class="log-head" id="log-head">
       <span class="log-dot" id="log-dot"></span>
-      <span id="log-title">日志</span>
+      <span id="log-title">Logs</span>
       <span id="log-status" class="log-status"></span>
       <button class="icon-btn" id="log-toggle">▴</button>
     </div>
@@ -64,6 +121,13 @@
   </div>
 
   <script src="/static/publish_gate.js"></script>
+  <script src="/static/publish_schedule.js"></script>
+  <script src="/static/calendar_grid.js"></script>
+  <script src="/static/database_view.js"></script>
+  <!-- app.js before the Database tab's own scripts: they reuse its
+       streamJob() for the import/push log drawer. -->
   <script src="/static/app.js"></script>
+  <script src="/static/agent_chat.js"></script>
+  <script src="/static/database.js"></script>
 </body>
 </html>
