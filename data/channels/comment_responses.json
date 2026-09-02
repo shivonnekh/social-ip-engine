@@ -944,5 +944,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/swollen-page-1.png"
     ]
+  },
+  {
+    "keyword": "sciatic",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Sciatica follows a channel — that is why chasing one sore spot never works ⚡\n\nQuick check — does the line run down the BACK of your leg, or down the OUTSIDE?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM sciatic guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "⚡ Sciatica — The Line Down the Leg",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/sciatic-page-1.png"
+    ]
   }
 ]
