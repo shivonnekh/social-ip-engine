@@ -857,5 +857,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/bowel-page-1.png"
     ]
+  },
+  {
+    "keyword": "lowback",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The thumb-rub warms the lower back fast 🩺\n\nQuick check — is your ache worse in the morning, or worse after standing all day? They point to different roots.\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM lowback guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🩺 Lower Back Pain — What I Check First",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/lowback-page-1.png"
+    ]
   }
 ]
