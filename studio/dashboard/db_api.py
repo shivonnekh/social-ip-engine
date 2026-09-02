@@ -218,7 +218,13 @@ def create_concept(body: ConceptWrite) -> dict:
         except UnknownField as exc:
             raise HTTPException(400, str(exc)) from exc
         stored = repo.save_concept(conn, concept)
-        return {"concept": to_json(stored), "sync": _sync(conn, "concept", stored)}
+        sync = _sync(conn, "concept", stored)
+        # Re-read: a successful push assigns `notion_id` and clears `dirty`,
+        # and `stored` predates both. Returning the stale copy meant a client
+        # that created a concept and immediately tried to act on it — fan it
+        # out, say — got notion_id: null for a concept that very much had one.
+        return {"concept": to_json(repo.get_concept(conn, stored.id) or stored),
+                "sync": sync}
 
 
 @router.patch("/db/concepts/{concept_id}")
@@ -234,7 +240,11 @@ def update_concept(concept_id: str, body: ConceptWrite) -> dict:
             updated = repo.save_concept(conn, with_changes(concept, changes))
         except UnknownField as exc:
             raise HTTPException(400, str(exc)) from exc
-        return {"concept": to_json(updated), "sync": _sync(conn, "concept", updated)}
+        sync = _sync(conn, "concept", updated)
+        # Same re-read as create: the push clears `dirty`, and the UI uses
+        # that flag to decide whether fan-out is safe to offer.
+        return {"concept": to_json(repo.get_concept(conn, updated.id) or updated),
+                "sync": sync}
 
 
 @router.get("/db/concepts/{concept_id}/delete-preview")
@@ -366,7 +376,9 @@ def update_ip(ip_id: str, body: IpWrite) -> dict:
             updated = repo.save_ip(conn, with_changes(ip, changes))
         except UnknownField as exc:
             raise HTTPException(400, str(exc)) from exc
-        return {"ip": to_json(updated), "sync": _sync(conn, "ip", updated)}
+        sync = _sync(conn, "ip", updated)
+        return {"ip": to_json(repo.get_ip(conn, updated.id) or updated),
+                "sync": sync}
 
 
 # ---------- production rows ----------
@@ -425,7 +437,9 @@ def update_production(row_id: str, body: ProductionWrite) -> dict:
             updated = repo.save_production_row(conn, with_changes(row, changes))
         except UnknownField as exc:
             raise HTTPException(400, str(exc)) from exc
-        return {"row": to_json(updated), "sync": _sync(conn, "production", updated)}
+        sync = _sync(conn, "production", updated)
+        return {"row": to_json(repo.get_production_row(conn, updated.id) or updated),
+                "sync": sync}
 
 
 # ---------- shot guide (a flat, cross-concept view) ----------

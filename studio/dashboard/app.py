@@ -509,11 +509,54 @@ def api_delete(req: DeleteRequest):
     try:
         if req.content_id:
             summary = state.archive_content(req.content_id)
-            return {"ok": True, **summary}
+            removed = _forget_locally(content_id=req.content_id,
+                                      row_ids=summary.get("archived_rows", []))
+            return {"ok": True, **summary, "removed_from_studio": removed}
         state.archive_page(req.row_id)
-        return {"ok": True, "row_id": req.row_id}
-    except Exception as exc:  # noqa: BLE001
+        removed = _forget_locally(row_ids=[req.row_id])
+        return {"ok": True, "row_id": req.row_id, "removed_from_studio": removed}
+    # SystemExit too: notion_image.ncall reports an unretryable Notion error
+    # with sys.exit(), a BaseException that `except Exception` misses.
+    except (Exception, SystemExit) as exc:  # noqa: BLE001
         raise HTTPException(502, _friendly_notion_error(exc)) from exc
+
+
+def _forget_locally(content_id: str | None = None,
+                    row_ids: list[str] | None = None) -> int:
+    """Drop archived pages from the Database tab's local mirror too.
+
+    Without this the Workbench and the Database tab disagree permanently:
+    archiving in Notion hides a row from every Notion-backed view, but the
+    mirror is refreshed by an import that only ever adds and updates — it
+    has no deletion pass — so a row deleted here would sit in Studio forever
+    with no way to remove it.
+
+    Runs AFTER the Notion archive succeeded, and never raises: the delete the
+    user asked for has already happened, so a mirror hiccup must not turn it
+    into a 502 that reads as "nothing was deleted". The next import cannot
+    resurrect these rows either, since they are archived in Notion.
+
+    Ids here are NOTION page ids (state.archive_* operates on Notion);
+    repo's delete helpers accept either those or local ids.
+    """
+    try:
+        import repo
+        import studio_db
+        removed = 0
+        with studio_db.connect() as conn:
+            for row_id in row_ids or []:
+                removed += bool(repo.delete_production_row(conn, row_id))
+            if content_id:
+                concept = repo.get_concept(conn, content_id)
+                if concept is not None:
+                    for row in repo.list_production_rows(conn,
+                                                         concept_id=concept.id):
+                        removed += bool(repo.delete_production_row(conn, row.id))
+                    repo.delete_concept(conn, concept.id)
+                    removed += 1
+        return removed
+    except Exception:  # noqa: BLE001 - advisory cleanup, never fails the delete
+        return 0
 
 
 @app.get("/api/jobs/{job_id}/stream")

@@ -197,3 +197,51 @@ def test_a_row_with_no_concept_relation_is_skipped(conn):
     repo.save_production_row(conn, ProductionRow(
         id="p1", notion_id="np1", name="unlinked", concept_id=None))
     assert db_api.list_concepts()["concepts"][0]["fanned_out"] == []
+
+
+# ---------- write routes return the POST-push record ----------
+
+def test_create_returns_the_notion_id_the_push_just_assigned(conn, monkeypatch):
+    """Found by using it: the response carried notion_id: null for a concept
+    that had just been pushed, because `stored` predates the push. A client
+    that creates a concept and immediately fans it out got nothing to fan."""
+    def fake_push(c, concept):
+        repo.clear_dirty(c, "concepts", concept.id, notion_id="fresh-notion-id")
+        return {"notion_id": "fresh-notion-id", "created": True, "unwritable": []}
+
+    monkeypatch.setattr(db_api, "_pusher", lambda _kind: fake_push)
+    monkeypatch.setattr(db_api, "WRITEBACK_ENABLED", True)
+
+    out = db_api.create_concept(db_api.ConceptWrite(name="Fresh"))
+    assert out["concept"]["notion_id"] == "fresh-notion-id"
+    assert out["concept"]["dirty"] is False
+    assert out["sync"]["pushed"] is True
+
+
+def test_update_returns_the_cleared_dirty_flag(conn, monkeypatch):
+    """The fan-out panel refuses to run on a `dirty` concept, so a stale
+    dirty:true in the save response would block a fan-out that is fine."""
+    def fake_push(c, concept):
+        repo.clear_dirty(c, "concepts", concept.id)
+        return {"notion_id": concept.notion_id, "created": False, "unwritable": []}
+
+    monkeypatch.setattr(db_api, "_pusher", lambda _kind: fake_push)
+    monkeypatch.setattr(db_api, "WRITEBACK_ENABLED", True)
+    seed(conn)
+
+    out = db_api.update_concept("c1", db_api.ConceptWrite(hook="New hook"))
+    assert out["concept"]["hook"] == "New hook"
+    assert out["concept"]["dirty"] is False
+
+
+def test_a_failed_push_still_reports_the_record_as_dirty(conn, monkeypatch):
+    def failing_push(_c, _concept):
+        raise RuntimeError("Notion 502")
+
+    monkeypatch.setattr(db_api, "_pusher", lambda _kind: failing_push)
+    monkeypatch.setattr(db_api, "WRITEBACK_ENABLED", True)
+    seed(conn)
+
+    out = db_api.update_concept("c1", db_api.ConceptWrite(hook="New hook"))
+    assert out["concept"]["dirty"] is True
+    assert out["sync"]["pushed"] is False

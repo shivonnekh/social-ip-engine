@@ -147,6 +147,8 @@ function rowCardHTML(r, i = 0) {
         ${r.dm_wired ? '<span class="chip dm">🔗 DM wired</span>' : ""}
       </div>
       <div class="rc-steps">${steps}</div>
+      <button class="rc-del" data-del="${r.id}"
+              title="Delete this row — archived in Notion (recoverable from Trash) and removed from Studio">🗑</button>
     </div>`;
 }
 
@@ -154,6 +156,65 @@ function bindRowCards(container) {
   container.querySelectorAll(".row-card").forEach(el => {
     el.onclick = () => openRow(el.dataset.row);
   });
+  // Per-card delete, for the "I fanned out to the wrong IP" case — otherwise
+  // you have to open every wrong row one at a time just to remove it.
+  container.querySelectorAll(".rc-del").forEach(btn => {
+    btn.onclick = (ev) => {
+      // The whole card is a click target that opens the row; without this a
+      // delete click would ALSO open the very row it just removed.
+      ev.stopPropagation();
+      deleteRowFromCard(btn);
+    };
+  });
+}
+
+/**
+ * Two-click delete on a workbench card. The first click arms and names what
+ * is about to go; the second does it.
+ *
+ * Not a `confirm()` dialog on purpose — this is the same arm-then-commit
+ * shape every other destructive control in this panel uses, and it keeps the
+ * blast radius visible on the card itself rather than in a modal that hides
+ * the row you are looking at.
+ */
+async function deleteRowFromCard(btn) {
+  const card = btn.closest(".row-card");
+  const rowId = btn.dataset.del;
+  const name = card?.querySelector(".rc-name")?.textContent || "this row";
+
+  if (btn.dataset.armed !== "1") {
+    btn.dataset.armed = "1";
+    btn.classList.add("armed");
+    btn.textContent = "⚠ delete?";
+    btn.title = `Click again to delete “${name}”`;
+    // Disarm on its own so a card armed and forgotten cannot be hit later by
+    // a stray click on a list that has since been re-sorted underneath it.
+    btn._disarm = setTimeout(() => {
+      if (!btn.isConnected) return;
+      btn.dataset.armed = "";
+      btn.classList.remove("armed");
+      btn.textContent = "🗑";
+    }, 6000);
+    return;
+  }
+
+  clearTimeout(btn._disarm);
+  btn.disabled = true;
+  btn.textContent = "…";
+  try {
+    await api("/api/delete", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ row_id: rowId, confirm: true }),
+    });
+    card?.remove();          // instant feedback; loadQueue confirms it
+    loadQueue();
+  } catch (e) {
+    btn.disabled = false;
+    btn.dataset.armed = "";
+    btn.classList.remove("armed");
+    btn.textContent = "🗑";
+    alert(`Delete failed: ${e.message}`);
+  }
 }
 
 // ---------- workbench ----------

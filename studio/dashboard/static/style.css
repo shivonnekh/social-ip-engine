@@ -131,6 +131,7 @@ body {
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(295px, 1fr)); gap: 16px; }
 
 .row-card {
+  position: relative;   /* anchors .rc-del */
   background: var(--card);
   border: 2px solid var(--ink);
   border-radius: var(--radius);
@@ -878,3 +879,26 @@ body {
 .db-ipname em { font-style: normal; font-weight: 400; color: var(--dim); font-size: 11px; }
 .db-iplist li em { font-style: normal; font-size: 11px; color: var(--muted); }
 .db-iplist li.todo em { color: var(--dim); }
+
+/* Per-card delete on the workbench — for "I fanned out to the wrong IP".
+   Hidden until the card is hovered/focused so a dense queue stays calm, but
+   always reachable by keyboard. */
+.rc-del {
+  position: absolute; top: 9px; right: 9px;
+  width: 26px; height: 26px; padding: 0;
+  display: grid; place-items: center;
+  font-size: 12px; line-height: 1; cursor: pointer;
+  background: var(--card); color: var(--muted);
+  border: 2px solid var(--line); border-radius: 8px;
+  opacity: 0; transition: opacity .12s ease, color .12s ease, border-color .12s ease;
+}
+.row-card:hover .rc-del,
+.rc-del:focus-visible,
+.rc-del.armed { opacity: 1; }
+.rc-del:hover { color: var(--red); border-color: var(--red); }
+.rc-del.armed {
+  width: auto; padding: 0 9px;
+  font-size: 11px; font-weight: 700;
+  color: #fff; background: var(--red); border-color: var(--red);
+}
+.rc-del:disabled { opacity: .5; cursor: not-allowed; }

@@ -230,6 +230,32 @@ and hiding it would report the concept as less fanned out than it is.
 **After a fan-out the panel still shows ⭕ until you import.** The rows were
 created in Notion; the mirror has not seen them. The toast says so.
 
+### Deleting a Production row (the wrong-IP fix)
+Fanned out to an IP you didn't mean to? Delete the row from the **Workbench**:
+hover any queue card for a 🗑 in its corner (two-click armed), or open the row
+and use the 🗑 Delete in its header. Both hit `/api/delete`.
+
+`/api/delete` now also **removes the row from Studio's mirror**
+(`app._forget_locally`). Without that the two views disagree permanently:
+archiving in Notion hides a row from every Notion-backed view, but the mirror
+is refreshed by an import that only ever adds and updates — there is no
+deletion pass — so a row deleted from the Workbench sat in the Database tab
+forever with no way to remove it. The cleanup runs AFTER the Notion archive
+succeeded and never raises: the delete the user asked for has already
+happened, so a mirror hiccup must not turn it into a 502 reading "nothing was
+deleted".
+
+Deleting a row leaves its **concept alone** — that's the point of the wrong-IP
+case. The other IP's row is untouched too.
+
+### Import never deletes
+`studio_sync.py --import` only adds and updates. A concept or row archived in
+Notion DIRECTLY stays in the mirror until something removes it locally. That
+is why the delete paths above do their own local cleanup rather than relying
+on a later import to notice. Auto-pruning on import is deliberately not
+implemented: a partial Notion response would look identical to "these were
+deleted" and take real local work with it.
+
 ### Deleting a concept (changed 2026-09-02 — it used to be local-only)
 `DELETE /api/db/concepts/{id}` now archives the concept in **Notion** as well
 as removing it from Studio, and archives every Production row fanned out from

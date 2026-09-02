@@ -35,6 +35,7 @@ __all__ = [
     "list_ips", "get_ip", "save_ip", "upsert_ip_from_notion",
     "list_production_rows", "get_production_row", "save_production_row",
     "upsert_production_row_from_notion", "replace_production_shots",
+    "delete_production_row",
     "pending_writeback", "clear_dirty", "counts", "ConflictError",
 ]
 
@@ -340,6 +341,27 @@ def save_production_row(conn: sqlite3.Connection, row: ProductionRow,
         f"INSERT OR REPLACE INTO production_rows ({_PROD_COLS}) VALUES ({placeholders})",
         _prod_values(stamped))
     return stamped
+
+
+def delete_production_row(conn: sqlite3.Connection, row_id: str) -> bool:
+    """Remove one Production row from the mirror, by LOCAL id or notion_id.
+
+    Accepts either because the caller is usually the Workbench, whose
+    /api/delete speaks Notion page ids (state.archive_page operates on
+    Notion), while the Database tab speaks local ids.
+
+    Its per-shot rows go too: production_shots has no foreign key (the mirror
+    is rebuilt from Notion, not enforced relationally), so leaving them would
+    strand rows that `counts()` still totals and nothing can ever reach.
+    """
+    row = conn.execute(
+        "SELECT id FROM production_rows WHERE id = ? OR notion_id = ?",
+        (row_id, row_id)).fetchone()
+    if row is None:
+        return False
+    conn.execute("DELETE FROM production_shots WHERE row_id = ?", (row["id"],))
+    cur = conn.execute("DELETE FROM production_rows WHERE id = ?", (row["id"],))
+    return cur.rowcount > 0
 
 
 def upsert_production_row_from_notion(conn: sqlite3.Connection, row: ProductionRow,
