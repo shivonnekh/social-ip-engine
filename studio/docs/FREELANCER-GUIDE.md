@@ -93,7 +93,15 @@ downloads the clip into its **🎬 Video here** toggle, then ffmpeg-concats a fi
 - Always use a **`_vip` model** (`seedance2.0fast_vip`) — it skips the queue.
 - **Submit one shot at a time** — many at once throttles the account (tasks stall for hours).
 - Realistic talking-head + audio is **flaky — just retry**, it usually passes.
-- **Two people in one image (e.g. doctor + patient) hangs 即梦.** For those shots use motion-only (`image2video`) + voiceover, or make the image a single person.
+- **Two people in one image is fine** — but you must tell 即梦 *who speaks*. Add a
+  【Second person】block naming the non-speaker, saying their mouth stays closed and
+  forbidding lip animation on them. Without it the model cannot tell which face owns
+  the audio. (Corrected 2026-09-02: this guide previously said a two-person image
+  hangs 即梦 and to fall back to motion-only `image2video`. That was disproven — a
+  doctor-standing + patient-seated two shot passed on the first attempt in ~160s with
+  correct lip-sync. Following the old advice cost you the lip-sync for nothing.)
+- **The speaking face must be near-frontal** (≤15° off-axis), eyes open, mouth visible.
+  A side profile fails silently and falls back to Ken Burns.
 
 ## ✅ Step 6 — Finish
 Set the row's **Stage → ✂️ Edit** (assembled) then **✅ Published** when live. The final video sits at the top of the row.
