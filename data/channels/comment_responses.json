@@ -887,5 +887,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/clicking-page-1.png"
     ]
+  },
+  {
+    "keyword": "knot",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The knot is almost always below the shoulder blade, not in the neck 💆\n\nQuick check — does yours hurt more turning your head, or more lifting your arm?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM knot guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "💆 Stiff Neck — The Knot Behind It",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/knot-page-1.png"
+    ]
   }
 ]
