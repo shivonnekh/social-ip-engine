@@ -164,7 +164,18 @@ Jackie's voice is a **custom MiniMax clone** of his real voice — not a preset.
 - **Use `_vip` models — they SKIP the queue** (non-vip queue is 500k+, hours).
 - **Submit ONE AT A TIME** — submitting many at once throttles the account (tasks stall in "querying" for hours).
 - Result video URL: `result_json.videos[0].video_url`.
-- **Realistic talking-head + audio is flaky** — retry usually works. **Two people in one image (e.g. doctor + patient) hangs 即梦** — for those shots use `image2video` (motion only) or ffmpeg Ken Burns + voiceover, OR regenerate as a single person.
+- **Realistic talking-head + audio is flaky** — retry usually works.
+- ~~**Two people in one image (e.g. doctor + patient) hangs 即梦**~~ — **DISPROVEN 2026-09-02.**
+  A doctor-standing + patient-seated two shot, both faces near-frontal, went through
+  `multimodal2video` and succeeded on the FIRST attempt in ~160s: the doctor lip-synced the
+  uploaded audio while the patient's mouth stayed shut, both identities held, no burned
+  subtitles, 8.02s video vs 8.10s audio. Test artefacts: `/tmp/twoperson/`.
+  What makes it work is telling 即梦 explicitly WHO speaks: a 【Second person】block naming
+  the non-speaker, stating their mouth stays closed, and forbidding lip animation on them.
+  Without that block the model has no way to know which face owns the audio.
+  The old advice (fall back to `image2video`, or regenerate as a single person) is no longer
+  necessary and costs you the lip-sync. `submit_shot_image2video`'s docstring still calls
+  itself the two-person fallback — that line is now stale too.
 - **Lip-sync requires a near-frontal face** — side/profile angles (>30° off-axis) cause multimodal2video to fail silently → Ken Burns fallback. Always generate image prompts with face ≤15° off-axis when lip-sync is needed.
 - Audio must be **2–15s** — an over-length clip does NOT error, it silently hangs "querying" forever (looks identical to the hang-lottery but is 100% reproducible for that shot). `notion_video.py::fit_audio_for_jimeng()` auto-detects and ffmpeg-atempos (pitch-preserving) any pre-download audio >15s down to 14.6s — but if a shot's own VO script genuinely needs >~30 words, shorten the SCRIPT (a sped-up 30-word line still sounds rushed); don't rely on the auto-fit alone for anything egregiously long.
 - **🚨 即梦 does NOT play the uploaded voice back verbatim — it re-synthesizes its own audio track.** Root-caused 2026-07-19 via waveform cross-correlation (word-transcript comparison via Whisper is NOT sufficient proof — it only tells you the CONTENT matches, not the voice): every shot tested had near-zero correlation (0.01–0.10) with the uploaded clip and a different duration (up to 0.6s off), despite transcribing to the same words. 即梦 treats the uploaded audio as a content/rhythm reference for lip-sync, not as playback audio. **No prompt wording fixes this — it's a model limitation, not a prompt problem.**
