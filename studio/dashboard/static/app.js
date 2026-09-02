@@ -766,6 +766,74 @@ function panelsHTML(d) {
     </div>`).join("");
 }
 
+/**
+ * Keep the open detail panel's media playable.
+ *
+ * Notion signs its S3 file URLs for exactly one hour. This panel is
+ * deliberately never auto-polled (a re-render would interrupt whatever you
+ * are watching), so a row left open past the hour renders nothing but dead
+ * links — S3 returns 403 "Request has expired" and the player shows a
+ * struck-through play button. Reported 2026-09-02.
+ *
+ * Two cheap guards instead of polling:
+ *  - before you press play, if the URL is already expired, re-fetch first;
+ *  - if a media element errors anyway, re-fetch once and retry.
+ *
+ * Both go through refreshDetail(), which is the same single re-fetch
+ * reopening the row would do — no new endpoint, no background traffic.
+ */
+let mediaRefreshAt = 0;
+
+async function refreshStaleMedia(reason) {
+  // At most one refresh per 15s: several <video>s erroring at once (every
+  // shot in a row goes stale together) must not fire N refreshes.
+  const now = Date.now();
+  if (now - mediaRefreshAt < 15_000) return false;
+  mediaRefreshAt = now;
+  console.info(`[studio] refreshing detail — ${reason}`);
+  await refreshDetail();
+  return true;
+}
+
+function wireMediaFreshness(container, detail) {
+  const urls = detailMediaUrls(detail);
+
+  container.querySelectorAll("video, audio").forEach((el) => {
+    // A dead link surfaces here as MEDIA_ERR_NETWORK / SRC_NOT_SUPPORTED.
+    el.addEventListener("error", () => {
+      if (anySignedUrlExpired([el.currentSrc || el.src])) {
+        refreshStaleMedia("media URL expired");
+      }
+    }, { once: true });
+
+    // preload="none" means nothing is fetched until play, so the expiry is
+    // not discovered until the moment you actually want to watch it.
+    el.addEventListener("play", (ev) => {
+      if (anySignedUrlExpired([el.currentSrc || el.src])) {
+        ev.target.pause();
+        refreshStaleMedia("play on an expired URL");
+      }
+    });
+  });
+
+  // Images fail silently (no error UI at all) — a broken still just looks
+  // like a shot that was never generated, which is a worse lie than a
+  // missing video.
+  container.querySelectorAll("img").forEach((img) => {
+    img.addEventListener("error", () => {
+      if (anySignedUrlExpired([img.currentSrc || img.src])) {
+        refreshStaleMedia("image URL expired");
+      }
+    }, { once: true });
+  });
+
+  // If the whole panel is already stale when you come back to the tab, fix
+  // it before you click anything.
+  if (urls.length && anySignedUrlExpired(urls)) {
+    refreshStaleMedia("panel reopened with expired media");
+  }
+}
+
 function renderDetail(d) {
   const b = BANNERS[d.next_action] || BANNERS.done;
   const notionUrl = "https://www.notion.so/" + d.id.replaceAll("-", "");
@@ -953,6 +1021,7 @@ function renderDetail(d) {
   // no #btn-assets etc. to find, and that's correct, not a bug to guard
   // against loudly.
   document.getElementById("btn-back").onclick = closeDetail;
+  wireMediaFreshness(detailEl, d);
   const assetsBtn = document.getElementById("btn-assets");
   const videoBtn = document.getElementById("btn-video");
   const collectBtn = document.getElementById("btn-collect");

@@ -248,6 +248,41 @@ deleted".
 Deleting a row leaves its **concept alone** — that's the point of the wrong-IP
 case. The other IP's row is untouched too.
 
+### Notion media URLs die after exactly one hour
+Every image / audio / video the dashboard shows is a Notion-hosted file
+served as a pre-signed S3 URL with `X-Amz-Expires=3600`. Past that, S3
+returns **403 `AccessDenied` — "Request has expired"**, and a `<video>`
+renders as a black box with a struck-through play button.
+
+`state.py` calls this "fine for a local dashboard where the detail view
+re-fetches on every open" — true only if you actually close and reopen the
+row. `app.js` deliberately does NOT auto-poll the open detail panel (it costs
+~15 Notion calls and a re-render would interrupt whatever you are watching),
+so **a row left open past the hour silently loses all of its media.**
+Reported live 2026-09-02 and reproduced: a stored URL 67 minutes past expiry
+returns exactly that 403.
+
+`static/media_freshness.js` closes it without polling. Expiry is read
+straight out of the URL's own `X-Amz-Date` + `X-Amz-Expires` — no request
+needed to know a link is already dead — and `wireMediaFreshness()` refreshes
+the panel in three cases: on `play` against an expired URL, on a media
+`error`, and when a panel is re-rendered already stale. Refreshes are
+throttled to one per 15s, because every shot in a row goes stale at the same
+moment and would otherwise fire N refreshes at once.
+
+⚠️ **The 60s skew is deliberate**: a URL expiring within the next minute
+counts as already expired, so a video you start now does not die four seconds
+in — which reads as a corrupt file rather than a stale link.
+
+⚠️ **An UNSIGNED url must never count as expired** (`/media/tts/*.mp3` is
+served locally and has no `X-Amz-*` params at all). `signedUrlExpiry()`
+returns null for those, meaning "nothing to expire", and that is tested.
+
+Note the mirror's `production_shots.image_url/audio_url/video_url` are
+snapshots of these signed URLs and are therefore stale within the hour. They
+are fine as "was there media here?" booleans and must NOT be rendered as
+live sources.
+
 ### Import never deletes
 `studio_sync.py --import` only adds and updates. A concept or row archived in
 Notion DIRECTLY stays in the mirror until something removes it locally. That
