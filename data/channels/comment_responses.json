@@ -902,5 +902,17 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/knot-page-1.png"
     ]
+  },
+  {
+    "keyword": "emotion",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nIn TCM each emotion has a home organ — and when one runs too hot for too long, that organ is the first to complain.\n\nWhich one sounds most like you?\n1. Quick to anger, tight chest, headache at the temples → Liver (rose bud tea, and get to bed early)\n2. Racing mind, can't sit still, restless sleep with vivid dreams → Heart (lotus seed tea, slow your evenings down)\n3. Overthinking, poor appetite, bloating after meals → Spleen (Chinese yam congee, eat slowly)\n4. Sadness you can't shake, shallow breathing, frequent sighing → Lung (snow pear with chuan bei, daily deep breathing)\n5. Anxiety, weak knees, waking around 3am → Kidney (black sesame, warm your feet before bed)\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM emotion guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "The 5 Emotions & Their Organ — 情緒對照表"
   }
 ]
