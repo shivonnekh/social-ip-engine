@@ -113,6 +113,268 @@ Automation only starts once a human drags **Stage** in the social-ip-engine-side
 - `🟢 Ready to Publish` → Notion Automation → `POST /admin/notion-sync` — auto-drafts the comment-keyword DM rule, auto-FETCHES (doesn't generate) whatever's already in "📊 DM Infographic".
 - `✅ Published` → Notion Automation → `POST /admin/notion-publish` — auto-generates/reuses a cover photo if missing, then actually publishes the "Production Video" file live to Instagram.
 
+## 🗂 Database tab — Studio's own copy of the board (added 2026-09-02)
+
+The dashboard now has a **local SQLite mirror of all three Notion databases**
+(`studio/data/studio.db`, gitignored) and a Database tab that browses and edits
+it, with a chat agent beside it. This is step one of moving off Notion: the
+board is now editable in Studio, and Notion is kept in sync behind it.
+
+**This did not exist before.** `dashboard/state.py` was — and still is — a
+read-only live view over Notion with no local storage of any kind; archiving a
+Notion page WAS the delete. The Workbench/Concepts/Calendar tabs are unchanged
+and still read Notion live. Only the new tab reads the mirror.
+
+### Which direction is authoritative
+**Notion still is, for anything irreversible.** The live publish path
+(`src/notion_publish.py`), the comment→DM sync (`src/notion_sync.py`) and every
+generation script read the Notion board, not this mirror. So an edit made in
+Studio is not real until it reaches Notion. That is what the `dirty` flag and
+the "N unpushed" badge in the toolbar are for — a record edited locally stays
+dirty until a successful push.
+
+### The two sync directions
+
+```bash
+python3 scripts/studio_sync.py --import              # Notion → Studio (fast)
+python3 scripts/studio_sync.py --import --with-shots # ...+ per-shot media state (slow)
+python3 scripts/studio_sync.py --push                # Studio → Notion
+python3 scripts/studio_sync.py --status              # what is out of sync
+```
+
+The dashboard's ↓ Import / ↑ Push buttons run exactly these, through `jobs.py`,
+so they stream into the same log drawer as every other job.
+
+**An import never overwrites a record with unpushed local edits** — it reports
+`skipped_dirty` and keeps the local version, because the Notion version is
+still in Notion and can be re-imported, whereas the local edit would be gone.
+`--force` overrides that and discards the local edit.
+
+### Write-back PATCHES blocks — it never rebuilds a body
+This is the load-bearing safety property. `notion_prompts.apply_shot_plan(
+rebuild=True)` wipes and rebuilds a page body, and this file warns that this
+destroys uploaded media. Concept pages have the same hazard for a different
+reason: a scan of all 95 live concepts (2026-09-02) found **15 distinct
+heading_2 section titles** — "🎬 Directorial Notes", "📩 Material", act-split
+shot guides, 11 "🎠 Carousel Guide" sections. A rebuild that knew only the
+canonical 5 sections would silently delete the other 10 kinds of hand-written
+work.
+
+So `concept_body.parse()` records the **block id** of every field it reads
+(`anchors`), and `notion_writeback.plan_body_patches()` PATCHes exactly those
+ids. It never deletes a block, never appends one, and never addresses a section
+it does not model — those are captured in `extra_sections`, shown read-only in
+the UI, and left completely alone on the page. Verified live: a hand-written
+"🎬 Directorial Notes" section survived a Studio edit that changed the hook,
+a shot's 🎥 visual and the first DM.
+- A shot that exists locally but has no counterpart block on the page is
+  **reported** in the save's warnings, not silently appended somewhere.
+- `push_concept` re-reads the page first and **refuses** if the body holds
+  media blocks. No live concept does; the refusal is for the one case where a
+  bad patch would destroy something unrecoverable.
+- A concept with no `notion_id` (created in Studio) is CREATEd whole, body and
+  all, from `concept_body.build_blocks()` — building a full body is only safe
+  on a page that did not exist a moment ago.
+- **A Production row cannot be created from Studio** — its body is the whole
+  shot-by-shot scaffold every generation script reads. Only a fan-out builds
+  that correctly, so `push_production_row` raises rather than making a
+  half-formed row.
+
+### Reel vs carousel, and fanning out from the tab
+The concepts table has **format filter chips** (All / 🎬 Reel / 🎠 Carousel)
+plus a Format column. Format is DERIVED, not stored: a 🎬 Shot Guide makes a
+concept a reel, a 🎠 Carousel Guide makes it a carousel — the guide *is* the
+format, and there is no Notion property that could disagree with the body.
+Live split: 84 reel / 11 carousel, no overlap.
+
+**A concept is shared by every IP** — the Content Library is
+language-agnostic, and fan-out creates one Production row per ACTIVE IP
+(today: Chloe Chan (HK) + Jackie Chan (EN); Vera Lin is inactive). Each row
+carries that IP's own language, script and voice.
+
+The concept editor now has its own **🚀 Fan out** section, so you no longer
+have to leave for the 📚 Concepts tab. Two buttons, deliberately separate:
+- **▶ Fan out** → `notion_fanout.py`. Creates the rows and builds each row's
+  body — shot plan AND carousel plan (`notion_fanout` calls
+  `apply_carousel_plan` unconditionally; it self-decides "no carousel guide"),
+  so ONE button covers both formats. Free, and safe to re-run: it dedups
+  against IPs that already have a row.
+- **▶ Fan out + generate assets** → `generate_assets.py`. Also runs image +
+  voice generation for every resulting row, which spends real OpenAI and
+  MiniMax credit. Confirm-gated.
+
+Until this existed, the only fan-out button in the whole UI was the expensive
+one, so "make the rows and look at them first" required a terminal.
+
+Fan-out runs against **Notion**, not the mirror, so the panel blocks itself
+when the concept has no `notion_id` (never pushed) or is `dirty` (unpushed
+edits) — otherwise it would fan out the old version, silently.
+
+### Seeing which IPs a concept reached
+The concepts table has a **Fanned out** column (`1/2`) and the concept
+editor's fan-out panel lists every active IP with ✅ / ⭕ and that row's
+Stage. Fan out to Jackie only and the panel says exactly that — ✅ Jackie,
+⭕ Chloe.
+
+Both read the SAME `fanned_out` field, joined against the IP registry by
+`db_api._fanout_coverage` and shipped with the concepts payload. An earlier
+version rebuilt the panel from `/api/db/concepts/{id}`'s `production_rows`,
+which carries `ip_id` but no ip NAME — every IP resolved to "❓ no IP", so
+the panel claimed nothing was fanned out while the column next to it said
+`1/2`. One source, one shape, no way for the two to disagree.
+
+A row belonging to a now-INACTIVE IP still appears, marked `(inactive)`, but
+does not count toward the `n/m` figure — that row is real work already done,
+and hiding it would report the concept as less fanned out than it is.
+
+**After a fan-out the panel still shows ⭕ until you import.** The rows were
+created in Notion; the mirror has not seen them. The toast says so.
+
+### Deleting a Production row (the wrong-IP fix)
+Fanned out to an IP you didn't mean to? Delete the row from the **Workbench**:
+hover any queue card for a 🗑 in its corner (two-click armed), or open the row
+and use the 🗑 Delete in its header. Both hit `/api/delete`.
+
+`/api/delete` now also **removes the row from Studio's mirror**
+(`app._forget_locally`). Without that the two views disagree permanently:
+archiving in Notion hides a row from every Notion-backed view, but the mirror
+is refreshed by an import that only ever adds and updates — there is no
+deletion pass — so a row deleted from the Workbench sat in the Database tab
+forever with no way to remove it. The cleanup runs AFTER the Notion archive
+succeeded and never raises: the delete the user asked for has already
+happened, so a mirror hiccup must not turn it into a 502 reading "nothing was
+deleted".
+
+Deleting a row leaves its **concept alone** — that's the point of the wrong-IP
+case. The other IP's row is untouched too.
+
+### Import never deletes
+`studio_sync.py --import` only adds and updates. A concept or row archived in
+Notion DIRECTLY stays in the mirror until something removes it locally. That
+is why the delete paths above do their own local cleanup rather than relying
+on a later import to notice. Auto-pruning on import is deliberately not
+implemented: a partial Notion response would look identical to "these were
+deleted" and take real local work with it.
+
+### Deleting a concept (changed 2026-09-02 — it used to be local-only)
+`DELETE /api/db/concepts/{id}` now archives the concept in **Notion** as well
+as removing it from Studio, and archives every Production row fanned out from
+it (`state.archive_content`) — a row whose concept is archived is
+un-actionable but still shows in the workbench queue.
+
+It previously deleted the local row only, on the reasoning that this "fails
+safe" because the concept returns on the next import. That made the button a
+lie: the concept vanished and then silently came back on the next sync.
+Deleting in one place only is not a safer delete, just a more confusing one.
+
+Two rules hold this together:
+- **Notion is archived FIRST**, and the local row is removed only if that
+  succeeded. Reversed, a Notion failure leaves a page with no local record —
+  invisible in Studio, still live in Notion, unreachable from here. Pinned by
+  `test_a_failed_notion_archive_leaves_the_concept_in_BOTH_places`;
+  mutation-tested (swap the order and two tests go red).
+- **The blast radius is shown before the button arms.** The first click hits
+  `/delete-preview` and rewrites the button to name how many production rows
+  go with it and how many are **already published** — a delete can reach a
+  Reel that is live on Instagram. Same prep-then-point-of-no-return shape as
+  the publish buttons.
+
+"Delete" is Notion's `archived: true` — the Trash, recoverable there — never
+a hard delete.
+
+### The agent can under-deliver on a bulk edit — check its count
+Observed live 2026-09-02: asked to "fill all dm flow for all concept here",
+the agent updated 10 of the 11 carousel concepts and reported *"all 10
+concepts"*, silently skipping "5 Signs Your Liver Qi Is Stuck". It also
+filled only `first_dm` + `second_dm`, leaving `infographic_brief` empty on
+all 11. `SYSTEM_PROMPT` now requires it to count before and after and to
+never say "all" unless those numbers match — but the **action chips under
+each reply are the ground truth**, not the prose. Count the chips.
+
+### Two non-obvious invariants (found in review — don't undo them)
+
+**1. A shot's heading is relabelled whenever it stops describing what's under
+it.** Shots are matched to Notion blocks by POSITION (`ShotAnchor` is
+deliberately positional — an act-split guide legitimately has two "Shot 1"
+headings). So a same-length REORDER, or a shot inserted mid-list, writes shot
+N's content into position N's blocks. Without the relabel at
+`notion_writeback.plan_body_patches`, that leaves shot 2's content sitting
+under a heading still reading "Shot 1 · Hook" — silently reassigning one
+shot's dialogue to another. The relabel is what makes position-matching safe.
+Pinned by `test_swapping_two_shots_leaves_each_heading_over_its_own_content`
+and friends, which assert on the RESULTING PAGE (a tiny Notion simulator,
+`_apply()`), not on the patch plan. Mutation-tested: disabling the relabel
+turns 4 tests red.
+
+**2. `except (Exception, SystemExit)` at every "never raises" boundary is
+load-bearing, not defensive noise.** `notion_image.ncall()` reports an
+unretryable Notion error with `sys.exit()`, and `SystemExit` is a
+**BaseException** — a bare `except Exception` does not catch it. Before this,
+an expired `NOTION_KEY` or an exhausted 429 retry sailed straight through
+`db_api._sync`, `agent_tools._push` and `notion_writeback.push_all_dirty`,
+so one bad record aborted a whole push batch — the exact opposite of the
+per-record isolation those functions promise. `ncall` itself is deliberately
+left alone: ~20 CLI scripts share it, and exiting on a Notion error is right
+for them.
+
+### Long jobs commit per record
+`import_all` and `push_all_dirty` `conn.commit()` after each record, and
+`db_api._sync` commits BEFORE the Notion push. One transaction for a whole
+job would hold SQLite's write lock for the couple of minutes an import takes,
+so every concurrent save from the dashboard would fail with "database is
+locked" — and the "local write is durable before anything can fail" promise
+would have been false, since the commit came after the push. Verified live: a
+save during a running `--import --with-shots` succeeds. A residual lock is
+still surfaced as a 503 "busy, try again", not a raw 500
+(`db_api.locked_db_handler`).
+
+### What the Database tab will NOT let you do
+`Stage`, `🎠 Carousel Stage` and both publish dates are deliberately absent
+from `notion_writeback.production_properties()` and from the row editor. A
+generic "save this row" must never be able to fire a real Instagram post —
+that stays on the Workbench behind its existing confirm gate (`/api/stage`).
+
+### The chat agent
+Right-hand panel of the tab. `agent.py` is a plain OpenAI function-calling loop
+over `urllib` (stdlib only, like every other script here — no `openai`
+package), model from `STUDIO_AGENT_MODEL`, default `gpt-5.4-mini`. Needs
+`OPENAI_API_KEY` in `studio/.env`; the rest of the tab works without it.
+
+Its tools (`agent_tools.py`) are read-mostly by design: list/get concepts, list
+IPs, list production rows, board summary, and create/update **concepts only**.
+There is deliberately **no publish, no Stage change, no delete, no archive and
+no generation job** — a pinned test asserts none of those words appear in the
+tool list. It can draft and edit; a human still clicks Publish.
+
+`SYSTEM_PROMPT` carries this pipeline's actual house rules (4 shots, ≤13s each,
+near-frontal faces for lip-sync, a real quick win before the CTA, one plain
+lowercase CTA keyword). Verified: given one sentence of idea, it produced a
+complete, convention-compliant concept straight into Notion.
+
+Writes land **locally first, then push** — so a Notion outage costs a warning,
+not the thing the user just typed. A failed push leaves the record dirty and
+says so in the reply's action chip.
+
+### Files
+| File | Role |
+|------|------|
+| `dashboard/records.py` | frozen dataclasses + `with_changes()` field allow-list |
+| `dashboard/studio_db.py` | SQLite schema, connection, sync log |
+| `dashboard/repo.py` | CRUD in records, dirty-flag rules |
+| `dashboard/concept_body.py` | parse/build a concept page body (pure) |
+| `dashboard/notion_mirror.py` | Notion → local (pure mappers + driver) |
+| `dashboard/notion_writeback.py` | local → Notion (surgical patches) |
+| `dashboard/agent_tools.py` | the agent's tool schemas + dispatch |
+| `dashboard/agent.py` | the function-calling loop |
+| `dashboard/db_api.py` | `/api/db/*` + `/api/agent/*` routes |
+| `scripts/studio_sync.py` | the import/push/status CLI |
+| `static/database_view.js` | pure view helpers (unit-tested) |
+| `static/database.js`, `static/agent_chat.js` | the tab's DOM |
+
+Tests: `pytest studio/dashboard` (124) and
+`node --test studio/dashboard/static/*.test.js` (63). Note `node --test` on the
+directory itself fails on Node 22 — pass the glob.
+
 ### Scheduling a publish time (added 2026-09-01)
 A row's `Publish Date` (video) / `🎠 Carousel Publish Date` (carousel) property lets you defer
 the `✅ Published` Stage flip to a future moment instead of "right now" — the live backend

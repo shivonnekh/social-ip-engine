@@ -57,9 +57,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Final
-from zoneinfo import ZoneInfo
 
 from src import notion_publish_caption
+from src._publish_tz import PUBLISH_TZ
 from src.ips import registry as ip_registry
 from src.notion_publish import LedgerCorruptError, _now_iso
 from src.notion_publish_carousel_media import find_carousel_panel_sources
@@ -79,7 +79,12 @@ _IDS_PATH = REPO_ROOT / "scripts" / "notion_ids.json"
 _STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_publish_carousel_state.json"
 _FB_STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_publish_carousel_fb_state.json"
 
-_HKT: Final = ZoneInfo("Asia/Hong_Kong")
+# Shared with notion_publish.py, notion_publish_scheduler.py, AND the
+# studio dashboard via src/_publish_tz.py. Renamed from `_HKT` to
+# `_PUBLISH_TZ` 2026-09-01 — see notion_publish.py's matching comment for
+# the full reasoning (a lying-name fix, not a behaviour change: MYT and
+# HKT are both fixed UTC+8, no DST).
+_PUBLISH_TZ: Final = PUBLISH_TZ
 
 _CAROUSEL_PUBLISH_STAGE = "✅ Published"
 _DEFAULT_CAROUSEL_STAGE_PROP = "🎠 Carousel Stage"
@@ -141,8 +146,8 @@ def _carousel_publish_date_eligible(
     except (ValueError, TypeError, AttributeError, OverflowError) as exc:
         return True, f"unparseable Carousel Publish Date ({exc!r}) — treating as eligible now"
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=_HKT)
-    reference = now if now is not None else datetime.now(_HKT)
+        parsed = parsed.replace(tzinfo=_PUBLISH_TZ)
+    reference = now if now is not None else datetime.now(_PUBLISH_TZ)
     return parsed <= reference, None
 
 

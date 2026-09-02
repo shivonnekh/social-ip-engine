@@ -10,7 +10,7 @@ review step — per-shot videos are reviewed in the shots grid, then ONE click
 produces the final Production Video:
   1. Generate assets    -> generate_assets.py     (fan-out + image + voice)
   2. Approve -> video    -> notion_video.py        (per-shot videos land in Notion)
-  3. 一键成片            -> notion_video.py --merge-only
+  3. Assemble final cut  -> notion_video.py --merge-only
                             + add_karaoke_captions.py --upload   (one chained job:
                             merge + captions + upload "Production Video")
      NOTE: the Production Tracker has NO "Raw Video" property (confirmed
@@ -35,19 +35,38 @@ import os
 import secrets
 import sys
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import Response, StreamingResponse
+from fastapi.responses import HTMLResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 DASHBOARD_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(DASHBOARD_DIR))
 
+import sqlite3  # noqa: E402
+
 import jobs  # noqa: E402
 import state  # noqa: E402
+from asset_versions import stamp_asset_urls  # noqa: E402
+from db_api import locked_db_handler  # noqa: E402
+from db_api import router as db_router  # noqa: E402
+from publish_schedule import (  # noqa: E402
+    InvalidPublishDate,
+    ensure_future,
+    validate_publish_date_iso,
+)
 
 app = FastAPI(title="AI-IP Studio Dashboard")
+
+# The Database tab + its chat agent (see db_api.py). Separate router because
+# it serves the LOCAL mirror rather than live Notion, and therefore keeps
+# working when Notion is unreachable — the opposite of every route below.
+app.include_router(db_router)
+# A save attempted while a sync job holds the mirror's write lock should read
+# as "busy, retry", not as an unhandled 500 that looks like a rejection.
+app.add_exception_handler(sqlite3.OperationalError, locked_db_handler)
 
 # ---------- auth (required for tunnel/remote access) ----------
 # Set DASHBOARD_PASSWORD to enforce HTTP Basic auth on EVERY route (user:
@@ -68,13 +87,52 @@ async def _basic_auth(request: Request, call_next):
     return await call_next(request)
 
 
+class _RevalidatingStaticFiles(StaticFiles):
+    """StaticFiles that forces the browser to revalidate every asset.
+
+    Starlette's StaticFiles sends ETag + Last-Modified but NO
+    ``Cache-Control``. With no explicit directive a browser falls back to
+    HEURISTIC caching (roughly 10% of the age since Last-Modified) and may
+    serve app.js / publish_schedule.js from its own cache WITHOUT ever
+    asking this server whether they changed. Observed live 2026-09-02: a
+    dashboard tab left open kept rendering a pre-change app.js for hours
+    after the file on disk (and the file this server was serving, verified
+    by curl) already had the new publish-schedule UI in it — the feature
+    looked "not shipped" when it was actually just never re-fetched.
+
+    ``no-cache`` is deliberately NOT ``no-store``: the browser still keeps
+    its copy and still gets a cheap 304 when nothing changed, so this
+    costs a conditional request per asset, not a re-download. For a
+    localhost tool whose whole job is reflecting what was just edited,
+    "always current" beats saving one round-trip — the failure mode of
+    stale JS here is a human concluding a shipped feature doesn't exist.
+    """
+
+    def file_response(self, *args: Any, **kwargs: Any) -> Response:
+        response = super().file_response(*args, **kwargs)
+        response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
 @app.get("/")
 def index():
-    from fastapi.responses import FileResponse
-    return FileResponse(DASHBOARD_DIR / "static" / "index.html")
+    # Same no-cache reasoning as _RevalidatingStaticFiles above — index.html
+    # is what pulls in the <script> tags, so a stale copy of THIS file can
+    # pin every asset it references to an old version too.
+    #
+    # ...and because `no-cache` cannot reach a copy the browser cached BEFORE
+    # that header existed, every /static URL is additionally stamped with a
+    # content digest. See asset_versions.py for the incident that motivated
+    # it: a browser served an app.js predating the Database tab, producing a
+    # blank tab and Chinese UI text that was no longer anywhere on disk.
+    html = (DASHBOARD_DIR / "static" / "index.html").read_text(encoding="utf-8")
+    return HTMLResponse(
+        stamp_asset_urls(html, DASHBOARD_DIR / "static"),
+        headers={"Cache-Control": "no-cache"},
+    )
 
 
-app.mount("/static", StaticFiles(directory=str(DASHBOARD_DIR / "static")), name="static")
+app.mount("/static", _RevalidatingStaticFiles(directory=str(DASHBOARD_DIR / "static")), name="static")
 
 
 # ---------- read-only board state ----------
@@ -84,7 +142,7 @@ _CREDIT_CACHE: dict = {"at": 0.0, "data": None}
 
 @app.get("/api/credit")
 def api_credit():
-    """即梦 (dreamina) credit balance — cached 60s so the UI's background poll
+    """Dreamina (即梦) credit balance — cached 60s so the UI's background poll
     doesn't hammer the CLI. Fails soft: {'total_credit': None} when the CLI is
     missing/not logged in, never a 500 (credit display is advisory)."""
     import json as _json
@@ -115,10 +173,11 @@ def _friendly_notion_error(exc: Exception) -> str:
     code change here can work around it."""
     msg = str(exc)
     if "object_not_found" in msg or "404" in msg:
-        return ("Notion 连接断了 — 打开该数据库右上角 ••• → Connections，"
-                "确认 Notion 集成还连着（Production Tracker + Content Library 都要查）。"
-                f" 原始错误: {msg}")
-    return f"读取 Notion 失败: {msg}"
+        return ("Notion connection dropped — open that database's ••• menu "
+                "(top right) → Connections and confirm the Notion integration "
+                "is still connected (check BOTH Production Tracker and Content "
+                f"Library). Raw error: {msg}")
+    return f"Couldn't read from Notion: {msg}"
 
 
 @app.get("/api/queue")
@@ -140,7 +199,7 @@ def api_content():
 
 @app.get("/api/ips")
 def api_ips():
-    """Active IPs — powers the Concepts view's "只 fan out 这个 IP" selector."""
+    """Active IPs — powers the Concepts view's "fan out this IP only" selector."""
     try:
         return state.list_active_ips()
     except Exception as exc:  # noqa: BLE001
@@ -163,6 +222,29 @@ def api_row_detail(row_id: str):
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.get("/api/calendar")
+def api_calendar():
+    """Every post that has actually gone live — the Calendar view's data."""
+    try:
+        return state.published_events()
+    except state.PublishLedgerCorrupt as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except Exception as exc:  # noqa: BLE001 - surface as a clear, actionable message
+        raise HTTPException(status_code=502, detail=_friendly_notion_error(exc)) from exc
+
+
+@app.get("/api/ready-to-schedule")
+def api_ready_to_schedule():
+    """Candidates for the calendar's "schedule this day" dialog — every row
+    at 🟢 Ready to Publish, with the raw inputs the browser's own publish
+    gate evaluates (see state._schedule_candidate for why the gate is not
+    duplicated here)."""
+    try:
+        return state.ready_to_schedule()
+    except Exception as exc:  # noqa: BLE001 - surface as a clear, actionable message
+        raise HTTPException(status_code=502, detail=_friendly_notion_error(exc)) from exc
+
+
 @app.get("/api/jobs")
 def api_jobs():
     return jobs.list_jobs()
@@ -182,6 +264,18 @@ class ActionRequest(BaseModel):
 
 
 _CONTENT_ACTIONS: dict[str, str] = {
+    # Fan-out ONLY: creates one Production row per active IP and builds each
+    # row's body (shot plan AND carousel plan — notion_fanout calls both
+    # unconditionally, and apply_carousel_plan self-decides whether the
+    # concept actually has a 🎠 Carousel Guide). Costs nothing but Notion
+    # writes: no image, voice or video generation.
+    #
+    # Deliberately separate from generate_assets_content below, which fans
+    # out AND immediately spends real money on gpt-image-2 + MiniMax TTS for
+    # every resulting row. Until now the only fan-out button in the UI was
+    # the expensive one, so "create the rows and look at them first" was not
+    # something you could do without dropping to a terminal.
+    "fanout_content": "notion_fanout.py",
     "generate_assets_content": "generate_assets.py",
 }
 
@@ -276,16 +370,16 @@ def api_action(req: ActionRequest):
         label = (f"{req.action} ({noun} {item_list[0]})" if len(item_list) == 1
                  else f"{req.action} ({noun}s {', '.join(map(str, item_list))})")
         if req.instruction or req.instructions:
-            label += " + 自定义指令"
+            label += " + custom instruction"
         job = jobs.start_job(label, steps)
         return {"job_id": job.id}
 
     if req.action == "collect_video":
-        # Harvest 即梦 tasks that were submitted earlier but whose polling was
+        # Harvest Dreamina tasks that were submitted earlier but whose polling was
         # abandoned (queue throttled / job killed): poll saved submit_ids from
         # video_submits.json, download whatever finished, place in Notion.
         # Merge only happens if that completes the row (partial-merge guarded
-        # inside the script). Zero new 即梦 submissions.
+        # inside the script). Zero new Dreamina submissions.
         if not req.row_id:
             raise HTTPException(400, "row_id required")
         job = jobs.start_job("collect_video",
@@ -294,7 +388,7 @@ def api_action(req: ActionRequest):
 
     if req.action == "finalize_video":
         # One click -> Production Video: merge the shot videos from Notion
-        # (no 即梦 calls), then burn karaoke captions and upload the result to
+        # (no Dreamina calls), then burn karaoke captions and upload the result to
         # the "Production Video" property. There is no Raw Video review step —
         # per-shot videos are reviewed in the shots grid, and the Production
         # Tracker has no "Raw Video" property anyway (discovered 2026-07-10:
@@ -314,6 +408,17 @@ class StageRequest(BaseModel):
     row_id: str
     stage: str
     confirm: bool = False
+    # ISO 8601 with an explicit UTC offset (studio's publish_schedule.js
+    # always attaches +08:00 / Asia/Kuala_Lumpur), only meaningful when
+    # stage == "✅ Published". None/omitted = publish immediately (and
+    # clears any previously-set schedule — see state.set_stage_with_publish_date).
+    # The now-vs-later CHOICE is made client-side (app.js deliberately omits
+    # this key on its "publish now" path, never sends an empty string) — this
+    # API has no separate "explicitly now" vs "forgot to set a date" signal,
+    # so any future second caller of this endpoint that omits the field gets
+    # an immediate publish, not an error. Fine for today's single local
+    # client; worth knowing before adding a second one.
+    publish_date: str | None = None
 
 
 _PUBLISH_STAGE = "✅ Published"
@@ -323,20 +428,35 @@ _PUBLISH_STAGE = "✅ Published"
 def api_stage(req: StageRequest):
     if req.stage not in state.STAGE_OPTIONS:
         raise HTTPException(400, f"unknown stage {req.stage!r}")
-    if req.stage == _PUBLISH_STAGE and not req.confirm:
-        # Irreversible — a real Instagram post goes live off this Stage flip via
-        # social-ip-engine's Notion Automation. Mirrors this codebase's own
-        # --confirm-publish pattern (see publish_pressure_points_carousel.py):
-        # prep/inspect is one click, the point-of-no-return is a separate one.
+    if req.stage != _PUBLISH_STAGE:
+        state.set_stage(req.row_id, req.stage)
+        return {"ok": True}
+    # Irreversible — a real Instagram post goes live off this Stage flip via
+    # social-ip-engine's Notion Automation (deferred until `publish_date` if
+    # set — see src/notion_publish.py::_publish_date_eligible). Mirrors this
+    # codebase's own --confirm-publish pattern (see
+    # publish_pressure_points_carousel.py): prep/inspect is one click, the
+    # point-of-no-return is a separate one. The schedule is folded into the
+    # SAME confirmed call as the Stage flip on purpose — see
+    # set_stage_with_publish_date's docstring for why two separate actions
+    # (set a date, then later click Publish) would be worse.
+    if not req.confirm:
         raise HTTPException(409, "confirm required to publish — this is irreversible")
-    state.set_stage(req.row_id, req.stage)
-    return {"ok": True}
+    if req.publish_date is not None:
+        try:
+            parsed = validate_publish_date_iso(req.publish_date)
+            ensure_future(parsed)
+        except InvalidPublishDate as exc:
+            raise HTTPException(400, str(exc)) from exc
+    state.set_stage_with_publish_date(req.row_id, req.stage, req.publish_date)
+    return {"ok": True, "scheduled": req.publish_date is not None}
 
 
 class CarouselStageRequest(BaseModel):
     row_id: str
     stage: str
     confirm: bool = False
+    publish_date: str | None = None  # same contract as StageRequest.publish_date
 
 
 _CAROUSEL_PUBLISH_STAGE = "✅ Published"
@@ -345,18 +465,27 @@ _CAROUSEL_PUBLISH_STAGE = "✅ Published"
 @app.post("/api/carousel-stage")
 def api_carousel_stage(req: CarouselStageRequest):
     """Separate endpoint from /api/stage on purpose — writes `🎠 Carousel
-    Stage`, never `Stage`, so a carousel's own publish lifecycle can never
-    accidentally touch (or be gated by) the Reel's. See
-    docs/carousel-format-plan.md Part 2.1."""
+    Stage` (+ `🎠 Carousel Publish Date`), never `Stage`/`Publish Date`, so a
+    carousel's own publish lifecycle can never accidentally touch (or be
+    gated by) the Reel's. See docs/carousel-format-plan.md Part 2.1."""
     if req.stage not in state.CAROUSEL_STAGE_OPTIONS:
         raise HTTPException(400, f"unknown carousel stage {req.stage!r}")
-    if req.stage == _CAROUSEL_PUBLISH_STAGE and not req.confirm:
-        # Same irreversibility reasoning as /api/stage above — the carousel
-        # publish pipeline (docs/carousel-format-plan.md Phase 2) fires off
-        # this exact Stage flip.
+    if req.stage != _CAROUSEL_PUBLISH_STAGE:
+        state.set_carousel_stage(req.row_id, req.stage)
+        return {"ok": True}
+    # Same irreversibility + combined-schedule reasoning as /api/stage above
+    # — the carousel publish pipeline (docs/carousel-format-plan.md Phase 2)
+    # fires off this exact Stage flip.
+    if not req.confirm:
         raise HTTPException(409, "confirm required to publish — this is irreversible")
-    state.set_carousel_stage(req.row_id, req.stage)
-    return {"ok": True}
+    if req.publish_date is not None:
+        try:
+            parsed = validate_publish_date_iso(req.publish_date)
+            ensure_future(parsed)
+        except InvalidPublishDate as exc:
+            raise HTTPException(400, str(exc)) from exc
+    state.set_carousel_stage_with_publish_date(req.row_id, req.stage, req.publish_date)
+    return {"ok": True, "scheduled": req.publish_date is not None}
 
 
 class DeleteRequest(BaseModel):
@@ -380,11 +509,54 @@ def api_delete(req: DeleteRequest):
     try:
         if req.content_id:
             summary = state.archive_content(req.content_id)
-            return {"ok": True, **summary}
+            removed = _forget_locally(content_id=req.content_id,
+                                      row_ids=summary.get("archived_rows", []))
+            return {"ok": True, **summary, "removed_from_studio": removed}
         state.archive_page(req.row_id)
-        return {"ok": True, "row_id": req.row_id}
-    except Exception as exc:  # noqa: BLE001
+        removed = _forget_locally(row_ids=[req.row_id])
+        return {"ok": True, "row_id": req.row_id, "removed_from_studio": removed}
+    # SystemExit too: notion_image.ncall reports an unretryable Notion error
+    # with sys.exit(), a BaseException that `except Exception` misses.
+    except (Exception, SystemExit) as exc:  # noqa: BLE001
         raise HTTPException(502, _friendly_notion_error(exc)) from exc
+
+
+def _forget_locally(content_id: str | None = None,
+                    row_ids: list[str] | None = None) -> int:
+    """Drop archived pages from the Database tab's local mirror too.
+
+    Without this the Workbench and the Database tab disagree permanently:
+    archiving in Notion hides a row from every Notion-backed view, but the
+    mirror is refreshed by an import that only ever adds and updates — it
+    has no deletion pass — so a row deleted here would sit in Studio forever
+    with no way to remove it.
+
+    Runs AFTER the Notion archive succeeded, and never raises: the delete the
+    user asked for has already happened, so a mirror hiccup must not turn it
+    into a 502 that reads as "nothing was deleted". The next import cannot
+    resurrect these rows either, since they are archived in Notion.
+
+    Ids here are NOTION page ids (state.archive_* operates on Notion);
+    repo's delete helpers accept either those or local ids.
+    """
+    try:
+        import repo
+        import studio_db
+        removed = 0
+        with studio_db.connect() as conn:
+            for row_id in row_ids or []:
+                removed += bool(repo.delete_production_row(conn, row_id))
+            if content_id:
+                concept = repo.get_concept(conn, content_id)
+                if concept is not None:
+                    for row in repo.list_production_rows(conn,
+                                                         concept_id=concept.id):
+                        removed += bool(repo.delete_production_row(conn, row.id))
+                    repo.delete_concept(conn, concept.id)
+                    removed += 1
+        return removed
+    except Exception:  # noqa: BLE001 - advisory cleanup, never fails the delete
+        return 0
 
 
 @app.get("/api/jobs/{job_id}/stream")

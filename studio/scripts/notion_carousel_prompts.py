@@ -25,6 +25,7 @@ in the carousel plan (R1).
 """
 from __future__ import annotations
 
+import re
 import time
 
 from notion_prompts import _all_children, _rt_chunked, _strip_emoji, _txt, call
@@ -67,21 +68,69 @@ MIN_CAROUSEL_PANELS = 2
 MAX_CAROUSEL_PANELS = 10
 
 
-def parse_carousel_guide(concept_id: str) -> list[dict]:
-    """Return [{title, visual, copy}] from the concept's 🎠 Carousel Guide
-    section. Near-clone of `notion_prompts.parse_storyboard()` — same
-    heading_2-then-heading_3-then-bullets shape, just a different section
-    name and bullet vocabulary (🖼️ visual brief, ✏️ optional on-image copy
-    instead of 🎥/🗣️)."""
-    blocks = _all_children(concept_id)
-    in_guide, panels, cur = False, [], None
+# Which "(...)" suffix on a 🎠 Carousel Guide heading belongs to which IP
+# language. Keyed by what ip_language() actually returns (_LANG_MAP's Chinese
+# label), valued by the tags an author might plausibly type, in either script.
+# Matched as substrings of the parenthesised suffix ONLY — never the whole
+# heading — so "Carousel Guide (Cantonese)" can't match English on the "en"
+# token by accident.
+_GUIDE_LANG_TOKENS: dict[str, tuple[str, ...]] = {
+    "英文": ("en", "eng", "english", "英文"),
+    "粤语": ("yue", "cantonese", "粤语", "粵語", "粤", "粵"),
+    "普通话": ("cn", "zh", "mandarin", "普通话", "简体"),
+}
+
+
+def _guide_lang_tag(heading: str) -> str:
+    """The trailing "(EN)" / "(粵語)" tag of a guide heading, lowercased.
+    Empty string for an untagged heading (every concept authored before
+    per-IP guides existed)."""
+    m = re.search(r"[（(]([^）)]*)[）)]\s*$", heading.strip())
+    return m.group(1).strip().lower() if m else ""
+
+
+def _tag_matches_language(tag: str, language: str) -> bool:
+    return any(tok in tag for tok in _GUIDE_LANG_TOKENS.get(language, ()))
+
+
+def parse_carousel_guide_blocks(blocks: list[dict], language: str = "") -> list[dict]:
+    """Pure half of parse_carousel_guide() — no Notion I/O, so the guide
+    selection is unit-testable (this folder's convention: only pure logic
+    gets tests).
+
+    A concept may carry MORE THAN ONE 🎠 Carousel Guide, tagged by language
+    ("🎠 Carousel Guide (EN)" / "🎠 Carousel Guide (粵語)"), mirroring the
+    video pipeline's 📜 Master Script (EN) / 🇭🇰 Script (粵語) split. Picks,
+    in order:
+
+      1. the guide tagged for `language`
+      2. an UNTAGGED guide — every concept written before this existed has
+         exactly one, and must keep serving both IPs unchanged
+      3. nothing
+
+    Step 3 is deliberately not "fall back to whatever guide exists": doing
+    that is the bug this whole feature exists to fix — Jackie (English) was
+    handed Chloe's Cantonese on-image copy verbatim and gpt-image-2 duly
+    rendered Chinese text on the English IP's panels (2026-09-02). An
+    author who wrote language-tagged guides and skipped this IP's language
+    gets no carousel section for it, which apply_carousel_plan reports as
+    "no-carousel-guide" — visible and harmless, unlike silently wrong copy.
+    """
+    sections: list[tuple[str, list[dict]]] = []
+    panels: list[dict] | None = None
+    cur: dict | None = None
     for b in blocks:
         t = b["type"]
         txt = _txt(b)
         if t == "heading_2":
-            in_guide = "Carousel Guide" in txt
+            cur = None
+            if "Carousel Guide" in txt:
+                panels = []
+                sections.append((_guide_lang_tag(txt), panels))
+            else:
+                panels = None
             continue
-        if not in_guide:
+        if panels is None:
             continue
         if t == "heading_3" and txt.strip().lower().startswith("panel"):
             cur = {"title": txt.strip(), "visual": "", "copy": ""}
@@ -91,7 +140,28 @@ def parse_carousel_guide(concept_id: str) -> list[dict]:
                 cur["visual"] = txt.split("🖼", 1)[1].lstrip("️ :").strip()
             elif "✏️" in txt or "✏" in txt:
                 cur["copy"] = txt.split("✏", 1)[1].lstrip("️ :").strip()
-    return [p for p in panels if p["visual"]]
+
+    usable = [(tag, [p for p in ps if p["visual"]]) for tag, ps in sections]
+    usable = [(tag, ps) for tag, ps in usable if ps]
+    for tag, ps in usable:
+        if tag and _tag_matches_language(tag, language):
+            return ps
+    for tag, ps in usable:
+        if not tag:
+            return ps
+    return []
+
+
+def parse_carousel_guide(concept_id: str, language: str = "") -> list[dict]:
+    """Return [{title, visual, copy}] from the concept's 🎠 Carousel Guide
+    section, picking the variant matching the row's IP `language` when the
+    concept carries more than one (see parse_carousel_guide_blocks).
+
+    Near-clone of `notion_prompts.parse_storyboard()` — same
+    heading_2-then-heading_3-then-bullets shape, just a different section
+    name and bullet vocabulary (🖼️ visual brief, ✏️ optional on-image copy
+    instead of 🎥/🗣️)."""
+    return parse_carousel_guide_blocks(_all_children(concept_id), language)
 
 
 def fetch_carousel_style(concept_id: str) -> str:
@@ -111,6 +181,14 @@ def fetch_carousel_style(concept_id: str) -> str:
         if grab and t.startswith("heading"):
             break  # next section reached without finding a code block
     return DEFAULT_CAROUSEL_STYLE
+
+
+# Language values that need NO explicit render-language clause. Holds BOTH
+# vocabularies on purpose: "英文" is what ip_language() really returns for the
+# English IP (see build_panel_prompt's docstring), "English" is what callers
+# and older tests pass directly. gpt-image-2 defaults to Latin script, so an
+# English IP needs no clause at all — and must not be handed a Chinese one.
+_NO_LANG_CLAUSE = frozenset({"", "English", "english", "英文"})
 
 
 def build_panel_prompt(
@@ -137,6 +215,15 @@ def build_panel_prompt(
     reasoning `_jimeng_camera` already applies to 即梦 camera direction) —
     pass `notion_prompts.ip_language(ip_id)`'s output through unchanged.
     Empty/English is the default and adds no extra clause.
+
+    ⚠️ `ip_language()` returns notion_prompts._LANG_MAP's CHINESE label
+    ("英文", "粤语"), NOT the English word — that map exists for 即梦, whose
+    prompts are Chinese. So the "is this English?" check below must match
+    "英文", not "English" (it matches both, since callers/tests do pass the
+    English word too). Getting this wrong is not cosmetic: it injected
+    `, rendered in 英文` into gpt-image-2 prompts for the ENGLISH IP, which
+    pushed the model into rendering Chinese glyphs on Jackie's carousel
+    panels (found live 2026-09-02).
     """
     lines = [
         "One single Instagram carousel panel — square 1:1 aspect ratio, a "
@@ -146,7 +233,7 @@ def build_panel_prompt(
     ]
     copy = _strip_emoji(panel.get("copy", "") or "")
     if copy:
-        lang_clause = f", rendered in {language}" if language and language not in ("English", "") else ""
+        lang_clause = "" if language in _NO_LANG_CLAUSE else f", rendered in {language}"
         lines.append(f'On-image text (render exactly, large and legible{lang_clause}): "{copy}"')
     interior_total = total - 2
     if interior_total > 0 and 1 < index < total:
@@ -241,7 +328,12 @@ def apply_carousel_plan(row_id: str, force: bool = False) -> str:
     if not concept_id:
         return "no-content"
 
-    panels = parse_carousel_guide(concept_id)
+    # Resolved BEFORE parsing: the language now decides WHICH 🎠 Carousel
+    # Guide variant is read, not just the render-language clause on the
+    # prompt (see parse_carousel_guide_blocks).
+    language = ip_language(ip_id) if ip_id else ""
+
+    panels = parse_carousel_guide(concept_id, language)
     if not panels:
         return "no-carousel-guide"
 
@@ -252,7 +344,6 @@ def apply_carousel_plan(row_id: str, force: bool = False) -> str:
         _wipe_carousel_section(row_id, existing)
 
     style = fetch_carousel_style(concept_id)
-    language = ip_language(ip_id) if ip_id else ""
     blocks = carousel_blocks(panels, style, language)
     for i in range(0, len(blocks), 25):
         call("PATCH", f"/blocks/{row_id}/children", {"children": blocks[i:i + 25]})
