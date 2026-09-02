@@ -17899,3 +17899,79 @@
 - I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
 - - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
 
+
+## 2026-09-02 21:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+- A stale cache entry can't match a URL it has never seen. Keyed on file **content**, not mtime — a `git checkout` rewrites mtimes without changing bytes, and that shouldn't bust every cache. 8 new tests, including one that fails if a future `<script>` tag is added in a form the stamper misses.
+- You were right, and I'd made the wrong call earlier. I'd deliberately built delete as **local-only**, reasoning it "fails safe" because the concept comes back on the next import. That reasoning was wrong: it made the button a lie — the concept vanishes, then silently reappears next sync. Deleting in one place isn't safer, just more confusing.
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+- Upstream commits touch only `data/` — no overlap with `studio/`, so the rebase will be clean. Creating a branch (you're on `main`) and splitting into two honest commits:
+- The four files that carry *both* bodies of work (`index.html`, `app.js`, `app.py`, `style.css`) went into the second commit, with a note in both messages. Splitting them hunk-by-hunk was more risk than value; they land together on the branch anyway.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+
+
+## 2026-09-02 21:31 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+- A stale cache entry can't match a URL it has never seen. Keyed on file **content**, not mtime — a `git checkout` rewrites mtimes without changing bytes, and that shouldn't bust every cache. 8 new tests, including one that fails if a future `<script>` tag is added in a form the stamper misses.
+- You were right, and I'd made the wrong call earlier. I'd deliberately built delete as **local-only**, reasoning it "fails safe" because the concept comes back on the next import. That reasoning was wrong: it made the button a lie — the concept vanishes, then silently reappears next sync. Deleting in one place isn't safer, just more confusing.
+- I also listed the known gaps honestly rather than burying them — import never deletes, shot removal warns instead of deleting, production rows can't be created from Studio, and the agent's bulk-edit undercount.
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+- Upstream commits touch only `data/` — no overlap with `studio/`, so the rebase will be clean. Creating a branch (you're on `main`) and splitting into two honest commits:
+- The four files that carry *both* bodies of work (`index.html`, `app.js`, `app.py`, `style.css`) went into the second commit, with a note in both messages. Splitting them hunk-by-hunk was more risk than value; they land together on the branch anyway.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+
+
+## 2026-09-02 21:46 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+- A stale cache entry can't match a URL it has never seen. Keyed on file **content**, not mtime — a `git checkout` rewrites mtimes without changing bytes, and that shouldn't bust every cache. 8 new tests, including one that fails if a future `<script>` tag is added in a form the stamper misses.
+- You were right, and I'd made the wrong call earlier. I'd deliberately built delete as **local-only**, reasoning it "fails safe" because the concept comes back on the next import. That reasoning was wrong: it made the button a lie — the concept vanishes, then silently reappears next sync. Deleting in one place isn't safer, just more confusing.
+- I also listed the known gaps honestly rather than burying them — import never deletes, shot removal warns instead of deleting, production rows can't be created from Studio, and the agent's bulk-edit undercount.
+- My `replace` hit the **first** `btn-back` occurrence — the loading placeholder in `openRow`, where `d` doesn't exist yet. That broke opening any row. Good thing I tested it rather than shipping. Fixing:
+- **I also caught a regression I'd just introduced.** My first edit landed the wiring call in `openRow`'s loading placeholder instead of `renderDetail`, referencing a variable that didn't exist yet — which broke opening *any* row. The browser test caught it before it went anywhere.
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+- Upstream commits touch only `data/` — no overlap with `studio/`, so the rebase will be clean. Creating a branch (you're on `main`) and splitting into two honest commits:
+- The four files that carry *both* bodies of work (`index.html`, `app.js`, `app.py`, `style.css`) went into the second commit, with a note in both messages. Splitting them hunk-by-hunk was more risk than value; they land together on the branch anyway.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+
