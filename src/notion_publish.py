@@ -71,9 +71,9 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
-from zoneinfo import ZoneInfo
 
 from src import notion_publish_caption, notion_publish_media
+from src._publish_tz import PUBLISH_TZ
 from src.ips import registry as ip_registry
 from src.notion_sync import (
     NotionSyncError,
@@ -90,10 +90,16 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 _IDS_PATH = REPO_ROOT / "scripts" / "notion_ids.json"
 _STATE_PATH = REPO_ROOT / "data" / "channels" / "notion_publish_state.json"
 
-# Same operating-timezone convention as src/crm/repo.py's _HKT — this
-# business runs on Hong Kong time, so a date-only Publish Date ("no time
-# component set) is interpreted as "eligible from 00:00 HKT that day."
-_HKT: Final = ZoneInfo("Asia/Hong_Kong")
+# Shared with notion_publish_carousel.py, notion_publish_scheduler.py, AND
+# the studio dashboard via src/_publish_tz.py — a date-only Publish Date
+# ("no time component set") is interpreted as "eligible from 00:00
+# Asia/Kuala_Lumpur (MYT) that day." Renamed from `_HKT` to `_PUBLISH_TZ`
+# 2026-09-01 — the old name was accurate when this business ran on Hong
+# Kong time, but became a lying name once the operating timezone moved to
+# Asia/Kuala_Lumpur (MYT and HKT are both fixed UTC+8 with no DST, so the
+# VALUE was never wrong, just the label). Do not redefine this locally
+# again — see src/_publish_tz.py's module docstring for the full reasoning.
+_PUBLISH_TZ: Final = PUBLISH_TZ
 
 # Notion property name read for optional scheduled publishing (see
 # _publish_date_eligible below). Override via NOTION_PUBLISH_DATE_PROP if
@@ -205,9 +211,9 @@ def _publish_date_eligible(
     if parsed.tzinfo is None:
         # A date-only value ("YYYY-MM-DD") or a naive datetime — Notion's
         # own workspace timezone context isn't preserved by this point, so
-        # we assume HKT (see module-level _HKT comment).
-        parsed = parsed.replace(tzinfo=_HKT)
-    reference = now if now is not None else datetime.now(_HKT)
+        # we assume MYT (see module-level _PUBLISH_TZ comment).
+        parsed = parsed.replace(tzinfo=_PUBLISH_TZ)
+    reference = now if now is not None else datetime.now(_PUBLISH_TZ)
     return parsed <= reference, None
 
 

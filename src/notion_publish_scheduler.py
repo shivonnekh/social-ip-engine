@@ -8,8 +8,10 @@ The live "go live" trigger for Reels (``POST /admin/notion-publish`` in
 a row's Stage flips to "✅ Published." That's the right trigger for
 "publish right now" — but ``notion_publish.py`` also respects an optional
 ``Publish Date`` property (``_publish_date_eligible``), deferring any row
-whose date hasn't arrived yet (compared in HKT, this business's operating
-timezone). A deferred row has NO future event to re-trigger it: Stage
+whose date hasn't arrived yet (compared in Asia/Kuala_Lumpur / MYT, this
+business's operating timezone — env vars below keep an `_HKT` suffix for
+historical/live-config reasons, see the `_PUBLISH_TZ` comment further
+down). A deferred row has NO future event to re-trigger it: Stage
 doesn't flip again on its own, so without this sweep a row with a future
 Publish Date would sit deferred FOREVER once its date finally arrives,
 unless a human manually re-hits the endpoint or nudges the Stage property
@@ -18,7 +20,7 @@ back and forth.
 This module is that missing "somebody checks back" — a long-running
 internal ``asyncio`` loop (same shape as
 ``src.channels.reconciliation.start_reconciliation_loop``, not an
-external cron service) that wakes once a day at a configurable HKT time
+external cron service) that wakes once a day at a configurable MYT time
 and calls the EXACT SAME ``notion_publish_runner.plan_and_dispatch()``
 used by the live webhook. One dispatch code path for both triggers means
 this sweep can never become a second, divergent way to create a duplicate
@@ -49,7 +51,8 @@ CONFIG (opt-in — default OFF)
                                          human should turn this on
                                          deliberately, not get it for free
                                          on the next deploy.
-    NOTION_PUBLISH_SCHEDULE_HOUR_HKT    default 9  (0-23, Asia/Hong_Kong time)
+    NOTION_PUBLISH_SCHEDULE_HOUR_HKT    default 9  (0-23, Asia/Kuala_Lumpur time —
+                                         env var name kept as-is, see _PUBLISH_TZ comment)
     NOTION_PUBLISH_SCHEDULE_MINUTE_HKT  default 0  (0-59)
     NOTION_PUBLISH_SCHEDULE_INTERVAL_S  unset by default (daily-fixed-hour mode).
                                          When set to a positive integer, REPLACES
@@ -77,15 +80,22 @@ import logging
 import os
 from datetime import datetime, timedelta
 from typing import Any, Final
-from zoneinfo import ZoneInfo
 
+from src._publish_tz import PUBLISH_TZ
 from src.ops_alert import send_ops_alert
 
 logger = logging.getLogger("notion_publish_scheduler")
 
 _OPS_ALERT_KEY: Final = "notion_publish_schedule_failed"
 
-_HKT: Final = ZoneInfo("Asia/Hong_Kong")
+# Shared with notion_publish.py / notion_publish_carousel.py via
+# src/_publish_tz.py — was previously its OWN local
+# ZoneInfo("Asia/Hong_Kong") copy (a third, independent definition of the
+# same assumption). See src/_publish_tz.py's docstring for why this is
+# Asia/Kuala_Lumpur, not Hong Kong — the env var names below keep their
+# `_HKT` suffix regardless (they're live in Render's env; renaming them
+# would silently reset the sweep hour to its default).
+_PUBLISH_TZ: Final = PUBLISH_TZ
 
 # Tasks spawned by our own sweep — held here so asyncio never garbage-
 # collects a task with no other strong reference (same reasoning as
@@ -169,10 +179,10 @@ async def _sleep(seconds: float) -> None:
 def seconds_until_next_run(now: datetime, hour: int, minute: int = 0) -> float:
     """Seconds from ``now`` (must be tz-aware; any timezone is fine, it's
     converted internally) until the next occurrence of ``hour:minute`` in
-    HKT. If ``now`` is already at or past today's target, returns the
+    MYT (Asia/Kuala_Lumpur). If ``now`` is already at or past today's target, returns the
     seconds until TOMORROW's target instead — never 0 or negative, so a
     loop calling this every iteration can never spin without sleeping."""
-    local_now = now.astimezone(_HKT)
+    local_now = now.astimezone(_PUBLISH_TZ)
     target = local_now.replace(hour=hour, minute=minute, second=0, microsecond=0)
     if target <= local_now:
         target += timedelta(days=1)
@@ -311,9 +321,9 @@ async def start_publish_schedule_loop() -> None:
                 logger.exception("[notion-publish-schedule] loop error (will retry next cycle)")
 
     hour, minute = _target_hour(), _target_minute()
-    logger.info("[notion-publish-schedule] loop started — target=%02d:%02d HKT daily", hour, minute)
+    logger.info("[notion-publish-schedule] loop started — target=%02d:%02d MYT daily", hour, minute)
     while True:
-        wait_s = seconds_until_next_run(datetime.now(_HKT), hour, minute)
+        wait_s = seconds_until_next_run(datetime.now(_PUBLISH_TZ), hour, minute)
         await _sleep(wait_s)
         try:
             await run_scheduled_sweep()

@@ -17024,3 +17024,806 @@
 - - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
 - Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
 
+
+## 2026-09-01 13:11 — social-ip-engine
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+
+
+## 2026-09-01 14:50 — social-ip-engine
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 14:54 — social-ip-engine
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 15:55 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 16:33 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 17:33 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 17:37 — social-ip-engine
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+
+
+## 2026-09-01 17:58 — social-ip-engine
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+
+
+## 2026-09-01 18:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 18:24 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- decision at the seam — a stale browser tab running old `app.js` fails loudly rather than
+
+### Architecture Decisions
+- **400 "use /api/publish"** instead of publishing. This is what enforces the design
+- Never split it "for readability".
+
+### Decisions & Reasoning
+- the module docstring, and note it's safe because the module is stdlib-only).
+- catch it and the user sees a dead connection instead of an error.
+- other user — it is internal authoring tooling, and I am labelling it as such rather than
+- correctness path entirely rather than assuming the operator's laptop is on UTC+8.
+
+
+## 2026-09-01 18:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- decision at the seam — a stale browser tab running old `app.js` fails loudly rather than
+
+### Architecture Decisions
+- **400 "use /api/publish"** instead of publishing. This is what enforces the design
+- Never split it "for readability".
+
+### Decisions & Reasoning
+- the module docstring, and note it's safe because the module is stdlib-only).
+- catch it and the user sees a dead connection instead of an error.
+- other user — it is internal authoring tooling, and I am labelling it as such rather than
+- correctness path entirely rather than assuming the operator's laptop is on UTC+8.
+
+
+## 2026-09-01 18:29 — social-ip-engine
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+
+
+## 2026-09-01 18:35 — social-ip-engine
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+- Good catch to check — and it's real: I missed `notion_publish_scheduler.py`, which has its **own third copy** of `_HKT = ZoneInfo("Asia/Hong_Kong")` that I never touched. I'm renaming properly across all three files now instead of keeping the deceptive alias.
+- **Their claims I checked and found already correct** (not "trust me," actually reread the code): the `{"date": null}` clear-on-publish-now path was already right, the atomic single-PATCH write already matches their top risk mitigation, and I pulled the *live* Render env var instead of trusting the code default — `NOTION_PUBLISH_CAROUSEL_ENABLED` is `true` in prod, so that showstopper doesn't apply to your actual deployment.
+- **One honest non-fix**: `ncall()`'s `sys.exit()` can escape as `SystemExit` past every `except Exception` in the dashboard — real, but I confirmed via git history it predates this feature entirely (the original `set_stage` had the same exposure). Flagged it as its own ticket rather than scope-creeping it into scheduling.
+
+
+## 2026-09-01 18:36 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- decision at the seam — a stale browser tab running old `app.js` fails loudly rather than
+
+### Architecture Decisions
+- **400 "use /api/publish"** instead of publishing. This is what enforces the design
+- Never split it "for readability".
+- The lesson worth carrying: I asserted the `/api/stage` hole from my own plan's design rather than from the diff, which is exactly the "a council's verdict is an argument, not a measurement" failure — I should have read `app.py` before making the claim, not after being challenged.
+
+### Decisions & Reasoning
+- the module docstring, and note it's safe because the module is stdlib-only).
+- catch it and the user sees a dead connection instead of an error.
+- other user — it is internal authoring tooling, and I am labelling it as such rather than
+- correctness path entirely rather than assuming the operator's laptop is on UTC+8.
+
+
+## 2026-09-01 18:36 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Nice — clean resolution. sched-planner reread the actual code and withdrew the `/api/stage` claim rather than digging in, and the one thing left standing was a fair, cheap ask: document that the now-vs-later choice lives in the client (app.js), not the API, so a future second caller can't silently misuse it. Added that sentence to `StageRequest.publish_date`, carousel's twin inherits it for free since it just points at the same contract. Still green, still done.
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+- Good catch to check — and it's real: I missed `notion_publish_scheduler.py`, which has its **own third copy** of `_HKT = ZoneInfo("Asia/Hong_Kong")` that I never touched. I'm renaming properly across all three files now instead of keeping the deceptive alias.
+- **Their claims I checked and found already correct** (not "trust me," actually reread the code): the `{"date": null}` clear-on-publish-now path was already right, the atomic single-PATCH write already matches their top risk mitigation, and I pulled the *live* Render env var instead of trusting the code default — `NOTION_PUBLISH_CAROUSEL_ENABLED` is `true` in prod, so that showstopper doesn't apply to your actual deployment.
+- **One honest non-fix**: `ncall()`'s `sys.exit()` can escape as `SystemExit` past every `except Exception` in the dashboard — real, but I confirmed via git history it predates this feature entirely (the original `set_stage` had the same exposure). Flagged it as its own ticket rather than scope-creeping it into scheduling.
+
+
+## 2026-09-01 18:36 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Nice — clean resolution. sched-planner reread the actual code and withdrew the `/api/stage` claim rather than digging in, and the one thing left standing was a fair, cheap ask: document that the now-vs-later choice lives in the client (app.js), not the API, so a future second caller can't silently misuse it. Added that sentence to `StageRequest.publish_date`, carousel's twin inherits it for free since it just points at the same contract. Still green, still done.
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+- Good catch to check — and it's real: I missed `notion_publish_scheduler.py`, which has its **own third copy** of `_HKT = ZoneInfo("Asia/Hong_Kong")` that I never touched. I'm renaming properly across all three files now instead of keeping the deceptive alias.
+- **Their claims I checked and found already correct** (not "trust me," actually reread the code): the `{"date": null}` clear-on-publish-now path was already right, the atomic single-PATCH write already matches their top risk mitigation, and I pulled the *live* Render env var instead of trusting the code default — `NOTION_PUBLISH_CAROUSEL_ENABLED` is `true` in prod, so that showstopper doesn't apply to your actual deployment.
+- **One honest non-fix**: `ncall()`'s `sys.exit()` can escape as `SystemExit` past every `except Exception` in the dashboard — real, but I confirmed via git history it predates this feature entirely (the original `set_stage` had the same exposure). Flagged it as its own ticket rather than scope-creeping it into scheduling.
+
+
+## 2026-09-01 18:36 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- decision at the seam — a stale browser tab running old `app.js` fails loudly rather than
+
+### Architecture Decisions
+- **400 "use /api/publish"** instead of publishing. This is what enforces the design
+- Never split it "for readability".
+- The lesson worth carrying: I asserted the `/api/stage` hole from my own plan's design rather than from the diff, which is exactly the "a council's verdict is an argument, not a measurement" failure — I should have read `app.py` before making the claim, not after being challenged.
+
+### Decisions & Reasoning
+- the module docstring, and note it's safe because the module is stdlib-only).
+- catch it and the user sees a dead connection instead of an error.
+- other user — it is internal authoring tooling, and I am labelling it as such rather than
+- correctness path entirely rather than assuming the operator's laptop is on UTC+8.
+
+
+## 2026-09-01 18:36 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Nice — clean resolution. sched-planner reread the actual code and withdrew the `/api/stage` claim rather than digging in, and the one thing left standing was a fair, cheap ask: document that the now-vs-later choice lives in the client (app.js), not the API, so a future second caller can't silently misuse it. Added that sentence to `StageRequest.publish_date`, carousel's twin inherits it for free since it just points at the same contract. Still green, still done.
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+- Good catch to check — and it's real: I missed `notion_publish_scheduler.py`, which has its **own third copy** of `_HKT = ZoneInfo("Asia/Hong_Kong")` that I never touched. I'm renaming properly across all three files now instead of keeping the deceptive alias.
+- **Their claims I checked and found already correct** (not "trust me," actually reread the code): the `{"date": null}` clear-on-publish-now path was already right, the atomic single-PATCH write already matches their top risk mitigation, and I pulled the *live* Render env var instead of trusting the code default — `NOTION_PUBLISH_CAROUSEL_ENABLED` is `true` in prod, so that showstopper doesn't apply to your actual deployment.
+- **One honest non-fix**: `ncall()`'s `sys.exit()` can escape as `SystemExit` past every `except Exception` in the dashboard — real, but I confirmed via git history it predates this feature entirely (the original `set_stage` had the same exposure). Flagged it as its own ticket rather than scope-creeping it into scheduling.
+
+
+## 2026-09-01 19:56 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 21:14 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 21:56 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-01 23:59 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 01:57 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 09:37 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 09:38 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Nice — clean resolution. sched-planner reread the actual code and withdrew the `/api/stage` claim rather than digging in, and the one thing left standing was a fair, cheap ask: document that the now-vs-later choice lives in the client (app.js), not the API, so a future second caller can't silently misuse it. Added that sentence to `StageRequest.publish_date`, carousel's twin inherits it for free since it just points at the same contract. Still green, still done.
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+- Good catch to check — and it's real: I missed `notion_publish_scheduler.py`, which has its **own third copy** of `_HKT = ZoneInfo("Asia/Hong_Kong")` that I never touched. I'm renaming properly across all three files now instead of keeping the deceptive alias.
+- **Their claims I checked and found already correct** (not "trust me," actually reread the code): the `{"date": null}` clear-on-publish-now path was already right, the atomic single-PATCH write already matches their top risk mitigation, and I pulled the *live* Render env var instead of trusting the code default — `NOTION_PUBLISH_CAROUSEL_ENABLED` is `true` in prod, so that showstopper doesn't apply to your actual deployment.
+- **One honest non-fix**: `ncall()`'s `sys.exit()` can escape as `SystemExit` past every `except Exception` in the dashboard — real, but I confirmed via git history it predates this feature entirely (the original `set_stage` had the same exposure). Flagged it as its own ticket rather than scope-creeping it into scheduling.
+
+
+## 2026-09-02 09:39 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 09:41 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 09:50 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Nice — clean resolution. sched-planner reread the actual code and withdrew the `/api/stage` claim rather than digging in, and the one thing left standing was a fair, cheap ask: document that the now-vs-later choice lives in the client (app.js), not the API, so a future second caller can't silently misuse it. Added that sentence to `StageRequest.publish_date`, carousel's twin inherits it for free since it just points at the same contract. Still green, still done.
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+- Good catch to check — and it's real: I missed `notion_publish_scheduler.py`, which has its **own third copy** of `_HKT = ZoneInfo("Asia/Hong_Kong")` that I never touched. I'm renaming properly across all three files now instead of keeping the deceptive alias.
+- **Their claims I checked and found already correct** (not "trust me," actually reread the code): the `{"date": null}` clear-on-publish-now path was already right, the atomic single-PATCH write already matches their top risk mitigation, and I pulled the *live* Render env var instead of trusting the code default — `NOTION_PUBLISH_CAROUSEL_ENABLED` is `true` in prod, so that showstopper doesn't apply to your actual deployment.
+- **One honest non-fix**: `ncall()`'s `sys.exit()` can escape as `SystemExit` past every `except Exception` in the dashboard — real, but I confirmed via git history it predates this feature entirely (the original `set_stage` had the same exposure). Flagged it as its own ticket rather than scope-creeping it into scheduling.
+- Look for **"📅 定时发布（可选 — 时区 Asia/Kuala_Lumpur / MYT）"** — it's a datetime field with a "清除" (clear) button next to it, sitting directly above the `⚠ 发布到 IG / FB（不可逆）` button. Leave it empty to publish immediately like before; fill it in and hit Publish (still the same two-click confirm) to schedule instead.
+
+
+## 2026-09-02 09:53 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Nice — clean resolution. sched-planner reread the actual code and withdrew the `/api/stage` claim rather than digging in, and the one thing left standing was a fair, cheap ask: document that the now-vs-later choice lives in the client (app.js), not the API, so a future second caller can't silently misuse it. Added that sentence to `StageRequest.publish_date`, carousel's twin inherits it for free since it just points at the same contract. Still green, still done.
+
+### Decisions & Reasoning
+- So the real trigger chain is: Notion Automation fires on `Stage → ✅ Published` → row deferred if `Publish Date` is future → daily sweep picks it up when the date lands. There's also `NOTION_PUBLISH_SCHEDULE_INTERVAL_S` which switches it from daily-fixed-hour to "check every N seconds" — added 2026-07-21 because the Notion Automation was found not firing in prod at all.
+- | `src/notion_publish.py`, `src/notion_publish_carousel.py` | `_HKT` now aliases `PUBLISH_TZ` instead of two independent `Asia/Hong_Kong` copies — MYT/HKT are both fixed UTC+8, so this is a relabel, not a behavior change |
+- Good catch to check — and it's real: I missed `notion_publish_scheduler.py`, which has its **own third copy** of `_HKT = ZoneInfo("Asia/Hong_Kong")` that I never touched. I'm renaming properly across all three files now instead of keeping the deceptive alias.
+- **Their claims I checked and found already correct** (not "trust me," actually reread the code): the `{"date": null}` clear-on-publish-now path was already right, the atomic single-PATCH write already matches their top risk mitigation, and I pulled the *live* Render env var instead of trusting the code default — `NOTION_PUBLISH_CAROUSEL_ENABLED` is `true` in prod, so that showstopper doesn't apply to your actual deployment.
+- **One honest non-fix**: `ncall()`'s `sys.exit()` can escape as `SystemExit` past every `except Exception` in the dashboard — real, but I confirmed via git history it predates this feature entirely (the original `set_stage` had the same exposure). Flagged it as its own ticket rather than scope-creeping it into scheduling.
+- Look for **"📅 定时发布（可选 — 时区 Asia/Kuala_Lumpur / MYT）"** — it's a datetime field with a "清除" (clear) button next to it, sitting directly above the `⚠ 发布到 IG / FB（不可逆）` button. Leave it empty to publish immediately like before; fill it in and hit Publish (still the same two-click confirm) to schedule instead.
+- **Do this now:** hard-refresh once (**Cmd+Shift+R**) — needed this one time because the *old* cached copy was stored without the new header. Every future UI change will show up on a plain refresh.
+- Short answer: **no — close it.** But let me verify that claim rather than assert it.
+
+
+## 2026-09-02 09:58 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+- **But I've just been burned trusting a stale verdict**, so I'm not going to declare this impossible from the docs. I'm going to test it — one two-person dialogue shot, measure it, then design around the result rather than the folklore.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 10:24 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+- **But I've just been burned trusting a stale verdict**, so I'm not going to declare this impossible from the docs. I'm going to test it — one two-person dialogue shot, measure it, then design around the result rather than the folklore.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 12:15 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+- **But I've just been burned trusting a stale verdict**, so I'm not going to declare this impossible from the docs. I'm going to test it — one two-person dialogue shot, measure it, then design around the result rather than the folklore.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-02 13:33 — social-ip-engine
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+
+
+## 2026-09-02 15:32 — social-ip-engine
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+
+
+## 2026-09-02 15:34 — social-ip-engine
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+
+
+## 2026-09-02 15:39 — social-ip-engine
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+
+
+## 2026-09-02 16:31 — social-ip-engine
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+
+
+## 2026-09-02 16:32 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- The list applies the *exact same* gate as the individual publish button (`canPublish`: cover image + infographic + production video + DM wired; carousels use `canPublishCarousel`). Anything that fails shows greyed out with the reason ("missing infographic", "DM not wired") rather than being invisible — otherwise you'd be left wondering where a post went.
+- Each selected post goes through the existing `/api/stage` / `/api/carousel-stage` endpoint — one call per post, the same validated, confirm-gated path the individual publish button already uses. No new publish code path, so the duplicate/irreversibility protections can't drift. If one of five fails, you get a per-post result list instead of a silent partial apply.
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+- **Two details I've decided rather than asked:**
+
+
+## 2026-09-02 16:39 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- The list applies the *exact same* gate as the individual publish button (`canPublish`: cover image + infographic + production video + DM wired; carousels use `canPublishCarousel`). Anything that fails shows greyed out with the reason ("missing infographic", "DM not wired") rather than being invisible — otherwise you'd be left wondering where a post went.
+- Each selected post goes through the existing `/api/stage` / `/api/carousel-stage` endpoint — one call per post, the same validated, confirm-gated path the individual publish button already uses. No new publish code path, so the duplicate/irreversibility protections can't drift. If one of five fails, you get a per-post result list instead of a silent partial apply.
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+- **Two details I've decided rather than asked:**
+- One issue to fix: I'm reusing the delete button's two-click arming, which shows delete-specific Chinese wording. Let me generalize it rather than duplicate the confirm logic:
+
+
+## 2026-09-02 16:44 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- The list applies the *exact same* gate as the individual publish button (`canPublish`: cover image + infographic + production video + DM wired; carousels use `canPublishCarousel`). Anything that fails shows greyed out with the reason ("missing infographic", "DM not wired") rather than being invisible — otherwise you'd be left wondering where a post went.
+- Each selected post goes through the existing `/api/stage` / `/api/carousel-stage` endpoint — one call per post, the same validated, confirm-gated path the individual publish button already uses. No new publish code path, so the duplicate/irreversibility protections can't drift. If one of five fails, you get a per-post result list instead of a silent partial apply.
+
+### Architecture Decisions
+- - **The IP comes from the row's actual Notion `IP` relation**, not from splitting the row name on "×". The name only embeds the IP by `notion_fanout.py`'s naming convention — a hand-renamed row would have silently mislabelled which persona was about to post, which is exactly the wrong thing to get wrong on a publish action.
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+- **Two details I've decided rather than asked:**
+- One issue to fix: I'm reusing the delete button's two-click arming, which shows delete-specific Chinese wording. Let me generalize it rather than duplicate the confirm logic:
+- - **Inactive IPs still resolve.** I deliberately didn't reuse `list_active_ips()` — if an IP were later deactivated, its existing ready rows would have shown "unknown IP" despite having a perfectly good relation. A row with genuinely no IP relation shows `❓ no IP` rather than guessing.
+
+
+## 2026-09-02 17:45 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- The list applies the *exact same* gate as the individual publish button (`canPublish`: cover image + infographic + production video + DM wired; carousels use `canPublishCarousel`). Anything that fails shows greyed out with the reason ("missing infographic", "DM not wired") rather than being invisible — otherwise you'd be left wondering where a post went.
+- Each selected post goes through the existing `/api/stage` / `/api/carousel-stage` endpoint — one call per post, the same validated, confirm-gated path the individual publish button already uses. No new publish code path, so the duplicate/irreversibility protections can't drift. If one of five fails, you get a per-post result list instead of a silent partial apply.
+
+### Architecture Decisions
+- - **The IP comes from the row's actual Notion `IP` relation**, not from splitting the row name on "×". The name only embeds the IP by `notion_fanout.py`'s naming convention — a hand-renamed row would have silently mislabelled which persona was about to post, which is exactly the wrong thing to get wrong on a publish action.
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+- **Two details I've decided rather than asked:**
+- One issue to fix: I'm reusing the delete button's two-click arming, which shows delete-specific Chinese wording. Let me generalize it rather than duplicate the confirm logic:
+- - **Inactive IPs still resolve.** I deliberately didn't reuse `list_active_ips()` — if an IP were later deactivated, its existing ready rows would have shown "unknown IP" despite having a perfectly good relation. A row with genuinely no IP relation shows `❓ no IP` rather than guessing.
+- Two separate issues, and the second one is a real content-pipeline bug. Let me debug them properly rather than guess.
+- **Fixed:** carousel-only rows now get their own workbench group (🎠 Carousel（无视频）, 3 rows) and the card shows the **carousel** stage chip instead of the meaningless video stage. Verified live: `还没开始` went 13 → 10, exactly the 3 carousel rows moved.
+- The video pipeline actually auto-translates from an English source rather than keeping two authored guides — but you chose authored variants (you get review control over on-image wording), so I'll implement that. Let me check the test helpers first:
+
+
+## 2026-09-02 17:47 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- The list applies the *exact same* gate as the individual publish button (`canPublish`: cover image + infographic + production video + DM wired; carousels use `canPublishCarousel`). Anything that fails shows greyed out with the reason ("missing infographic", "DM not wired") rather than being invisible — otherwise you'd be left wondering where a post went.
+- Each selected post goes through the existing `/api/stage` / `/api/carousel-stage` endpoint — one call per post, the same validated, confirm-gated path the individual publish button already uses. No new publish code path, so the duplicate/irreversibility protections can't drift. If one of five fails, you get a per-post result list instead of a silent partial apply.
+
+### Architecture Decisions
+- - **The IP comes from the row's actual Notion `IP` relation**, not from splitting the row name on "×". The name only embeds the IP by `notion_fanout.py`'s naming convention — a hand-renamed row would have silently mislabelled which persona was about to post, which is exactly the wrong thing to get wrong on a publish action.
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+- **Two details I've decided rather than asked:**
+- One issue to fix: I'm reusing the delete button's two-click arming, which shows delete-specific Chinese wording. Let me generalize it rather than duplicate the confirm logic:
+- - **Inactive IPs still resolve.** I deliberately didn't reuse `list_active_ips()` — if an IP were later deactivated, its existing ready rows would have shown "unknown IP" despite having a perfectly good relation. A row with genuinely no IP relation shows `❓ no IP` rather than guessing.
+- Two separate issues, and the second one is a real content-pipeline bug. Let me debug them properly rather than guess.
+- **Fixed:** carousel-only rows now get their own workbench group (🎠 Carousel（无视频）, 3 rows) and the card shows the **carousel** stage chip instead of the meaningless video stage. Verified live: `还没开始` went 13 → 10, exactly the 3 carousel rows moved.
+- The video pipeline actually auto-translates from an English source rather than keeping two authored guides — but you chose authored variants (you get review control over on-image wording), so I'll implement that. Let me check the test helpers first:
+
+
+## 2026-09-02 18:25 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- The list applies the *exact same* gate as the individual publish button (`canPublish`: cover image + infographic + production video + DM wired; carousels use `canPublishCarousel`). Anything that fails shows greyed out with the reason ("missing infographic", "DM not wired") rather than being invisible — otherwise you'd be left wondering where a post went.
+- Each selected post goes through the existing `/api/stage` / `/api/carousel-stage` endpoint — one call per post, the same validated, confirm-gated path the individual publish button already uses. No new publish code path, so the duplicate/irreversibility protections can't drift. If one of five fails, you get a per-post result list instead of a silent partial apply.
+
+### Architecture Decisions
+- - **The IP comes from the row's actual Notion `IP` relation**, not from splitting the row name on "×". The name only embeds the IP by `notion_fanout.py`'s naming convention — a hand-renamed row would have silently mislabelled which persona was about to post, which is exactly the wrong thing to get wrong on a publish action.
+- So before I write anything I need to know which audience this post is actually for — Jackie's English followers, Chloe's Cantonese ones, or both (which needs the concept split in two). Happy to explain any part of that, or pull up what's currently in Notion for it.
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+- **Two details I've decided rather than asked:**
+- One issue to fix: I'm reusing the delete button's two-click arming, which shows delete-specific Chinese wording. Let me generalize it rather than duplicate the confirm logic:
+- - **Inactive IPs still resolve.** I deliberately didn't reuse `list_active_ips()` — if an IP were later deactivated, its existing ready rows would have shown "unknown IP" despite having a perfectly good relation. A row with genuinely no IP relation shows `❓ no IP` rather than guessing.
+- Two separate issues, and the second one is a real content-pipeline bug. Let me debug them properly rather than guess.
+- **Fixed:** carousel-only rows now get their own workbench group (🎠 Carousel（无视频）, 3 rows) and the card shows the **carousel** stage chip instead of the meaningless video stage. Verified live: `还没开始` went 13 → 10, exactly the 3 carousel rows moved.
+- The video pipeline actually auto-translates from an English source rather than keeping two authored guides — but you chose authored variants (you get review control over on-image wording), so I'll implement that. Let me check the test helpers first:
+
+
+## 2026-09-02 18:28 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- The list applies the *exact same* gate as the individual publish button (`canPublish`: cover image + infographic + production video + DM wired; carousels use `canPublishCarousel`). Anything that fails shows greyed out with the reason ("missing infographic", "DM not wired") rather than being invisible — otherwise you'd be left wondering where a post went.
+- Each selected post goes through the existing `/api/stage` / `/api/carousel-stage` endpoint — one call per post, the same validated, confirm-gated path the individual publish button already uses. No new publish code path, so the duplicate/irreversibility protections can't drift. If one of five fails, you get a per-post result list instead of a silent partial apply.
+- - The First DM I wrote is English. Per your model (one concept, each IP in its own language), Chloe's row would need a Cantonese body — but `_extract_first_dm` reads a single "First DM" block, so it can't hold both yet. It's the same per-language-variant pattern I just built for the carousel guide; say the word and I'll extend it the same way. Nothing is broken today because Chloe's row isn't published.
+
+### Architecture Decisions
+- - **The IP comes from the row's actual Notion `IP` relation**, not from splitting the row name on "×". The name only embeds the IP by `notion_fanout.py`'s naming convention — a hand-renamed row would have silently mislabelled which persona was about to post, which is exactly the wrong thing to get wrong on a publish action.
+- So before I write anything I need to know which audience this post is actually for — Jackie's English followers, Chloe's Cantonese ones, or both (which needs the concept split in two). Happy to explain any part of that, or pull up what's currently in Notion for it.
+
+### Decisions & Reasoning
+- - IG+FB carousel entries for the same post are merged into one chip (shows both platform icons) instead of duplicating
+- 1. **Fixed cell size** — every day cell is now a static 128px tall regardless of content. A busy day's extra chips scroll inside that cell instead of stretching the whole row.
+- **Two details I've decided rather than asked:**
+- One issue to fix: I'm reusing the delete button's two-click arming, which shows delete-specific Chinese wording. Let me generalize it rather than duplicate the confirm logic:
+- - **Inactive IPs still resolve.** I deliberately didn't reuse `list_active_ips()` — if an IP were later deactivated, its existing ready rows would have shown "unknown IP" despite having a perfectly good relation. A row with genuinely no IP relation shows `❓ no IP` rather than guessing.
+- Two separate issues, and the second one is a real content-pipeline bug. Let me debug them properly rather than guess.
+- **Fixed:** carousel-only rows now get their own workbench group (🎠 Carousel（无视频）, 3 rows) and the card shows the **carousel** stage chip instead of the meaningless video stage. Verified live: `还没开始` went 13 → 10, exactly the 3 carousel rows moved.
+- The video pipeline actually auto-translates from an English source rather than keeping two authored guides — but you chose authored variants (you get review control over on-image wording), so I'll implement that. Let me check the test helpers first:
+
+
+## 2026-09-02 19:31 — social-ip-engine
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+
+
+## 2026-09-02 19:38 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+
+
+## 2026-09-02 19:58 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+
+
+## 2026-09-02 20:02 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+- A stale cache entry can't match a URL it has never seen. Keyed on file **content**, not mtime — a `git checkout` rewrites mtimes without changing bytes, and that shouldn't bust every cache. 8 new tests, including one that fails if a future `<script>` tag is added in a form the stamper misses.
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+
+
+## 2026-09-02 20:49 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+- A stale cache entry can't match a URL it has never seen. Keyed on file **content**, not mtime — a `git checkout` rewrites mtimes without changing bytes, and that shouldn't bust every cache. 8 new tests, including one that fails if a future `<script>` tag is added in a form the stamper misses.
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+
+
+## 2026-09-02 20:59 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+- A stale cache entry can't match a URL it has never seen. Keyed on file **content**, not mtime — a `git checkout` rewrites mtimes without changing bytes, and that shouldn't bust every cache. 8 new tests, including one that fails if a future `<script>` tag is added in a form the stamper misses.
+- You were right, and I'd made the wrong call earlier. I'd deliberately built delete as **local-only**, reasoning it "fails safe" because the concept comes back on the next import. That reasoning was wrong: it made the button a lie — the concept vanishes, then silently reappears next sync. Deleting in one place isn't safer, just more confusing.
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+

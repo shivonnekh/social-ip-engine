@@ -21,6 +21,7 @@ for a local dashboard where the detail view re-fetches on every open.
 """
 from __future__ import annotations
 
+import json
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -31,6 +32,7 @@ sys.path.insert(0, str(SCRIPTS_DIR))
 import notion_image as ni  # noqa: E402
 import notion_prompts as npm  # noqa: E402
 import pipeline_common as pc  # noqa: E402
+import published_log  # noqa: E402
 
 IDS = pc._load_notion_ids()
 
@@ -72,6 +74,15 @@ def _rt(prop: dict) -> str:
 
 def _sel(prop: dict) -> str:
     return ((prop or {}).get("select") or {}).get("name", "")
+
+
+def _date_start(prop: dict) -> str | None:
+    """ISO 8601 `start` out of a Notion `date` page property, or None if
+    unset. Returned as-is (not reformatted) — the studio frontend's
+    publish_schedule.js formats it into Asia/Kuala_Lumpur wall-clock digits
+    for display/prefill; this layer stays a thin, honest passthrough of
+    whatever Notion actually holds."""
+    return ((prop or {}).get("date") or {}).get("start")
 
 
 def _file_url(prop: dict) -> str | None:
@@ -127,14 +138,24 @@ def list_content_concepts() -> list[dict]:
 # ---------- cheap per-row summary (properties only) ----------
 
 def _next_action_board(stage: str, has_script: bool, has_image: bool,
-                       has_voice: bool, has_prod: bool) -> str:
+                       has_voice: bool, has_prod: bool,
+                       carousel_stage: str = "") -> str:
     """Coarse next_action from page properties alone (no body walk).
     Can't distinguish review_assets vs finalize (needs per-shot video state
-    from the body) — the detail view refines that."""
+    from the body) — the detail view refines that.
+
+    `carousel_stage` mirrors _next_action_detail's own carousel_only branch
+    at board level. A carousel-only row has no video and no Script, so its
+    video `Stage` sits at "💡 Idea" forever — without this it was reported
+    as "fan_out" and filed under "Not started yet" on the workbench even while its
+    carousel was Ready to Publish (found 2026-09-02). "🎠 Carousel Stage" is
+    a safe signal for this: it is empty on every video-only row (verified
+    live — 68 of 71 rows empty, set only on the 3 real carousel rows), so
+    this can never swallow a genuine fan_out."""
     if stage == STAGE_PUBLISHED:
         return "done"
     if not has_script:
-        return "fan_out"
+        return "carousel_only" if carousel_stage else "fan_out"
     if not (has_image and has_voice):
         return "generate_assets"
     if not has_prod:
@@ -153,6 +174,7 @@ def _row_summary(r: dict) -> dict:
     has_image = bool(p.get("🎨 Image", {}).get("checkbox", False))
     has_voice = bool(p.get("🎙️ Voice", {}).get("checkbox", False))
     has_prod = bool(p.get("Production Video", {}).get("files"))
+    carousel_stage = _sel(p.get("🎠 Carousel Stage", {}))
     return {
         "id": r["id"],
         "name": pc._title_of(r),
@@ -160,13 +182,15 @@ def _row_summary(r: dict) -> dict:
         "ip_id": ip_rel[0]["id"] if ip_rel else None,
         "content_id": content_rel[0]["id"] if content_rel else None,
         "stage": stage,
+        "carousel_stage": carousel_stage,
         "has_script": has_script,
         "has_image": has_image,
         "has_voice": has_voice,
         "has_production_video": has_prod,
         "dm_wired": bool(p.get("🔗 DM Wired", {}).get("checkbox", False)),
+        "publish_date": _date_start(p.get("Publish Date", {})),
         "next_action": _next_action_board(stage, has_script, has_image,
-                                          has_voice, has_prod),
+                                          has_voice, has_prod, carousel_stage),
         "edited": r.get("last_edited_time", ""),
     }
 
@@ -181,6 +205,185 @@ def work_queue() -> list[dict]:
     rows = [_row_summary(r) for r in pc._query_all(IDS["prod_db"])]
     rows.sort(key=lambda r: r["edited"], reverse=True)
     return rows
+
+
+# ---------- published events (Calendar view) ----------
+
+# Repo-root data files — studio/ is otherwise standalone from src/ (see
+# published_log.py's module docstring for why), but these three ledgers are
+# the only durable record of "when did this actually go live" (Notion's
+# Publish Date property is cleared on an immediate publish — see
+# publish_schedule.py). Path is resolved from this file, not cwd, since the
+# dashboard is normally launched with `cd studio/` first.
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_LEDGER_PATHS = {
+    "reel": _REPO_ROOT / "data" / "channels" / "notion_publish_state.json",
+    "carousel_ig": _REPO_ROOT / "data" / "channels" / "notion_publish_carousel_state.json",
+    "carousel_fb": _REPO_ROOT / "data" / "channels" / "notion_publish_carousel_fb_state.json",
+}
+
+
+class PublishLedgerCorrupt(RuntimeError):
+    """A publish ledger file exists but isn't valid JSON — surfaced loudly
+    rather than silently treated as "nothing published", which would make
+    the Calendar view lie about what actually went live."""
+
+
+def _load_ledger_file(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text())
+    except json.JSONDecodeError as exc:
+        raise PublishLedgerCorrupt(f"{path} is not valid JSON: {exc}") from exc
+    if not isinstance(data, dict):
+        raise PublishLedgerCorrupt(f"{path} does not contain a JSON object")
+    return data
+
+
+def published_events() -> list[dict]:
+    """Every post that has actually gone live, PLUS every row that's
+    scheduled to go live later — the Calendar view's data source.
+
+    "Scheduled" means Stage already flipped to Published with a future(ish)
+    Publish Date set (state.set_stage_with_publish_date's combined-PATCH
+    contract — see its own docstring) but not yet actually posted per the
+    ledgers. Excluding anything the ledger already shows as published
+    matters here specifically because Notion's Publish Date property is
+    NEVER cleared once a SCHEDULED post actually goes live (unlike an
+    IMMEDIATE publish, which clears it) — without that exclusion every
+    already-posted scheduled row would show twice on the calendar."""
+    reel = _load_ledger_file(_LEDGER_PATHS["reel"])
+    carousel_ig = _load_ledger_file(_LEDGER_PATHS["carousel_ig"])
+    carousel_fb = _load_ledger_file(_LEDGER_PATHS["carousel_fb"])
+    reel_published_ids = {rid for rid, e in reel.items() if e.get("status") == "published"}
+    carousel_published_ids = {
+        rid for ledger in (carousel_ig, carousel_fb)
+        for rid, e in ledger.items() if e.get("status") == "published"
+    }
+
+    row_meta: dict[str, dict] = {}
+    scheduled_candidates: list[dict] = []
+    for r in pc._query_all(IDS["prod_db"]):
+        p = r["properties"]
+        row_id = r["id"]
+        name, title = pc._title_of(r), _rt(p.get("🏷️ Title", {}))
+        row_meta[row_id] = {"name": name, "title": title}
+
+        video_publish_date = _date_start(p.get("Publish Date", {}))
+        if _sel(p.get("Stage", {})) == STAGE_PUBLISHED and video_publish_date:
+            scheduled_candidates.append({
+                "row_id": row_id, "name": name, "title": title,
+                "format": "reel", "channels": ["instagram"],
+                "publish_date": video_publish_date,
+            })
+
+        carousel_publish_date = _date_start(p.get("🎠 Carousel Publish Date", {}))
+        if _sel(p.get("🎠 Carousel Stage", {})) == CAROUSEL_STAGE_PUBLISHED and carousel_publish_date:
+            scheduled_candidates.append({
+                "row_id": row_id, "name": name, "title": title,
+                "format": "carousel", "channels": ["instagram", "facebook"],
+                "publish_date": carousel_publish_date,
+            })
+
+    live = published_log.build_events(reel, carousel_ig, carousel_fb, row_meta)
+    scheduled = published_log.build_scheduled_events(
+        scheduled_candidates,
+        {"reel": reel_published_ids, "carousel": carousel_published_ids},
+    )
+    return live + scheduled
+
+
+# ---------- ready-to-schedule candidates (Calendar "schedule this day" dialog) ----------
+
+def _ip_names() -> dict[str, str]:
+    """{ip_page_id: ip_name} for EVERY IP in the registry, active or not.
+
+    Deliberately not reusing list_active_ips(): a Production row belonging
+    to an IP that was later deactivated must still show that IP's name in
+    the schedule dialog — falling back to "unknown IP" on a row that has a
+    perfectly good IP relation would be a worse lie than the missing label
+    this exists to fix.
+    """
+    return {r["id"]: pc._title_of(r) for r in pc._query_all(IDS["ip_db"])}
+
+
+def _schedule_candidate(detail: dict, fmt: str, ip: str) -> dict:
+    """One row+format as the schedule dialog needs it.
+
+    Deliberately returns the RAW gate inputs rather than a computed
+    "ready" boolean: the browser runs the very same
+    canPublish()/canPublishCarousel() from publish_gate.js that the
+    individual Publish button uses, so there is no second copy of the
+    publish gate in Python that could silently drift from the JS one.
+
+    `ip` comes from the row's own Notion IP relation, NOT from splitting
+    the row name on "×" — the name only happens to embed the IP by
+    notion_fanout.py's naming convention, and a hand-renamed row would
+    silently mislabel which persona is about to post.
+    """
+    return {
+        "row_id": detail["id"],
+        "name": detail["name"],
+        "title": detail["title"],
+        "ip": ip,
+        "format": fmt,
+        # canPublish() inputs
+        "stage": detail["stage"],
+        "has_cover_image": detail["has_cover_image"],
+        "has_infographic_image": detail["has_infographic_image"],
+        "has_production_video": detail["has_production_video"],
+        # canPublishCarousel() inputs
+        "carousel_stage": detail["carousel_stage"],
+        "all_panels_have_image": detail["all_panels_have_image"],
+        "carousel_panel_count": detail["carousel_panel_count"],
+        # shared
+        "dm_wired": detail["dm_wired"],
+    }
+
+
+def ready_to_schedule() -> list[dict]:
+    """Every row/format sitting at "🟢 Ready to Publish" and not yet
+    scheduled, with the raw inputs the browser's publish gate needs.
+
+    Costs one body walk per candidate row (row_detail) because cover and
+    infographic presence live in the page body, not its properties — that's
+    why this is its own endpoint the dialog calls on open, rather than
+    something folded into the much cheaper board-level work_queue().
+    Candidates are few (rows at Ready stage only), and the walks run in
+    parallel, same pool idiom row_detail() itself already uses.
+    """
+    wanted: list[tuple[str, str]] = []  # (row_id, format)
+    row_ip_id: dict[str, str | None] = {}
+    for r in pc._query_all(IDS["prod_db"]):
+        p = r["properties"]
+        is_reel = _sel(p.get("Stage", {})) == STAGE_READY
+        is_carousel = _sel(p.get("🎠 Carousel Stage", {})) == CAROUSEL_STAGE_READY
+        if not (is_reel or is_carousel):
+            continue
+        ip_rel = p.get("IP", {}).get("relation", [])
+        row_ip_id[r["id"]] = ip_rel[0]["id"] if ip_rel else None
+        if is_reel:
+            wanted.append((r["id"], "reel"))
+        if is_carousel:
+            wanted.append((r["id"], "carousel"))
+    if not wanted:
+        return []
+
+    # One extra (small) query, only once there's actually something to label.
+    ip_names = _ip_names()
+
+    # One walk per distinct row even when a row qualifies as BOTH formats.
+    row_ids = list(dict.fromkeys(row_id for row_id, _ in wanted))
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        details = dict(zip(row_ids, ex.map(row_detail, row_ids), strict=True))
+    return [
+        _schedule_candidate(
+            details[row_id], fmt,
+            ip_names.get(row_ip_id.get(row_id) or "", "❓ no IP"),
+        )
+        for row_id, fmt in wanted
+    ]
 
 
 # ---------- deep row detail (one body walk, media URLs included) ----------
@@ -372,6 +575,9 @@ def row_detail(row_id: str) -> dict:
         "carousel_stage": carousel_stage,
         "carousel_posted": bool(p.get("🚀 Posted (Carousel)", {}).get("checkbox", False)),
         "dm_wired": bool(p.get("🔗 DM Wired", {}).get("checkbox", False)),
+        # ---- scheduling (see docs on set_stage_with_publish_date below) ----
+        "publish_date": _date_start(p.get("Publish Date", {})),
+        "carousel_publish_date": _date_start(p.get("🎠 Carousel Publish Date", {})),
         "next_action": _next_action_detail(stage, shots_out,
                                            bool(cover["image_url"]), bool(info["image_url"]),
                                            bool(prod_url), bool(panels_out)),
@@ -384,6 +590,40 @@ def set_stage(row_id: str, stage_name: str) -> None:
     ni.ncall("PATCH", f"/pages/{row_id}", {"properties": {"Stage": {"select": {"name": stage_name}}}})
 
 
+def set_stage_with_publish_date(row_id: str, stage_name: str, publish_date_iso: str | None) -> None:
+    """Combined PATCH: `Stage` + `Publish Date` in ONE Notion API call.
+
+    Why combined, not two separate actions: the backend's own scheduling
+    gate (src/notion_publish.py::_publish_date_eligible) only ever looks at
+    a row's Publish Date AFTER Stage has already flipped to "✅ Published"
+    — a date set on a row that never reaches that Stage does nothing. Two
+    separate dashboard actions ("set the date" then, later, "hit Publish")
+    would let a human set a date, forget to actually Publish, and never
+    notice the row never went live — or hit Publish out of habit before
+    setting the date and publish immediately by mistake. One call means
+    the irreversible Stage flip and the scheduling decision are made in
+    the SAME deliberate action, mirroring this repo's existing
+    --confirm-publish discipline (see set_stage's own docstring / CLAUDE.md
+    §"The `--confirm-publish` safety-gate pattern").
+
+    `publish_date_iso` must already carry an explicit UTC offset (built by
+    studio/dashboard/static/publish_schedule.js's toPublishDateIso(), or
+    validated by studio/dashboard/publish_schedule.py's
+    validate_publish_date_iso() before this is called) — this function does
+    no validation itself, only the Notion write.
+
+    `publish_date_iso=None` CLEARS the property (so re-publishing a row
+    that previously had a schedule, immediately this time, doesn't leave a
+    stale future date sitting on an already-live post)."""
+    if stage_name not in STAGE_OPTIONS:
+        raise ValueError(f"unknown stage {stage_name!r}")
+    date_value = {"start": publish_date_iso} if publish_date_iso else None
+    ni.ncall("PATCH", f"/pages/{row_id}", {"properties": {
+        "Stage": {"select": {"name": stage_name}},
+        "Publish Date": {"date": date_value},
+    }})
+
+
 def set_carousel_stage(row_id: str, stage_name: str) -> None:
     """Independent of set_stage() on purpose — the carousel has its own
     publish lifecycle (CAROUSEL_STAGE_OPTIONS) on a SEPARATE Notion
@@ -394,6 +634,24 @@ def set_carousel_stage(row_id: str, stage_name: str) -> None:
         raise ValueError(f"unknown carousel stage {stage_name!r}")
     ni.ncall("PATCH", f"/pages/{row_id}",
              {"properties": {"🎠 Carousel Stage": {"select": {"name": stage_name}}}})
+
+
+def set_carousel_stage_with_publish_date(
+    row_id: str, stage_name: str, publish_date_iso: str | None
+) -> None:
+    """Carousel analogue of set_stage_with_publish_date() — same combined
+    PATCH / same "publish_date_iso=None clears" contract, but writes the
+    carousel's OWN, independent properties (`🎠 Carousel Stage` +
+    `🎠 Carousel Publish Date`), never touching `Stage` / `Publish Date`.
+    See set_carousel_stage()'s docstring for why the two lifecycles are
+    kept separate."""
+    if stage_name not in CAROUSEL_STAGE_OPTIONS:
+        raise ValueError(f"unknown carousel stage {stage_name!r}")
+    date_value = {"start": publish_date_iso} if publish_date_iso else None
+    ni.ncall("PATCH", f"/pages/{row_id}", {"properties": {
+        "🎠 Carousel Stage": {"select": {"name": stage_name}},
+        "🎠 Carousel Publish Date": {"date": date_value},
+    }})
 
 
 def archive_page(page_id: str) -> None:
@@ -462,6 +720,12 @@ def panel_title_by_index(row_id: str, panel_index: int) -> str | None:
 # shot template built by notion_prompts.apply_shot_plan() / the panel
 # template built by notion_carousel_prompts.carousel_blocks(). Matched by
 # substring, same convention every reader in this codebase already uses.
+#
+# ⚠️ NOT UI COPY — DO NOT TRANSLATE. These are the literal words that appear
+# in the Notion page body ("🎬 即梦 prompt"), matched by substring to find the
+# right code block. The studio UI was translated to English on 2026-09-02;
+# these stayed Chinese on purpose because translating "即梦" here would stop
+# the per-shot video regenerate finding its prompt at all.
 _INSTRUCTION_LABEL = {
     "image": "Image prompt",
     "voice": "Voice script",
@@ -472,9 +736,10 @@ _INSTRUCTION_LABEL = {
 
 def append_shot_instruction(row_id: str, shot_title: str, kind: str, instruction: str) -> bool:
     """Append a human-written edit instruction onto the END of a shot's
-    existing image/voice/即梦 prompt code block, so the next regenerate call
+    existing image/voice/Dreamina prompt code block, so the next regenerate call
     (which always re-reads the prompt fresh from Notion) picks it up —
-    "把它加进原有的 prompt 里，这样它才知道要改什么" (added 2026-07-14).
+    i.e. "fold it into the existing prompt so the model knows what to change"
+    (added 2026-07-14).
 
     Persists to Notion (not a one-off/ephemeral flag) — the instruction sticks
     for future regenerations of this shot too, until someone edits it away in
@@ -501,12 +766,19 @@ def append_shot_instruction(row_id: str, shot_title: str, kind: str, instruction
                 break  # image/voice: first match is the only one
             # for "video" specifically, keep scanning — a shot could in
             # theory have more than one 即梦-labelled paragraph; last one wins,
+            # (that label is Notion block text, not UI copy — see _INSTRUCTION_LABEL)
             # matching how notion_video.py itself reads it
 
     if code_block is None:
         return False
 
     current = ni._txt(code_block)
+    # ⚠️ NOT UI COPY — DO NOT TRANSLATE (see _INSTRUCTION_LABEL above). This
+    # marker is written INTO the Notion prompt that feeds 即梦 (a Chinese
+    # model), and the idempotency check below matches it against text already
+    # sitting in existing rows. Changing the wording would both alter what the
+    # model receives and make every previously-appended instruction invisible
+    # to that check, so retries would stack duplicates.
     marker = "\n\n【手动补充指令 via Studio】"
     # Idempotent-ish: if the exact same instruction was already appended
     # (e.g. a retry), don't stack duplicate markers.

@@ -111,6 +111,34 @@ def test_english_language_adds_no_extra_clause():
     assert "rendered in" not in prompt
 
 
+# --- the vocabulary PRODUCTION actually passes (regression, 2026-09-02) ------
+# apply_carousel_plan() passes `ip_language(ip_id)`, and ip_language() returns
+# notion_prompts._LANG_MAP's CHINESE label ("英文" / "粤语"), never the English
+# word. The two tests above only ever exercised "English"/"Cantonese", so the
+# English-suppression branch was never covered for a real value: Jackie (the
+# English IP) got `, rendered in 英文` injected into a gpt-image-2 prompt,
+# pushing the model to render Chinese glyphs on an English IP's panels.
+
+def test_english_ip_label_from_lang_map_adds_no_clause():
+    from notion_prompts import _LANG_MAP  # noqa: PLC0415 - see module docstring
+    panel = {**_PANEL, "copy": "Press here"}
+    prompt = build_panel_prompt(panel, "s", index=1, total=3,
+                                language=_LANG_MAP["english"])
+    assert "rendered in" not in prompt, (
+        "the English IP's real ip_language() label must suppress the clause — "
+        "injecting a Chinese token into a gpt-image-2 prompt makes it render "
+        "Chinese text on an English IP's carousel"
+    )
+
+
+def test_non_english_ip_label_from_lang_map_still_adds_a_clause():
+    from notion_prompts import _LANG_MAP  # noqa: PLC0415
+    panel = {**_PANEL, "copy": "壓下去"}
+    prompt = build_panel_prompt(panel, "s", index=1, total=3,
+                                language=_LANG_MAP["cantonese"])
+    assert f"rendered in {_LANG_MAP['cantonese']}" in prompt
+
+
 # ------------------------------------------------------------- carousel_blocks
 
 _PANELS = [
@@ -167,3 +195,92 @@ def test_no_panels_produces_no_panel_blocks_but_still_a_valid_header():
     blocks = carousel_blocks([], "style")
     assert not [b for b in blocks if b["type"] == "heading_3"]
     assert any(b["type"] == "callout" for b in blocks)
+
+
+# ------------------------------------------- per-IP carousel guide selection
+# The panel copy is authored on the shared Content concept and was used
+# verbatim for EVERY IP fanned out from it — so Jackie (English) got Chloe's
+# Cantonese on-image text (found live 2026-09-02). A concept can now carry a
+# language-tagged guide per IP, mirroring 📜 Master Script (EN) / 🇭🇰 Script (粵語).
+
+from notion_carousel_prompts import parse_carousel_guide_blocks  # noqa: E402
+
+
+def _h2(text):
+    return {"type": "heading_2", "heading_2": {"rich_text": [{"plain_text": text}]}}
+
+
+def _h3(text):
+    return {"type": "heading_3", "heading_3": {"rich_text": [{"plain_text": text}]}}
+
+
+def _bullet(text):
+    return {"type": "bulleted_list_item",
+            "bulleted_list_item": {"rich_text": [{"plain_text": text}]}}
+
+
+def _guide(heading, copy_text):
+    return [_h2(heading), _h3("Panel 1 · Cover"),
+            _bullet(f"🖼️ {copy_text} visual"), _bullet(f"✏️ {copy_text}")]
+
+
+_EN_GUIDE = _guide("🎠 Carousel Guide (EN)", "Anger hits the Liver")
+_YUE_GUIDE = _guide("🎠 Carousel Guide (粵語)", "怒傷肝")
+_UNTAGGED_GUIDE = _guide("🎠 Carousel Guide", "shared copy")
+
+
+def test_english_ip_gets_the_english_tagged_guide():
+    panels = parse_carousel_guide_blocks(_EN_GUIDE + _YUE_GUIDE, language="英文")
+    assert panels[0]["copy"] == "Anger hits the Liver"
+
+
+def test_cantonese_ip_gets_the_cantonese_tagged_guide():
+    panels = parse_carousel_guide_blocks(_EN_GUIDE + _YUE_GUIDE, language="粤语")
+    assert panels[0]["copy"] == "怒傷肝"
+
+
+def test_guide_order_in_the_page_does_not_decide_the_winner():
+    panels = parse_carousel_guide_blocks(_YUE_GUIDE + _EN_GUIDE, language="英文")
+    assert panels[0]["copy"] == "Anger hits the Liver"
+
+
+def test_an_untagged_guide_still_serves_every_ip_unchanged():
+    # Backward compatibility: every concept authored before this change has
+    # exactly one untagged guide, and must keep working for both IPs.
+    for language in ("英文", "粤语", ""):
+        panels = parse_carousel_guide_blocks(_UNTAGGED_GUIDE, language=language)
+        assert panels[0]["copy"] == "shared copy", language
+
+
+def test_tagged_guide_wins_over_an_untagged_one_for_its_own_language():
+    panels = parse_carousel_guide_blocks(_UNTAGGED_GUIDE + _EN_GUIDE, language="英文")
+    assert panels[0]["copy"] == "Anger hits the Liver"
+
+
+def test_untagged_guide_is_the_fallback_when_no_tag_matches():
+    panels = parse_carousel_guide_blocks(_UNTAGGED_GUIDE + _YUE_GUIDE, language="英文")
+    assert panels[0]["copy"] == "shared copy"
+
+
+def test_no_panels_when_only_another_languages_guide_exists():
+    # Deliberately empty, NOT a fallback to the Cantonese guide: falling back
+    # is exactly the bug this feature exists to fix (Chinese copy rendered on
+    # the English IP's panels). apply_carousel_plan reports "no-carousel-guide"
+    # and writes nothing, which is the honest outcome.
+    assert parse_carousel_guide_blocks(_YUE_GUIDE, language="英文") == []
+
+
+def test_cantonese_tag_spelled_in_english_is_recognised():
+    guide = _guide("🎠 Carousel Guide (Cantonese)", "怒傷肝")
+    assert parse_carousel_guide_blocks(guide, language="粤语")[0]["copy"] == "怒傷肝"
+
+
+def test_english_tag_spelled_out_is_recognised():
+    guide = _guide("🎠 Carousel Guide (English)", "Anger hits the Liver")
+    panels = parse_carousel_guide_blocks(guide, language="英文")
+    assert panels[0]["copy"] == "Anger hits the Liver"
+
+
+def test_a_panel_without_a_visual_is_still_dropped():
+    blocks = [_h2("🎠 Carousel Guide"), _h3("Panel 1 · Cover"), _bullet("✏️ copy only")]
+    assert parse_carousel_guide_blocks(blocks, language="") == []

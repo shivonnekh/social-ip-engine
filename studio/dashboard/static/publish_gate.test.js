@@ -108,3 +108,62 @@ test("canPublishCarousel is false when dm_wired is missing entirely, not just ex
   delete row.dm_wired;
   assert.equal(canPublishCarousel(row), false);
 });
+
+// ------------------------------------------------- block reasons (batch scheduler)
+// The calendar's "schedule for this day" dialog lists ready posts and shows
+// WHY a not-ready one is unavailable, instead of silently omitting it.
+
+const { publishBlockReasons, carouselPublishBlockReasons } = require("./publish_gate.js");
+
+test("publishBlockReasons is empty for a row that can publish", () => {
+  assert.deepEqual(publishBlockReasons(baseRow()), []);
+});
+
+test("publishBlockReasons names every missing precondition, not just the first", () => {
+  const reasons = publishBlockReasons(baseRow({
+    has_cover_image: false, has_infographic_image: false, dm_wired: false,
+  }));
+  assert.equal(reasons.length, 3);
+  assert.ok(reasons.some(r => /cover/i.test(r)));
+  assert.ok(reasons.some(r => /infographic/i.test(r)));
+  assert.ok(reasons.some(r => /DM/i.test(r)));
+});
+
+test("publishBlockReasons reports an already-published row", () => {
+  const reasons = publishBlockReasons(baseRow({ stage: "✅ Published" }));
+  assert.equal(reasons.length, 1);
+  assert.ok(/published/i.test(reasons[0]));
+});
+
+test("publishBlockReasons agrees with canPublish for every case", () => {
+  for (const overrides of [
+    {}, { has_cover_image: false }, { has_infographic_image: false },
+    { has_production_video: false }, { dm_wired: false }, { stage: "✅ Published" },
+  ]) {
+    const row = baseRow(overrides);
+    assert.equal(publishBlockReasons(row).length === 0, canPublish(row),
+      `disagreement for ${JSON.stringify(overrides)}`);
+  }
+});
+
+test("carouselPublishBlockReasons is empty for a carousel that can publish", () => {
+  assert.deepEqual(carouselPublishBlockReasons(baseCarouselRow()), []);
+});
+
+test("carouselPublishBlockReasons names the panel-count bound it violates", () => {
+  assert.ok(carouselPublishBlockReasons(baseCarouselRow({ carousel_panel_count: 1 }))
+    .some(r => /panel/i.test(r)));
+  assert.ok(carouselPublishBlockReasons(baseCarouselRow({ carousel_panel_count: 11 }))
+    .some(r => /panel/i.test(r)));
+});
+
+test("carouselPublishBlockReasons agrees with canPublishCarousel for every case", () => {
+  for (const overrides of [
+    {}, { all_panels_have_image: false }, { carousel_panel_count: 1 },
+    { carousel_panel_count: 11 }, { dm_wired: false }, { carousel_stage: "✅ Published" },
+  ]) {
+    const row = baseCarouselRow(overrides);
+    assert.equal(carouselPublishBlockReasons(row).length === 0, canPublishCarousel(row),
+      `disagreement for ${JSON.stringify(overrides)}`);
+  }
+});

@@ -311,17 +311,17 @@ def test_past_publish_date_is_claimed_normally(paths, monkeypatch):
     assert len(result["jobs"]) == 1
 
 
-def test_todays_publish_date_in_hkt_is_claimed(paths, monkeypatch):
-    today_hkt = datetime.now(npub._HKT).date().isoformat()
-    result = _plan([_row(publish_date=today_hkt)], paths, monkeypatch)
+def test_todays_publish_date_in_myt_is_claimed(paths, monkeypatch):
+    today_myt = datetime.now(npub._PUBLISH_TZ).date().isoformat()
+    result = _plan([_row(publish_date=today_myt)], paths, monkeypatch)
     assert len(result["jobs"]) == 1
 
 
 def test_publish_date_later_today_with_explicit_time_still_defers(paths, monkeypatch):
-    """A date-only Publish Date means 'eligible from 00:00 HKT that day,'
+    """A date-only Publish Date means 'eligible from 00:00 MYT that day,'
     but an explicit future TIME today must still defer — the gate must
     respect time, not just the calendar date, when the property carries one."""
-    future_today = (datetime.now(npub._HKT) + timedelta(hours=3)).isoformat()
+    future_today = (datetime.now(npub._PUBLISH_TZ) + timedelta(hours=3)).isoformat()
     result = _plan([_row(publish_date=future_today)], paths, monkeypatch)
     assert result["jobs"] == []
 
