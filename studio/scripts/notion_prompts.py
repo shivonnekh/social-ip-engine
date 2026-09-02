@@ -299,6 +299,8 @@ def build_prompt(persona: str, visual: str, talking: bool = False) -> str:
     speaking face → silent lip-sync failure). For a dialogue shot the
     talking-head framing OVERRIDES the demo posture — the words are the point,
     the technique is narrated, not silently performed."""
+    two_person = is_two_person(visual)
+    visual = strip_two_person(visual)
     v = visual.lower()
 
     # Derive setting from the visual — don't hardcode clinic for every shot
@@ -336,7 +338,19 @@ def build_prompt(persona: str, visual: str, talking: bool = False) -> str:
         setting,
         f"SCENE: {visual}",
     ]
-    if talking:
+    if talking and two_person:
+        # Deliberate two-person frame (e.g. doctor + patient). BOTH faces must be
+        # near-frontal and unobstructed: 即梦 lip-syncs the presenter and needs a
+        # clean read on the other face to leave it alone.
+        lines.append(
+            "IMPORTANT — TWO people are in this frame ON PURPOSE, and no more "
+            "than two: the presenter, and one other person described in the "
+            "scene. BOTH faces must be fully visible, unobstructed and "
+            "near-frontal to the lens. The presenter is the ONLY one speaking — "
+            "mouth clearly visible mid-speech, eyes open. The other person is "
+            "calm and still with their mouth CLOSED, not talking. Neither "
+            "person turns away from camera.")
+    elif talking:
         # A lip-syncable talking head overrides any demo posture in the beat.
         lines.append(
             "IMPORTANT — this is a talking-to-camera shot: exactly ONE person "
@@ -351,6 +365,33 @@ def build_prompt(persona: str, visual: str, talking: bool = False) -> str:
     lines.append("Include only the people explicitly described in the scene. "
                  "No extra faces, no on-screen text, no watermark.")
     return "\n".join(lines)
+
+
+# Opt-in two-person framing (doctor + patient), added 2026-09-02.
+#
+# build_prompt(talking=True) otherwise hardcodes "exactly ONE person in frame,
+# alone", because a doctor+patient frame was believed to hang multimodal2video.
+# Disproven by live test: a standing-doctor + seated-patient two shot lip-synced
+# on the FIRST attempt in ~160s. What makes it work is telling 即梦 WHO speaks —
+# hence the 【Second person】block in build_jimeng_prompt below. Without that the
+# model cannot tell which face owns the audio, which is the likeliest reason
+# two-person frames looked like they "hang".
+#
+# EXPLICIT marker rather than sniffing for the word "patient": the Hua Tuo
+# series already uses "patient" inside solo shot guides, and inferring would
+# silently reframe those. Put it at the START of the 🎥 line so it survives
+# _primary_beat()'s split into the image prompt.
+TWO_PERSON_MARKER = "[TWO_PERSON]"
+
+
+def is_two_person(visual: str) -> bool:
+    return TWO_PERSON_MARKER.casefold() in (visual or "").casefold()
+
+
+def strip_two_person(visual: str) -> str:
+    """Remove the marker — it is an authoring instruction, never description."""
+    import re as _re
+    return _re.sub(_re.escape(TWO_PERSON_MARKER), "", visual or "", flags=_re.I).strip()
 
 
 JIMENG_DISCLAIMER = "请注意，这些都是 AI 数字人，不是真人。没有真人也可以直接生成影片。"
@@ -540,6 +581,8 @@ def build_jimeng_prompt(title: str, visual: str = "", lang: str = "", dialogue: 
     reference is framed as "how it sounds", the quoted text as "what is
     said" — the two channels reinforcing each other instead of the video
     channel having zero textual signal about the actual words."""
+    two_person = is_two_person(visual)
+    visual = strip_two_person(visual)
     visual_clean = sanitize_for_jimeng(visual or "")
     lang_en = _LANG_EN.get(lang, lang)
     # The quoted dialogue must pass content review too — quoting the RAW voice
@@ -584,13 +627,34 @@ def build_jimeng_prompt(title: str, visual: str = "", lang: str = "", dialogue: 
         guide_body = visual_clean
     shot_guide = f"【Shot Guide】{guide_body}\n" if guide_body else ""
     speech_sec = f"【Speech】{speech}\n"
+    # THE block that makes two-person lip-sync work. Verified 2026-09-02: with a
+    # second face in frame and no such block, 即梦 has no way to know which face
+    # owns the uploaded audio — the failure mode previously written up as "two
+    # people in one image hangs 即梦". Naming the non-speaker, freezing their
+    # mouth and forbidding lip animation on them produced a first-attempt
+    # success in ~160s.
+    #
+    # Deliberately phrased in wellness vocabulary ("the seated guest"), never
+    # "patient": sanitize_for_jimeng() exists because medical words trip content
+    # review into eternal "querying", and this block is assembled AFTER that
+    # sanitiser runs, so it would not be cleaned for us.
+    second_person_sec = (
+        "【Second person】A second person — the seated guest — is also in frame. "
+        "The guest is NOT a speaker: the presenter is the only speaker and the "
+        "only one whose lips move. The guest's mouth stays closed for the entire "
+        "clip. Do not animate the guest's lips. Do not make the guest talk. The "
+        "guest stays calm and still, facing the camera, with only small natural "
+        "breathing and blinking. Keep the guest's face, hair, age and clothing "
+        "identical throughout.\n"
+    ) if two_person else ""
     character_sec = (
         "【Character】AI virtual presenter. Use the uploaded reference image as the "
         "appearance reference. Keep the same hairstyle, clothing, facial features, "
         "age and expression. Consistent identity throughout the video.\n"
     )
     # Speaking shots: Speech outranks the Shot Guide. Silent shots: original order.
-    body = (speech_sec + shot_guide + character_sec) if dialogue else (shot_guide + character_sec + speech_sec)
+    body = ((speech_sec + second_person_sec + shot_guide + character_sec) if dialogue
+            else (shot_guide + character_sec + speech_sec + second_person_sec))
     return (
         "音频驱动（Audio Native）数字人视频。\n"
         f"{body}"
