@@ -929,5 +929,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/frozen-page-1.png"
     ]
+  },
+  {
+    "keyword": "swollen",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The dent that stays is the sign to watch 🦶\n\nQuick check — is it both ankles, or just one? One-sided swelling should be seen in person first.\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM swollen guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🦶 Swollen Ankles — Where the Water Sits",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/swollen-page-1.png"
+    ]
   }
 ]
