@@ -872,5 +872,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/lowback-page-1.png"
     ]
+  },
+  {
+    "keyword": "clicking",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! The warm wrap plus a short walk beats rest alone for stiff knees 🦵\n\nQuick check — is your knee worse in cold damp weather, or worse after you have been sitting a long time?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM clicking guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🦵 Knee Pain — Why It Clicks and Aches",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/clicking-page-1.png"
+    ]
   }
 ]
