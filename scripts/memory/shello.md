@@ -1024,3 +1024,50 @@ render mid-flight and cascaded 7 concepts; an untimed urlopen that hung 30 min a
 half-built; a poll-shortening that tightened the resubmit loop; three restarts each leaving
 in-flight tasks that blocked the next start. All now fixed in code, but they are why 10
 campaigns took a day instead of an evening.
+
+## Session — 2026-09-02/03 — "Jackie treating a patient" batch (10/10 delivered)
+All 10 clinic-format campaigns complete: 4/4 shots each, A/V within 0.05s, karaoke
+captions, covers, infographics, and all 10 DM keywords wired and verified resolving
+through the LIVE matcher with infographics attached.
+
+**Two documented "laws" were disproven by cheap re-tests. Both were one-off observations
+frozen into the docs as permanent truths, and both cost real time before I checked.**
+1. `旧号` was written up as "20/20 hangs, ZERO successes ever, needs compliance
+   confirmation". Measured: 17/45 = 38% success, BETTER than 新号's 30%, and it holds 4x
+   the credit. I repeated the stale verdict to Shivonne as fact and nearly talked her out
+   of the better account.
+2. "Two people in one image hangs 即梦" — told us to fall back to image2video, which
+   throws away lip-sync entirely. A doctor+patient two shot succeeded FIRST attempt in
+   ~160s. The missing piece was never the second face; it was that 即梦 has no way to know
+   WHICH face owns the audio. The new 【Second person】block names the non-speaker, freezes
+   their mouth and forbids animating their lips. That is the whole unlock.
+
+**Rule going forward: re-measure an account/capability verdict before repeating it.
+`dreamina list_task` + a single test submission costs minutes; a stale verdict cost hours.**
+
+Other findings:
+- `[TWO_PERSON]` marker is explicit, NOT inferred from the word "patient" — the Hua Tuo
+  series already uses "patient" in SOLO guides and inference would silently reframe them.
+- Guest consistency across shots 1-3 via `[SAME_PERSON_AS: Shot 1]`; shot 4 (solo CTA) is
+  chained for PROPS ONLY, or the guest gets dragged into a frame she must not be in.
+- 3 of my first-choice keywords collided against the live matcher (kneepain⊃knee,
+  stiffneck⊃neck, heelpain~heels). Always check `comment_rules.match()`, never the rules
+  file by eye — a collision silently routes the CTA to the wrong campaign's DM.
+- **Bare-skin/content-moderation theory for repeated hangs: WRONG.** `swollen` shot 3 hung
+  6 times with a fully-clothed, shoes-on, both-faces-frontal image. It is the hang lottery,
+  nothing more. Do not re-derive this theory.
+- **"Process alive" ≠ "process working".** Overnight the machine slept, a socket died, and
+  notion_video sat at 0.33s CPU for 10.5 HOURS on one shot — no error, no retry, three
+  concepts never started. Check `ps -o time=` (CPU), not process state. Fixed with
+  DREAMINA_CLI_TIMEOUT_S (default 300s); this was the last un-hardened network path after
+  the notion_fanout/notion_prompts/notion_image urlopen timeouts.
+- A `pgrep -f "<pattern>"` wait-loop MATCHES ITS OWN COMMAND STRING. My chain script
+  blocked forever waiting on a stage that had already finished, because my own monitoring
+  shells contained the pattern. Never gate a chain on pgrep of a string you also type.
+
+Still open:
+- `lowback` shows ✅ Published — Shivonne published it; the other 9 sit at 🟢 Ready to
+  Publish awaiting her call. No script here ever sets ✅ Published.
+- Shot-2 "flip screen direction" does not render: gpt-image-2 keeps the guest frame-left in
+  all three two-shots. Scale/height vary, camera SIDE does not. Fix would be describing the
+  guest's position explicitly per shot rather than describing camera movement.
