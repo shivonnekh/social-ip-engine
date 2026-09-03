@@ -974,5 +974,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/firststep-page-1.png"
     ]
+  },
+  {
+    "keyword": "tension",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! A band around the head is tension, not migraine — different fix entirely 😣\n\nQuick check — is it a tight BAND all around, or a throbbing on ONE side?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM tension guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "😣 Tension Headache — The Band Around Your Head",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/tension-page-1.png"
+    ]
   }
 ]
