@@ -1004,5 +1004,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/posture-page-1.png"
     ]
+  },
+  {
+    "keyword": "wrist",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Tuck the thumb in and bend the wrist down — if that stings, it is the tendon sheath ✋\n\nQuick check — does the pain run up the forearm, or stay right at the wrist?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM wrist guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "✋ Wrist and Thumb Pain — The Phone Grip",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/wrist-page-1.png"
+    ]
   }
 ]
