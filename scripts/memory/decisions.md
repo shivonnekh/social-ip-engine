@@ -18085,3 +18085,502 @@
 - I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
 - - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
 
+
+## 2026-09-02 22:21 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Now the same commit-per-record fix for the import job, and a `database is locked` handler so a save fails gracefully rather than as a raw 500:
+- Now the `database is locked` handler so a save during a sync fails as a clear message rather than a raw 500:
+- A stale cache entry can't match a URL it has never seen. Keyed on file **content**, not mtime — a `git checkout` rewrites mtimes without changing bytes, and that shouldn't bust every cache. 8 new tests, including one that fails if a future `<script>` tag is added in a form the stamper misses.
+- You were right, and I'd made the wrong call earlier. I'd deliberately built delete as **local-only**, reasoning it "fails safe" because the concept comes back on the next import. That reasoning was wrong: it made the button a lie — the concept vanishes, then silently reappears next sync. Deleting in one place isn't safer, just more confusing.
+- I also listed the known gaps honestly rather than burying them — import never deletes, shot removal warns instead of deleting, production rows can't be created from Studio, and the agent's bulk-edit undercount.
+- My `replace` hit the **first** `btn-back` occurrence — the loading placeholder in `openRow`, where `d` doesn't exist yet. That broke opening any row. Good thing I tested it rather than shipping. Fixing:
+- **I also caught a regression I'd just introduced.** My first edit landed the wiring call in `openRow`'s loading placeholder instead of `renderDetail`, referencing a variable that didn't exist yet — which broke opening *any* row. The browser test caught it before it went anywhere.
+- I replaced the duplicates with **pointers** rather than syncing their contents. Two 554-line files that must agree by hand won't stay in agreement; a pointer can't drift. The freelancer guide got the corrected guidance instead (name the speaker in a 【Second person】block), plus the ≤15° near-frontal-face requirement it never mentioned.
+
+### Architecture Decisions
+- **Write-back never rebuilds a page body.** I scanned all 95 concepts first and found 15 distinct section types — Directorial Notes, Carousel Guides, act-split shot guides. A rebuild would have silently deleted 10 kinds of hand-written work. So it PATCHes only block ids it read, and appends new content positionally. Verified live: a hand-written "🎬 Directorial Notes" section survived an edit that changed the hook, a shot's visual and a DM.
+- Upstream commits touch only `data/` — no overlap with `studio/`, so the rebase will be clean. Creating a branch (you're on `main`) and splitting into two honest commits:
+- The four files that carry *both* bodies of work (`index.html`, `app.js`, `app.py`, `style.css`) went into the second commit, with a note in both messages. Splitting them hunk-by-hunk was more risk than value; they land together on the branch anyway.
+
+### Decisions & Reasoning
+- That 429 is transient rate-limiting from my repeated imports — and notably the Database tab kept working through it because it reads locally. Let me check the shot guide editor:
+- **Two limits worth knowing:** removing a shot in Studio warns rather than deleting it in Notion (an off-by-one in the delete direction destroys someone's writing; a leftover block is visible and fixable). And Production rows can be edited but not created here — only a fan-out builds their shot-by-shot body correctly.
+- Both reviews landed with real findings. Let me verify each claim against the code myself rather than taking them at face value.
+- Both reviews are addressed. I verified every claim against the code myself rather than taking the reports at face value — and one of them turned out to be right about something the reviewer only half-caught.
+- **Shot reorder corruption** (code review, originally CRITICAL) — the reviewer later confirmed my heading-relabel logic already fixed it, but noted there was no test pinning it. They were right that it was unpinned. I added three regression tests that assert on the **resulting page** (via a small Notion simulator) rather than on the patch plan, since a plan can look fine and still produce a wrong page.
+- **Lock contention** (code review, High→Medium) — this one they were more right than their own downgrade suggested. My `busy_timeout` only narrowed the window; the real problem was that `studio_sync.py` wrapped an entire multi-minute job in one transaction. Worse, and they caught this: **my own docstring claimed the local write was durable before the Notion push, and it wasn't** — the commit came after. Fixed properly: commit per record in import/push, and commit before the push in `_sync`. Any residual lock now returns a 503 "busy, try again" instead of a raw 500.
+- I chose **sync over hard cutover** (one of the two options you offered) because Notion still triggers the irreversible publish path. Phasing it out is now a switch — `STUDIO_WRITEBACK=0` — once the generation scripts read the mirror instead.
+- - **"Lilabay" is still unexplained.** It appears nowhere in the repo or in any Notion workspace my integration can reach. I built against *"AI-IP Content Engine — 100-Day Production Board"* because it matches "concept down to shot guide" exactly. If Lilabay is a separate workspace, tell me and I'll point the importer at it — that's a config change, not a rebuild.
+
+
+## 2026-09-03 10:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+- **But I've just been burned trusting a stale verdict**, so I'm not going to declare this impossible from the docs. I'm going to test it — one two-person dialogue shot, measure it, then design around the result rather than the folklore.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-03 10:40 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+
+
+## 2026-09-03 10:47 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+
+
+## 2026-09-03 11:23 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+
+
+## 2026-09-03 11:25 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+
+
+## 2026-09-03 11:34 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+
+
+## 2026-09-03 11:38 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 11:47 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 11:52 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 11:59 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:04 — social-ip-engine
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:06 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:10 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:19 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:21 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:22 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:26 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:29 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:32 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:34 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+- **2. Shoes → white leather trainers.** Flagging this because it changes her look: she can't credibly sprint, spin and land in pointed heels, and forcing it would undercut exactly the realism you're asking for. Same white palette, so continuity holds. If you'd rather keep the heels, I'd re-cut the action to confident strides and turns instead of running — say the word.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:35 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- **Also cut the poll budget 10 min → 6 min.** This is close to free: the code already re-checks abandoned attempts and adopts a late finisher, so a shorter poll can't lose a slow success — it just stops burning 7 idle minutes on a task that was never scheduled. A 3-attempt washout now costs 18 min instead of 30.
+- `bowel` is rendering; 7 behind it. At ~40 min per concept — the pacing fix trades ~8 min of deliberate cooldown to avoid 30-min washouts — that's roughly 5 hours to clear all eight. It runs unattended now, so I'll report as they land rather than narrate each one.
+
+### Architecture Decisions
+- Now splitting each concept's props into held vs. desk so nothing gets rendered twice.
+- One honest note on pacing: 120s cooldown and 300s backoff are working, but I picked them from a single controlled test, not a swept range. They're a reasonable operating point, not a tuned one — if this batch shows a hang pattern again I'd rather measure than keep nudging the numbers.
+- **But I've just been burned trusting a stale verdict**, so I'm not going to declare this impossible from the docs. I'm going to test it — one two-person dialogue shot, measure it, then design around the result rather than the folklore.
+
+### Decisions & Reasoning
+- **Wiring** — Stage flipped to 🟢 Ready to Publish (arms the DM; reversible, no public post). Cover ✓, infographic ✓, 🔗 DM Wired ✓. I ran the *real* resolvers and the *real* comment matcher against the live row rather than reasoning about them — `circles`, `dark circles`, even the typo `circels` all resolve with the infographic attached.
+- - The concept card still reads **✍️ Scripted** in the Content list — I fanned out manually with `--ip Jackie` instead of going through `notion_watch`, so the "🚀 Fanned out" flip never fired. Cosmetic only; the production row exists and is complete. Say the word and I'll correct the status.
+- Open the row's Shots panel to review the four clips and the merged karaoke cut before you decide.
+- Fanout is on #5 of 10. Starting asset generation on the completed rows in parallel rather than idling.
+- I found this because I tried to deploy, which brings me to the second thing:
+- Jimeng's hang-lottery is running worse than the documented ~45%. `hair` shot 3 lost all three attempts. At ~45 min/concept, **the remaining 8.5 concepts are roughly 6–7 hours.** Hung shots aren't charged, and the pipeline correctly refused to merge around the gap rather than shipping a short video.
+- **Notion `urlopen` had no timeout — anywhere.** A fan-out sat at 0.17s CPU for 30 minutes. Worse than the delay: it had already created the row and hung mid-`apply_shot_plan`, leaving it with 3 of 4 shots and a half-written body. Silent corruption that reads as slowness. Fixed across all three copies of that helper plus the batch driver, with 10 tests.
+- I also built `repair_and_merge.py` for the failed shots, because the only existing merge path (`--merge-only`) runs the audio swap that was reversed in August for desyncing lips.
+
+
+## 2026-09-03 12:42 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+- **2. Shoes → white leather trainers.** Flagging this because it changes her look: she can't credibly sprint, spin and land in pointed heels, and forcing it would undercut exactly the realism you're asking for. Same white palette, so continuity holds. If you'd rather keep the heels, I'd re-cut the action to confident strides and turns instead of running — say the word.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:46 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+- **2. Shoes → white leather trainers.** Flagging this because it changes her look: she can't credibly sprint, spin and land in pointed heels, and forcing it would undercut exactly the realism you're asking for. Same white palette, so continuity holds. If you'd rather keep the heels, I'd re-cut the action to confident strides and turns instead of running — say the word.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:47 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+- **2. Shoes → white leather trainers.** Flagging this because it changes her look: she can't credibly sprint, spin and land in pointed heels, and forcing it would undercut exactly the realism you're asking for. Same white palette, so continuity holds. If you'd rather keep the heels, I'd re-cut the action to confident strides and turns instead of running — say the word.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:51 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+- **2. Shoes → white leather trainers.** Flagging this because it changes her look: she can't credibly sprint, spin and land in pointed heels, and forcing it would undercut exactly the realism you're asking for. Same white palette, so continuity holds. If you'd rather keep the heels, I'd re-cut the action to confident strides and turns instead of running — say the word.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 12:52 — social-ip-engine
+
+### What Didn't Work (negative knowledge)
+- Caught a real bug in my own build: `zoompan` was emitting 102 frames *per input frame* against an infinitely-looped still, so each 3.4s beat became ~60s and the master came out **300.6 seconds instead of 15**. Fixed by giving each beat an explicit `-frames:v` budget. Rebuilding now with per-beat duration checks so it can't silently happen again.
+- **2. Shoes → white leather trainers.** Flagging this because it changes her look: she can't credibly sprint, spin and land in pointed heels, and forcing it would undercut exactly the realism you're asking for. Same white palette, so continuity holds. If you'd rather keep the heels, I'd re-cut the action to confident strides and turns instead of running — say the word.
+
+### Architecture Decisions
+- 3. **Your GIFs already exist and are better than sparkle.** The design system ships 15 animated motifs at `assets/motif/` — org-chart, code-branch, cog, magnifier, clock, store, wrench, avatar. One motif per threaded panel = one AI employee = one job. The GIF requirement now carries the tagline instead of decorating it.
+
+### Decisions & Reasoning
+- - **I assumed 9:16 / 15s.** If this is a 16:9 hero or 6s pre-roll, tell me and I'll re-cut rather than crop — Shot 2's parallax is built for a tall frame.
+- The one idea I added to make that read as *product* rather than just energy: **she always leaves before the work lands.** Screens wake up *behind* her, and the ribbon is comically chasing her, never quite catching up. That's what selling "hired help" looks like — she isn't hovering, because she doesn't need to. The GIF motifs now composite in on the frame *after* she exits each screen; that timing is the whole gag.
+- One honest warning I've put in the runbook: **fast full-body locomotion is where these models break limbs.** Expect to burn extra takes on beats 1 and 4. If one won't converge, soften the action ("jogs lightly" not "sprints") rather than fiddling with the camera.
+- While the beats submit, let me deal with the logo file you gave me — it's a 1MB SVG, which usually means embedded raster rather than true vector.
+- Current state: beats 1 and 3 rendering, beat 2 on its retry loop, 4 and 5 queued behind it. The upload endpoint is throwing intermittent transport errors, so the submitter now backs off 30s and retries up to 8 times per beat rather than burning attempts in a tight loop.
+- Both watchers are armed — I'll come back when footage lands rather than polling at you.
+- **The blocker is real and I should have flagged it sooner rather than letting the retry loop run.** Beats 2 and 4 each burned all 8 retries with `invalid param:video_resolution_type`, 30 seconds apart — that's not a transient. My theory that it was flaky uploads was wrong; a transport error would not repeat identically 16 times. It's a deterministic CLI bug on `image2video`, and beat 1 succeeding with those exact flags means something else differs between the calls that I haven't identified. Retrying the same command harder was the wrong move and I'll stop it.
+- Yes — and it's actually the better film. `multiframe2video` generates the *motion between* keyframes rather than cutting, so the whole thing becomes one continuous 15s move instead of five cuts.
+
+
+## 2026-09-03 13:01 — social-ip-engine
+
+### Decisions & Reasoning
+- Theory is forming, but let me measure instead of guess — I'll instrument `ncall` and time the real endpoint.
+
+
+## 2026-09-03 13:39 — social-ip-engine
+
+### Decisions & Reasoning
+- Theory is forming, but let me measure instead of guess — I'll instrument `ncall` and time the real endpoint.
+- 2. **Add a gate-only walk** instead of reusing `row_detail`: pass the row's already-fetched properties in, walk the body once, resolve only cover/infographic/panel toggles. ~12 calls/row → ~4. Should land the dialog around 2s and stop it tripping the limit.
+- Now the real question — is any of this already in `main` by content? Let me check rather than trust the merge graph.
+
