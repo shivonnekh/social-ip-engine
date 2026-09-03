@@ -411,8 +411,26 @@ def fit_audio_for_jimeng(path: str, max_s: float = JIMENG_AUDIO_MAX_S,
     return True
 
 
+# Every dreamina CLI call gets a hard timeout. Without one the call can block
+# FOREVER on a socket that died underneath it — which is exactly what happened
+# overnight on 2026-09-02/03: the machine slept, the connection went away, and
+# notion_video sat at 0.33s of CPU for TEN AND A HALF HOURS on a single shot.
+# No error, no retry, no output; three concepts never started and the whole
+# night produced nothing. A timeout turns that dead hang into a normal failed
+# attempt, which the retry loop already knows how to handle.
+_DREAMINA_TIMEOUT_S = int(os.environ.get("DREAMINA_CLI_TIMEOUT_S", "300"))
+
+
 def _dreamina(args):
-    r = subprocess.run([DREAMINA, *args], capture_output=True, text=True)
+    try:
+        r = subprocess.run([DREAMINA, *args], capture_output=True, text=True,
+                           timeout=_DREAMINA_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        # Surface as a normal empty result: callers already treat a missing
+        # submit_id / status as a failed attempt and retry.
+        print(f"    ⏱️  dreamina {args[0]} exceeded {_DREAMINA_TIMEOUT_S}s — treating as failed "
+              "attempt (likely a dead socket after sleep/network loss)", flush=True)
+        return {"_raw": "", "_err": f"timeout after {_DREAMINA_TIMEOUT_S}s"}
     try:
         return json.loads(r.stdout)
     except Exception:
