@@ -989,5 +989,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/tension-page-1.png"
     ]
+  },
+  {
+    "keyword": "posture",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Pulling the shoulders back fights the wrong muscle — open the chest instead 🧍\n\nQuick check — do your shoulders round more when you are tired, or all day regardless?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM posture guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🧍 Rounded Shoulders — Why You Cannot Stand Straight",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/posture-page-1.png"
+    ]
   }
 ]
