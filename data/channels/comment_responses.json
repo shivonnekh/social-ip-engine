@@ -959,5 +959,20 @@
     "image_urls": [
       "https://tcm-jessica.onrender.com/media/guides/sciatic-page-1.png"
     ]
+  },
+  {
+    "keyword": "firststep",
+    "language": "en",
+    "accounts": [
+      "17841417304649448"
+    ],
+    "dm_text": "Hey, I'm Jackie 🌿 Thanks for commenting.\n\nHey! Roll the foot BEFORE your feet touch the floor — that order is the whole trick 🦶\n\nQuick check — is it worst on the first steps of the day, or worse the longer you stand?\n\nWant to tell me more about what you're experiencing? Reply here 👇",
+    "public_ack": "I've sent you the TCM firststep guide — check your DM! 🌿",
+    "use_agent": false,
+    "_source": "notion_sync",
+    "_notion_title": "🦶 Heel Pain — Worse on the First Step",
+    "image_urls": [
+      "https://tcm-jessica.onrender.com/media/guides/firststep-page-1.png"
+    ]
   }
 ]
