@@ -305,5 +305,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-09-04T03:02:02.003776+00:00"
+  },
+  "3cef2a3f-4320-81ae-9a4b-fdd92f37bffd": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/53caefbc-85dc-4cb0-9218-7297eb36576c/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UEHZJ6XS%2F20260905%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260905T020422Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDkaCXVzLXdlc3QtMiJGMEQCIE0uHeZ9xAV4BRxHPzHE6A88OK7o%2Fufcit8KnHw2DsGMAiBeA5R%2F0bB%2B0vRE4uhHtTyF1o%2BK%2FQiuxZJjHEH%2BbPIBKSr%2FAwgCEAAaDDYzNzQyMzE4MzgwNSIMoe5h6%2BoMI%2FD6%2BOvkKtwDO1kJ7v%2FefbFczW4ih%2B2UtDPjuS9vFj68Gj9Iz82JtPD0KUWxzL98ZV5CwczpuZkmyUc%2FPFUVVXT%2BExtUMQmbTZvevAQEFOBP7PCd1mRoGGSTLS%2FqYVP0n0QAI1BQJ%2BYHlnT38Y5JxwQZq8JqFnqcbzPCBGwrc0TxmpzscktGIPv0kuzPuXCGySQb1Ccquli4vd%2FOp3ZyE%2FVKZDpUtp6KWanVXRL8S9GcbjK%2B8dz2Cte7MJutIaDACw59qA0K2cEE%2FVyu8kmbFesyfB6nMBpiIZLuXfkk%2FcEReWgm%2B5IwYTEenLooZNpN7cBDvAwr9Mvn3jI12Lv9h3jGMOkD38uliyRXDPuC1IHnt%2FlGsdCBkl6iCbQqBhNzQY2nGcTcl4xngGKAdqEamXGKkcsD5rYNuG0pAnSoUTvDeul9eJlOkkrgJ1CPj56Ir6CgBs7pJsU8ptacB2pKvaMgfLtMfRK3YMKo2QupDq4a4QH6dUJLrJuFZeCW5mxxR48q5iOAS8oFNEPdCQTdpv5Sp9N6yDhr%2BahyPagzsEH2%2F2jpaTwqqUWQLKKJUGChFU5MIFGTAWY0ijWaeH3UrMYlVn73pwh8qX2fG2p3qga2j4M2GVJTXWrskR25GIsW0gGAnQEwwsLt1AY6pgH%2F%2F9bgJFhhCgFutW7VsX%2BrJ8pbTe1N46Mku6ItbzGa6y3IrydG3tbLLJJTG%2BwDqbWg2EEsBWLODcX2vWumPcdW02IkEc9hBri9RbOKzuUU%2F%2BVLfsnvTObuFzXk%2BWa5yYxi0jZOd06AwoRSMAqFkVlg1UpjSFwLdXr8vPry5kbqdXJKCoT8Mo4Usz%2F0TyiYwwyUgkhDW7YYF05KdnGJwlREr4aeIVOO&X-Amz-Signature=04aacc58a614d89bff26573469c64dce23d0b6f0190c15f8ca76f500c484267c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/53caefbc-85dc-4cb0-9218-7297eb36576c/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/sweat-3cef2a3f-4320-81ae-9a4b-fdd92f37bffd-cover.jpg",
+    "caption": "Are You Waking Up Damp? 😳\n\nComment \"sweat\" 👇",
+    "account_id": "17841417304649448",
+    "creation_id": "18145410568576822",
+    "ig_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-09-05T02:04:26.885576+00:00"
   }
 }
