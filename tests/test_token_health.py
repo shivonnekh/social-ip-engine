@@ -205,7 +205,7 @@ async def test_token_never_appears_in_the_request_url(monkeypatch):
     therefore a live credential written into the log stream — which is
     exactly how production logs ended up containing valid IG tokens
     (found 2026-09-07). It must travel in the Authorization header."""
-    secret = "IGAAWsuperSECRETtokenVALUE"
+    secret = "not-a-real-token-fixture-value"
     monkeypatch.setenv("TOK", secret)
     seen = {}
 
@@ -274,7 +274,7 @@ async def test_alert_never_contains_the_token_value(monkeypatch):
     async def _capture(key, text):
         sent.append(text)
 
-    secret = "IGAAWsuperSECRETtokenVALUE"
+    secret = "not-a-real-token-fixture-value"
     monkeypatch.setattr(token_health, "send_ops_alert", _capture)
     monkeypatch.setattr(
         token_health, "_configured_tokens",
