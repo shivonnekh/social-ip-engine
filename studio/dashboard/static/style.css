@@ -73,6 +73,20 @@ body {
   box-shadow: 3px 3px 0 rgba(255, 93, 59, .55);
 }
 .sync-note { font-size: 11px; color: var(--dim); font-weight: 600; }
+/* Dreamina credit chip — advisory: a video shot costs credits, so this is the
+   "see it coming before you spend" readout. `.low` flips it to coral below the
+   threshold in app.js (CREDIT_LOW_THRESHOLD). */
+.credit-chip {
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+  color: var(--ink-soft);
+  background: var(--card);
+  border: 2px solid var(--ink); border-radius: 999px;
+  padding: 5px 12px;
+  box-shadow: var(--shadow);
+}
+.credit-chip.low {
+  color: var(--paper); background: var(--coral); border-color: var(--coral);
+}
 .icon-btn {
   background: var(--card); color: var(--ink-soft);
   border: 2px solid var(--ink); border-radius: 999px;

@@ -18,6 +18,10 @@
       <button class="tab" data-view="concepts">📚 Concepts</button>
       <button class="tab" data-view="calendar">📅 Calendar</button>
     </nav>
+    <!-- Dreamina (即梦) balance. Populated by loadCredit() in app.js from
+         /api/credit; stays hidden until a real number arrives, since the
+         endpoint fails soft to null when the CLI is missing or logged out. -->
+    <span id="credit-chip" class="credit-chip" hidden></span>
     <span id="last-sync" class="sync-note"></span>
     <button id="btn-refresh" class="icon-btn" title="Refresh">↻ Refresh</button>
   </header>
