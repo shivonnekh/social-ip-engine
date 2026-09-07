@@ -319,5 +319,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-09-05T02:05:09.204316+00:00"
+  },
+  "3cef2a3f-4320-81af-ba0a-c257cfeb81a1": {
+    "status": "failed",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/1ad2e1b6-7d4c-4b03-bb9a-9e2d22e6493c/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662A525SNW%2F20260907%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260907T020429Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGkaCXVzLXdlc3QtMiJHMEUCIQDbksRkuao4BNdtUEOmruqOQwXeTQ85TM01YZ1EjA1Q7gIgQU9spMaWazjaa6fLq2GGQSPhlzhcaZWAkr82EvBFcnQq%2FwMIMhAAGgw2Mzc0MjMxODM4MDUiDOff82vpzIc8jk2JfyrcA8NAL8FN2lKOGMoj999ao0OahFGPdLm3tn7U7YGE0HA44jLWPjGzubdg1muRTay%2F6k4EFkKFPkVz%2B5Ica4vtN22l01Uo57EssXkUY%2FvUrP9892LsrV9OtRWI5TYmH5ZA%2FhBgiGiEAUHzE4a13%2BlfDNEmssHRsqBxftRm6fmcPxC3f%2Fzwb%2FPIJQ27QgoTzkS8xlUBL7%2BR8DbQtNnpsp9v%2FYWOJ7IewPk7Dj89xauMTdgPBAXVhZ95IDvO%2Bp6JINhqD%2F46tQdj3RXEwyDusLxdLBwidX2%2B2QNabXWuO3pGfis1fk%2FzD3jVS44lJbJKoJ%2B%2FfO8zItzx6PYzP5O04aaelVtgN1TYYO5SS8vwJUfBUmNNUVrJ37mPjRwHBEpOjhA2l9fDmMI%2BLUNC%2BM%2FPG6UqIrbe9KKkLCIMJ5p8rspbqknUcYFGgpTwvXOUvniaHj44w0oMdyQeHoa%2Fn6fA2rKpQDb3PFXty46L2ZwWPFhcj0ugFRL1jd5g1pHwMagh5uM41G9YZeFGzjiPvjPBuEkvm%2FOduxqdjbqqYSKpSCRLMAkTtHgNoNAz2STrAxin25N3N0TS9z4SshVwFuwzAPXSiqRNjeN9AWd04RBQJDcPfG9ZPxi31dLqGBTN95DFMPaL%2BNQGOqUBZwk90Od82lld50jgQ6P6JYtqDEIL5TdZGiDTksvSJJEPJKnmo10Xs8NOaCr3wbm3%2BtwX%2Fs%2FRau3xTHy2lRSzk5C7GWqcO1kJI%2F4pkUpNKSHZKIGbjkg3VeucQnSS0x8NMDQxL%2F418Ayo7Hq6z1e8Z%2BzujaCQUkh3DpFbWfzTYK%2F4E9j%2Fjjgeh0NeuWPTDtIZ36D29rJwsnu41nPs2id1Y6j7Y1UL&X-Amz-Signature=a269abf01ab0305481ca3f8a37be546c3d3099865103ed0e1459489ff86b0a82&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/1ad2e1b6-7d4c-4b03-bb9a-9e2d22e6493c/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/reflux-3cef2a3f-4320-81af-ba0a-c257cfeb81a1-cover.jpg",
+    "caption": "Is Your Stomach Energy Backward? 😱\n\nComment \"reflux\" 👇",
+    "account_id": "17841417304649448",
+    "creation_id": null,
+    "ig_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "http 400: {\"error\":{\"message\":\"Error validating access token: Session has expired on Friday, 04-Sep-26 22:30:41 PDT. The current time is Sunday, 06-Sep-26 19:04:35 PDT.\",\"type\":\"OAuthException\",\"code\":190,\"erro",
+    "updated_at": "2026-09-07T02:04:35.295908+00:00"
   }
 }
