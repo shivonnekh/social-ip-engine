@@ -274,6 +274,16 @@ async def lifespan(app: FastAPI):
     from src.notion_sync_scheduler import start_sync_schedule_loop
     background_tasks.append(asyncio.create_task(start_sync_schedule_loop()))
 
+    # Meta access-token watchdog — added 2026-09-07 after an expired IG
+    # token silently killed BOTH publishing and comment→DM replies for
+    # days (Chloe's for over a month) while the publish sweep kept
+    # logging "errors=0", because a Meta 400 was never counted as an
+    # error. Read-only against Meta, so unlike the publish sweeps it is
+    # ON by default (TOKEN_HEALTH_ENABLED=false to silence); it cannot
+    # post, delete or spend anything. See src/token_health.py.
+    from src.token_health import start_token_health_loop
+    background_tasks.append(asyncio.create_task(start_token_health_loop()))
+
     try:
         yield
     finally:
@@ -432,6 +442,46 @@ async def admin_recent_webhooks(limit: int = 20, group_only: bool = False) -> JS
     """
     from src.whatsapp import diagnostic_capture
     return JSONResponse(diagnostic_capture.recent(limit=limit, group_only=group_only))
+
+
+@app.get("/admin/token-health")
+async def admin_token_health(request: Request) -> JSONResponse:
+    """Check every configured Meta access token, right now.
+
+    Exists so "did the new token actually take?" is answerable in one
+    request instead of by publishing something and seeing whether it
+    worked. Read-only: it calls Graph ``/me`` and nothing else — it can
+    never post, delete, or spend. Returns 200 with ``ok: false`` when a
+    token is unhealthy rather than a 5xx, so a monitor can distinguish
+    "the check ran and found a dead token" from "the check itself broke".
+
+    Auth: same shared secret as the other /admin endpoints — the response
+    names env vars and account ids, which is not something to expose
+    unauthenticated. It never returns token VALUES.
+    """
+    expected = os.environ.get("NOTION_SYNC_SECRET", "")
+    provided = request.headers.get("X-Sync-Secret", "")
+    if not expected or not hmac.compare_digest(provided, expected):
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+
+    from src.token_health import run_token_health_check
+
+    statuses = await run_token_health_check()
+    return JSONResponse({
+        "ok": all(not s.needs_attention for s in statuses),
+        "checked": len(statuses),
+        "tokens": [
+            {
+                "env_var": s.env_var,
+                "platform": s.platform,
+                "account_id": s.account_id,
+                "label": s.label,
+                "status": s.status,
+                "detail": s.detail,
+            }
+            for s in statuses
+        ],
+    })
 
 
 @app.post("/admin/backfill-comments")
