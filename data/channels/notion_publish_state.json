@@ -349,7 +349,7 @@
     "updated_at": "2026-09-08T01:07:03.231970+00:00"
   },
   "3cff2a3f-4320-8138-bfbf-d487ee08f9dc": {
-    "status": "failed",
+    "status": "skipped",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/8b8be56e-ab26-4efc-9ef7-e081caa14e8f/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YO5DYUD2%2F20260910%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260910T010516Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELD%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC34GgGOc4%2F4vv56R9lnnB6OFxwnlshKo7PyyJsMXck%2FAIgZxV3ST1toxZhTI68aHUZxZSJUpaxo4tcm09TJv%2Bo0eQq%2FwMIeRAAGgw2Mzc0MjMxODM4MDUiDLFUV1jCyhAbQsnphircA0A%2BHJs4fUXXUCYFDkGgGzjD%2BUzbdF0yBaJo5D87lTdAindf0Ll9IpgZDJOaHNhqsRaI7t%2BCEYMiVB8dQVFOKjmCEj9pZcKpBD1wvANxmuiwM%2BbTkAxqzRwQQtbG9jg2xyGmh4fhddB34S1qtqArUhESxQqEITP1aqeziMYLOYaymHvU%2BKpWftCYbXkJh%2Fk2uKj%2Basabju2gKVvQi6CxRVpfmnDFdXvLclH5RUa23bDjQDNsaX1SaojsFhzDStkHeuxX37tid6%2F7sMQOWTLBS2laddb3wzHdjP0OOr3PTtVhGPXMDp%2Be07xOLdcys%2BgF3Qm85cB1LIKYeIh580UCMHyjkyN1Usi3oDLuoN5MVBDZEYXKDTmDuPVQungLnF9uB4elqvaWRvWwsdPR2CcM2P%2FUyqGSWBwauPQ5WruXDCGunE%2BMSHnXrEHkFyvubT16TC0T7ekJ1CCKeaCR4idKkZJfR8Qn4Vpscxgu%2FQhYCWhauc0MXIwKRI5zUYCfrysZrVG0rhoNyUx4AsTCpAzjk0RqmIB4JyV0iRjUKCTYRmRGrXXbODaD5zHDeGqaYyexAlxYD7SAftlG%2Bxl4hsJDVIqDa%2BgGJd8es3vgGibeVS%2BwWmv7wQBU6Yglo7yJMN3rh9UGOqUB7TalgtvWY6WSsWJsDHVE05KsoMyxtMwQNNkI%2B2uZBeWa%2B0pL50us9OjX%2BQOmLBVlGYCoKpPileJEGqp0aPwbKtc2BuP54oIbtTY9MIlF%2FCFIzdNlB86jdukmhQW5hSpuXr1VLSwegttzjss5FD4n%2FCPAO31C8o07FjROnD0FNOYFiYf3BbeEFtGSgZC1m%2FfZ8GC2N5pmAxCdNhq90ZY7ntc%2F7QNR&X-Amz-Signature=4964d077f91850bfa17ebc2733c7400d4c2833ede296ec7c360b3579b99d5411&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/8b8be56e-ab26-4efc-9ef7-e081caa14e8f/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/posture-3cff2a3f-4320-8138-bfbf-d487ee08f9dc-cover.jpg",
@@ -359,7 +359,21 @@
     "ig_media_id": null,
     "posted_checkbox": false,
     "attempts": 3,
-    "last_error": "http 400: {\"error\":{\"message\":\"Error validating access token: Session has expired on Friday, 04-Sep-26 22:30:41 PDT. The current time is Wednesday, 09-Sep-26 18:05:19 PDT.\",\"type\":\"OAuthException\",\"code\":190,\"e",
-    "updated_at": "2026-09-10T01:05:19.369203+00:00"
+    "last_error": "gave up after 3 attempts",
+    "updated_at": "2026-09-10T01:07:22.227483+00:00"
+  },
+  "3cff2a3f-4320-81e8-849f-cd24f8d7a530": {
+    "status": "failed",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/c9e9de0b-a484-4663-bd37-b5b7ecc395b8/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466555KIRK3%2F20260911%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260911T010120Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFlEcDpaf9TxkDOorjAv23lxskXFjUoY8nOIfz60XTLAAiEA5K%2BouIsX0rjzYzXTjQmPXegLD7RovDG94ZmcMtR3JuQqiAQIkP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMaX6b9RzGcjjrGVTircA9Wowm4hrTrPwVcXAPk5E7JlhW1CGR70LfMDC7nZy9yOfIOhKGFpT6egKulSwRuvA9eywBfRoKuefiOz6AZWR07TbUWSJ1btfyWxHrhzk6rDXze1r%2FDuR108zDmxM1IaJ2CxFiyDvQ8T4%2FlP1fQtV3c5qEO9hWKBPAIpJ%2B7WEPFCilyqQFNmsVTN6DrRvFGgS%2FVtnLWnkc23TcA2os2i%2BN27gy0g16kBCgafMpjaCIy1ZS83viNwpdHKgPQrC4etk5ZLMCIgaTKpuvP3ltj04O5JM3hwA37r1qQCQ5R%2Bk5KRNOZ60pHLZx0kzlfWUWFbfgXGyQzvgzyFnb1f8I6XxkIlgW5JQyVGRYMnvRwlOF5Nf5LfWvIdWeHZ9jdCRIikaqfkcIs2AEModrlu4nNGvmqRgHd95FfQ7p57fbQepBWIzaUZxh2N3e87p0ZoTXjKN7pMaowggEJIn7UV%2BOtRLxAM3kC%2FytLRdDRYRHqT9W0DxXDUC6tAGBdZ1nyxUDyLFZUCnkqv7ylG3Q%2BadukxDxHyPEbKP5TunqkIlfXW6C93R%2FrYjIYQSwRUZ%2Ff5CW%2FwACg7bCOEH1f4YsKFTNGweHTMWKGa6VsS7e7m%2BfQ94j0Vi%2F0if5vK5cLxT%2BnxMKrujNUGOqUBYkzRSMyPAkvbb38Ytb%2Bfcsee43YxDReKqBgk%2BZQZ9FXbyb1ATDJ0XBfeLriGvVCy%2Boitj8WMWlva%2BxVZihNUhCdsYSEA%2FzdGAFQRtEyamfRVeQaZ9oIdnkh1kM86rQLAtns5muSbymdnJWCPL6YvzDBSzmsSJ%2FgbSLygF0nuco5qVR%2FZnuFz4OUe%2B1QoEtMSKoCGKhzL5ZgSP1kaUUxDqEI7OcEO&X-Amz-Signature=f67769c17fe054f707ddbbe737c741177e6e6b8c23bc6e01351aca7f3970c31e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/c9e9de0b-a484-4663-bd37-b5b7ecc395b8/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/swollen-3cff2a3f-4320-81e8-849f-cd24f8d7a530-cover.jpg",
+    "caption": "Are Your Swollen Ankles a Spleen Warning? 😱\n\nComment \"swollen\" 👇",
+    "account_id": "17841417304649448",
+    "creation_id": null,
+    "ig_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "http 400: {\"error\":{\"message\":\"Error validating access token: Session has expired on Friday, 04-Sep-26 22:30:41 PDT. The current time is Thursday, 10-Sep-26 18:01:25 PDT.\",\"type\":\"OAuthException\",\"code\":190,\"er",
+    "updated_at": "2026-09-11T01:01:25.357670+00:00"
   }
 }
