@@ -307,17 +307,17 @@
     "updated_at": "2026-09-05T02:06:46.497879+00:00"
   },
   "3cff2a3f-4320-81f5-bacf-d1ee8eaaa1c4": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/3e286774-d4c5-4844-b1c5-01d78db32750/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XZFAAABN%2F20261002%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261002T072310Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHyQcQFiG6eFz8zxYllu0wAB6Xs8UFTSdIBMbN6DgSRTAiAJB0I60GNclrdlDQi4tIzS1ICV4ogbfWOl55kKx6OjhSqIBAiO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMoJixDXgX6PevgHOtKtwDpCKOTpVEobdV3AJEsjHK8%2FbWopV2XkA%2Fb0sQer6Y1Q28Xh%2BJMozNJ7LHagxnd7IvZCRDSS3d4uafyHg3Xcs%2BH8z5PKCZiKH%2Ft5UzM9RtketAR0XhWgVWmJBVlAbS7ASyf31qaOYr4KFGvpb6x3Z7UWRIYmNiVNQcjvwDAYjHRocZqNBD7HuAD0JPJjw12%2BpQX7%2F6QfzIfonSAFo6pmowibnyhp0kpTT7ytgWog5VFzRZJww9nlp7jbWIP4k4DXc%2FDlvKMsDPUNBhYKK1UD5RpZM6b2X368fWw%2Bc4vWetoj6gBHTJa%2FPwbh4uvxMosqYC%2FO1AynEZl%2FfhRfKz0VyHKsY2VpsA1ssa6CVDp5j408RCgKhYBhs2LQw9cAPoLKTOOJc8A87y8uC9kY%2BbA%2FDs6Dn%2Be5jykXxBYeTQOpUCZro57gxkq%2FUFoVaVd33BMyPyi0qvibficoFDDPIje%2F33J7dRHTT8dJhM3x3%2BJmAs0pMJ4w9Thqt9FV%2F%2FawQpwdZmbScw8hG3D2UtWmileTzjWTPINIUMz5Cl0dpv7kpHksh%2Fru8cIvv9xZDGxS%2FAqyVZUSQ7PyTotcPZUKg4fzreoCXXqRu47oMq8vVGPP%2B3e%2F%2BFoWeqvzyfikCP%2BbYwk%2FX81QY6pgHLQ9uMSg3FvlxkWc1Axo1m51H%2FfUTItBVsbZb0MUv7Lch67tAeRpSzEZt1AckXUA10O4leZvWL52xnKcl34NqBCwOzZVDbLQURFuNx871JZC3sOtpmLHh3M8U%2BO9dO9S50Yg9R%2FoNmQqIxq5EpmwJ%2F4wZGpARr24sTSj4ZxMKvMu8KC7Z5C52QWsEFyKvjN90uiaInCccTG5uxy9fl5sDGv9dTB0KS&X-Amz-Signature=5dcdd1f3bbef47329f34020aafb6a9ab80964b341ad617e3990e310f15a8bc88&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/3e286774-d4c5-4844-b1c5-01d78db32750/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/lowback-3cff2a3f-4320-81f5-bacf-d1ee8eaaa1c4-cover.jpg",
     "caption": "Is Your Lower Back Pain Misleading You? 😱\n\nComment \"lowback\" 👇",
     "account_id": "528216523715336",
     "creation_id": "1822762458729210",
-    "fb_media_id": null,
+    "fb_media_id": "1822762458729210",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-10-02T07:25:26.992483+00:00"
+    "updated_at": "2026-10-02T07:25:32.637737+00:00"
   }
 }
