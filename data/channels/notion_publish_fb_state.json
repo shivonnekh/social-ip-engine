@@ -315,9 +315,9 @@
     "account_id": "528216523715336",
     "creation_id": "1822762458729210",
     "fb_media_id": "1822762458729210",
-    "posted_checkbox": false,
+    "posted_checkbox": true,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-10-02T07:25:32.637737+00:00"
+    "updated_at": "2026-10-02T07:25:37.453222+00:00"
   }
 }
