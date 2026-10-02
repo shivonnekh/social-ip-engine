@@ -261,7 +261,7 @@ def test_carousel_caption_override_from_content_body_is_used(paths, monkeypatch)
 # =====================================================================
 
 
-def _ig_published_record(panels=None, account_id: str = "17841417304649448") -> dict:
+def _ig_published_record(panels=None, account_id: str = "27252162571115149") -> dict:
     panels = panels or PANELS_3
     return {
         "status": "published",

@@ -69,8 +69,8 @@
     "item_creation_ids": [],
     "ig_media_id": null,
     "posted_checkbox": false,
-    "attempts": 3,
-    "last_error": "item container (1/7): http 400: {\"error\":{\"message\":\"Error validating access token: Session has expired on Friday, 04-Sep-26 22:30:41 PDT. The current time is Tuesday, 08-Sep-26 19:05:54 PDT.\",\"type\":\"OAuthException\",\"code\":190,\"err",
+    "attempts": 0,
+    "last_error": "rescheduled after Instagram token recovery",
     "updated_at": "2026-09-09T02:05:54.515140+00:00"
   }
 }

@@ -395,7 +395,7 @@ def test_sync_once_retries_row_when_ip_registry_lands_late(
     assert json.loads((tmp_path / "notion_sync_state.json").read_text(encoding="utf-8")) == []
     assert not rules_path.exists()
 
-    account = ("17841417304649448", "en")
+    account = ("27252162571115149", "en")
     second = notion_sync.sync_once()
 
     assert len(second["added"]) == 1

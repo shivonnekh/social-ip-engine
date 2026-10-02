@@ -18,7 +18,7 @@ import pytest
 
 from src import notion_publish as npub
 
-JACKIE_IG_ID = "17841417304649448"
+JACKIE_IG_ID = "27252162571115149"
 JACKIE_FB_ID = "528216523715336"
 CHLOE_IG_ID = "17841424706900394"  # no facebook channel registered
 

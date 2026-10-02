@@ -57,7 +57,7 @@ def _rule(keyword: str = "sleep", language: str = "en", dm_text: str = "Try this
     return {
         "keyword": keyword,
         "language": language,
-        "accounts": ["17841417304649448"],
+        "accounts": ["27252162571115149"],
         "dm_text": dm_text,
         "public_ack": "check your DM",
         "use_agent": False,

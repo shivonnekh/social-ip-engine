@@ -25,7 +25,7 @@ the real production CRM, so persistence + follow-up context work correctly.
 
 Usage:
     python scripts/backfill_comments.py <media_id> [<media_id> ...]
-    python scripts/backfill_comments.py --account 17841417304649448 --list   # discover recent media ids
+    python scripts/backfill_comments.py --account 27252162571115149 --list   # discover recent media ids
 
 Env: reads server credentials from .env (same as the live webhook).
 """
@@ -50,7 +50,7 @@ from src.channels import meta_client  # noqa: E402
 from src.channels.meta_events import IncomingComment  # noqa: E402
 from src.channels.meta_webhook import handle_comment, is_own_comment  # noqa: E402
 
-DEFAULT_ACCOUNT_ID = "17841417304649448"  # jackiechan.tcm
+DEFAULT_ACCOUNT_ID = "27252162571115149"  # jackiechan.tcm (Instagram Login API id)
 
 
 async def _backfill_media(media_id: str, account_id: str) -> None:

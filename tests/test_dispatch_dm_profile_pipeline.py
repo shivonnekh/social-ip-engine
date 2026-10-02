@@ -347,8 +347,8 @@ async def test_existing_user_empty_history_does_not_regreet(monkeypatch):
 @pytest.mark.asyncio
 async def test_jackie_real_account_id_takes_profile_pipeline_path(monkeypatch):
     _no_canned_rules(monkeypatch)
-    monkeypatch.setenv("SOCIAL_PIPELINE_ACCOUNTS", "17841417304649448")
-    monkeypatch.setenv("IG_USER_ID_JACKIE", "17841417304649448")
+    monkeypatch.setenv("SOCIAL_PIPELINE_ACCOUNTS", "27252162571115149")
+    monkeypatch.setenv("IG_USER_ID_JACKIE", "27252162571115149")
     sent = _capture_send_dm(monkeypatch)
 
     crm = _FakeCRM()
@@ -356,7 +356,7 @@ async def test_jackie_real_account_id_takes_profile_pipeline_path(monkeypatch):
     monkeypatch.setattr(meta_webhook, "_social_pipeline", fake_pipe)
 
     dm = IncomingDM(
-        platform="instagram", sender_id="REALU1", recipient_id="17841417304649448",
+        platform="instagram", sender_id="REALU1", recipient_id="27252162571115149",
         text="My eyes have been so tired lately", message_id="m9", timestamp=0,
     )
     await meta_webhook._dispatch_dm(dm, pipeline=fake_pipe)  # type: ignore[arg-type]

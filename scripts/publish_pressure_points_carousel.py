@@ -58,7 +58,7 @@ _load_env()
 from src.channels import ig_publish, ig_publish_carousel  # noqa: E402
 from src.channels.meta_client import list_recent_media  # noqa: E402
 
-ACCOUNT_ID = "17841417304649448"  # Jackie (jackiechan.tcm)
+ACCOUNT_ID = "27252162571115149"  # Jackie (jackiechan.tcm, Instagram Login API id)
 BASE_URL = "https://tcm-jessica.onrender.com"
 SLIDE_NAMES = [
     "slide-1-cover",

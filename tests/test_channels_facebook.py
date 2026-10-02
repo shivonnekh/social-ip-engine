@@ -482,7 +482,7 @@ def test_language_tagged_rule_fails_closed_for_unregistered_account(
 @pytest.mark.unit
 def test_ig_static_language_map_still_gates(monkeypatch, language_rules):
     # jackiechan.tcm is registered "en" in the static map.
-    r = comment_rules.match("gut pls", account_id="17841417304649448")
+    r = comment_rules.match("gut pls", account_id="27252162571115149")
     assert r is not None and r.language == "en"
 
 

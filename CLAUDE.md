@@ -265,7 +265,7 @@ All gated by `_within_send_window()` (HKT 09:00-21:00) and `is_blocked(phone)`.
 
 ### 3.10 Social Channels — Instagram / Facebook (`src/channels/`) — ✅ THE LIVE PRODUCT
 
-Two personas share this surface: **Chloe/陳芷晴** (`chloechan.cccc`, IG id `17841424706900394`, Cantonese, default agent) and **Jackie** (`jackiechan.tcm`, IG id `17841417304649448`, English). `src/channels/meta_webhook.py` is the shared core (verify → parse → dedup → dispatch) behind thin `instagram.py`/`facebook.py` routers.
+Two personas share this surface: **Chloe/陳芷晴** (`chloechan.cccc`, IG id `17841424706900394`, Cantonese, default agent) and **Jackie** (`jackiechan.tcm`, Instagram Login API id `27252162571115149`, English). `src/channels/meta_webhook.py` is the shared core (verify → parse → dedup → dispatch) behind thin `instagram.py`/`facebook.py` routers.
 
 **Comments → DM (canned-first, live, working):**
 `comment_rules.py` matches a keyword substring in a comment against `data/channels/comment_responses.json` (array format — same keyword can exist twice, once per account/language, gated by `_ACCOUNT_LANGUAGE`). A match → `send_private_reply` (the DM) + optional public ack on the thread. No LLM call unless a rule sets `"use_agent": true` (none do today — that path exists but is effectively untested against real traffic, see gotcha below). **No rule match = silent, by design** — never auto-DMs a stranger just because they commented.

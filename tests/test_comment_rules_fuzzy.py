@@ -87,7 +87,7 @@ def test_fuzzy_respects_account_gate(tmp_path, monkeypatch):
     assert comment_rules.match("anxeity pls", account_id="chloe") is None
 
 
-_JACKIE_IG_ID = "17841417304649448"  # data/ips/jackie/ip.json — registered English
+_JACKIE_IG_ID = "27252162571115149"  # data/ips/jackie/ip.json — registered English
 
 
 @pytest.mark.unit

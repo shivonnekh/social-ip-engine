@@ -21,7 +21,7 @@ from src.channels import meta_client
 
 @pytest.mark.asyncio
 async def test_backfill_media_skips_own_comment(monkeypatch, capsys):
-    account_id = "17841417304649448"
+    account_id = "27252162571115149"
 
     async def fake_list_comments(media_id, *, platform="instagram", account_id=None):
         return [

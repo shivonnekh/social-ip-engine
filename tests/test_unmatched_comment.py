@@ -85,7 +85,7 @@ def _comment(text: str = "does TCM help with sleep?", cid: str = "c1") -> Incomi
         from_id="U9",
         from_username="amy",
         media_id="media42",
-        recipient_id="17841417304649448",  # Jackie's account id (registered)
+        recipient_id="27252162571115149",  # Jackie's account id (registered)
     )
 
 
@@ -100,7 +100,7 @@ def _register_deps(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.fixture(autouse=True)
 def _enable_and_register_account(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("UNMATCHED_COMMENT_REPLY_ENABLED", "1")
-    monkeypatch.setenv("IG_USER_ID_JACKIE", "17841417304649448")
+    monkeypatch.setenv("IG_USER_ID_JACKIE", "27252162571115149")
 
 
 @pytest.fixture(autouse=True)

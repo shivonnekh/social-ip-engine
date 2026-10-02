@@ -25,7 +25,7 @@ import pytest
 # Expected values — copied verbatim from the hardcoded dicts (every key).
 # ---------------------------------------------------------------------------
 
-JACKIE_IG_ID = "17841417304649448"  # jackiechan.tcm
+JACKIE_IG_ID = "27252162571115149"  # jackiechan.tcm
 CHLOE_IG_ID = "17841424706900394"   # chloechan.cccc
 
 EXPECTED_ACCOUNT_LANGUAGE = {

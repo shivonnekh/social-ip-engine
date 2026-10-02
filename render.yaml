@@ -170,8 +170,8 @@ services:
       # — this flag only ever adds a path, never removes the safety net.
       # Empty/unset (the default) = zero risk, identical to pre-migration
       # behavior for every account.
-      # To activate for Jackie (jackiechan.tcm, IG id 17841417304649448),
-      # set this to "17841417304649448" in the Render dashboard.
+      # To activate for Jackie (jackiechan.tcm, Instagram Login API id
+      # 27252162571115149), set this to "27252162571115149" in the dashboard.
       - key: SOCIAL_PIPELINE_ACCOUNTS
         sync: false
 

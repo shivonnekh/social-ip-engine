@@ -56,7 +56,7 @@ async def test_sweep_replays_unhandled_comment_and_skips_own(monkeypatch):
     monkeypatch.setattr(meta_client, "list_comments", fake_list_comments)
     monkeypatch.setattr(reconciliation, "handle_comment", fake_handle_comment)
 
-    summary = await reconciliation._sweep_account("17841417304649448", _FakePipeline())
+    summary = await reconciliation._sweep_account("27252162571115149", _FakePipeline())
 
     assert handled == ["c1"]  # ack1 (own comment) never reaches handle_comment
     assert summary["media_checked"] == 1
@@ -81,7 +81,7 @@ async def test_sweep_skips_media_older_than_lookback(monkeypatch):
     monkeypatch.setattr(meta_client, "list_recent_media", fake_list_recent_media)
     monkeypatch.setattr(meta_client, "list_comments", fake_list_comments)
 
-    summary = await reconciliation._sweep_account("17841417304649448", _FakePipeline())
+    summary = await reconciliation._sweep_account("27252162571115149", _FakePipeline())
 
     assert called == []  # never even listed comments for the too-old post
     assert summary["media_checked"] == 0
@@ -111,7 +111,7 @@ async def test_sweep_one_bad_comment_does_not_abort_the_rest(monkeypatch):
     monkeypatch.setattr(meta_client, "list_comments", fake_list_comments)
     monkeypatch.setattr(reconciliation, "handle_comment", fake_handle_comment)
 
-    summary = await reconciliation._sweep_account("17841417304649448", _FakePipeline())
+    summary = await reconciliation._sweep_account("27252162571115149", _FakePipeline())
 
     assert handled == ["good"]
     assert summary["replayed"] == 1
