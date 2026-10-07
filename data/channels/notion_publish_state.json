@@ -377,18 +377,18 @@
     "updated_at": "2026-10-04T01:01:32.819791+00:00"
   },
   "3cef2a3f-4320-81dd-9900-d756440c445b": {
-    "status": "failed",
-    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/1fc0e7b5-27df-4167-b391-9dc9e20c72d4/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667CYOE67C%2F20260914%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260914T010413Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEBAaCXVzLXdlc3QtMiJGMEQCIHahcVQ7iDTkvixPkVtNdc%2BizktkgCttnk1iivUl2XR1AiBSbBlz0hoqOMLXV%2B8nW5yLTGVI%2B6SggpW2KlJFF60t3CqIBAjZ%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMgNdpO04XhwIlr8%2F6KtwDiBSi6TnygRP6JPhEtY89v%2BgHVvXuaLq%2FYndFZJnEbwSZwMUpeoSocXFOk1C%2Fn0O5W8HSGx0nRyTYbvmGckXv5TZHvoOoQgxxWIPurqRQH3OQGs4DvYMuAjhT%2BaShOAi80TYwXsQztBe3GXE05j%2BMl%2B6tu8RPtEI2aj%2BOor%2BjoIW%2FsspFMP2PJ8KpIB8uLvEBv79f2UEbjSsXG6p5qLZbPRX6JwbgQBWXXUzHkcmqtqS%2BONwMBkaFN3b8KvtX5zL3I4%2Bs2TJXgN5qbtlj5QUTI6aRocIMDJXSJvbF%2BIxC75uor2I7PU51%2BvBx3RHIbNWY8AB0tGwGABAFznHOaUZEeQH4TILyFGneqEna3hTOshSKeHd%2FvflP9iYxEwnwP988qMeTvV0Chh8Cjyhaz0%2BiFRidJ7c0wC02ZI54J7IDrbYTUlIvBNg3bdcPTyWDwDygdnG3Xqa3MQUZcm06X0JbG8G8GVHx6fbjn4jxm%2Bj6EbUuXlHIckrw5SCU0hIHorbNLvJD7lTjHKx8EFeYjK3F6SJfNaGLiVmuxp11by%2BNN9IHN7ksEsY1dMcuq9mGYZWLd59G94R%2BOb4iB4mDhCcvLZfsU6QWaswz%2FRgf%2B8Crvolmp6ZU8TS4dt57%2B%2FIw6uec1QY6pgEvWVx8873gB92BP7KWkwJ2NJp4VMslMrvt7ythDEgiUxm%2FUCSujwtUoS%2BHOMAr96V7%2FaHzGv%2FNHaZc3qqVv8%2BQHhJjr1Xi%2B132czNFHMoblcWzy6oziOT8sTB52O0v8QyKyJ%2FBskALJIOL5BVqDRKzZbRl3VBhXMYni7b1BaDz4ItZO5LD1pjCupcMtJUIJQVzssRLQXU4jRPY5VQ6cKXiwq%2BLroY6&X-Amz-Signature=f93c98b1406ab6ad32ea96b7612cea0a2b28dbcd12d6107ed64ac67c8d116093&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/1fc0e7b5-27df-4167-b391-9dc9e20c72d4/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TESTHCUK%2F20261007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261007T010037Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDkaCXVzLXdlc3QtMiJGMEQCICqdi2BziChlANw7adNCsb6K%2BucbRWK2o0yiCcPF45a%2BAiBMvGSUDE3IcwoOKCkDDtLzTwWz9kFFCW8%2BCrYtJHEpKyr%2FAwgCEAAaDDYzNzQyMzE4MzgwNSIMMQiiJ94rPcwVrWR%2FKtwDXphVIY5c5VdcPpGuMT4ZdjwQ3x0e25tw52EIdCIprjDthkyQjlk5wmSh674IO759iqOoFxBo2wOKeghIgmSTNS77Nh31VVU%2FRCL24w2TjyZC3PLD5khNxK4mywboyZUvJtnw8ChVdiLpfgQNeh2zOnyXGXT2U3DZN8vR1CjMnDrC%2FjN0earfI86sj08fIJUnsbf5wPF2kDIkEY%2F7XYr2oBcCxZj4W0hev9vxC4g8t7%2F2F6Ek6xdpycYP4%2F6o2nd9iSq6Ff%2FRkAHGD5CmxJD2kLZEYw%2FznDpJuoKe15yoOWinRksj051GlPsPsmN1A80QMzicv2dke4SG7UOZCxwXmsMsT6s06BZn3G9vlRs%2FcbgSFJsCT9GKTjIj%2BYM1iZU%2BUiFUBpoojotcxLTvS8E5iz1CESnc0vrK0edi1wDdweNEA84AcBQR4i0r9OgLe603PjRUY9GzH88UuN60BtfVULr%2FiJOO0faiCXANGYZpeV%2BjDvrv7u4oOr2ExT8EZgfOjsDtFtOpbuGHVNIgUEAw%2Fe87Md0%2BueeONQCeqO8mxSUxg7vEW3P3yks7YYfKd0WIXr%2FWjk%2FSqmUvlY5w3EGDK5vE6%2BBSZmEGBs7ixSb0Iu2PwnrQviQD48bvrN4wna%2BW1gY6pgGB8qzE%2FJyDSKne2kKQ2esQbpVzmIhJ7SmfDuYb7WwnXptAVr6MhSgd%2B3OWMAG6SKJwOcxNL6kj7sMZ%2BMc%2BNVW2OdjQTLP5hBGkPDQzAa8NvoMkO7gyIdCYqGYCFwqQILMGTs9I7GtMAa2%2BHCGwY2cstY6PMDmjzKEYz2UEyPwM7pUQ9D1vcC5uF2O55hRbuUqllGDsM8KcE5Y0X944OoqPMWqSW1Z3&X-Amz-Signature=7c4cec733e8a71ef823f0e39522a5553864fd3b17975bf6275a811ef0098f9b5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/1fc0e7b5-27df-4167-b391-9dc9e20c72d4/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/cramps-3cef2a3f-4320-81dd-9900-d756440c445b-cover.jpg",
     "caption": "Is Your Liver Sabotaging Your Legs? 😱\n\nComment \"cramps\" 👇",
-    "account_id": "17841417304649448",
-    "creation_id": null,
+    "account_id": "27252162571115149",
+    "creation_id": "18151098544576822",
     "ig_media_id": null,
     "posted_checkbox": false,
-    "attempts": 0,
-    "last_error": "rescheduled after Instagram token recovery",
-    "updated_at": "2026-09-14T01:06:17.698664+00:00"
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-07T01:00:43.726191+00:00"
   },
   "3cff2a3f-4320-815f-9524-ca9b7b43e451": {
     "status": "failed",
