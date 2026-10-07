@@ -23,6 +23,7 @@ from src.ips.registry import (
 )
 
 JACKIE_IG_ID = "27252162571115149"
+JACKIE_IG_LEGACY_ID = "17841417304649448"
 JACKIE_FB_ID = "528216523715336"
 CHLOE_IG_ID = "17841424706900394"
 
@@ -73,6 +74,17 @@ def test_for_account_maps_both_live_accounts():
     assert registry.for_account("999") is None
     assert registry.for_account(None) is None
     assert registry.for_account("") is None
+
+
+def test_for_account_maps_jackies_legacy_instagram_webhook_id():
+    """Meta still labels Jackie comment webhooks with the pre-migration id."""
+    assert registry.for_account(JACKIE_IG_LEGACY_ID).id == "jackie"
+    assert registry.account_language(JACKIE_IG_LEGACY_ID) == "en"
+    assert registry.token_envs_for_account(JACKIE_IG_LEGACY_ID) == (
+        "IG_PAGE_ACCESS_TOKEN_JACKIE",
+        "IG_USER_ID_JACKIE",
+    )
+    assert registry.canonical_account_id(JACKIE_IG_LEGACY_ID) == JACKIE_IG_ID
 
 
 def test_for_account_also_resolves_jackies_facebook_page():

@@ -59,6 +59,7 @@ class ChannelConfig:
     """
 
     account_id: str
+    account_aliases: tuple[str, ...]
     token_env: str
     user_id_env: str
     comments: str  # "canned" | "persona" | "off"
@@ -138,8 +139,21 @@ def _parse_channel(name: str, spec: object, file: Path) -> ChannelConfig:
                 f"channels.{name}.{mode_key} must be one of "
                 f"{sorted(_VALID_CHANNEL_MODES)}, got {spec[mode_key]!r}",
             )
+    raw_account_aliases = spec.get("account_aliases", [])
+    if not isinstance(raw_account_aliases, list) or not all(
+        isinstance(alias, str) for alias in raw_account_aliases
+    ):
+        raise _fail(file, f"channels.{name}.account_aliases must be a list of strings")
+    account_aliases = tuple(
+        alias.strip() for alias in raw_account_aliases if alias.strip()
+    )
+    if len(set(account_aliases)) != len(account_aliases):
+        raise _fail(file, f"channels.{name}.account_aliases contains duplicates")
+    if spec["account_id"].strip() in account_aliases:
+        raise _fail(file, f"channels.{name}.account_aliases repeats account_id")
     return ChannelConfig(
         account_id=spec["account_id"].strip(),
+        account_aliases=account_aliases,
         token_env=spec["token_env"].strip(),
         user_id_env=spec["user_id_env"].strip(),
         comments=spec["comments"],
@@ -231,12 +245,13 @@ def _check_cross_ip_uniqueness(records: tuple[IPRecord, ...], root: Path) -> Non
                 )
             seen_names[name] = ip.id
         for channel in ip.channels.values():
-            if channel.account_id in seen_accounts:
-                raise IPRegistryError(
-                    f"{root}: account id {channel.account_id!r} claimed by both "
-                    f"{seen_accounts[channel.account_id]!r} and {ip.id!r}"
-                )
-            seen_accounts[channel.account_id] = ip.id
+            for account_id in (channel.account_id, *channel.account_aliases):
+                if account_id in seen_accounts:
+                    raise IPRegistryError(
+                        f"{root}: account id {account_id!r} claimed by both "
+                        f"{seen_accounts[account_id]!r} and {ip.id!r}"
+                    )
+                seen_accounts[account_id] = ip.id
 
 
 def load_registry(root: Path | None = None) -> tuple[IPRecord, ...]:
@@ -288,7 +303,10 @@ def for_account(
     if not account_id:
         return None
     for ip in _active(records):
-        if any(c.account_id == account_id for c in ip.channels.values()):
+        if any(
+            account_id in (c.account_id, *c.account_aliases)
+            for c in ip.channels.values()
+        ):
             return ip
     return None
 
@@ -336,9 +354,22 @@ def token_envs_for_account(
         return None
     for ip in _active(records):
         for channel in ip.channels.values():
-            if channel.account_id == account_id:
+            if account_id in (channel.account_id, *channel.account_aliases):
                 return (channel.token_env, channel.user_id_env)
     return None
+
+
+def canonical_account_id(
+    account_id: str | None, records: tuple[IPRecord, ...] | None = None,
+) -> str:
+    """Return the current channel account id for a canonical or legacy id."""
+    if not account_id:
+        return ""
+    for ip in _active(records):
+        for channel in ip.channels.values():
+            if account_id in (channel.account_id, *channel.account_aliases):
+                return channel.account_id
+    return account_id
 
 
 def resolve_ip_name(

@@ -39,6 +39,7 @@ from src.channels.meta_events import (
     parse_meta_webhook,
 )
 from src.crm.models import ConversationMessage
+from src.ips import registry as ip_registry
 from src.ops_alert import send_ops_alert
 from src.orchestrator.pipeline import JessicaPipeline
 from src.personas.profile import PersonaProfile, load_jackie_profile
@@ -142,6 +143,9 @@ def _get_agent(account_id: str | None):
     """Return the agent for this account, falling back to the default."""
     if account_id and account_id in _account_agents:
         return _account_agents[account_id]
+    canonical_id = ip_registry.canonical_account_id(account_id)
+    if canonical_id and canonical_id in _account_agents:
+        return _account_agents[canonical_id]
     return _chloe_agent
 
 

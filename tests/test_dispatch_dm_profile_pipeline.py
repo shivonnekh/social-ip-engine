@@ -25,6 +25,20 @@ from src.channels.meta_events import IncomingDM
 from src.crm.models import ConversationMessage, User
 from src.personas.profile import PersonaProfile
 
+
+def test_legacy_jackie_account_id_uses_canonical_registered_agent(monkeypatch):
+    jackie_agent = object()
+    chloe_agent = object()
+    monkeypatch.setattr(
+        meta_webhook,
+        "_account_agents",
+        {"27252162571115149": jackie_agent},
+    )
+    monkeypatch.setattr(meta_webhook, "_chloe_agent", chloe_agent)
+
+    assert meta_webhook._get_agent("17841417304649448") is jackie_agent
+
+
 # ---------------------------------------------------------------------------
 # Fakes
 # ---------------------------------------------------------------------------

@@ -88,6 +88,21 @@ def test_fuzzy_respects_account_gate(tmp_path, monkeypatch):
 
 
 _JACKIE_IG_ID = "27252162571115149"  # data/ips/jackie/ip.json — registered English
+_JACKIE_IG_LEGACY_ID = "17841417304649448"
+
+
+@pytest.mark.unit
+def test_exact_match_accepts_legacy_account_id_for_canonical_rule(tmp_path, monkeypatch):
+    _write_rules(tmp_path, monkeypatch, {
+        "hair": {
+            "dm_text": "hair guide",
+            "public_ack": "check your DM",
+            "language": "en",
+            "accounts": [_JACKIE_IG_ID],
+        },
+    })
+    rule = comment_rules.match("Hair", account_id=_JACKIE_IG_LEGACY_ID)
+    assert rule is not None and rule.keyword == "hair"
 
 
 @pytest.mark.unit

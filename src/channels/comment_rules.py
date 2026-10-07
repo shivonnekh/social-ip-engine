@@ -207,7 +207,8 @@ def _account_allowed(rule: CommentReply, account_id: str | None) -> bool:
         return True
     if not account_id:
         return False
-    return account_id in rule.accounts
+    canonical = ip_registry.canonical_account_id(account_id)
+    return account_id in rule.accounts or canonical in rule.accounts
 
 
 def _language_allowed(rule: CommentReply, account_id: str | None, expected_lang: str) -> bool:
