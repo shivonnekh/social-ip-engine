@@ -391,18 +391,18 @@
     "updated_at": "2026-10-07T01:01:28.107226+00:00"
   },
   "3cff2a3f-4320-815f-9524-ca9b7b43e451": {
-    "status": "failed",
-    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/358c1836-fb42-443d-8227-2da08814edc4/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46645LNHZJT%2F20260915%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260915T010453Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECcaCXVzLXdlc3QtMiJGMEQCIG2n9lIMTDOhPgugkgT8yZ03jRMlDYfn1UjgwIaxwR6qAiBK6g72G6OkoeMQbntmVGEg4YXu%2B4nQRcLBlazBlRdJOSqIBAjw%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMJwMwN1xahmKdVnYHKtwDdm0Vih%2BeEgUTgLbemB6AwVM39s2xWJriABOWVq12lZ9MoqJ9Vb0rlGpQGBsrepnnJ2vSFe8YbLxhDcOX5iIUKD0KGELO9BHnXsqfsnqQ%2FzZnohMT2tUX38RErq5IMrsts8v%2FXF25RhZrKPJiyRroTHF7K7qIqtZidXYbDd8Nprca7XscI8AyoMs35oxLPye8%2BIYhDV4a1eeXskaqP3DNOLNYp1yyJEBHMm9P%2Ftj5FR7HQtDnBU9w%2FV4jPmWXwDhawrmUucdIknxjBIG2hA%2FzoPd29Lwof2P9ql66e6PCEIpoSaTYlfsRtYz1gfoPpkqvEknrDFIH7WYbgY7kR%2FEqL%2BZbfBZkycV2MjHcDZlRUlKuns3hdwS71gPwHfG3oKsBHMvBCdq2PXPHdLVvsOXnktw5HaK11lilxMD89%2Fso1vTre%2Fa0dkNywpzlOxY8SdbVG6Fx9jQRLP3ou7G3KXj%2FystWjdTzXfSfODObDh8utsRhHW1cpcWcDhfUf2yJaPeL8TEDscbn%2B8gWns2vwjcOSpw%2Fw2X%2FncMpTVjlyR4MVVzFYp1vegLWsbrdFOb%2B6epRiQtsWZyh%2BKlKx%2FIeZ8BGzgQUP5BTqbXofda%2B8tzgRSadxvshQ%2BLP5pXM1t8w1vuh1QY6pgGRTZ0m84u%2BRAO%2B878eiLxhA%2Fzaz1jW3JbiSOqP4oQ6gdkcgoR1JX3GwvhOK9R%2FXnfhm0hXBUf1DyDwvY%2FoqpCYu2t%2BjXsey841doJFtk1Nd83P756JWETsiEgDXzQWAyXuZRTfX8Zg5xXc6V%2BOL%2B4CfbYJZIth%2FIYJRxCjvSUwBHCvywc9oqzXYSpr9vl79QHod1eOAd2Box%2FnZ7w8ERa8vRv83GDC&X-Amz-Signature=4120410a694af7d69352b3c60482cdb5063c993554b226fbaf842663b9babc37&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/358c1836-fb42-443d-8227-2da08814edc4/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665QV2XHAG%2F20261008%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261008T010021Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEFEaCXVzLXdlc3QtMiJIMEYCIQCpVoOngM7AMKv8MQddfQm2GKumyfIgeYh4lEfPk0TmyQIhAPLG6fqBcBYvgflK95hv9ALTPxvJ%2BfH%2B%2B0Bw2DIB2HZBKv8DCBkQABoMNjM3NDIzMTgzODA1IgzAj1y5Lmz0oWuYAAAq3APrDFyZqcYNEznkUVxYnNzVNMefUXyDyBpPwqj7wFVJWNhbGqlT2hHQV2w8EM73fStX4%2FTRHyFuFZUkt4lyIeaEwgi8oiTSBjZYpsYSoQzKgefvD%2FDq0tbmemEkxFLN67VWnQMZHdXaFCe45yoUojan4vUG%2BHS%2BHsQ71%2BloZ8SZN8IKwn%2B91dMSwtL5z06dn2vCC0wWSIN%2BrdOSxe6WTzk12touip0M79SzMsxEeznGwqwTUALeMULCO9Cmsbi7Xkd1TrbJdNM5fmaqiqbZSQubdJy3NaTnPsa1%2Bi4nlgJV0JKEO83BVMXqE9rtehjVqNpinQvMJY9ootvrrSHNXYAOiqvDLthcrUKYhLxPImbgsDTEr7Ksh%2BwFePTdtqrNMuV%2Bou1vF1oyXfY0NU8hbkRDb3zAqINJA1XkL3PKO9U8kqnS%2FLw1XqVVogCm4zGcbW%2FMhJU5ZhSoHYxivm3iZJE50wUeO6z8OtlrdaFG96bK5DcQboDs1zNBXiFoyjzVzfHnlcP8Q6jZbGDruxJ0iEOV5A0Py3XMXiInmrhdrqhw%2FOg%2Bk1Y5%2B4F68D6qk09ptDqIz%2BqpWr00Yd9Dhr%2B1BpsJ7mYPWAhpLRNEALxV5gajTEIiOQMkb5NaKY%2FvXDDAxJvWBjqkAbsWi0%2FPBBCj6cU5Nf263UVl02PUuRNDYbYeff52LWjjPMRJwMj2CnMrgIqo5uZtKl7p0E4ter707NVlIX7dbc32Dm8rn6ISpUyKh70xv7epzRkHQuy%2FoUmzKMUL8W5yGm8llSve9RC%2Fvjz87F3HdIuy9AjhP0emlpNhUpcFGc0wfKvUsIldCsMaN9OJUwGKcPC1PGaPchFLWxN8FbnHSXCIRYpn&X-Amz-Signature=5e2de66e4a8bad6388484aec95479f66a094cf0c85d0c6b395fcae109191acb9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/358c1836-fb42-443d-8227-2da08814edc4/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/knot-3cff2a3f-4320-815f-9524-ca9b7b43e451-cover.jpg",
     "caption": "Is Your Stiff Neck Caused by This? 😱\n\nComment \"knot\" 👇",
-    "account_id": "17841417304649448",
-    "creation_id": null,
+    "account_id": "27252162571115149",
+    "creation_id": "18151269778576822",
     "ig_media_id": null,
     "posted_checkbox": false,
-    "attempts": 0,
-    "last_error": "rescheduled after Instagram token recovery",
-    "updated_at": "2026-09-15T01:06:57.293567+00:00"
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-08T01:00:26.678879+00:00"
   },
   "3cef2a3f-4320-81cf-aeef-f49a9fbb99e9": {
     "status": "failed",
