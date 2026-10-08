@@ -361,5 +361,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-10-07T01:03:08.266524+00:00"
+  },
+  "3cff2a3f-4320-815f-9524-ca9b7b43e451": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/358c1836-fb42-443d-8227-2da08814edc4/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665QV2XHAG%2F20261008%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261008T010021Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEFEaCXVzLXdlc3QtMiJIMEYCIQCpVoOngM7AMKv8MQddfQm2GKumyfIgeYh4lEfPk0TmyQIhAPLG6fqBcBYvgflK95hv9ALTPxvJ%2BfH%2B%2B0Bw2DIB2HZBKv8DCBkQABoMNjM3NDIzMTgzODA1IgzAj1y5Lmz0oWuYAAAq3APrDFyZqcYNEznkUVxYnNzVNMefUXyDyBpPwqj7wFVJWNhbGqlT2hHQV2w8EM73fStX4%2FTRHyFuFZUkt4lyIeaEwgi8oiTSBjZYpsYSoQzKgefvD%2FDq0tbmemEkxFLN67VWnQMZHdXaFCe45yoUojan4vUG%2BHS%2BHsQ71%2BloZ8SZN8IKwn%2B91dMSwtL5z06dn2vCC0wWSIN%2BrdOSxe6WTzk12touip0M79SzMsxEeznGwqwTUALeMULCO9Cmsbi7Xkd1TrbJdNM5fmaqiqbZSQubdJy3NaTnPsa1%2Bi4nlgJV0JKEO83BVMXqE9rtehjVqNpinQvMJY9ootvrrSHNXYAOiqvDLthcrUKYhLxPImbgsDTEr7Ksh%2BwFePTdtqrNMuV%2Bou1vF1oyXfY0NU8hbkRDb3zAqINJA1XkL3PKO9U8kqnS%2FLw1XqVVogCm4zGcbW%2FMhJU5ZhSoHYxivm3iZJE50wUeO6z8OtlrdaFG96bK5DcQboDs1zNBXiFoyjzVzfHnlcP8Q6jZbGDruxJ0iEOV5A0Py3XMXiInmrhdrqhw%2FOg%2Bk1Y5%2B4F68D6qk09ptDqIz%2BqpWr00Yd9Dhr%2B1BpsJ7mYPWAhpLRNEALxV5gajTEIiOQMkb5NaKY%2FvXDDAxJvWBjqkAbsWi0%2FPBBCj6cU5Nf263UVl02PUuRNDYbYeff52LWjjPMRJwMj2CnMrgIqo5uZtKl7p0E4ter707NVlIX7dbc32Dm8rn6ISpUyKh70xv7epzRkHQuy%2FoUmzKMUL8W5yGm8llSve9RC%2Fvjz87F3HdIuy9AjhP0emlpNhUpcFGc0wfKvUsIldCsMaN9OJUwGKcPC1PGaPchFLWxN8FbnHSXCIRYpn&X-Amz-Signature=5e2de66e4a8bad6388484aec95479f66a094cf0c85d0c6b395fcae109191acb9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/358c1836-fb42-443d-8227-2da08814edc4/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/knot-3cff2a3f-4320-815f-9524-ca9b7b43e451-cover.jpg",
+    "caption": "Is Your Stiff Neck Caused by This? 😱\n\nComment \"knot\" 👇",
+    "account_id": "528216523715336",
+    "creation_id": "1721717692247187",
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-08T01:02:37.098004+00:00"
   }
 }
