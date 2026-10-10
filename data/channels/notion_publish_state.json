@@ -405,18 +405,18 @@
     "updated_at": "2026-10-08T01:02:05.254349+00:00"
   },
   "3cef2a3f-4320-81cf-aeef-f49a9fbb99e9": {
-    "status": "failed",
-    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/babda679-943f-4cad-b33e-54cb1674bc1d/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VYDJKYNM%2F20260917%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260917T010553Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEFYaCXVzLXdlc3QtMiJHMEUCIQCqBvksLMljCcbKUQnYGLR4kaH90Iivh6yYhdKfENhnPAIgfpt5z4sdZc20gkJnrvSxYZcJmvdaj5psVlc1iY3QMH4q%2FwMIHxAAGgw2Mzc0MjMxODM4MDUiDM2NqBBjF1SFg4JtcCrcA%2B9m5r06JfK7jIfy9WNi4Td4uLOVGV3vflVFIWPWvEQZ5hIZRx2eZFJ3UJedTYcGIZDA5R8vI4EohQASFJrmoulhu2Tbh4sfUH1ZN1gZMEFT4gnFOCoKoV9GWq92Sh9TUenReiBElotNE0IwFsCevuY4bIzGtAG079IFDMwTLWavm92%2FPRy3QHo8ipWlAiNmHS0fbpszjlaEbC4PBeIthw2Z7S4pQOVk6JfUOuytUT3PbuLuKXNmVToeDCLkwiQGZR5DnmM0EsyIIjFZJFFDgvwZasPzFwVjCAQ3EdK5Jrr2lKc1oYkbiG3TyIuLM3L21E8dZ8oELWdPS8WD8ZG2Zkp6WLI7KD8QjmLWLaW9WO2qVxxRfTMFQulG6BegjvIkSs8BWWMMTg87BpNhPUJuB3PKc0szOPoFONhhGU49oy2oXM%2B57U1vuhu%2Be87%2BjQwNkaWpUHqct5WxOipK3%2Fop%2F4D401FI1QGVRoiMUev93sJkTIYUY4tPK8A%2Bv840c%2Bw3xZSMaaVygZuqQDc9IOux%2B%2Bh0X5jeEWZwx1yy4fKtzHsSMTgtiEQU%2F3f%2BlTdtoke%2FhcJ6Y6XARu2wLtUKi608It9YrEhPhrTwHomW2W6eEHQG7yWHubtDpcCO8p1qMPGfrNUGOqUBPRCz%2FXIg3lKAA5CzggmPSMB6sg%2B5zh4x%2B91IU3ZUEhNH1ufSOfke6ZKk47LyT6xxBFonivTBvpqoHi0QG9D9XR4JYg%2BZpfRvwwq%2Bkxgje63ZweDCce2WRJv9XWlm%2BcQSEYYKDzm0PQEn3PPWuTQRF7u%2F1YvhtPf3F423%2Bq0ambxVj6DZ38N%2B9F5fC8zeJkD4XqdZ2ttnXTjhWnlLs7311VNqTh%2B%2F&X-Amz-Signature=06199340f38187950a0797c76446c73ea6e6dda0c8c343c4f5755fae636e9a6f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/babda679-943f-4cad-b33e-54cb1674bc1d/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663F3FPSC2%2F20261010%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261010T010142Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEH8aCXVzLXdlc3QtMiJIMEYCIQCxSwD8aFrXUJi6sFDZVyxadDqozHbvG5ev2mI2I5SkAgIhAOcMQyu4AJEu91rAxyLo3CMy4SMTuWDvnnpt6zmDlVT8Kv8DCEcQABoMNjM3NDIzMTgzODA1Igx9OJlB49wE2PmDihMq3ANjoOhnk2QJjwrNNTsfDPIWCZM7wZ6sLbE6zZ%2B3RvhL5fNvziYIAFcmKTNeC7n%2BU4L9soI%2FXNSOeFkVLJ25jnV3N%2FhHHNqUU%2FMxEMf%2FUuiMGedLzkq749Z69kJEEMY%2FLDqm3PcBcArQ1JQbNPeS0KPy9gJl5wiOL6bDrbxIwH9emDvaS76kbuiAxu183ug%2BaAqdjCpl%2FELco0epyNZAgIOMuFdYMkSMyITF6g%2F8zsy1Z1Z393CaAesnIObr0aI%2B%2BzQtRi7EhKADfCdhKivxCqw5ZZHz4tMl9Jxmue9neJ7cdzcCiRv4lOkNBUmAwKQhhX7Mgv06Hc%2FVan0GpBVKzfcM1LYxMt19DHLZi1ff7D8Yg1a%2Bsr4SfJjlh%2FC5K1ovlap80J2nVvoAig3hwYxyhSHwr4Gkr5mZw580vl64tj0grGMqcBHayEx1iT6W%2BS9jQK5HORtvDmAOL4rxpvFy1ugvH%2BDb6xmcGlMlrFe%2FX%2Flln9Z0M%2FpT3WEHHLIzkNHJljSulXJ0kLbjw3KLwKGhjrKCFDKGjLYo1PQLiNlt8v5Qd0JxnUW2ylnRvWTUEtW477zhfTQJ%2BvV8YGL6LoFcanONJng1cSPYVq4IhhRoLhqSYxAdBzRA3kPP%2F4HmmTCU56XWBjqkAS7WLD5hZeuYihq1NXTXMoHrE2LwfvZsZE6R9sKbalrvEsk8OKapoDar2JJxx1r6FevzgUGecO20nJWsu1yY%2Bk8tLO5WjjIUhbjsE77eAp1m7BF0%2FAdt1L1wag14W6XG%2FTr7P4%2FIgQWgFallcEd8SHZbGZLqssPNd7yYbnZmwkFLKzfbtA0T7PXd%2BRIt7mzEqrr8If%2F2eEElsPHXhqMCPJAseZzg&X-Amz-Signature=5b87d173f89e912eeab9a07d0b8fab820b297bb56d2a02ba3956d4fa11212365&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/babda679-943f-4cad-b33e-54cb1674bc1d/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/acne-3cef2a3f-4320-81cf-aeef-f49a9fbb99e9-cover.jpg",
     "caption": "Is Your Acne Revealing Your Secrets? 😱\n\nComment \"acne\" 👇",
-    "account_id": "17841417304649448",
-    "creation_id": null,
+    "account_id": "27252162571115149",
+    "creation_id": "18151627468576822",
     "ig_media_id": null,
     "posted_checkbox": false,
-    "attempts": 0,
-    "last_error": "rescheduled after Instagram token recovery",
-    "updated_at": "2026-09-17T01:07:56.806850+00:00"
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-10T01:01:47.227216+00:00"
   },
   "3cff2a3f-4320-812e-8243-f0c64a7d786d": {
     "status": "failed",
