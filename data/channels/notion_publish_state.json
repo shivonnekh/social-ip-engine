@@ -405,18 +405,18 @@
     "updated_at": "2026-10-08T01:02:05.254349+00:00"
   },
   "3cef2a3f-4320-81cf-aeef-f49a9fbb99e9": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/babda679-943f-4cad-b33e-54cb1674bc1d/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663F3FPSC2%2F20261010%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261010T010142Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEH8aCXVzLXdlc3QtMiJIMEYCIQCxSwD8aFrXUJi6sFDZVyxadDqozHbvG5ev2mI2I5SkAgIhAOcMQyu4AJEu91rAxyLo3CMy4SMTuWDvnnpt6zmDlVT8Kv8DCEcQABoMNjM3NDIzMTgzODA1Igx9OJlB49wE2PmDihMq3ANjoOhnk2QJjwrNNTsfDPIWCZM7wZ6sLbE6zZ%2B3RvhL5fNvziYIAFcmKTNeC7n%2BU4L9soI%2FXNSOeFkVLJ25jnV3N%2FhHHNqUU%2FMxEMf%2FUuiMGedLzkq749Z69kJEEMY%2FLDqm3PcBcArQ1JQbNPeS0KPy9gJl5wiOL6bDrbxIwH9emDvaS76kbuiAxu183ug%2BaAqdjCpl%2FELco0epyNZAgIOMuFdYMkSMyITF6g%2F8zsy1Z1Z393CaAesnIObr0aI%2B%2BzQtRi7EhKADfCdhKivxCqw5ZZHz4tMl9Jxmue9neJ7cdzcCiRv4lOkNBUmAwKQhhX7Mgv06Hc%2FVan0GpBVKzfcM1LYxMt19DHLZi1ff7D8Yg1a%2Bsr4SfJjlh%2FC5K1ovlap80J2nVvoAig3hwYxyhSHwr4Gkr5mZw580vl64tj0grGMqcBHayEx1iT6W%2BS9jQK5HORtvDmAOL4rxpvFy1ugvH%2BDb6xmcGlMlrFe%2FX%2Flln9Z0M%2FpT3WEHHLIzkNHJljSulXJ0kLbjw3KLwKGhjrKCFDKGjLYo1PQLiNlt8v5Qd0JxnUW2ylnRvWTUEtW477zhfTQJ%2BvV8YGL6LoFcanONJng1cSPYVq4IhhRoLhqSYxAdBzRA3kPP%2F4HmmTCU56XWBjqkAS7WLD5hZeuYihq1NXTXMoHrE2LwfvZsZE6R9sKbalrvEsk8OKapoDar2JJxx1r6FevzgUGecO20nJWsu1yY%2Bk8tLO5WjjIUhbjsE77eAp1m7BF0%2FAdt1L1wag14W6XG%2FTr7P4%2FIgQWgFallcEd8SHZbGZLqssPNd7yYbnZmwkFLKzfbtA0T7PXd%2BRIt7mzEqrr8If%2F2eEElsPHXhqMCPJAseZzg&X-Amz-Signature=5b87d173f89e912eeab9a07d0b8fab820b297bb56d2a02ba3956d4fa11212365&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/babda679-943f-4cad-b33e-54cb1674bc1d/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/acne-3cef2a3f-4320-81cf-aeef-f49a9fbb99e9-cover.jpg",
     "caption": "Is Your Acne Revealing Your Secrets? 😱\n\nComment \"acne\" 👇",
     "account_id": "27252162571115149",
     "creation_id": "18151627468576822",
-    "ig_media_id": null,
+    "ig_media_id": "17985427386091932",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-10-10T01:01:47.227216+00:00"
+    "updated_at": "2026-10-10T01:03:16.680172+00:00"
   },
   "3cff2a3f-4320-812e-8243-f0c64a7d786d": {
     "status": "failed",
