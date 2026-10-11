@@ -391,17 +391,17 @@
     "updated_at": "2026-10-10T01:04:08.803762+00:00"
   },
   "3cff2a3f-4320-812e-8243-f0c64a7d786d": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/282caa44-a858-43b1-9471-b819fa201ea0/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UGQIJT7J%2F20261011%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261011T010019Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCICSHnAWrTqEARwz3XEYJWCTHyEcUgYdHb59ZYkTz6J6eAiEAl2kgGYpldN7QrPZ3pIpJwSMcaN7MxxsBAauB4dM0%2F2Eq%2FwMIXhAAGgw2Mzc0MjMxODM4MDUiDOKdB98d60EpTtJ61SrcA7zm8JrjYQyxmPwM2GQPUIXeH7ROdhWA%2Bo3LSJFcmq9aZ1UHHE50M%2B9OpSHGVYKe4MhXe%2Fwwd4dVfjrLTuJt%2F7DWny6xyPheKYgU5BhmybvLX%2FNwQetfrKD2ryGHC5Ruja%2FyPd6RYxGaivzLbPd8aNVupN61Bp%2FA6rMCs0AUkjeLeoLH%2BQI9JShCHacqjtv4H5sOCDUoMED6rm5QO0MthJS7dGzjuft8hPk%2FHoUTVr131SjNWGjXrCkTcIQVDQhfo3Ra3PfpuVEw9jDoy2zgCG245TTMXuUxVfhbYWbJoIkblKsAeNMV73CP5qEmJmE2qMeKVt%2Fkrbcoz2kGohm8QCCB6ObGK0qs8JX0nNDOkXpSNu1XbLqJ5Jkzf2zo44dnwjwL07PG6ajBICz%2B66DCjLN2liErara4PbfSZxOWCxZ7TbUK%2FPcYPyWMS2%2FCK6lOMph%2B6XiFQl6eq89kV7TYDvqeIUFK%2BFn5PaEFRYTeoHlr0a1PQo6jBI516sel4FUGxCFqULfrM24YzCOQdg8BdruOowBYt2bdeDRARoPX9D5Fy9J13LHAoNrKwlYIJUz3Sv%2BmRU%2FeCcsioOFt3d9W8fz1%2BddjNEL9b5fXIDXOMGZWnyKzncQIqx4WIDaEMOjWqtYGOqUBWPjoGzDW5KrMQKUuNIOsuG%2BJ4txoA%2B4ACR81%2BoqKn8ZT380rSjyEnbwp2Ap25gxR0tgNHgLbW5lR97Oo9IkLKOGYverkxRi6N5IWANz8qJcOidE4IDAbr%2Fp2vR%2BaPRgumg0H94mZQOeadp%2FYGE2gEU2Ei%2B2XDMj4MqqxlYoBs1fhSOKZ5SgJxE6zRkyr6b2OCiKABBeYoruI5pxUgrNjdUAaghEU&X-Amz-Signature=ec20ad78d5edecd8313a61b31f88a4392168258a3e1caacfb7622576b51a358b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/282caa44-a858-43b1-9471-b819fa201ea0/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/frozen-3cff2a3f-4320-812e-8243-f0c64a7d786d-cover.jpg",
     "caption": "Is Resting Your Frozen Shoulder Hurting You? 😱\n\nComment \"frozen\" 👇",
     "account_id": "528216523715336",
     "creation_id": "3041918109485022",
-    "fb_media_id": null,
+    "fb_media_id": "3041918109485022",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-10-11T01:02:31.790634+00:00"
+    "updated_at": "2026-10-11T01:02:39.197747+00:00"
   }
 }
