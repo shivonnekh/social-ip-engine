@@ -405,17 +405,17 @@
     "updated_at": "2026-10-11T01:02:45.360788+00:00"
   },
   "3cff2a3f-4320-8196-9e2e-de182100d3a3": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/60b8807c-be02-48ac-9c52-47932779ab70/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Z44HZ3WT%2F20261014%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261014T010127Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOD%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIB8DcYNS83gNELj%2FU18x%2Bv59wtF9HMlyvwk4lmyRB921AiEAnMj03jRY8snXV0W3EtPRzl6keJd3RInGOTTbwhYaWDwqiAQIqf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDH5FKzLFJ6Y7JIg4rCrcA76Ptj213n8ySkXHmhFSqc2DIJaHdDMHFg%2BhRoDemU3JnY2UH%2Bc7LiFF2CxGvVfq%2B0ja50HKJraqDv%2F%2F3%2FVVtkQsCQpcIdOavmRqcIPQEubUc6cS9JnR3tn%2BJrNHpvkfOpSfmbQu5aF%2Byc2bCOcxYXB%2B%2BQaSVTPlYsm1xWUzI2628UuTXu2AXuUjGI9cYtfawO72fLS2gNXm9pGOicI6jtcyd7oEwUnNFVuUHd1GS6z%2F9D9TfLYootI8rDLXm%2BX046tyQQFS3OryL7LW63VDbLgF5FBBDD%2FjkOHSjPjESfpkugX307xgNWzQLGHc9ZqgXnhZ%2FuwS8znEGQp%2BIJVks4d2QDY7%2FGkQK9CNGy7grkPezdCJN7EX9ZDlvEDU%2BmS0oKfw5joQRntodxw%2FzZQwFu%2FEjWB8vD5mQgMCkYt0i0enw54Rbo2okr%2BIWotwFFDneMqfo21K2AKEJyV8ICfBTr7sDx8uwLE5Am%2FHxe%2BF7t3cgRrZkNAr38ZkJo3yVzrDtods4VrO%2BnOXZluFG8D%2BZafHuv%2F4JbB%2F1KY%2Bqjo%2BP9QkiwMH%2BBjy3HXA4KLo6VSU0nO%2BzAXMvCLF8%2FCaod6NImry3v7SnOxXYmghT3Gw08rzYhkq9mCSiXpBNTxcMMCTu9YGOqUBQLiLWAZAu5xBQ0bWJ70c8mw2%2BfClZjuY5r2CU0wFnebD9pur0H2Bky6HEWu%2BKzioc9%2BVXoRa%2BWpDVJlsJDNTQfNgwtmvcfsM7BPZW%2FzQhcaNG9kSv2uQy%2FgWb4XVBrQFJZ2mYpnezteyjjQD0afo1EqNx6wtxONQlTD3yRMIcnbneYBfaefkLGkfFD%2Blwk5B%2BeEDKEUZWAkzDU1EVyeg9w4HnqAo&X-Amz-Signature=7f328222b6bfac4cd015c27af7a239f8d8e16034a5565bcb3af514e4bbadfd2c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/60b8807c-be02-48ac-9c52-47932779ab70/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/clicking-3cff2a3f-4320-8196-9e2e-de182100d3a3-cover.jpg",
     "caption": "Is Your Knee Pain Really About Circulation? 😱\n\nComment \"clicking\" 👇",
     "account_id": "528216523715336",
     "creation_id": "1354051139959503",
-    "fb_media_id": null,
+    "fb_media_id": "1354051139959503",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-10-14T01:03:41.428079+00:00"
+    "updated_at": "2026-10-14T01:03:49.014477+00:00"
   }
 }
