@@ -447,18 +447,18 @@
     "updated_at": "2026-10-14T01:02:16.957997+00:00"
   },
   "3cff2a3f-4320-815f-a47f-dd2ffa84b179": {
-    "status": "failed",
-    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/4d63f4fd-03cd-46f0-b638-d580911a42b0/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662HZV6UGS%2F20260922%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260922T010514Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENH%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNTk68DqxWu7ZrJ10xIz2Doy%2BPrR6LGJwHwFoz2lKaawIhANMlZ48DnHiYA%2F2vBwacCnNTTm2d66%2B1DwLB7iYk9HRPKogECJr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzxnXImSt%2FDy6Pbp8kq3ANLKgXjApIuB0fNTaYEX49M7b9%2F9weSFdiFhX71wSqhuYaoc73TVHX%2BJhAOywOPcDZjkNeIqLMppVro6w7rl%2FW0Udk1fUDolyULvK4w6pIyr26ZxHDR4Bp7%2FNUnJXS5UTo3BiymMAKH31cEOzk6hWoKdYmg7j8yzoFUQtxYfdq4fV%2BPZIwntOk59YrKgdRPZv%2FfFwc55KJLUbhQMPHhdVa9MVD8e%2BhouuIL%2B2Tkzg2U0cVfUX%2BKI3hSxddJspNAP6q5eIUVctrI6VS0QgzuKIO%2FBbDm5t89APHLaxYt7ZOjUcCfRoBul%2Bzl7CiKAvMufxxqlDTa2nQhwq9D%2BuJbgTP0znH46%2FoXJU0JXpLWPxq91uRVlbR6decKlnSuO1WNtQPoVi%2FhBjgEe3kkqekAPZZcqh%2FUY%2BQaEWi9Og2cfo8wY8p%2B9RlooKJQ1pogCrwc2THHLNDf5DnT%2B5UyvqRwJcAX212LBYEz6QkTwDM5TqFC6YZ9wGMhYQ8XK0iQWHI73R9vrE4bTSvmdcLq1FtvTGR6%2FfMv2fZq%2BlijPUzxsWO8taSrBP4iMQP3j6FJNiv4Npk24cRiNxVb0oew5ml2zpO%2B5oXVv%2BGXH2%2BEIlTi3zci2gUyD%2Fxx%2FT6xnEddKTCtlcfVBjqkAf5wyDNVqdtUt2nHbziylkoqoj1XFnxEDnX%2BvklTBOLopyANSQFU90WxAtKBgmn3X35t5tI77vWvxe5bYlfpDKUkiIwBPBcLCpddExhYPIigL6fOAKR%2FNnF4S0jthXd0tubUyW0ZAXcm0b97Cf0WgXa3NXoCdi%2FuIhPF8p9%2F5EwDByjN6%2Bi8QFe%2BqEjSvigmXe385I9xCx7jH0iOIy8O4Y9m2G63&X-Amz-Signature=1457e18ff7ba89b6af2adbdf62a3abfc6fa0063cb1ee1a154de93f7a01f9e823&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/4d63f4fd-03cd-46f0-b638-d580911a42b0/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XAYMF6V6%2F20261015%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261015T010147Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGt5NG4LXuHM3cjuPbSzk16v209qqiHpsgVcwUohs6OgAiEArET7UbUBcAlBkUpUBfGPUxaBD4JJKFU%2B4PApDGBa9HMqiAQIwP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAga3lHXrgF%2F%2BGqAlyrcA9VKYnMTik5E9KZufhmPeJbjJAQgm%2Buh4ZGYUR7l%2B6TXhEtBj8AQbTGtr6ROP%2BJcMA3y4F9c5%2FNU7iJ2iR9Lb7wkz%2F%2BBD9n%2FSfdTIgO6RvBJaeLbvzY0pEYhLeXMXHGe%2BB41mlAAUMi4vFzbdr0wkAq%2FHD%2BTI%2F82JeWUX9t86qXtqUu7DXUuTRn3jcZQB8GZteX9yWMLL%2FZ6SG0pdEcr3fXacFmuBD4YdIHu4FCHvznAnt6smZTToBWFpSN5OioWro7h%2FqTp%2FeNKJN1ciiW5O0arRlZnvCyjcBqvY7NFr7abp6MvBcs6xQP5M2nCxFG21jYtVQT6FnxBMPFhPjJIP%2B3ZzkgKij877iGzkrgAynfaE1KIVf3R51%2FUaTyjYAsRt3Rq8OXTXgx%2B80%2BSnia4g%2BnDCIBFk77mO3DgvFfqL41ZUwyJVgQWtarmjWmBUEtebSfkMeGXf7irE3qLeDCnIe7o9%2FVBDWXGVsYRR6pFS8jrb1f69DCz6Avq8U8NZB%2FRJQe96p7i3Gc0XL5ubWDKRV5wnAdXI6aT7rv7q4C4dla0Z4egNQYuUbK%2BCWrZCBFt63N7A0WeGIBXTzkOVNYv%2BCalpMfkV8qa9WP3Xot9ylqW6XZIoKIY7HVhSoAeMI%2BZwNYGOqUBqfAfK6Fq2uDMgWIZjGMG4ZKyL%2FsVgJFZ52NFUeVvagKI%2FyoPb%2FjgBuXSz%2F8%2BukTKaLD01ivcbxoFz3fTZPRx2TNnNOKUThGMEEzu38WzrEPia%2BkbvMvyn9DTa%2Bb46Aq4EJtKiXrvhQ2PFPBsMezvCxwIG5gjfIfbb2qtL5drrsCTYOkeZgfE75btRcNdTs0jVUA16w1K548c2FfL2oCGYiNoTJwy&X-Amz-Signature=0c77b8741c3e4ef4abf20bce0e8cdc4eca834b10f20de8ed54bd668842ffb113&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/4d63f4fd-03cd-46f0-b638-d580911a42b0/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/tension-3cff2a3f-4320-815f-a47f-dd2ffa84b179-cover.jpg",
     "caption": "Is Your Headband Hiding Bone Pain? 😱\n\nComment \"tension\" 👇",
-    "account_id": "17841417304649448",
-    "creation_id": null,
+    "account_id": "27252162571115149",
+    "creation_id": "18152547535576822",
     "ig_media_id": null,
     "posted_checkbox": false,
-    "attempts": 0,
-    "last_error": "rescheduled after Instagram token recovery",
-    "updated_at": "2026-09-22T01:07:17.532772+00:00"
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-15T01:01:53.655150+00:00"
   },
   "3cff2a3f-4320-81e1-b400-d37f21099ddb": {
     "status": "failed",
