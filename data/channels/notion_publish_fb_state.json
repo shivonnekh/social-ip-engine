@@ -431,5 +431,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-10-15T01:04:17.155923+00:00"
+  },
+  "3cff2a3f-4320-81e1-b400-d37f21099ddb": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/a763a22b-ea3e-465f-b457-271eae140bf6/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SEZ43PK5%2F20261017%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261017T010034Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECgaCXVzLXdlc3QtMiJHMEUCIQD%2FTBe629emWcbRm5YK3xJFV%2BdsVof618BrDVs8hKCYegIgJ8WDVcGg%2BqfAVlsuOLgLTCHTKoW7t%2B7CRaigcDgB9%2BkqiAQI8f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGVHyhX6wtB8ow7uhSrcA4esfIjvrmV1NUML3cafpKTP9T3luxbGp2EBRKry38OYXbDSkGV9CMqxp3nqx8Mu3c8IUe6a83T7MuMZfV539q4o%2FMoTJ3GhOabsJiNUhzOyVlFltQfUpjg0pRWkErNkVbvwDiMMdnU0Sk%2BRvl1M5TtWzlqTBT1gL9x3KZGJUMjoum7qoRsNuYqnSaUqoODRrSoWoBqNi6K%2BgVAfH178BN9LbHYJxf0C2s3d0YwpLZP1vRwvoLp5GN3G1UShJatqEm7kAxVPAc8qL%2FkMIZm1cUqLYa%2BHAJxArl%2FxBRFSlSG7FcYu%2FAJylhdolF%2FRlTZtwk%2Fl1BWSmnvnuVcrgkt7JWGGOlwHDqoIPWbulrFNTEHRwYwWAnmB%2B%2FM5eTn5B2CHV%2FqdOQ3cMOfuCH6zeBiTUkd8RJ8Lrb0ENEHvRjHf9gW%2FA4ILV4q3lppAgFGjDzS%2FrepMDiHWstU4nIJ52bFtToYG14PymzEc3CFPtTNm5h1Cjj9JI0OeWEvWiWXYFVwdOO5rbpza3Kw29TDMYRVcccR8mv0OkLT8m9RZsM5idi12kXpyIaw3TWmt6weRBy3adRoD%2FlSg5rFfblikq5%2FeYEiTDt6%2FypnCYZKsWpH3TxSEE9QQ1YP8Z9ARDoDNMOH8ytYGOqUBcEb1it%2BxSo3uobUL0UObMxIbXtoPB2TgdD8z1UcLTk3jp7aAmpKPmdwNVMsXFrb6SQ7XOg59Xo1jTRrvApKFUAh1oF3EC9rrHVz%2B5PYG9WdWkh8b7O%2FX7BX52LgPChexocAQJ1NxEwMWQFfF%2FokjM8F9uKx9ikksjlVbM625xpJkd4BWraPOMAJLbpX0CYopTAWPWP2X0RfgEkUdOeiMGtnGHIob&X-Amz-Signature=4b9469f801a200e8d0af5ad036353b6600b4b064d8a0f81d064e41b48dcd7ed7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/a763a22b-ea3e-465f-b457-271eae140bf6/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/firststep-3cff2a3f-4320-81e1-b400-d37f21099ddb-cover.jpg",
+    "caption": "Is Your First Step Hurting You? 😱\n\nComment \"firststep\" 👇",
+    "account_id": "528216523715336",
+    "creation_id": "1162665289622026",
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-17T01:02:48.035624+00:00"
   }
 }
