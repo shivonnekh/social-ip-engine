@@ -445,5 +445,19 @@
     "attempts": 1,
     "last_error": "",
     "updated_at": "2026-10-17T01:03:04.060863+00:00"
+  },
+  "3cef2a3f-4320-8114-aeec-f0bfc1989bf1": {
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/41cdd73c-ab75-4a3d-ace2-51fd4b2d6714/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YD2PHGP3%2F20261018%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261018T010035Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEAaCXVzLXdlc3QtMiJHMEUCIQDw5vlS4fqfk7ESl7gWXFEC97RuL7zc%2B%2BNgF6cxVN3nkgIgDaHriM7bkce734PpvufW3k74MepZAayYfDXgnXXINYgq%2FwMICBAAGgw2Mzc0MjMxODM4MDUiDE4kkxUZ%2FU52HGq%2BnyrcA%2BqkjJCNv8LmkPcoUe3aI5O1oObaNiHYyVerSNZ1NPR9JiaZXOZRnkEW0w1CgMLhMK7LnGlVKsPOff2tFHlsWu7UJumTK%2Fa%2B2rJTekx20fHK56u9JK8I52y2HdtLIB5Ij9lEniF0Ztv0nolqEL6OvAnIsBKyPRmPSNjMR%2FKgZO7mSzfJTbEjWbjEGzgOU%2BQ3jUKC3PrSFNyVCSork59M3k%2FlJWHeuwdfwGczvBikxXihIBFgqx8%2FZFD5Vu6EjqdNEULBiFwy68pu2wHPopamxR369vLi5tNFP%2BYASQkaEZgRC48zcVE8nDg4YJwxXqSMTwXWHbvTOjDmEJVhq9A6hdY0VAguh37jchAFwZakcY6GL%2B%2BN6B5C7rc%2FZG2ThTYo48gpgnA4uvaiIuYkrKHsOm6M4gD3Ga8nUWiS9MNwxjxJSOSzPOz5tK%2B2Yp%2FEk4%2Fx2IooSe9whONPwCeIGIfwkHctgKMA99D%2BoUjBHsBpdt%2FQiRAZS1%2BjnxZsFcDyIRQ9G8deqGXMI%2F6F3KGkZbJCxM48fSza9HWlZMmf9OQ874Ag7W4AMfUc%2FttCdzQY80KD6hacm2uUwigOyIGB4PyX4YH7hYeSojD5cJPAiL4QAd9MYCVcUPae013116XdMOuF0NYGOqUBz1GCXtjdemzM5Okw%2BhReSNaHae9gUV0tI8YdZOAgM8cXO%2BB0zbW7xHfXGxAYa0krO9UTxCpMwCF%2F9Ja1%2FQ%2BhBsQ4gKamQbXFv5nvE7q%2F7X3YTfCGV7Nmvqlb7IXjhFH5TGwonnQ%2Bjj24cFqlPn4lYDtNZdOYcRoMQryeJ50uLd0O06RcVNVvC8C0VwKQfxr%2Bu9Nkq5HQX9OKxgubhxrV4CAJMrXB&X-Amz-Signature=d7aab71a0c6e99003f836dc1e6204f5f351f088481a13795223aacd814ff8a23&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/41cdd73c-ab75-4a3d-ace2-51fd4b2d6714/final_karaoke.mp4",
+    "cover_url": "https://tcm-jessica.onrender.com/media/covers/piles-3cef2a3f-4320-8114-aeec-f0bfc1989bf1-cover.jpg",
+    "caption": "Is Your Energy Sinking with Hemorrhoids? 😱\n\nComment \"piles\" 👇",
+    "account_id": "528216523715336",
+    "creation_id": "1038532752537755",
+    "fb_media_id": null,
+    "posted_checkbox": false,
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-18T01:02:48.766611+00:00"
   }
 }
