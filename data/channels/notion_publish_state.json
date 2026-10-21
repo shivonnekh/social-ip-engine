@@ -489,18 +489,18 @@
     "updated_at": "2026-10-18T01:01:40.003523+00:00"
   },
   "3cef2a3f-4320-8173-8279-df3897bfcdc3": {
-    "status": "in_flight",
+    "status": "published",
     "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/bd6c9ba0-2c94-498f-8c4e-58202b422432/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WMU4WF6K%2F20261021%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261021T010054Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIApamCIxSR20mln1Ke5izOdOQyNuyoP80yzhl%2Brz00tIAiBJsBmPIS3vC9vZRn%2FDqcGVZu3mc3BklTcj4D9BUEzcJCr%2FAwhREAAaDDYzNzQyMzE4MzgwNSIM%2BlBM13iraPR5WduoKtwDTCHQ8TtJD91X3nemqPL1Aa2YH9zegWrP%2FjeCDPJI0PdnIliJH1VAbQjlVIEmoeR5fYqWAzmFdmvk9dD13aoYlC%2B5nk07u1RraQTpuNp7XjHj5m6bCoV7pPmY49iUBJCM9Jl4Y%2BAYUaUpNlkg9L3iijj2qirvD6MBM8uhfa%2FRbHAfH25SS12W%2BM%2BnaSjDp%2FuqgvMghJXBgreiPgy7jK9%2BjuobRmOJ%2FaSW6DDpl9GwdhXe%2FmshyxSbQEWjgyHGIczmtohCH%2BQ27nug62QDbU5VUV8WTFGRtqzTE0d172NxgWo9viSa3loMrXXfYyQW2s9FsVp9lJEToSUaN7J%2FxWbJ1vXQb1sWE3JzB7cyG3OUpJ%2F9%2FKKzbNLuVfrvmmrqSTFAznLYRYR90VIp84q2xAESmbApNpYKqjAA%2FNTaj4%2FbG4GP0dN%2BwBbwt5vW2KUPwzSCxVM0qeIxE8dP8SO3IGSMJwPb374d4uC5PnZjVuyfiKoBUWpIa8JUYvRYFcOZXB05TtMZYZgTDZFnXWR0jJu6%2BVv7hf2DVgM4L1XGOsudJFxa%2FfFpa%2BQFsyTBj%2Bdu4p1tZp8I%2BYEtZd%2FW9OTvr8Jv0TaIKiqk4QggwDivXhoHRaH4P0HiI1iG%2BmEydlswhpjg1gY6pgH9hf39UTEKZWGpqqruPnarK93YAcnHSlWdrehhfqEy61CYJmaxtfVObzKfCApYWZS9m6juNF25Rm0Yh%2BuTqyVLkhufRi86w%2FivFEdqKvpz0G3WvkJkdc%2FvYe5BiVMtmfcbFMmP8%2BT5iLvjv6AFxhSmpURtcAxyxVFOaBDtiWZF%2Fo56mOEBBST5fYbNfEwiue8TjgLMUJSHBL7Iq4A6v6N8HQK%2BceuH&X-Amz-Signature=e7fc35c2f02950798fe609f6fbe22589b796eee37f683c7f8304ad686ffa74e5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/bd6c9ba0-2c94-498f-8c4e-58202b422432/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/memory-3cef2a3f-4320-8173-8279-df3897bfcdc3-cover.jpg",
     "caption": "Is Brain Fog Hiding a Secret? 😱\n\nComment \"memory\" 👇",
     "account_id": "27252162571115149",
     "creation_id": "18153724204576822",
-    "ig_media_id": null,
+    "ig_media_id": "17901508149656255",
     "posted_checkbox": false,
     "attempts": 1,
     "last_error": "",
-    "updated_at": "2026-10-21T01:00:59.812431+00:00"
+    "updated_at": "2026-10-21T01:01:45.085268+00:00"
   },
   "3cef2a3f-4320-8117-bcc2-d02cbe5c2522": {
     "status": "failed",
