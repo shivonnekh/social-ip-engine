@@ -489,18 +489,18 @@
     "updated_at": "2026-10-18T01:01:40.003523+00:00"
   },
   "3cef2a3f-4320-8173-8279-df3897bfcdc3": {
-    "status": "failed",
-    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/bd6c9ba0-2c94-498f-8c4e-58202b422432/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UPN54Y4P%2F20260928%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260928T010524Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEF8aCXVzLXdlc3QtMiJHMEUCID4aZykWMaSk%2FJrsrS8eyQnLLalS1%2Bq9gMW%2Bt5Z1XGC%2BAiEAkDz5Ku1e5mfm5WOoeelgOtvYV9l2VwrYRmzeQWFbwSIq%2FwMIKBAAGgw2Mzc0MjMxODM4MDUiDBg2fqG6xqaT%2FyHN%2FSrcA%2FoKnbhwGMPxkmYpl%2Bs0wZo%2BxSrDtYsjQui0NBWZO8yT9Xy4Q5nUnbC6B4Jbb9b2GzMMLfH7BilTHGjVblcPlW4MtCkdE8B5qsFq6U9RyuaQBK9jUe6s1HOyIsvI3xirkj6WbtatgAmVhbE59MIWP8xQ2W0GP87z20uUOmyIcCVyUn5yX3RIu5VSYuyX89%2FQtntoxGjPVLmLbF8CEodxfyxTGfD6pR6LJK9D%2BKoEc%2Fdpp6c7ZjBiroHcgnN4h7t8hjj1FYhfhp5PvReWWos2eY4qYgyB%2BgMx9ZFAC1qd9c5HUQA8u4GJe959xzmAimr2Yka%2BErEv%2F9GgsdE3oDGxKaWBUMw6z1aJN6l7aZVQrYDXWbCkg8sBbIBbQztGo5trPeVR6hAk%2F%2BnoZauhUv%2BNH49qT5cVH%2FQqyNwPKZsaipFkpwmlAbkLX4gNqCCxeH%2BEu9dZYX%2F5qEHiJWrtuaiYsyVoWg3D4DZ8vsgGq17EAhyanT1TwZoYt%2FiTXe6hQVOe%2Fbv2atuEJb%2FIxDPjQVEd7nH9lOM4SBRvYVgIiPP7s5C0mkRH%2FIWr1VbH5CbJpnneR73AJmcqQP5EhMDoIWEV%2BP52jJoRf4rYuhOw8Fa9OA3vZQPnuH6SRrhMfnhzMMjC5tUGOqUBYHa9iyTXRe%2BMDEiyRJyH%2Bck41o6S%2FlSDXF16gRKRdslxg2nW3DWY8P0LXOvUM60%2FOg3BkPFXmzQSlQPdBRYiX%2BcjgNxwM8sneOE%2BPPad2FAN7np8MN7QzJyIC2V4MnNl%2FfQKNsSa4YUN1KAo6raWGUUYNIRlgX1mi8%2BCby2mxi0J3BsIyKUtwG05pQv7XWSWgsZ4LMNiT%2FmzGvUnBRr6IkvlwqAK&X-Amz-Signature=925a67d584e265558461cb93884148b8a50ec7de3971f05489e62bfae525f728&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
+    "status": "in_flight",
+    "video_url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/bd6c9ba0-2c94-498f-8c4e-58202b422432/final_karaoke.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WMU4WF6K%2F20261021%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261021T010054Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIApamCIxSR20mln1Ke5izOdOQyNuyoP80yzhl%2Brz00tIAiBJsBmPIS3vC9vZRn%2FDqcGVZu3mc3BklTcj4D9BUEzcJCr%2FAwhREAAaDDYzNzQyMzE4MzgwNSIM%2BlBM13iraPR5WduoKtwDTCHQ8TtJD91X3nemqPL1Aa2YH9zegWrP%2FjeCDPJI0PdnIliJH1VAbQjlVIEmoeR5fYqWAzmFdmvk9dD13aoYlC%2B5nk07u1RraQTpuNp7XjHj5m6bCoV7pPmY49iUBJCM9Jl4Y%2BAYUaUpNlkg9L3iijj2qirvD6MBM8uhfa%2FRbHAfH25SS12W%2BM%2BnaSjDp%2FuqgvMghJXBgreiPgy7jK9%2BjuobRmOJ%2FaSW6DDpl9GwdhXe%2FmshyxSbQEWjgyHGIczmtohCH%2BQ27nug62QDbU5VUV8WTFGRtqzTE0d172NxgWo9viSa3loMrXXfYyQW2s9FsVp9lJEToSUaN7J%2FxWbJ1vXQb1sWE3JzB7cyG3OUpJ%2F9%2FKKzbNLuVfrvmmrqSTFAznLYRYR90VIp84q2xAESmbApNpYKqjAA%2FNTaj4%2FbG4GP0dN%2BwBbwt5vW2KUPwzSCxVM0qeIxE8dP8SO3IGSMJwPb374d4uC5PnZjVuyfiKoBUWpIa8JUYvRYFcOZXB05TtMZYZgTDZFnXWR0jJu6%2BVv7hf2DVgM4L1XGOsudJFxa%2FfFpa%2BQFsyTBj%2Bdu4p1tZp8I%2BYEtZd%2FW9OTvr8Jv0TaIKiqk4QggwDivXhoHRaH4P0HiI1iG%2BmEydlswhpjg1gY6pgH9hf39UTEKZWGpqqruPnarK93YAcnHSlWdrehhfqEy61CYJmaxtfVObzKfCApYWZS9m6juNF25Rm0Yh%2BuTqyVLkhufRi86w%2FivFEdqKvpz0G3WvkJkdc%2FvYe5BiVMtmfcbFMmP8%2BT5iLvjv6AFxhSmpURtcAxyxVFOaBDtiWZF%2Fo56mOEBBST5fYbNfEwiue8TjgLMUJSHBL7Iq4A6v6N8HQK%2BceuH&X-Amz-Signature=e7fc35c2f02950798fe609f6fbe22589b796eee37f683c7f8304ad686ffa74e5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
     "video_url_stable": "https://prod-files-secure.s3.us-west-2.amazonaws.com/198113a4-6365-4086-aa31-d5e632f84aaf/bd6c9ba0-2c94-498f-8c4e-58202b422432/final_karaoke.mp4",
     "cover_url": "https://tcm-jessica.onrender.com/media/covers/memory-3cef2a3f-4320-8173-8279-df3897bfcdc3-cover.jpg",
     "caption": "Is Brain Fog Hiding a Secret? 😱\n\nComment \"memory\" 👇",
-    "account_id": "17841417304649448",
-    "creation_id": null,
+    "account_id": "27252162571115149",
+    "creation_id": "18153724204576822",
     "ig_media_id": null,
     "posted_checkbox": false,
-    "attempts": 0,
-    "last_error": "rescheduled after Instagram token recovery",
-    "updated_at": "2026-09-28T01:07:27.609302+00:00"
+    "attempts": 1,
+    "last_error": "",
+    "updated_at": "2026-10-21T01:00:59.812431+00:00"
   },
   "3cef2a3f-4320-8117-bcc2-d02cbe5c2522": {
     "status": "failed",
