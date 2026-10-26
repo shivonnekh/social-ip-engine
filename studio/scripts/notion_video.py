@@ -134,6 +134,13 @@ def upload_to_notion(path, content_type, fname):
     return o["id"]
 
 
+def _verify_shot_language(mp4, voice_text):
+    """(ok, reason) — English-scripted shots must actually be spoken in English
+    (see shot_language.py; 2026-10-22 Chinese-hook incident)."""
+    from shot_language import check_shot
+    return check_shot(mp4, voice_text)
+
+
 def place_video_in_shot(row_id, shot_title, mp4):
     """Put a shot's video in Notion — ALWAYS exactly ONE '🎬 Video here' toggle
     per shot, content replaced in place.
@@ -1118,6 +1125,13 @@ def main():
                             mix_audio(raw, aud, out)
                         else:
                             print(f"    ⚠️  shot {s['shot']} is i2v but local audio missing — placed SILENT")
+                    voice = next((sh.get("voice_text", "") for sh in shots
+                                  if sh.get("title") == s.get("title")), "")
+                    lang_ok, lang_why = _verify_shot_language(out, voice)
+                    if not lang_ok:
+                        print(f"    🈲 shot {s['shot']} collected but wrong-language audio — {lang_why}; "
+                              "NOT placed in Notion (regen this shot)")
+                        continue
                     mp4s.append(out)
                     status = place_video_in_shot(args.row, s.get("title", ""), out) if s.get("title") else "no-title"
                     print(f"    ✅ shot {s['shot']} collected | Notion: {status}")
@@ -1290,6 +1304,13 @@ def main():
                 break
             print(f"  polling shot {i} ({sid}) up to {_POLL_TIMEOUT_S // 60} min ...")
             path, pstat = poll_download(sid, out)
+            if path:
+                lang_ok, lang_why = _verify_shot_language(path, s.get("voice_text", ""))
+                if not lang_ok:
+                    print(f"    🈲 shot {i} attempt {attempt}: wrong-language audio — {lang_why}; "
+                          "regenerating ...")
+                    path, pstat = None, "badlang"
+                    continue
             if path or pstat == "fail":
                 break
             if _HANG_BACKOFF_S and attempt < _MM_ATTEMPTS:
@@ -1320,7 +1341,8 @@ def main():
                 d = _dreamina(["query_result", f"--submit_id={earlier_sid}"])
                 if d.get("gen_status") == "success":
                     url = _video_url(d)
-                    if url and _download(url, out, force=True):
+                    if (url and _download(url, out, force=True)
+                            and _verify_shot_language(out, s.get("voice_text", ""))[0]):
                         print(f"    ↩️  shot {i}: attempt {earlier_sid} actually finished "
                               f"(just slower than {_POLL_TIMEOUT_S // 60} min) — using it instead "
                               "of the later attempt")
@@ -1333,6 +1355,12 @@ def main():
             print(f"    ✅ {out} | Notion: {status}")
         elif not sid:
             failed.append(i)  # submit itself failed (credits/auth) — msg printed above
+        elif pstat == "badlang":
+            # 即梦 spoke the wrong language on every attempt — never place it in
+            # Notion and never fall back to a degraded path; a human decides.
+            print(f"    ❌ shot {i}: all {_MM_ATTEMPTS} attempts had wrong-language audio — "
+                  "NOT placed in Notion; check the shot's 即梦 prompt / audio and regen")
+            failed.append(i)
         elif pstat == "timeout":
             # every attempt hung — don't silently degrade to i2v/Ken Burns over
             # a lottery problem; the saved submit_ids MIGHT still land later

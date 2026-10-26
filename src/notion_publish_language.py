@@ -95,7 +95,7 @@ def expected_sentences(row_id: str, children: Callable[[str], list[dict]]) -> li
             continue
         if index + 1 < len(blocks) and blocks[index + 1].get("type") == "code":
             text = _block_text(blocks[index + 1]).strip()
-            sentences.extend(s.strip() for s in _SENTENCE_SPLIT.split(text) if s.strip())
+            sentences.extend(split_sentences(text))
     return sentences
 
 
@@ -191,7 +191,12 @@ def check_video_language(
         result = (transcribe or transcribe_video)(video_url)
     except LanguageGateError as exc:
         return GateResult(False, str(exc))
+    return evaluate_transcript(result, sentences)
 
+
+def evaluate_transcript(result: dict[str, Any], sentences: list[str]) -> GateResult:
+    """Is this English transcript the script we wrote? (shared with the studio's
+    per-shot check, so a shot is judged by exactly the rule publishing uses)"""
     text = result["text"]
     if result["language"] and result["language"] != "english":
         return GateResult(
@@ -211,3 +216,7 @@ def check_video_language(
             text,
         )
     return GateResult(True, "English audio matches script", text)
+
+
+def split_sentences(script: str) -> list[str]:
+    return [s.strip() for s in _SENTENCE_SPLIT.split(script.strip()) if s.strip()]

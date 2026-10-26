@@ -610,8 +610,10 @@ def build_jimeng_prompt(title: str, visual: str = "", lang: str = "", dialogue: 
             "The presenter speaks directly to camera for the entire clip — face "
             "frontal, mouth clearly visible, lips moving in precise sync with the "
             f'uploaded audio from the first word to the last. The exact line: "{dialogue}" '
-            f"— this is the uploaded audio, spoken{lang_word}. Comfortable pace, "
-            "occasional natural blinking and breathing."
+            f"— this is the uploaded audio, spoken{lang_word}. "
+            + (f"Speak ONLY{lang_word}; never switch to Chinese or any other language. "
+               if lang_en else "")
+            + "Comfortable pace, occasional natural blinking and breathing."
         )
         guide_body = (
             f"{visual_clean.rstrip('。.; ')}. Throughout every beat the presenter "
