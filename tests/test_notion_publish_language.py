@@ -17,7 +17,9 @@ SCRIPT = [
 def _blocks(scripts: list[str]) -> list[dict]:
     out: list[dict] = []
     for text in scripts:
-        out.append({"type": "paragraph", "paragraph": {"rich_text": [{"plain_text": "🗣️ Voice script"}]}})
+        out.append(
+            {"type": "paragraph", "paragraph": {"rich_text": [{"plain_text": "🗣️ Voice script"}]}}
+        )
         out.append({"type": "code", "code": {"rich_text": [{"plain_text": text}]}})
     return out
 
@@ -53,7 +55,12 @@ def test_blocks_non_english_detection():
 
 
 def test_blocks_chinese_characters_in_transcript():
-    r = _run({"language": "english", "text": GOOD["text"] + " 如果媽早上每天去喝多咖啡你的腸子乾燥不是懶惰"})
+    r = _run(
+        {
+            "language": "english",
+            "text": GOOD["text"] + " 如果媽早上每天去喝多咖啡你的腸子乾燥不是懶惰",
+        }
+    )
     assert not r.ok and "Chinese characters" in r.reason
 
 
@@ -102,8 +109,12 @@ def test_planner_does_not_claim_a_blocked_row(monkeypatch: pytest.MonkeyPatch, t
     )
     monkeypatch.setenv("NOTION_PUBLISH_GENERATE_COVERS", "0")
     result = npub.plan_publishes(
-        state_path=tmp_path / "s.json", media_dir=tmp_path / "c", media_state_path=tmp_path / "m.json"
+        state_path=tmp_path / "s.json",
+        media_dir=tmp_path / "c",
+        media_state_path=tmp_path / "m.json",
     )
     assert result["jobs"] == []
     assert any("LANGUAGE GATE" in w for w in result["warnings"])
-    assert not (tmp_path / "s.json").exists() or base.ROW_ID not in (tmp_path / "s.json").read_text()
+    assert (
+        not (tmp_path / "s.json").exists() or base.ROW_ID not in (tmp_path / "s.json").read_text()
+    )

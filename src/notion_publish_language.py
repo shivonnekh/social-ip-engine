@@ -43,7 +43,11 @@ from typing import Any, Final
 # (url, model, key env var) — Groq first when configured: same Whisper family,
 # OpenAI-compatible API, and it does not share OpenAI's image-gen credit pool.
 _PROVIDERS: Final = (
-    ("https://api.groq.com/openai/v1/audio/transcriptions", "whisper-large-v3-turbo", "GROQ_API_KEY"),
+    (
+        "https://api.groq.com/openai/v1/audio/transcriptions",
+        "whisper-large-v3-turbo",
+        "GROQ_API_KEY",
+    ),
     ("https://api.openai.com/v1/audio/transcriptions", "whisper-1", "OPENAI_API_KEY"),
 )
 _MAX_BYTES: Final = 24 * 1024 * 1024  # API hard limit is 25 MB
@@ -69,11 +73,17 @@ class LanguageGateError(Exception):
 
 
 def gate_enabled() -> bool:
-    return os.environ.get("PUBLISH_LANGUAGE_GATE", "on").strip().lower() not in {"off", "0", "false"}
+    return os.environ.get("PUBLISH_LANGUAGE_GATE", "on").strip().lower() not in {
+        "off",
+        "0",
+        "false",
+    }
 
 
 def _block_text(block: dict) -> str:
-    return "".join(x.get("plain_text", "") for x in block.get(block.get("type", ""), {}).get("rich_text", []))
+    return "".join(
+        x.get("plain_text", "") for x in block.get(block.get("type", ""), {}).get("rich_text", [])
+    )
 
 
 def expected_sentences(row_id: str, children: Callable[[str], list[dict]]) -> list[str]:
@@ -107,7 +117,7 @@ def _cjk_ratio(text: str) -> float:
 
 def _download(url: str) -> bytes:
     try:
-        with urllib.request.urlopen(url, timeout=_TIMEOUT_S) as response:  # noqa: S310
+        with urllib.request.urlopen(url, timeout=_TIMEOUT_S) as response:
             data = response.read(_MAX_BYTES + 1)
     except (urllib.error.URLError, OSError, TimeoutError) as exc:
         raise LanguageGateError(f"could not download video: {exc}") from exc
@@ -143,11 +153,14 @@ def transcribe_video(video_url: str) -> dict[str, Any]:
     request = urllib.request.Request(
         url,
         data=body,
-        headers={"Authorization": f"Bearer {key}", "Content-Type": f"multipart/form-data; boundary={boundary}"},
+        headers={
+            "Authorization": f"Bearer {key}",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        },
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=_TIMEOUT_S) as response:  # noqa: S310
+        with urllib.request.urlopen(request, timeout=_TIMEOUT_S) as response:
             data = json.loads(response.read().decode("utf-8"))
     except (urllib.error.URLError, OSError, TimeoutError, json.JSONDecodeError) as exc:
         raise LanguageGateError(f"transcription failed: {exc}") from exc
@@ -180,7 +193,9 @@ def check_video_language(
 
     text = result["text"]
     if result["language"] and result["language"] != "english":
-        return GateResult(False, f"audio detected as {result['language']!r}, expected English", text)
+        return GateResult(
+            False, f"audio detected as {result['language']!r}, expected English", text
+        )
     if _cjk_ratio(text) > _MAX_CJK_RATIO:
         return GateResult(False, "Chinese characters in the spoken transcript", text)
 
