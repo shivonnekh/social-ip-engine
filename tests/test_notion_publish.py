@@ -84,6 +84,7 @@ def _patch_notion(monkeypatch: pytest.MonkeyPatch, paths: dict[str, Path]) -> No
     # No cover generation by default in these tests — keep them fast/offline;
     # cover-resolution itself is covered by test_notion_publish_media.py.
     monkeypatch.setenv("NOTION_PUBLISH_GENERATE_COVERS", "0")
+    monkeypatch.setenv("PUBLISH_LANGUAGE_GATE", "off")  # gate has its own tests
 
 
 def _plan(rows: list[dict], paths: dict[str, Path], monkeypatch: pytest.MonkeyPatch) -> dict:

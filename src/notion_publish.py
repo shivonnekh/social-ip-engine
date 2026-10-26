@@ -72,7 +72,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
 
-from src import notion_publish_caption, notion_publish_media
+from src import notion_publish_caption, notion_publish_language, notion_publish_media
 from src._publish_tz import PUBLISH_TZ
 from src.ips import registry as ip_registry
 from src.notion_sync import (
@@ -468,6 +468,16 @@ def _plan_publishes_locked(
             }
             _save_json(resolved_state_path, ledger)
             skipped.append(f"{row_id}: duplicate video already published elsewhere")
+            continue
+
+        # Language gate — the audio must be the IP's language AND the script
+        # we wrote (2026-10-22: a Chinese-voiced shot went live on Jackie's
+        # English account). Deliberately NOT claimed in the ledger: the row is
+        # re-checked every run, so replacing the video unblocks it by itself.
+        gate = notion_publish_language.check_video_language(video_url, row_id, language, _children)
+        if not gate.ok:
+            warnings.append(f"{row_id}: LANGUAGE GATE blocked publish — {gate.reason}")
+            skipped.append(f"{row_id}: language gate — {gate.reason}")
             continue
 
         cta = "".join(
