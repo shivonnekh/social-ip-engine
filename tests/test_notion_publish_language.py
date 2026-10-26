@@ -8,7 +8,8 @@ import pytest
 from src import notion_publish_language as gate
 
 SCRIPT = [
-    "If you cannot go every morning, drinking more coffee will not fix it. Your intestines are dry, not lazy.",
+    "If you cannot go every morning, drinking more coffee will not fix it. "
+    "Your intestines are dry, not lazy.",
     "In Chinese medicine, dry stool means fluids and blood are not moistening the bowel.",
     "Comment bowel and I will send you my full morning movement protocol.",
 ]

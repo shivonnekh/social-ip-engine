@@ -138,7 +138,8 @@ def _multipart(video: bytes, model: str) -> tuple[str, bytes]:
     boundary = uuid.uuid4().hex
     parts = [
         f'--{boundary}\r\nContent-Disposition: form-data; name="model"\r\n\r\n{model}\r\n',
-        f'--{boundary}\r\nContent-Disposition: form-data; name="response_format"\r\n\r\nverbose_json\r\n',
+        f'--{boundary}\r\nContent-Disposition: form-data; name="response_format"'
+        "\r\n\r\nverbose_json\r\n",
         f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="video.mp4"\r\n'
         "Content-Type: video/mp4\r\n\r\n",
     ]
